@@ -1,0 +1,261 @@
+body {
+  background: #0f0f0f;
+  color: #dddddd;
+  font-family: 'EB Garamond', serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: 'Cinzel', serif;
+  color: #d47d20;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px #aa2a2a, 0 0 2px #c9a451;
+}
+
+a, .btn {
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  padding: 10px 24px;
+  border-radius: 6px;
+  margin: 0 8px;
+  font-size: 1.1em;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.btn.ember, .ember {
+  background: #d47d20;
+  color: #0f0f0f;
+  box-shadow: 0 0 16px #d47d20, 0 0 4px #aa2a2a;
+}
+
+.btn.gold {
+  background: #c9a451;
+  color: #1c1c1c;
+  box-shadow: 0 0 12px #c9a451;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  background: url('assets/fog.png') repeat, url('assets/castle-silhouette.png') bottom center no-repeat, #1c1c1c;
+  background-size: cover, contain, cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-content {
+  z-index: 2;
+  position: relative;
+}
+
+.boss-intro {
+  font-size: 3em;
+  color: #d47d20;
+  text-shadow: 0 0 16px #aa2a2a, 0 0 4px #c9a451;
+}
+
+.tagline {
+  color: #999999;
+  font-size: 1.5em;
+  margin-bottom: 30px;
+}
+
+.bonfire-flicker {
+  width: 80px;
+  height: 80px;
+  margin: 30px auto 0;
+  background: url('assets/bonfire.gif') center/contain no-repeat;
+  filter: drop-shadow(0 0 24px #d47d20);
+}
+
+.parchment-bg {
+  background: url('assets/parchment.png') repeat, #1c1c1c;
+  border: 2px solid #c9a451;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 32px auto;
+  max-width: 800px;
+  box-shadow: 0 0 24px #222;
+}
+
+.stats-list {
+  list-style: none;
+  padding: 0;
+  color: #c9a451;
+  font-size: 1.2em;
+}
+
+.stat-label {
+  color: #d47d20;
+  font-weight: bold;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.project-card {
+  background: #1c1c1c;
+  border: 2px solid #999999;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 12px #222;
+  transition: border 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.project-card:hover {
+  border: 2px solid #d47d20;
+  box-shadow: 0 0 24px #d47d20;
+}
+
+.boss-title {
+  color: #c9a451;
+  font-size: 1.3em;
+}
+
+.item-lore {
+  color: #999999;
+  font-style: italic;
+  margin: 12px 0;
+}
+
+.inspect-btn {
+  background: #aa2a2a;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.skill-rune {
+  background: #222;
+  border: 2px solid #c9a451;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.skill-rune:hover, .skill-rune:focus {
+  box-shadow: 0 0 16px #d47d20, 0 0 8px #c9a451;
+}
+
+.skill-desc {
+  display: none;
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1c1c;
+  color: #d47d20;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.skill-rune:hover .skill-desc, .skill-rune:focus .skill-desc {
+  display: block;
+}
+
+.lore-box {
+  background: rgba(28,28,28,0.8);
+  border-left: 4px solid #d47d20;
+  margin: 24px 0;
+  padding: 16px 24px;
+  font-style: italic;
+  color: #999999;
+}
+
+.npc-name {
+  display: block;
+  color: #c9a451;
+  margin-top: 8px;
+  font-size: 0.95em;
+}
+
+.contact {
+  background: #1c1c1c;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.contact-form input, .contact-form textarea {
+  background: #222;
+  color: #dddddd;
+  border: 1px solid #d47d20;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 1em;
+}
+
+.contact-form button {
+  background: #d47d20;
+  color: #0f0f0f;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1em;
+  cursor: pointer;
+  box-shadow: 0 0 12px #d47d20;
+}
+
+.bonfire-icon {
+  width: 60px;
+  height: 60px;
+  margin: 24px auto 0;
+  background: url('assets/bonfire.gif') center/contain no-repeat;
+  filter: drop-shadow(0 0 16px #d47d20);
+  cursor: pointer;
+}
+
+footer {
+  background: #0f0f0f;
+  color: #999999;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 1em;
+  border-top: 1px solid #222;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .project-grid, .skills-grid {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .parchment-bg {
+    padding: 16px;
+    margin: 16px 0;
+  }
+}
