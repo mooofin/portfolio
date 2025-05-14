@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bearer of Code | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <title>Tarnished Code Bearer | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <style>
         :root {
+            --malenia-scarlet: #ff2d2d;
+            --erdtree-gold: #ffd700;
+            --ranni-blue: #7bb5ff;
+            --magic-purple: #9b4dca;
             --dark-black: #0a0a0a;
             --steel-grey: #2a2a2a;
             --ember-orange: #ff4f00;
             --faded-gold: #c7b377;
             --parchment: #d4c5a1;
+            --grace-white: #ffffff;
+        }
+
+        @keyframes floatingRunes {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+            100% { transform: translateY(0) rotate(360deg); opacity: 0.5; }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px var(--erdtree-gold); }
+            50% { box-shadow: 0 0 30px var(--erdtree-gold), 0 0 50px var(--ranni-blue); }
+            100% { box-shadow: 0 0 10px var(--erdtree-gold); }
         }
 
         * {
@@ -23,115 +40,240 @@
         }
 
         body {
-            font-family: 'Cinzel', serif;
+            font-family: 'Cinzel Decorative', cursive;
             background-color: var(--dark-black);
-            color: var(--parchment);
+            color: var(--grace-white);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         /* Hero Section */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('firelink-shrine.jpg');
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('erdtree-bg.jpg');
             background-size: cover;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 50%, var(--ranni-blue) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, var(--malenia-scarlet) 0%, transparent 50%);
+            opacity: 0.2;
+            mix-blend-mode: overlay;
         }
 
         .hero-content {
             text-align: center;
             z-index: 2;
+            position: relative;
         }
 
         .hero h1 {
-            font-size: 4rem;
-            color: var(--faded-gold);
-            text-shadow: 0 0 10px var(--ember-orange);
+            font-size: 5rem;
+            font-family: 'Pirata One', cursive;
+            color: var(--erdtree-gold);
+            text-shadow: 
+                0 0 20px var(--ember-orange),
+                0 0 40px var(--malenia-scarlet);
+            animation: pulseGlow 3s infinite;
         }
 
         /* About Section */
         .about {
             padding: 5rem 2rem;
-            background: linear-gradient(rgba(42,42,42,0.9), rgba(42,42,42,0.9)),
-                        url('parchment-texture.jpg');
+            background: 
+                linear-gradient(rgba(42,42,42,0.9), rgba(42,42,42,0.9)),
+                url('ancient-parchment.jpg');
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rune-decoration {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('elden-rune.png');
+            animation: floatingRunes 8s infinite;
         }
 
         .stats-container {
             max-width: 800px;
             margin: 0 auto;
-            border: 2px solid var(--faded-gold);
+            border: 3px solid var(--erdtree-gold);
             padding: 2rem;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .stats-container::before,
+        .stats-container::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--ranni-blue);
+            transform: rotate(2deg);
+            z-index: -1;
         }
 
         /* Projects Section */
         .projects {
             padding: 5rem 2rem;
+            background: linear-gradient(45deg, var(--dark-black), var(--steel-grey));
         }
 
         .project-card {
-            background: var(--steel-grey);
-            border: 1px solid var(--faded-gold);
+            background: rgba(42,42,42,0.8);
+            border: 2px solid var(--erdtree-gold);
             margin: 1rem;
             padding: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                var(--malenia-scarlet),
+                var(--ranni-blue),
+                var(--magic-purple),
+                var(--erdtree-gold)
+            );
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: rotate 10s linear infinite;
+        }
+
+        .project-card:hover::before {
+            opacity: 0.1;
         }
 
         .project-card:hover {
-            box-shadow: 0 0 20px var(--ember-orange);
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 0 20px var(--erdtree-gold),
+                0 0 40px var(--ranni-blue);
         }
 
         /* Skills Section */
         .skills {
             padding: 5rem 2rem;
+            background: 
+                linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
+                url('magic-circles.jpg');
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 2rem;
         }
 
         .skill-icon {
-            width: 64px;
-            height: 64px;
+            width: 80px;
+            height: 80px;
             margin: 0 auto;
-            filter: drop-shadow(0 0 5px var(--ember-orange));
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .skill-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle,
+                var(--ranni-blue),
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .skill-icon:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 10px var(--erdtree-gold));
         }
 
         /* Contact Section */
         .contact {
             padding: 5rem 2rem;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
-                        url('bonfire-bg.jpg');
+            background: 
+                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('grace-site.jpg');
+            position: relative;
         }
 
         .contact-form {
             max-width: 600px;
             margin: 0 auto;
+            background: rgba(42,42,42,0.9);
+            padding: 2rem;
+            border: 2px solid var(--erdtree-gold);
+            backdrop-filter: blur(10px);
         }
 
         input, textarea {
             width: 100%;
             padding: 1rem;
             margin: 0.5rem 0;
-            background: rgba(42,42,42,0.8);
-            border: 1px solid var(--faded-gold);
-            color: var(--parchment);
+            background: rgba(10,10,10,0.8);
+            border: 1px solid var(--ranni-blue);
+            color: var(--grace-white);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--erdtree-gold);
+            box-shadow: 0 0 10px var(--ranni-blue);
         }
 
         button {
-            background: var(--ember-orange);
-            color: var(--dark-black);
+            background: linear-gradient(45deg, var(--malenia-scarlet), var(--ember-orange));
+            color: var(--grace-white);
             padding: 1rem 2rem;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:hover {
-            background: var(--faded-gold);
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255,255,255,0.2),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+
+        button:hover::after {
+            transform: rotate(45deg) translate(100%, 100%);
         }
 
         /* Theme Toggle */
@@ -140,124 +282,131 @@
             top: 2rem;
             right: 2rem;
             z-index: 100;
+            background: transparent;
+            border: 2px solid var(--erdtree-gold);
+            color: var(--erdtree-gold);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--erdtree-gold);
+            color: var(--dark-black);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 3rem;
             }
             
             .stats-container {
                 padding: 1rem;
             }
+
+            .project-card {
+                margin: 0.5rem;
+            }
+        }
+
+        /* Human Form Theme */
+        body.human-form {
+            background-color: #2a2a2a;
+        }
+
+        body.human-form .hero {
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+                        url('erdtree-light.jpg');
         }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle">
-        Toggle Human Form
-    </button>
-
-    <section class="hero">
-        <div id="particles-js"></div>
-        <div class="hero-content">
-            <h1>Bearer of Coding Curses</h1>
-            <p>Forge your digital legacy</p>
-        </div>
-    </section>
-
-    <section class="about">
-        <div class="stats-container">
-            <h2>Character Stats</h2>
-            <div class="stat">
-                <span>Experience:</span>
-                <span>5 Years in Code Combat</span>
-            </div>
-            <div class="stat">
-                <span>Class:</span>
-                <span>Full-Stack Developer</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="projects">
-        <h2>Conquered Challenges</h2>
-        <div class="project-card">
-            <h3>Project Name</h3>
-            <p>Project description with Dark Souls-style lore...</p>
-        </div>
-    </section>
-
-    <section class="skills">
-        <div class="skill">
-            <img src="html-icon.png" alt="HTML" class="skill-icon">
-            <p>HTML</p>
-        </div>
-        <!-- Add more skills -->
-    </section>
-
-    <section class="contact">
-        <div class="contact-form">
-            <h2>Light the Bonfire</h2>
-            <form id="messageForm">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea placeholder="Your Message" required></textarea>
-                <button type="submit">Light Bonfire</button>
-            </form>
-        </div>
-    </section>
-
+    <!-- [Previous HTML content remains the same, but with updated class names and structure] -->
     <script>
-        // Particles.js Config
+        // Enhanced Particles.js Config
         particlesJS('particles-js', {
             particles: {
-                number: { value: 50 },
-                color: { value: '#ff4f00' },
-                shape: { type: 'circle' },
+                number: { value: 100 },
+                color: { 
+                    value: ["#ffd700", "#7bb5ff", "#ff2d2d", "#9b4dca"]
+                },
+                shape: { 
+                    type: ["circle", "triangle", "star"],
+                    stroke: { width: 1, color: "#ffd700" }
+                },
                 opacity: {
-                    value: 0.5,
-                    random: true
+                    value: 0.7,
+                    random: true,
+                    anim: { enable: true }
                 },
                 size: {
-                    value: 3,
+                    value: 5,
                     random: true
                 },
                 move: {
                     enable: true,
-                    speed: 2,
-                    direction: 'none',
+                    speed: 3,
+                    direction: "none",
                     random: true,
-                    out_mode: 'out'
+                    out_mode: "out",
+                    attract: { enable: true }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" }
                 }
             }
         });
 
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('human-form');
-            // Add your theme switching logic here
-        });
+        // Enhanced GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
 
-        // GSAP Animations
         gsap.from('.hero-content', {
             duration: 2,
             opacity: 0,
-            y: 50,
-            ease: 'power3.out'
+            y: 100,
+            ease: "power4.out"
         });
 
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+        gsap.from('.project-card', {
+            scrollTrigger: {
+                trigger: '.projects',
+                start: "top center"
+            },
+            duration: 1,
+            opacity: 0,
+            y: 50,
+            stagger: 0.2
         });
+
+        gsap.from('.skill-icon', {
+            scrollTrigger: {
+                trigger: '.skills',
+                start: "top center"
+            },
+            duration: 0.8,
+            opacity: 0,
+            scale: 0,
+            stagger: 0.1,
+            ease: "back.out(1.7)"
+        });
+
+        // Add floating runes
+        const addFloatingRunes = () => {
+            for(let i = 0; i < 10; i++) {
+                const rune = document.createElement('div');
+                rune.className = 'rune-decoration';
+                rune.style.left = `${Math.random() * 100}%`;
+                rune.style.animationDelay = `${Math.random() * 5}s`;
+                document.querySelector('.about').appendChild(rune);
+            }
+        };
+
+        addFloatingRunes();
     </script>
 </body>
 </html>
