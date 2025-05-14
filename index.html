@@ -2,112 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bearer of Code</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      color: #222;
-      margin: 0;
-      padding: 0 20px;
-    }
-    header {
-      background: #333a22;
-      color: #fff;
-      padding: 10px 0 10px 10px;
-      margin-bottom: 20px;
-    }
-    nav a {
-      color: #fff;
-      margin-right: 15px;
-      text-decoration: none;
-    }
-    h1, h2, h3 {
-      color: #3a3a3a;
-    }
-    section {
-      margin-bottom: 30px;
-    }
-    .form-group {
-      margin-bottom: 10px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 6px;
-      margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background: #222;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .footer {
-      margin-top: 40px;
-      color: #888;
-      font-size: 0.9em;
-    }
-  </style>
+  <title>[Your Name] - Bearer of the Coding Curse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts for Cinzel and EB Garamond -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=EB+Garamond&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <strong>TARNISHED</strong>
-    <nav>
-      <a href="#">About</a>
-      <a href="#">Projects</a>
-      <a href="#">Skills</a>
-      <a href="#">Contact</a>
-    </nav>
-    <button>Switch Form</button>
-  </header>
-
-  <section>
-    <h1>Bearer of Code</h1>
-    <p>Seeking the Elden Code</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="fog"></div>
+    <div class="castle-bg"></div>
+    <div class="hero-content">
+      <h1 class="boss-intro">[Your Name]</h1>
+      <p class="tagline">Bearer of the Coding Curse</p>
+      <div class="cta-buttons">
+        <a href="#projects" class="btn ember">Traverse My Work</a>
+        <a href="#contact" class="btn gold">Kindle Contact Flame</a>
+      </div>
+      <div class="bonfire-flicker"></div>
+    </div>
   </section>
 
-  <section>
+  <!-- About Me / Character Stats -->
+  <section class="about parchment-bg">
     <h2>Character Stats</h2>
-    <strong>STRENGTH</strong><br>
-    <strong>INTELLIGENCE</strong>
-    <p>A wandering developer, seeking to master the ancient arts of code crafting...</p>
+    <ul class="stats-list">
+      <li><span class="stat-label">Class:</span> Software Developer</li>
+      <li><span class="stat-label">Covenant:</span> Open Source</li>
+      <li><span class="stat-label">Weapon:</span> TypeScript + Rust</li>
+      <li><span class="stat-label">Level:</span> 21 (Years)</li>
+      <li><span class="stat-label">Location:</span> The Lands of MIT Manipal</li>
+    </ul>
+    <p class="about-lore">A wandering developer, seeking to master the ancient arts of code crafting...</p>
   </section>
 
-  <section>
+  <!-- Projects -->
+  <section class="projects" id="projects">
     <h2>Conquered Challenges</h2>
-    <h3>Project Name</h3>
-    <p>Description of the epic project...</p>
-    <p><em>Tech Stack</em></p>
+    <div class="project-filters">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Tools</button>
+      <button class="filter-btn">Games</button>
+      <button class="filter-btn">Web Apps</button>
+      <button class="filter-btn">Mods</button>
+    </div>
+    <div class="project-grid">
+      <!-- Example Project Card -->
+      <div class="project-card">
+        <h3 class="boss-title">Project Name</h3>
+        <img src="assets/relic.png" alt="Project Relic" class="project-icon">
+        <p class="item-lore">Forged in the fires of sleepless nights, this tool brings light to the darkest dungeons of code.</p>
+        <a href="#" class="inspect-btn">Inspect</a>
+      </div>
+      <!-- Add more project cards here -->
+    </div>
   </section>
 
-  <section>
+  <!-- Skills -->
+  <section class="skills">
     <h2>Combat Arts</h2>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="Skill" width="40">
-    JavaScript
+    <div class="skills-grid">
+      <div class="skill-rune" tabindex="0">
+        <img src="assets/js-rune.png" alt="JavaScript Rune">
+        <span class="skill-desc">Dexterity: Expert in JavaScript</span>
+      </div>
+      <!-- Add more skills here -->
+    </div>
   </section>
 
-  <section>
-    <h2>Send Message</h2>
-    <form>
-      <div class="form-group">
-        <input type="text" placeholder="Your Name">
-      </div>
-      <div class="form-group">
-        <input type="email" placeholder="Your Email">
-      </div>
-      <div class="form-group">
-        <textarea placeholder="Your Message"></textarea>
-      </div>
-      <button type="submit">Light Bonfire</button>
+  <!-- Testimonials / Lore -->
+  <section class="testimonials parchment-bg">
+    <h2>Lore & Testimonials</h2>
+    <div class="lore-box">
+      <blockquote>
+        "A true ashen one, their code burns with the light of a thousand bonfires."
+        <span class="npc-name">- Prof. Gwyn, Lord of Cinder</span>
+      </blockquote>
+    </div>
+    <!-- Add more lore/testimonials here -->
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <h2>Kindle the Flame of Collaboration</h2>
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <textarea placeholder="Your Message" required></textarea>
+      <button type="submit" class="ember">Offer Soul Message</button>
     </form>
+    <div class="bonfire-icon" tabindex="0" aria-label="Kindle Bonfire"></div>
   </section>
 
-  <div class="footer">
-    Forged in the Lands Between
-  </div>
+  <footer>
+    <p>Forged in the Lands Between &copy; [Your Name] 2024</p>
+  </footer>
 </body>
 </html>
