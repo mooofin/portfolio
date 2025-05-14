@@ -98,8 +98,8 @@
   <footer>
     <p>Forged in the Lands Between &copy; [Your Name] 2024</p>
   </footer>
-  <!-- Three.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.min.js"></script>
 <script>
   // === SCENE SETUP ===
   const scene = new THREE.Scene();
@@ -118,6 +118,14 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
+  // === ORBIT CONTROLS ===
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.maxPolarAngle = Math.PI / 2.1;
+  controls.minDistance = 3;
+  controls.maxDistance = 20;
+
   // === GROUND (stone) ===
   const groundGeo = new THREE.CircleGeometry(8, 64);
   const groundMat = new THREE.MeshStandardMaterial({
@@ -130,14 +138,20 @@
   ground.position.y = 0;
   scene.add(ground);
 
-  // === BONFIRE (glowing sphere + flickering light) ===
-  const bonfireGeo = new THREE.SphereGeometry(0.25, 32, 32);
-  const bonfireMat = new THREE.MeshBasicMaterial({
-    color: 0xd47d20
-  });
-  const bonfire = new THREE.Mesh(bonfireGeo, bonfireMat);
-  bonfire.position.set(0, 0.35, 0);
-  scene.add(bonfire);
+  // === BONFIRE (animated flame + flickering light) ===
+  // Bonfire base (stone)
+  const baseGeo = new THREE.CylinderGeometry(0.35, 0.5, 0.25, 24);
+  const baseMat = new THREE.MeshStandardMaterial({ color: 0x44413a, roughness: 0.8 });
+  const base = new THREE.Mesh(baseGeo, baseMat);
+  base.position.set(0, 0.13, 0);
+  scene.add(base);
+
+  // Bonfire flame (animated)
+  const flameGeo = new THREE.SphereGeometry(0.18, 32, 32);
+  const flameMat = new THREE.MeshBasicMaterial({ color: 0xd47d20 });
+  const flame = new THREE.Mesh(flameGeo, flameMat);
+  flame.position.set(0, 0.38, 0);
+  scene.add(flame);
 
   // Flickering point light
   const fireLight = new THREE.PointLight(0xd47d20, 2, 10, 2);
@@ -149,12 +163,11 @@
   scene.add(ambient);
 
   // === EMBERS PARTICLE SYSTEM ===
-  const emberCount = 120;
+  const emberCount = 160;
   const emberGeo = new THREE.BufferGeometry();
   const emberPositions = [];
   const emberColors = [];
   for (let i = 0; i < emberCount; i++) {
-    // Randomly position embers around the bonfire
     const angle = Math.random() * Math.PI * 2;
     const radius = 0.2 + Math.random() * 1.2;
     emberPositions.push(
@@ -162,7 +175,6 @@
       0.4 + Math.random() * 1.5,
       Math.sin(angle) * radius
     );
-    // Ember color (orange/yellow)
     emberColors.push(1, 0.5 + Math.random() * 0.5, 0);
   }
   emberGeo.setAttribute('position', new THREE.Float32BufferAttribute(emberPositions, 3));
@@ -178,20 +190,27 @@
   scene.add(embers);
 
   // === ANIMATION LOOP ===
+  let clock = new THREE.Clock();
   function animate() {
     requestAnimationFrame(animate);
 
     // Flicker the bonfire light
     fireLight.intensity = 1.7 + Math.random() * 0.7;
 
+    // Animate flame (scale and color shift)
+    const t = clock.getElapsedTime();
+    flame.scale.y = 1 + Math.sin(t * 8) * 0.2;
+    flame.material.color.setHSL(0.08 + Math.sin(t * 2) * 0.01, 1, 0.55 + Math.sin(t * 3) * 0.05);
+
     // Animate embers rising
     const positions = emberGeo.attributes.position.array;
     for (let i = 0; i < emberCount; i++) {
-      positions[i * 3 + 1] += 0.01 + Math.random() * 0.01; // y
+      positions[i * 3 + 1] += 0.012 + Math.random() * 0.012; // y
       if (positions[i * 3 + 1] > 2.5) positions[i * 3 + 1] = 0.4;
     }
     emberGeo.attributes.position.needsUpdate = true;
 
+    controls.update();
     renderer.render(scene, camera);
   }
   animate();
