@@ -1,115 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarnished Code Bearer | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Pirata+One&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-    <div id="particles-js"></div>
-    
-    <nav class="main-nav">
-        <div class="nav-brand">TARNISHED</div>
-        <div class="nav-links">
-            <a href="#about">About</a>
-            <a href="#projects">Projects</a>
-            <a href="#skills">Skills</a>
-            <a href="#contact">Contact</a>
-            <button id="theme-toggle" class="theme-toggle">
-                Switch Form
-            </button>
-        </div>
+  <meta charset="UTF-8">
+  <title>Bearer of Code</title>
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      margin: 0;
+      padding: 0 20px;
+    }
+    header {
+      background: #333a22;
+      color: #fff;
+      padding: 10px 0 10px 10px;
+      margin-bottom: 20px;
+    }
+    nav a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+    h1, h2, h3 {
+      color: #3a3a3a;
+    }
+    section {
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .footer {
+      margin-top: 40px;
+      color: #888;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>TARNISHED</strong>
+    <nav>
+      <a href="#">About</a>
+      <a href="#">Projects</a>
+      <a href="#">Skills</a>
+      <a href="#">Contact</a>
     </nav>
+    <button>Switch Form</button>
+  </header>
 
-    <section class="hero" id="hero">
-        <div class="hero-content">
-            <h1>Bearer of Code</h1>
-            <p class="subtitle">Seeking the Elden Code</p>
-            <div class="runes-circle"></div>
-        </div>
-    </section>
+  <section>
+    <h1>Bearer of Code</h1>
+    <p>Seeking the Elden Code</p>
+  </section>
 
-    <section class="about" id="about">
-        <div class="stats-container">
-            <h2>Character Stats</h2>
-            <div class="stat-row">
-                <span>STRENGTH</span>
-                <div class="stat-bar" data-value="95">
-                    <div class="stat-fill"></div>
-                </div>
-            </div>
-            <div class="stat-row">
-                <span>INTELLIGENCE</span>
-                <div class="stat-bar" data-value="88">
-                    <div class="stat-fill"></div>
-                </div>
-            </div>
-            <div class="lore-text">
-                A wandering developer, seeking to master the ancient arts of code crafting...
-            </div>
-        </div>
-    </section>
+  <section>
+    <h2>Character Stats</h2>
+    <strong>STRENGTH</strong><br>
+    <strong>INTELLIGENCE</strong>
+    <p>A wandering developer, seeking to master the ancient arts of code crafting...</p>
+  </section>
 
-    <section class="projects" id="projects">
-        <h2>Conquered Challenges</h2>
-        <div class="project-grid">
-            <div class="project-card">
-                <div class="project-icon"></div>
-                <h3>Project Name</h3>
-                <p>Description of the epic project...</p>
-                <div class="project-stats">
-                    <span>Tech Stack</span>
-                    <div class="tech-icons">
-                        <!-- Add tech stack icons -->
-                    </div>
-                </div>
-            </div>
-            <!-- Add more project cards -->
-        </div>
-    </section>
+  <section>
+    <h2>Conquered Challenges</h2>
+    <h3>Project Name</h3>
+    <p>Description of the epic project...</p>
+    <p><em>Tech Stack</em></p>
+  </section>
 
-    <section class="skills" id="skills">
-        <h2>Combat Arts</h2>
-        <div class="skills-grid">
-            <div class="skill-icon">
-                <img src="path-to-icon.png" alt="Skill">
-                <div class="skill-tooltip">JavaScript</div>
-            </div>
-            <!-- Add more skill icons -->
-        </div>
-    </section>
+  <section>
+    <h2>Combat Arts</h2>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="Skill" width="40">
+    JavaScript
+  </section>
 
-    <section class="contact" id="contact">
-        <div class="contact-form">
-            <h2>Send Message</h2>
-            <form id="message-form">
-                <div class="form-group">
-                    <input type="text" placeholder="Your Name" required>
-                </div>
-                <div class="form-group">
-                    <input type="email" placeholder="Your Email" required>
-                </div>
-                <div class="form-group">
-                    <textarea placeholder="Your Message" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <span class="bonfire-icon"></span>
-                    Light Bonfire
-                </button>
-            </form>
-        </div>
-    </section>
+  <section>
+    <h2>Send Message</h2>
+    <form>
+      <div class="form-group">
+        <input type="text" placeholder="Your Name">
+      </div>
+      <div class="form-group">
+        <input type="email" placeholder="Your Email">
+      </div>
+      <div class="form-group">
+        <textarea placeholder="Your Message"></textarea>
+      </div>
+      <button type="submit">Light Bonfire</button>
+    </form>
+  </section>
 
-    <footer class="site-footer">
-        <div class="footer-content">
-            <p>Forged in the Lands Between</p>
-            <div class="social-links">
-                <!-- Add social media links -->
-            </div>
-        </div>
-    </footer>
+  <div class="footer">
+    Forged in the Lands Between
+  </div>
 </body>
 </html>
-
-
