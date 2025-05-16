@@ -1,227 +1,439 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <title>[Your Name] - Bearer of the Coding Curse</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts for Cinzel and EB Garamond -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=EB+Garamond&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio of the Ashen One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for a more thematic feel (optional, browser support varies) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6a6a6a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0f0f; /* Even darker background */
+            color: #e0e0e0; /* Off-white text for readability */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cinzel', serif;
+            color: #f5f5f5; /* Brighter white for headings */
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Bonfire Animation */
+        .bonfire-svg {
+            width: 100px;
+            height: 150px;
+            margin: 0 auto;
+        }
+        .flame {
+            animation: flicker 1.5s infinite alternate;
+            transform-origin: bottom;
+        }
+        .spark {
+            animation: rise 2s infinite;
+            opacity: 0;
+            transform-origin: bottom;
+        }
+        @keyframes flicker {
+            0%, 100% { transform: scaleY(1) skewX(0deg); opacity: 1; }
+            25% { transform: scaleY(0.95) skewX(2deg); opacity: 0.8; }
+            50% { transform: scaleY(1.05) skewX(-2deg); opacity: 1; }
+            75% { transform: scaleY(0.9) skewX(1deg); opacity: 0.7; }
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(0.5); opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-80px) scale(0); opacity: 0; }
+        }
+        .spark1 { animation-delay: 0s; }
+        .spark2 { animation-delay: 0.3s; }
+        .spark3 { animation-delay: 0.6s; }
+        .spark4 { animation-delay: 0.9s; }
+
+        /* Section fade-in animation */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Navigation link hover effect */
+        nav a:hover {
+            color: #e53e3e; /* Red accent on hover */
+            text-shadow: 0 0 8px #e53e3e;
+        }
+        
+        /* Card hover effect */
+        .project-card:hover, .skill-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 15px rgba(229, 62, 62, 0.5); /* Dark shadow + red glow */
+        }
+
+        /* Button styling */
+        .btn-primary {
+            background-color: #7f1d1d; /* Darker red */
+            border: 1px solid #991b1b; /* Slightly lighter red border */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #991b1b; /* Lighter red on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(229, 62, 62, 0.5);
+        }
+
+        /* Glassmorphism effect for cards (subtle) */
+        .glass-card {
+            background: rgba(26, 26, 26, 0.6); /* Semi-transparent dark background */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+            border: 1px solid rgba(51, 51, 51, 0.5); /* Subtle border */
+        }
+        
+        /* Header scroll effect */
+        #main-header.scrolled {
+            background-color: rgba(15, 15, 15, 0.9); /* Darker, more opaque on scroll */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+    </style>
 </head>
-<body>
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="fog"></div>
-    <div class="castle-bg"></div>
-    <div class="hero-content">
-      <h1 class="boss-intro">[Your Name]</h1>
-      <p class="tagline">Bearer of the Coding Curse</p>
-      <div class="cta-buttons">
-        <a href="#projects" class="btn ember">Traverse My Work</a>
-        <a href="#contact" class="btn gold">Kindle Contact Flame</a>
-      </div>
-      <div class="bonfire-flicker"></div>
-    </div>
-  </section>
+<body class="bg-[#0f0f0f] text-gray-300 font-inter selection:bg-red-700 selection:text-white">
 
-  <!-- About Me / Character Stats -->
-  <section class="about parchment-bg">
-    <h2>Character Stats</h2>
-    <ul class="stats-list">
-      <li><span class="stat-label">Class:</span> Software Developer</li>
-      <li><span class="stat-label">Covenant:</span> Open Source</li>
-      <li><span class="stat-label">Weapon:</span> TypeScript + Rust</li>
-      <li><span class="stat-label">Level:</span> 21 (Years)</li>
-      <li><span class="stat-label">Location:</span> The Lands of MIT Manipal</li>
-    </ul>
-    <p class="about-lore">A wandering developer, seeking to master the ancient arts of code crafting...</p>
-  </section>
+    <header id="main-header" class="bg-black/70 backdrop-blur-md fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-cinzel font-bold text-red-600 hover:text-red-400 transition-colors">
+                [Your Name / Title]
+            </a>
+            <nav class="space-x-4 md:space-x-6">
+                <a href="#about" class="font-cinzel text-gray-300 hover:text-red-500 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">The Unkindled</a>
+                <a href="#skills" class="font-cinzel text-gray-300 hover:text-red-500 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Weapon Arts</a>
+                <a href="#projects" class="font-cinzel text-gray-300 hover:text-red-500 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Legends</a>
+                <a href="#experience" class="font-cinzel text-gray-300 hover:text-red-500 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Chronicles</a>
+                <a href="#contact" class="font-cinzel text-gray-300 hover:text-red-500 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Summon</a>
+            </nav>
+        </div>
+    </header>
 
-  <!-- Projects -->
-  <section class="projects" id="projects">
-    <h2>Conquered Challenges</h2>
-    <div class="project-filters">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">Tools</button>
-      <button class="filter-btn">Games</button>
-      <button class="filter-btn">Web Apps</button>
-      <button class="filter-btn">Mods</button>
-    </div>
-    <div class="project-grid">
-      <!-- Example Project Card -->
-      <div class="project-card">
-        <h3 class="boss-title">Project Name</h3>
-        <img src="assets/relic.png" alt="Project Relic" class="project-icon">
-        <p class="item-lore">Forged in the fires of sleepless nights, this tool brings light to the darkest dungeons of code.</p>
-        <a href="#" class="inspect-btn">Inspect</a>
-      </div>
-      <!-- Add more project cards here -->
-    </div>
-  </section>
+    <section id="hero" class="min-h-screen flex flex-col items-center justify-center text-center bg-cover bg-center bg-no-repeat" style="background-image: url('https://placehold.co/1920x1080/0a0a0a/1a1a1a?text=Dark+Souls+Landscape&font=cinzel');">
+        <div class="absolute inset-0 bg-black/60"></div> <div class="relative z-10 p-6">
+            <svg class="bonfire-svg mb-8" viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M48 130 L48 70 Q48 65 45 62 L40 58 L40 50 L60 50 L60 58 L55 62 Q52 65 52 70 L52 130 Z" fill="#7f8c8d"/>
+                <path d="M49 130 L49 70 Q49 68 47 65 L44 61 L44 52 L56 52 L56 61 L53 65 Q51 68 51 70 L51 130 Z" fill="#bdc3c7"/>
+                <rect x="35" y="48" width="30" height="5" rx="2" fill="#7f8c8d"/>
+                <rect x="37" y="47" width="26" height="3" rx="1" fill="#bdc3c7"/>
+                <path class="flame" d="M50 70 Q40 50 50 30 Q60 50 50 70Z" fill="#e67e22"/>
+                <path class="flame" style="animation-delay: -0.2s;" d="M50 75 Q45 55 50 35 Q55 55 50 75Z" fill="#f39c12"/>
+                <path class="flame" style="animation-delay: -0.4s;" d="M45 70 Q40 55 45 40 Q50 55 45 70Z" fill="#e74c3c"/>
+                <path class="flame" style="animation-delay: -0.6s;" d="M55 70 Q50 55 55 40 Q60 55 55 70Z" fill="#e74c3c"/>
+                <circle class="spark spark1" cx="50" cy="70" r="3" fill="#f1c40f"/>
+                <circle class="spark spark2" cx="45" cy="65" r="2" fill="#f39c12"/>
+                <circle class="spark spark3" cx="55" cy="68" r="2.5" fill="#e67e22"/>
+                <circle class="spark spark4" cx="48" cy="60" r="2" fill="#f1c40f"/>
+            </svg>
 
-  <!-- Skills -->
-  <section class="skills">
-    <h2>Combat Arts</h2>
-    <div class="skills-grid">
-      <div class="skill-rune" tabindex="0">
-        <img src="assets/js-rune.png" alt="JavaScript Rune">
-        <span class="skill-desc">Dexterity: Expert in JavaScript</span>
-      </div>
-      <!-- Add more skills here -->
-    </div>
-  </section>
+            <h1 class="text-5xl md:text-7xl font-cinzel font-bold mb-4 text-red-600 animate-pulse">PORTFOLIO LIT</h1>
+            <p class="text-xl md:text-2xl font-inter text-gray-300 mb-8 max-w-2xl mx-auto">
+                "Yes, indeed. It is called a portfolio. A waypoint for the lost. Here, you will find the echoes of creations past."
+            </p>
+            <a href="#about" class="btn-primary font-cinzel text-lg text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-red-500 transition duration-300">
+                Begin Thy Journey
+            </a>
+        </div>
+    </section>
 
-  <!-- Testimonials / Lore -->
-  <section class="testimonials parchment-bg">
-    <h2>Lore & Testimonials</h2>
-    <div class="lore-box">
-      <blockquote>
-        "A true ashen one, their code burns with the light of a thousand bonfires."
-        <span class="npc-name">- Prof. Gwyn, Lord of Cinder</span>
-      </blockquote>
-    </div>
-    <!-- Add more lore/testimonials here -->
-  </section>
+    <section id="about" class="py-20 md:py-32 bg-[#111111]">
+        <div class="container mx-auto px-6 fade-in-section">
+            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-red-500">The Unkindled</h2>
+            <p class="text-lg md:text-xl text-center text-gray-400 mb-12 max-w-3xl mx-auto font-inter">
+                "Bearer of the curse... I am [Your Name], an artisan of the digital realm, forever seeking the flame of innovation. My journey is one of relentless creation and the pursuit of mastery."
+            </p>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
+                <div class="md:w-1/3">
+                    <img src="https://placehold.co/400x400/1a1a1a/333333?text=Thy+Visage&font=cinzel" alt="Your Name" class="rounded-lg shadow-2xl border-2 border-gray-700 w-full max-w-sm mx-auto hover:border-red-600 transition-all duration-300">
+                     </div>
+                <div class="md:w-2/3 text-left space-y-6 font-inter text-gray-300">
+                    <p>"Once, the Lords of Cinder linked the First Flame, and architects like us weave the digital tapestry. We are the Unkindled, beings of ash, forever striving."</p>
+                    <p>My path has led me through desolate valleys of debugging and over triumphant peaks of deployment. With every line of code, every pixel placed, I seek to forge experiences that resonate, much like the tales of old.</p>
+                    <p>Specializing in [Your Specialization 1, e.g., Front-end Development] and [Your Specialization 2, e.g., UI/UX Design], I wield technologies like [Tech 1], [Tech 2], and [Tech 3] as my trusted greatswords and sorceries.</p>
+                    <p class="italic text-gray-500">"Fear not the dark, my friend. And let the feast begin." - Siegward of Catarina (adapted)</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Contact -->
-  <section class="contact" id="contact">
-    <h2>Kindle the Flame of Collaboration</h2>
-    <form class="contact-form">
-      <input type="text" placeholder="Your Name" required>
-      <input type="email" placeholder="Your Email" required>
-      <textarea placeholder="Your Message" required></textarea>
-      <button type="submit" class="ember">Offer Soul Message</button>
-    </form>
-    <div class="bonfire-icon" tabindex="0" aria-label="Kindle Bonfire"></div>
-  </section>
+    <section id="skills" class="py-20 md:py-32 bg-[#0f0f0f]">
+        <div class="container mx-auto px-6 fade-in-section">
+            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-red-500">Weapon & Sorcery Arts</h2>
+            <p class="text-lg md:text-xl text-center text-gray-400 mb-16 max-w-3xl mx-auto font-inter">
+                "A hunter is a hunter, even in a dream... Or in this case, a developer is a developer, even with a keyboard. These are the tools of my craft."
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-red-700/50 transition-all duration-300 border border-gray-800">
+                    <div class="text-4xl text-red-500 mb-4">🛡️</div> <h3 class="text-2xl font-cinzel mb-2 text-gray-100">Front-End Smithing</h3>
+                    <p class="text-gray-400 font-inter text-sm">Wielding HTML, CSS, and JavaScript with the finesse of a master swordsmith. Crafting responsive and engaging user interfaces.</p>
+                </div>
+                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-red-700/50 transition-all duration-300 border border-gray-800">
+                    <div class="text-4xl text-red-500 mb-4">🔥</div> <h3 class="text-2xl font-cinzel mb-2 text-gray-100">React Pyromancy</h3>
+                    <p class="text-gray-400 font-inter text-sm">Conjuring dynamic and powerful web applications with the arcane energies of React and its ecosystem.</p>
+                </div>
+                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-red-700/50 transition-all duration-300 border border-gray-800">
+                    <div class="text-4xl text-red-500 mb-4">🔮</div> <h3 class="text-2xl font-cinzel mb-2 text-gray-100">Node.js Sorcery</h3>
+                    <p class="text-gray-400 font-inter text-sm">Channeling the dark arts of back-end development with Node.js, Express, and database incantations.</p>
+                </div>
+                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-red-700/50 transition-all duration-300 border border-gray-800">
+                    <div class="text-4xl text-red-500 mb-4">📜</div> <h3 class="text-2xl font-cinzel mb-2 text-gray-100">UI/UX Lore</h3>
+                    <p class="text-gray-400 font-inter text-sm">Deciphering ancient scrolls of user experience and interface design to create intuitive and memorable journeys.</p>
+                </div>
+                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-red-700/50 transition-all duration-300 border border-gray-800">
+                    <div class="text-4xl text-red-500 mb-4">🛠️</div>
+                    <h3 class="text-2xl font-cinzel mb-2 text-gray-100">Version Control (Git)</h3>
+                    <p class="text-gray-400 font-inter text-sm">Mastering the timelines and branching paths of project development with Git and GitHub.</p>
+                </div>
+                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-red-700/50 transition-all duration-300 border border-gray-800">
+                    <div class="text-4xl text-red-500 mb-4">☁️</div>
+                    <h3 class="text-2xl font-cinzel mb-2 text-gray-100">Cloud Deployment</h3>
+                    <p class="text-gray-400 font-inter text-sm">Ascending projects to the cloud realms (AWS, Azure, GCP) for global reach and resilience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <footer>
-    <p>Forged in the Lands Between &copy; [Your Name] 2024</p>
-  </footer>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.min.js"></script>
-<script>
-  // === SCENE SETUP ===
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2("#0f0f0f", 0.13);
+    <section id="projects" class="py-20 md:py-32 bg-[#111111]">
+        <div class="container mx-auto px-6 fade-in-section">
+            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-red-500">Legends of Past Battles</h2>
+            <p class="text-lg md:text-xl text-center text-gray-400 mb-16 max-w-3xl mx-auto font-inter">
+                "The Lords of Cinder, powerful beings... these projects are my own felled giants, each a testament to challenges overcome and skills honed."
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="project-card glass-card rounded-xl overflow-hidden shadow-xl hover:shadow-red-700/60 transition-all duration-300 border border-gray-800 flex flex-col">
+                    <img src="https://placehold.co/600x400/1f1f1f/3a3a3a?text=Project+Alpha&font=cinzel" alt="Project Alpha" class="w-full h-48 object-cover">
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-2xl font-cinzel mb-3 text-gray-100">Project: The First Flame</h3>
+                        <p class="text-gray-400 font-inter text-sm mb-4">A full-stack e-commerce platform forged in the fires of React and Node.js. Features user authentication, product listings, and a Stripe-powered checkout. This was a true test of endurance.</p>
+                        <p class="text-xs text-gray-500 mb-4">Tech Stack: React, Node.js, MongoDB, TailwindCSS, Stripe API</p>
+                    </div>
+                    <div class="p-6 bg-black/30">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary font-cinzel text-sm text-white py-2 px-4 rounded-md inline-block mr-2">View Soul</a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-red-500 transition-colors text-sm">Examine Code (GitHub)</a>
+                    </div>
+                </div>
+                <div class="project-card glass-card rounded-xl overflow-hidden shadow-xl hover:shadow-red-700/60 transition-all duration-300 border border-gray-800 flex flex-col">
+                    <img src="https://placehold.co/600x400/1f1f1f/3a3a3a?text=Project+Beta&font=cinzel" alt="Project Beta" class="w-full h-48 object-cover">
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-2xl font-cinzel mb-3 text-gray-100">Archive of the Undead</h3>
+                        <p class="text-gray-400 font-inter text-sm mb-4">A documentation site built with VuePress and Markdown, chronicling the lore of a complex API. Designed for clarity and ease of navigation through treacherous information.</p>
+                         <p class="text-xs text-gray-500 mb-4">Tech Stack: VuePress, Markdown, Netlify</p>
+                    </div>
+                     <div class="p-6 bg-black/30">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary font-cinzel text-sm text-white py-2 px-4 rounded-md inline-block mr-2">View Soul</a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-red-500 transition-colors text-sm">Examine Code (GitHub)</a>
+                    </div>
+                </div>
+                <div class="project-card glass-card rounded-xl overflow-hidden shadow-xl hover:shadow-red-700/60 transition-all duration-300 border border-gray-800 flex flex-col">
+                    <img src="https://placehold.co/600x400/1f1f1f/3a3a3a?text=Project+Gamma&font=cinzel" alt="Project Gamma" class="w-full h-48 object-cover">
+                     <div class="p-6 flex-grow">
+                        <h3 class="text-2xl font-cinzel mb-3 text-gray-100">Abyssal Dashboard</h3>
+                        <p class="text-gray-400 font-inter text-sm mb-4">An analytics dashboard visualizing user data with Chart.js and Python/Flask. Unveiling insights from the deepest data depths, presented with a grimly beautiful interface.</p>
+                        <p class="text-xs text-gray-500 mb-4">Tech Stack: Python, Flask, Chart.js, PostgreSQL</p>
+                    </div>
+                    <div class="p-6 bg-black/30">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary font-cinzel text-sm text-white py-2 px-4 rounded-md inline-block mr-2">View Soul</a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-red-500 transition-colors text-sm">Examine Code (GitHub)</a>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </section>
 
-  const camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    100
-  );
-  camera.position.set(0, 2, 7);
+    <section id="experience" class="py-20 md:py-32 bg-[#0f0f0f]">
+        <div class="container mx-auto px-6 fade-in-section">
+            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-red-500">Chronicles of the Journey</h2>
+            <p class="text-lg md:text-xl text-center text-gray-400 mb-16 max-w-3xl mx-auto font-inter">
+                "The flow of time itself is convoluted; with heroes centuries old phasing in and out. My own path is marked by these milestones."
+            </p>
+            <div class="relative border-l-2 border-gray-700 ml-6 md:ml-0 md:mx-auto max-w-3xl">
+                <div class="mb-12 md:flex md:items-start">
+                    <div class="md:w-1/4 md:pr-8 md:text-right">
+                        <p class="text-red-400 font-cinzel text-lg">Year - Year</p>
+                        <p class="text-gray-500 text-sm">Company/Realm Name</p>
+                    </div>
+                    <div class="absolute -left-[11px] top-1.5 w-5 h-5 bg-red-600 rounded-full border-2 border-gray-800 md:static md:hidden"></div>
+                    <div class="hidden md:block relative md:w-auto md:mx-4">
+                         <div class="absolute left-1/2 transform -translate-x-1/2 top-1.5 w-5 h-5 bg-red-600 rounded-full border-2 border-gray-800"></div>
+                    </div>
+                    <div class="ml-10 md:ml-0 md:w-3/4 pl-0 md:pl-8 glass-card p-6 rounded-lg border border-gray-700">
+                        <h3 class="text-xl font-cinzel mb-2 text-gray-100">Role / Title (e.g., Knight of Astora)</h3>
+                        <p class="text-gray-400 font-inter text-sm">
+                            "In this forsaken place, I [briefly describe responsibilities and achievements]. Key victories include [achievement 1] and [achievement 2], using [key skills/tools]."
+                        </p>
+                    </div>
+                </div>
+                 <div class="mb-12 md:flex md:items-start md:flex-row-reverse">
+                    <div class="md:w-1/4 md:pl-8 md:text-left">
+                        <p class="text-red-400 font-cinzel text-lg">Year - Year</p>
+                        <p class="text-gray-500 text-sm">Previous Company/Realm</p>
+                    </div>
+                     <div class="absolute -left-[11px] top-1.5 w-5 h-5 bg-red-600 rounded-full border-2 border-gray-800 md:static md:hidden"></div>
+                     <div class="hidden md:block relative md:w-auto md:mx-4">
+                         <div class="absolute left-1/2 transform -translate-x-1/2 top-1.5 w-5 h-5 bg-red-600 rounded-full border-2 border-gray-800"></div>
+                    </div>
+                    <div class="ml-10 md:ml-0 md:w-3/4 pr-0 md:pr-8 glass-card p-6 rounded-lg border border-gray-700">
+                        <h3 class="text-xl font-cinzel mb-2 text-gray-100">Previous Role (e.g., Sellsword)</h3>
+                        <p class="text-gray-400 font-inter text-sm">
+                            "My blade was for hire. I [describe responsibilities]. Notable contributions were [achievement A] and overcoming [challenge B]."
+                        </p>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <p class="text-gray-500 italic">"And so, the Age of Fire was rekindled... or perhaps, a new age of code began."</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setClearColor(0x0f0f0f, 1);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+    <section id="contact" class="py-20 md:py-32 bg-[#111111]">
+        <div class="container mx-auto px-6 fade-in-section">
+            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-red-500">Carve Thy Message</h2>
+            <p class="text-lg md:text-xl text-center text-gray-400 mb-12 max-w-3xl mx-auto font-inter">
+                "If you require aid, or wish to parley, leave your mark. I shall be waiting, where the digital bonfires burn."
+            </p>
+            <form action="#" method="POST" class="max-w-xl mx-auto space-y-6 glass-card p-8 rounded-xl border border-gray-700">
+                <div>
+                    <label for="name" class="block text-sm font-cinzel text-gray-300 mb-1">Thy Name</label>
+                    <input type="text" name="name" id="name" required class="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="Solaire of Astora">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-cinzel text-gray-300 mb-1">Thy Carrier Pigeon (Email)</label>
+                    <input type="email" name="email" id="email" required class="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="sunlight@example.com">
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-cinzel text-gray-300 mb-1">Thy Missive</label>
+                    <textarea name="message" id="message" rows="5" required class="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="Praise the Sun! Let's collaborate..."></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="w-full btn-primary font-cinzel text-lg text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-red-500 transition duration-300">
+                        Dispatch Message
+                    </button>
+                </div>
+                 <p id="form-message" class="text-center text-sm font-inter mt-4"></p>
+            </form>
+        </div>
+    </section>
 
-  // === ORBIT CONTROLS ===
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.maxPolarAngle = Math.PI / 2.1;
-  controls.minDistance = 3;
-  controls.maxDistance = 20;
+    <footer class="py-12 bg-black text-center">
+        <div class="container mx-auto px-6">
+            <p class="font-cinzel text-gray-500 text-sm">
+                "The night is long, and the path perilous. But the flame guides us."
+            </p>
+            <p class="text-gray-600 text-xs mt-2 font-inter">
+                &copy; [Current Year] [Your Name]. Forged in the fires of code. All rights reserved, more or less.
+            </p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="text-gray-500 hover:text-red-500 transition-colors">GitHub</a>
+                <a href="#" class="text-gray-500 hover:text-red-500 transition-colors">LinkedIn</a>
+                <a href="#" class="text-gray-500 hover:text-red-500 transition-colors">Twitter/X (if you dare)</a>
+            </div>
+        </div>
+    </footer>
 
-  // === GROUND (stone) ===
-  const groundGeo = new THREE.CircleGeometry(8, 64);
-  const groundMat = new THREE.MeshStandardMaterial({
-    color: 0x222222,
-    roughness: 0.9,
-    metalness: 0.2
-  });
-  const ground = new THREE.Mesh(groundGeo, groundMat);
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = 0;
-  scene.add(ground);
+    <script>
+        // JavaScript for smooth scrolling and animations
 
-  // === BONFIRE (animated flame + flickering light) ===
-  // Bonfire base (stone)
-  const baseGeo = new THREE.CylinderGeometry(0.35, 0.5, 0.25, 24);
-  const baseMat = new THREE.MeshStandardMaterial({ color: 0x44413a, roughness: 0.8 });
-  const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.set(0, 0.13, 0);
-  scene.add(base);
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
 
-  // Bonfire flame (animated)
-  const flameGeo = new THREE.SphereGeometry(0.18, 32, 32);
-  const flameMat = new THREE.MeshBasicMaterial({ color: 0xd47d20 });
-  const flame = new THREE.Mesh(flameGeo, flameMat);
-  flame.position.set(0, 0.38, 0);
-  scene.add(flame);
+        // Header scroll effect
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
 
-  // Flickering point light
-  const fireLight = new THREE.PointLight(0xd47d20, 2, 10, 2);
-  fireLight.position.set(0, 0.7, 0);
-  scene.add(fireLight);
+        // Intersection Observer for fade-in sections
+        const sections = document.querySelectorAll('.fade-in-section');
+        const observerOptions = {
+            root: null, // relative to document viewport
+            rootMargin: '0px',
+            threshold: 0.1 // 10% of item is visible
+        };
 
-  // === AMBIENT LIGHT ===
-  const ambient = new THREE.AmbientLight(0x222233, 0.7);
-  scene.add(ambient);
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Optional: stop observing once visible
+                }
+            });
+        }, observerOptions);
 
-  // === EMBERS PARTICLE SYSTEM ===
-  const emberCount = 160;
-  const emberGeo = new THREE.BufferGeometry();
-  const emberPositions = [];
-  const emberColors = [];
-  for (let i = 0; i < emberCount; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = 0.2 + Math.random() * 1.2;
-    emberPositions.push(
-      Math.cos(angle) * radius,
-      0.4 + Math.random() * 1.5,
-      Math.sin(angle) * radius
-    );
-    emberColors.push(1, 0.5 + Math.random() * 0.5, 0);
-  }
-  emberGeo.setAttribute('position', new THREE.Float32BufferAttribute(emberPositions, 3));
-  emberGeo.setAttribute('color', new THREE.Float32BufferAttribute(emberColors, 3));
-  const emberMat = new THREE.PointsMaterial({
-    size: 0.07,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending
-  });
-  const embers = new THREE.Points(emberGeo, emberMat);
-  scene.add(embers);
+        sections.forEach(section => {
+            observer.observe(section);
+        });
 
-  // === ANIMATION LOOP ===
-  let clock = new THREE.Clock();
-  function animate() {
-    requestAnimationFrame(animate);
+        // Simple form submission message (no actual submission)
+        const contactForm = document.querySelector('#contact form');
+        const formMessage = document.getElementById('form-message');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                formMessage.textContent = "Thy message has been dispatched into the ethereal mists... (This is a demo, it wasn't actually sent!)";
+                formMessage.className = 'text-center text-sm font-inter mt-4 text-green-400';
+                contactForm.reset();
+                setTimeout(() => {
+                    formMessage.textContent = '';
+                }, 5000);
+            });
+        }
 
-    // Flicker the bonfire light
-    fireLight.intensity = 1.7 + Math.random() * 0.7;
+        // Image error handling for project cards (example)
+        // This is a basic example. For robust solution, you might iterate through all relevant images.
+        const projectImages = document.querySelectorAll('.project-card img');
+        projectImages.forEach(img => {
+            img.onerror = function() {
+                // Replace with a placeholder or hide the image
+                this.src = `https://placehold.co/${this.width || 600}x${this.height || 400}/1a1a1a/333333?text=Image+Load+Error&font=cinzel`;
+                this.alt = 'Image failed to load';
+                // Or you could add a class to hide it or display a message
+                // console.error("Failed to load image: ", this.src);
+            };
+        });
 
-    // Animate flame (scale and color shift)
-    const t = clock.getElapsedTime();
-    flame.scale.y = 1 + Math.sin(t * 8) * 0.2;
-    flame.material.color.setHSL(0.08 + Math.sin(t * 2) * 0.01, 1, 0.55 + Math.sin(t * 3) * 0.05);
-
-    // Animate embers rising
-    const positions = emberGeo.attributes.position.array;
-    for (let i = 0; i < emberCount; i++) {
-      positions[i * 3 + 1] += 0.012 + Math.random() * 0.012; // y
-      if (positions[i * 3 + 1] > 2.5) positions[i * 3 + 1] = 0.4;
-    }
-    emberGeo.attributes.position.needsUpdate = true;
-
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  // === RESPONSIVE ===
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-</script>
-  
+    </script>
 </body>
 </html>
