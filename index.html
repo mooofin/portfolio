@@ -1,499 +1,70 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio of the Lunar Princess</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Custom scrollbar for a more thematic feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a; /* Dark blue-slate */
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #38bdf8; /* Light blue */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #7dd3fc; /* Lighter blue */
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #020617; /* Very dark navy blue */
-            color: #cbd5e1; /* Light blue-gray text */
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Cinzel', serif;
-            color: #e0f2fe; /* Very light blue for headings */
-        }
-        .font-cinzel {
-            font-family: 'Cinzel', serif;
-        }
-        .font-inter {
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Ranni's Dark Moon Sigil Animation / Blue Fire Effect */
-        .dark-moon-svg {
-            width: 150px; /* Increased size */
-            height: 150px;
-            margin: 0 auto;
-            filter: drop-shadow(0 0 10px #38bdf8) drop-shadow(0 0 20px #0ea5e9); /* Blue glow */
-        }
-        .moon-outer-glow {
-            animation: pulse-glow 3s infinite ease-in-out;
-            transform-origin: center;
-        }
-        .moon-inner {
-             animation: subtle-rotate 20s infinite linear;
-             transform-origin: center;
-        }
-        .blue-flame-particle {
-            position: absolute;
-            background-color: #38bdf8; /* Light blue */
-            border-radius: 50%;
-            animation: rise-blue-flame 3s infinite ease-out;
-            opacity: 0;
-            box-shadow: 0 0 5px #38bdf8, 0 0 10px #0ea5e9;
-        }
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
-        @keyframes subtle-rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes rise-blue-flame {
-            0% { transform: translateY(0) scale(0.5); opacity: 0.9; }
-            70% { opacity: 0.5; }
-            100% { transform: translateY(-100px) scale(0.1); opacity: 0; }
-        }
-
-        /* Section fade-in animation */
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease-out, transform 1s ease-out;
-        }
-        .fade-in-section.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Navigation link hover effect */
-        nav a:hover {
-            color: #7dd3fc; /* Lighter blue accent on hover */
-            text-shadow: 0 0 8px #38bdf8;
-        }
-        
-        /* Card hover effect */
-        .project-card:hover, .skill-card:hover {
-            transform: translateY(-6px) scale(1.03);
-            box-shadow: 0 12px 25px rgba(2, 6, 23, 0.5), 0 0 20px rgba(56, 189, 248, 0.6); /* Dark shadow + blue glow */
-        }
-
-        /* Button styling */
-        .btn-primary {
-            background-color: #075985; /* Darker cyan-blue */
-            border: 1px solid #0369a1; /* Slightly lighter cyan-blue border */
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            color: #e0f2fe;
-        }
-        .btn-primary:hover {
-            background-color: #0369a1; /* Lighter cyan-blue on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.5);
-        }
-
-        /* Glassmorphism effect for cards (subtle blue tint) */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.6); /* Semi-transparent dark slate-blue background */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px); /* For Safari */
-            border: 1px solid rgba(56, 189, 248, 0.3); /* Subtle blue border */
-        }
-        
-        /* Header scroll effect */
-        #main-header.scrolled {
-            background-color: rgba(2, 6, 23, 0.9); /* Darker, more opaque navy on scroll */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        /* Hero background styling */
-        #hero {
-            position: relative; /* Needed for particle container */
-        }
-        .particles-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none; /* Allow clicks to pass through */
-        }
-    </style>
+    <title>Your Name - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-950 text-slate-300 font-inter selection:bg-sky-600 selection:text-white">
-
-    <header id="main-header" class="bg-slate-900/70 backdrop-blur-md fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#hero" class="text-2xl font-cinzel font-bold text-sky-400 hover:text-sky-300 transition-colors">
-                [Your Name / Empyrean Developer]
-            </a>
-            <nav class="space-x-4 md:space-x-6">
-                <a href="#about" class="font-cinzel text-slate-300 hover:text-sky-400 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">The Tarnished</a>
-                <a href="#skills" class="font-cinzel text-slate-300 hover:text-sky-400 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Lunar Arts</a>
-                <a href="#projects" class="font-cinzel text-slate-300 hover:text-sky-400 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Star-Scourged Tales</a>
-                <a href="#experience" class="font-cinzel text-slate-300 hover:text-sky-400 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Path of the Dark Moon</a>
-                <a href="#contact" class="font-cinzel text-slate-300 hover:text-sky-400 transition-colors duration-300 px-2 py-1 rounded-md text-sm md:text-base">Seek Audience</a>
-            </nav>
+<body>
+    <header>
+        <div class="header-content">
+            <img align="right" height="120" src="https://64.media.tumblr.com/70263b0ea735cdee90e93fa61e3564b1/tumblr_inline_n7kx1oUOmS1sfquyp.gif" />
+            <h1>Lana Enthusiast & Aspiring Rust Dev</h1>
         </div>
     </header>
 
-    <section id="hero" class="min-h-screen flex flex-col items-center justify-center text-center bg-cover bg-center bg-no-repeat" style="background-image: url('https://placehold.co/1920x1080/020617/0f172a?text=Nocturnal+Sky+of+Liurnia&font=cinzel');">
-        <div class="absolute inset-0 bg-black/70"></div> <div class="particles-container" id="particles-js-hero">
-            </div>
-        <div class="relative z-10 p-6">
-            <svg class="dark-moon-svg mb-8" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle class="moon-outer-glow" cx="50" cy="50" r="45" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.5"/>
-                <circle class="moon-outer-glow" style="animation-delay: -1.5s;" cx="50" cy="50" r="40" fill="rgba(56, 189, 248, 0.1)" stroke="#7dd3fc" stroke-width="1.5"/>
-                <g class="moon-inner">
-                    <path d="M50 10 A40 40 0 0 1 50 90 A20 20 0 0 1 50 10 Z" fill="#0ea5e9"/>
-                    <path d="M50 15 A35 35 0 0 1 50 85 A25 25 0 0 1 50 15 Z" fill="#38bdf8" opacity="0.7"/>
-                    <circle cx="50" cy="50" r="10" fill="#e0f2fe"/>
-                </g>
-            </svg>
-
-            <h1 class="text-5xl md:text-7xl font-cinzel font-bold mb-4 text-sky-400" style="text-shadow: 0 0 10px #0ea5e9;">AGE OF STARS PORTFOLIO</h1>
-            <p class="text-xl md:text-2xl font-inter text-slate-300 mb-8 max-w-2xl mx-auto">
-                "Upon the complete rejection of the Golden Order... Heh. My order is not of gold, but of the stars, and the chill night. And this is my humble archive."
-            </p>
-            <a href="#about" class="btn-primary font-cinzel text-lg font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-sky-600 transition duration-300">
-                Embark on the Path
-            </a>
-        </div>
-    </section>
-
-    <section id="about" class="py-20 md:py-32 bg-[#060e21]"> {/* Slightly lighter dark blue */}
-        <div class="container mx-auto px-6 fade-in-section">
-            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-sky-400">The Tarnished</h2>
-            <p class="text-lg md:text-xl text-center text-slate-400 mb-12 max-w-3xl mx-auto font-inter">
-                "I am the witch Ranni. I stole Death long ago, and search now for the dark path... As for you, I am [Your Name], a crafter of digital realms, guided by the wisdom of the stars."
-            </p>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
-                <div class="md:w-1/3">
-                    <img src="https://placehold.co/400x400/0f172a/38bdf8?text=Thy+Form+in+Starlight&font=cinzel" alt="Your Name" class="rounded-lg shadow-2xl border-2 border-slate-700 w-full max-w-sm mx-auto hover:border-sky-500 transition-all duration-300">
-                     </div>
-                <div class="md:w-2/3 text-left space-y-6 font-inter text-slate-300">
-                    <p>"The Two Fingers have perished. The Golden Order, broken. My fate is my own, as is the design of the worlds I build. I am a Tarnished, one who walks the path of creation."</p>
-                    <p>My journey has led me through starlit nights of contemplation and across treacherous chasms of complex code. With each algorithm woven, each interface designed, I strive to create experiences that echo the vastness of the cosmos.</p>
-                    <p>My expertise lies in [Your Specialization 1, e.g., Full-Stack Sorcery] and [Your Specialization 2, e.g., Celestial UI Design], wielding tools like [Tech 1], [Tech 2], and [Tech 3] as my trusted Glintstone staves and moon-forged blades.</p>
-                    <p class="italic text-slate-500">"The stars hold the answers. And sometimes, so does the documentation." - (Adapted)</p>
+    <main>
+        <section id="projects">
+            <h2>My Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <img src="https://github.com/mooofin/JuliaScope/blob/main/assets/icon.png?raw=true" alt="JuliaScope">
+                    <h3><a href="https://github.com/mooofin/JuliaScope">JuliaScope</a></h3>
+                    <p>Multithreaded subdomain enumerator written in Julia</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://github.com/mooofin/Clair-Obscur/blob/main/assets/image.jpg?raw=true" alt="Clair-Obscur">
+                    <h3><a href="https://github.com/mooofin/Clair-Obscur">Clair-Obscur</a></h3>
+                    <p>Featuring Lune (in development)</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://github.com/mooofin/DS_AnorLondoLightFix/blob/main/assests/ds.jpg?raw=true" alt="DS_AnorLondoLightFix">
+                    <h3><a href="https://github.com/mooofin/DS_AnorLondoLightFix">DS_AnorLondoLightFix</a></h3>
+                    <p>A mod to restore and enhance the lighting in Anor Londo.</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://github.com/mooofin/EldenRingStutterFix/blob/main/assets/er.png?raw=true" alt="EldenRingStutterFix">
+                    <h3><a href="https://github.com/mooofin/EldenRingStutterFix">EldenRingStutterFix</a></h3>
+                    <p>A Python-based fix for Elden Ring stuttering by optimizing CPU affinity.</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://github.com/mooofin/God-of-War-Ragnarok/blob/main/assets/goww.png?raw=true" alt="God-of-War-Ragnarok">
+                    <h3><a href="https://github.com/mooofin/God-of-War-Ragnarok">God-of-War-Ragnarok</a></h3>
+                    <p>Cheat Engine Scripts & Tools for modifying the single-player experience.</p>
+                </div>
+                <div class="project-card">
+                    <img src="https://raw.githubusercontent.com/mooofin/Theia-BC/main/images/knn.png" alt="Theia-BC">
+                    <h3><a href="https://github.com/mooofin/KNN-DiagnosisModel">Theia-BC</a></h3>
+                    <p>A K-Nearest Neighbors (KNN) classifier for breast cancer diagnosis.</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="skills" class="py-20 md:py-32 bg-slate-950">
-        <div class="container mx-auto px-6 fade-in-section">
-            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-sky-400">Lunar Arts & Glintstone Sorcery</h2>
-            <p class="text-lg md:text-xl text-center text-slate-400 mb-16 max-w-3xl mx-auto font-inter">
-                "The Carian royal family, a line of lunar sorcerers... My skills are akin to their ancient arts, honed through study and practice."
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-sky-500/50 transition-all duration-300 border border-slate-700">
-                    <div class="text-4xl text-sky-400 mb-4">🌙</div> <h3 class="text-2xl font-cinzel mb-2 text-slate-100">Front-End Conjuration</h3>
-                    <p class="text-slate-400 font-inter text-sm">Summoning responsive and captivating user interfaces from the ether using HTML, CSS, and JavaScript.</p>
-                </div>
-                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-sky-500/50 transition-all duration-300 border border-slate-700">
-                    <div class="text-4xl text-sky-400 mb-4">✨</div> <h3 class="text-2xl font-cinzel mb-2 text-slate-100">React Thaumaturgy</h3>
-                    <p class="text-slate-400 font-inter text-sm">Weaving intricate and dynamic web applications with the potent magic of React and its constellations.</p>
-                </div>
-                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-sky-500/50 transition-all duration-300 border border-slate-700">
-                    <div class="text-4xl text-sky-400 mb-4">🌌</div> <h3 class="text-2xl font-cinzel mb-2 text-slate-100">Backend Astromancy</h3>
-                    <p class="text-slate-400 font-inter text-sm">Charting the unseen currents of server-side logic with Node.js, databases, and other cosmic tools.</p>
-                </div>
-                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-sky-500/50 transition-all duration-300 border border-slate-700">
-                    <div class="text-4xl text-sky-400 mb-4">🌠</div> <h3 class="text-2xl font-cinzel mb-2 text-slate-100">UI/UX Divination</h3>
-                    <p class="text-slate-400 font-inter text-sm">Foreseeing user needs and desires to craft intuitive and enchanting digital experiences.</p>
-                </div>
-                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-sky-500/50 transition-all duration-300 border border-slate-700">
-                    <div class="text-4xl text-sky-400 mb-4">📜</div>
-                    <h3 class="text-2xl font-cinzel mb-2 text-slate-100">Git & Version Runes</h3>
-                    <p class="text-slate-400 font-inter text-sm">Inscribing the annals of development, managing timelines and alternate realities of code with Git.</p>
-                </div>
-                <div class="skill-card glass-card p-6 rounded-xl shadow-lg hover:shadow-sky-500/50 transition-all duration-300 border border-slate-700">
-                    <div class="text-4xl text-sky-400 mb-4">🛰️</div>
-                    <h3 class="text-2xl font-cinzel mb-2 text-slate-100">Cloud Constellations</h3>
-                    <p class="text-slate-400 font-inter text-sm">Launching projects into the digital firmament (AWS, Azure, GCP) for stellar performance and reach.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        <section id="stats">
+            <h2>GitHub Stats</h2>
+            <img src="https://github-readme-stats.vercel.app/api?username=mooofin&theme=dark&hide_border=false&include_all_commits=false&count_private=false" alt="GitHub Stats">
+            <img src="https://nirzak-streak-stats.vercel.app/?user=mooofin&theme=dark&hide_border=false" alt="GitHub Streak Stats">
+        </section>
 
-    <section id="projects" class="py-20 md:py-32 bg-[#060e21]">
-        <div class="container mx-auto px-6 fade-in-section">
-            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-sky-400">Star-Scourged Tales & Felled Foes</h2>
-            <p class="text-lg md:text-xl text-center text-slate-400 mb-16 max-w-3xl mx-auto font-inter">
-                "The demigods have fallen. Their Great Runes, mine to claim... These projects are my own conquered challenges, each a shard of greater power."
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div class="project-card glass-card rounded-xl overflow-hidden shadow-xl hover:shadow-sky-600/60 transition-all duration-300 border border-slate-700 flex flex-col">
-                    <img src="https://placehold.co/600x400/1e293b/38bdf8?text=Lunar+Observatory&font=cinzel" alt="Project Lunar Observatory" class="w-full h-48 object-cover">
-                    <div class="p-6 flex-grow">
-                        <h3 class="text-2xl font-cinzel mb-3 text-slate-100">Project: Carian Manor Archives</h3>
-                        <p class="text-slate-400 font-inter text-sm mb-4">A dynamic web application for cataloging arcane knowledge, built with React and a GraphQL API. Features advanced search, user roles, and a starlit interface.</p>
-                        <p class="text-xs text-slate-500 mb-4">Tech Stack: React, GraphQL, Apollo, Node.js, PostgreSQL</p>
-                    </div>
-                    <div class="p-6 bg-slate-800/50">
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary font-cinzel text-sm py-2 px-4 rounded-md inline-block mr-2">Explore Archive</a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-400 transition-colors text-sm">View Source Code</a>
-                    </div>
-                </div>
-                <div class="project-card glass-card rounded-xl overflow-hidden shadow-xl hover:shadow-sky-600/60 transition-all duration-300 border border-slate-700 flex flex-col">
-                    <img src="https://placehold.co/600x400/1e293b/ef4444?text=Legacy+of+Ash&font=cinzel" alt="Project Legacy of Ash" class="w-full h-48 object-cover">
-                    <div class="p-6 flex-grow">
-                        <h3 class="text-2xl font-cinzel mb-3 text-slate-100">Challenge: The Ashen Lord's Legacy</h3>
-                        <p class="text-slate-400 font-inter text-sm mb-4">A complex data migration and system overhaul for a legacy platform, akin to piecing together a shattered world. Required meticulous planning and execution under pressure.</p>
-                         <p class="text-xs text-slate-500 mb-4">Tech Stack: Python, Django, Celery, Redis, Legacy Systems</p>
-                    </div>
-                     <div class="p-6 bg-slate-800/50">
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary font-cinzel text-sm py-2 px-4 rounded-md inline-block mr-2">Study Remnants</a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-400 transition-colors text-sm">Examine Relics (Report)</a>
-                    </div>
-                </div>
-                <div class="project-card glass-card rounded-xl overflow-hidden shadow-xl hover:shadow-sky-600/60 transition-all duration-300 border border-slate-700 flex flex-col">
-                    <img src="https://placehold.co/600x400/1e293b/38bdf8?text=Starfall+Commerce&font=cinzel" alt="Project Starfall Commerce" class="w-full h-48 object-cover">
-                     <div class="p-6 flex-grow">
-                        <h3 class="text-2xl font-cinzel mb-3 text-slate-100">Venture: Starfall E-Commerce</h3>
-                        <p class="text-slate-400 font-inter text-sm mb-4">An e-commerce platform for artisanal goods, powered by Next.js and integrated with cosmic payment gateways. Designed for a seamless and magical shopping experience.</p>
-                        <p class="text-xs text-slate-500 mb-4">Tech Stack: Next.js, Stripe, Sanity.io, Vercel</p>
-                    </div>
-                    <div class="p-6 bg-slate-800/50">
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary font-cinzel text-sm py-2 px-4 rounded-md inline-block mr-2">Visit Emporium</a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-400 transition-colors text-sm">Inspect Blueprints</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <section id="trophies">
+            <h2>GitHub Trophies</h2>
+            <img src="https://github-profile-trophy.vercel.app/?username=mooofin&theme=radical&no-frame=false&no-bg=true&margin-w=4" alt="GitHub Trophies">
+        </section>
+    </main>
 
-    <section id="experience" class="py-20 md:py-32 bg-slate-950">
-        <div class="container mx-auto px-6 fade-in-section">
-            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-sky-400">Path of the Dark Moon</h2>
-            <p class="text-lg md:text-xl text-center text-slate-400 mb-16 max-w-3xl mx-auto font-inter">
-                "My destiny is intertwined with the stars. This path, though shadowed, is mine to walk. These are the chapters of my journey."
-            </p>
-            <div class="relative border-l-2 border-sky-700/50 ml-6 md:ml-0 md:mx-auto max-w-3xl">
-                <div class="mb-12 md:flex md:items-start">
-                    <div class="md:w-1/4 md:pr-8 md:text-right">
-                        <p class="text-sky-400 font-cinzel text-lg">Cycle - Cycle (Year - Year)</p>
-                        <p class="text-slate-500 text-sm">Academy of Raya Lucaria / Company</p>
-                    </div>
-                    <div class="absolute -left-[11px] top-1.5 w-5 h-5 bg-sky-500 rounded-full border-2 border-slate-800 md:static md:hidden"></div>
-                    <div class="hidden md:block relative md:w-auto md:mx-4">
-                         <div class="absolute left-1/2 transform -translate-x-1/2 top-1.5 w-5 h-5 bg-sky-500 rounded-full border-2 border-slate-800"></div>
-                    </div>
-                    <div class="ml-10 md:ml-0 md:w-3/4 pl-0 md:pl-8 glass-card p-6 rounded-lg border border-slate-700">
-                        <h3 class="text-xl font-cinzel mb-2 text-slate-100">Role / Title (e.g., Carian Knight)</h3>
-                        <p class="text-slate-400 font-inter text-sm">
-                            "Within these hallowed (or corporate) halls, I [briefly describe responsibilities]. Mastered [achievement 1] and charted [achievement 2], wielding [key skills/tools]."
-                        </p>
-                    </div>
-                </div>
-                 <div class="mb-12 md:flex md:items-start md:flex-row-reverse">
-                    <div class="md:w-1/4 md:pl-8 md:text-left">
-                        <p class="text-sky-400 font-cinzel text-lg">Prior Cycle (Year - Year)</p>
-                        <p class="text-slate-500 text-sm">Previous Conclave / Company</p>
-                    </div>
-                     <div class="absolute -left-[11px] top-1.5 w-5 h-5 bg-sky-500 rounded-full border-2 border-slate-800 md:static md:hidden"></div>
-                     <div class="hidden md:block relative md:w-auto md:mx-4">
-                         <div class="absolute left-1/2 transform -translate-x-1/2 top-1.5 w-5 h-5 bg-sky-500 rounded-full border-2 border-slate-800"></div>
-                    </div>
-                    <div class="ml-10 md:ml-0 md:w-3/4 pr-0 md:pr-8 glass-card p-6 rounded-lg border border-slate-700">
-                        <h3 class="text-xl font-cinzel mb-2 text-slate-100">Previous Role (e.g., Astrologer Initiate)</h3>
-                        <p class="text-slate-400 font-inter text-sm">
-                            "My journey began thus. I [describe responsibilities]. Key learnings involved [achievement A] and navigating [challenge B]."
-                        </p>
-                    </div>
-                </div>
-                 <div class="text-center mt-12">
-                    <p class="text-slate-500 italic">"And so, the Age of Stars draws nearer with every line of code..."</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="py-20 md:py-32 bg-[#060e21]">
-        <div class="container mx-auto px-6 fade-in-section">
-            <h2 class="text-4xl md:text-5xl font-cinzel text-center mb-4 text-sky-400">Seek Audience with the Witch</h2>
-            <p class="text-lg md:text-xl text-center text-slate-400 mb-12 max-w-3xl mx-auto font-inter">
-                "Thou'rt a Tarnished of astute counsel, I presume. If thou hast business with me, speak freely. Or, send a digital raven."
-            </p>
-            <form action="#" method="POST" class="max-w-xl mx-auto space-y-6 glass-card p-8 rounded-xl border border-slate-700">
-                <div>
-                    <label for="name" class="block text-sm font-cinzel text-slate-300 mb-1">Thy Appellation</label>
-                    <input type="text" name="name" id="name" required class="w-full p-3 rounded-md bg-slate-800 border border-slate-700 text-slate-200 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all" placeholder="Brave Tarnished">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-cinzel text-slate-300 mb-1">Thy Spirit-Caller Bell (Email)</label>
-                    <input type="email" name="email" id="email" required class="w-full p-3 rounded-md bg-slate-800 border border-slate-700 text-slate-200 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all" placeholder="tarnished@example.com">
-                </div>
-                <div>
-                    <label for="message" class="block text-sm font-cinzel text-slate-300 mb-1">Thy Query or Proposal</label>
-                    <textarea name="message" id="message" rows="5" required class="w-full p-3 rounded-md bg-slate-800 border-slate-700 text-slate-200 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all" placeholder="I wish to discuss matters of the stars, or perhaps a collaborative venture..."></textarea>
-                </div>
-                <div>
-                    <button type="submit" class="w-full btn-primary font-cinzel text-lg font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-sky-600 transition duration-300">
-                        Dispatch Missive to the Dark Moon
-                    </button>
-                </div>
-                 <p id="form-message" class="text-center text-sm font-inter mt-4"></p>
-            </form>
-        </div>
-    </section>
-
-    <footer class="py-12 bg-slate-900 text-center">
-        <div class="container mx-auto px-6">
-            <p class="font-cinzel text-slate-500 text-sm">
-                "The chill night surrounds me. Yet, the stars offer guidance. May your path be ever lit."
-            </p>
-            <p class="text-slate-600 text-xs mt-2 font-inter">
-                &copy; [Current Year] [Your Name]. Forged in starlight and code. All rights reserved, by the will of the Dark Moon.
-            </p>
-            <div class="mt-4 space-x-4">
-                <a href="#" class="text-slate-500 hover:text-sky-400 transition-colors">Star-Chart (GitHub)</a>
-                <a href="#" class="text-slate-500 hover:text-sky-400 transition-colors">Roundtable Hold (LinkedIn)</a>
-                <a href="#" class="text-slate-500 hover:text-sky-400 transition-colors">Whispers of the Stars (Twitter/X)</a>
-            </div>
-        </div>
+    <footer>
+        <p>&copy; 2024 Your Name. All Rights Reserved.</p>
     </footer>
-
-    <script>
-        // JavaScript for smooth scrolling and animations
-
-        // Smooth scroll for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Header scroll effect
-        const header = document.getElementById('main-header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Intersection Observer for fade-in sections
-        const sections = document.querySelectorAll('.fade-in-section');
-        const observerOptions = {
-            root: null, 
-            rootMargin: '0px',
-            threshold: 0.1 
-        };
-
-        const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    obs.unobserve(entry.target); 
-                }
-            });
-        }, observerOptions);
-
-        sections.forEach(section => {
-            observer.observe(section);
-        });
-
-        // Simple form submission message (no actual submission)
-        const contactForm = document.querySelector('#contact form');
-        const formMessage = document.getElementById('form-message');
-        if (contactForm) {
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                formMessage.textContent = "Thy missive has been dispatched to the stars... (This is a demo, it wasn't actually sent!)";
-                formMessage.className = 'text-center text-sm font-inter mt-4 text-sky-300';
-                contactForm.reset();
-                setTimeout(() => {
-                    formMessage.textContent = '';
-                }, 6000);
-            });
-        }
-
-        // Image error handling for project cards
-        const projectImages = document.querySelectorAll('.project-card img');
-        projectImages.forEach(img => {
-            img.onerror = function() {
-                const font = this.alt.toLowerCase().includes('ash') ? 'cinzel' : 'cinzel'; // Keep Cinzel for thematic consistency
-                const textColor = this.alt.toLowerCase().includes('ash') ? 'ef4444' : '38bdf8';
-                this.src = `https://placehold.co/${this.width || 600}x${this.height || 400}/0f172a/${textColor}?text=Image+Lost+to+Stars&font=${font}`;
-                this.alt = 'Image failed to load';
-            };
-        });
-
-        // Blue Flame Particle Animation for Hero Section
-        const particleContainer = document.getElementById('particles-js-hero');
-        const numParticles = 30; // Number of particles
-
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('blue-flame-particle');
-            
-            const size = Math.random() * 5 + 2; // Size between 2px and 7px
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            
-            // Position randomly across the width, starting from bottom
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.bottom = `-${size}px`; // Start just below the viewport
-            
-            // Random animation duration and delay for variety
-            particle.style.animationDuration = `${Math.random() * 2 + 2.5}s`; // 2.5s to 4.5s
-            particle.style.animationDelay = `${Math.random() * 3}s`; // 0s to 3s delay
-            
-            if (particleContainer) {
-                 particleContainer.appendChild(particle);
-            }
-
-            // Remove particle after animation to prevent DOM clutter
-            particle.addEventListener('animationend', () => {
-                particle.remove();
-                // Optionally, create a new particle to maintain density
-                // if (particleContainer.children.length < numParticles) createParticle(); 
-            });
-        }
-
-        if (particleContainer) {
-            for (let i = 0; i < numParticles; i++) {
-                createParticle();
-            }
-            // Optionally, create new particles periodically
-             setInterval(() => {
-                 if (particleContainer.children.length < numParticles + 10) { // Add a buffer
-                     createParticle();
-                 }
-             }, 1000); // Add a new particle every second if below threshold
-        }
-
-    </script>
 </body>
 </html>
