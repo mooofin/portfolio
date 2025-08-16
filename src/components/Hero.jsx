@@ -7,7 +7,7 @@ function Hero() {
         <h1>Hi, I'm mooofin</h1>
         <p>A Mod Developer & Reverse Engineer specializing in game mechanics and physics.</p>
         <a 
-          href="[https://github.com/mooofin](https://github.com/mooofin)" 
+          href="https://github.com/mooofin" 
           className="cta-button" 
           target="_blank" 
           rel="noopener noreferrer"

@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
 import Contact from './components/Contact';
-import Footer from './components/Footer';
+// import Footer from './components/Footer'; // Removed
 import Dither from './components/Dither';
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
           <About />
           <Contact />
         </main>
-        <Footer />
+        {/* <Footer /> */} {/* Removed */}
       </div>
     </div>
   );
