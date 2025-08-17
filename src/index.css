@@ -16,14 +16,14 @@ body {
   scroll-behavior: smooth;
 }
 
-/* --- Main Layout --- */
+/* --- Main Layout (Corrected for Global Theme & Routing) --- */
 .fullscreen-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1;
+  z-index: -1; /* This forces the background BEHIND all content */
 }
 
 .content-container {
@@ -32,13 +32,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.header, .hero-content, .about-section, .projects-section, .contact-section, .footer {
-  pointer-events: auto;
+  overflow-y: auto; /* This makes ONLY the content scrollable */
 }
 
 /* --- Header --- */
@@ -47,8 +41,7 @@ body {
   top: 0;
   z-index: 10;
   padding: 1rem 2rem;
-  background-color: rgba(36, 36, 36, 0.5);
-  backdrop-filter: blur(8px);
+  /* Transparent background */
 }
 
 .navbar {
@@ -86,22 +79,6 @@ body {
   align-items: center;
   text-align: center;
 }
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.hero-pfp {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%; /* circular avatar */
-  border: 3px solid #fff; /* optional border */
-  margin-bottom: 1rem;
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* subtle shadow */
-}
 
 .hero-content h1 { font-size: 3.5rem; }
 .hero-content p { font-size: 1.2rem; }
@@ -116,13 +93,52 @@ body {
   border-radius: 8px;
 }
 
+
 /* --- About Section --- */
-.about-section {
-  padding: 5rem 2rem;
-  background-color: rgba(36, 36, 36, 0.5);
-  backdrop-filter: blur(8px);
+
+/* --- Add this rule inside the "About Section" in your CSS file --- */
+/* --- Hero Section --- */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
+
+/* --- ADD THIS NEW CSS RULE FOR YOUR PFP --- */
+.hero-pfp {
+  width: 150px; /* Controls the size - feel free to change */
+  height: 150px; /* Keep this the same as the width */
+  border-radius: 50%; /* This is what makes it a circle */
+  object-fit: cover; /* Prevents the image from being distorted */
+  margin-bottom: 2rem; /* Adds space between the PFP and your name */
+  
+  .hero-pfp {
+  /* ...other styles... */
+  border: 3px solid #ff4d4d; /* This will make the outline a vibrant red */
+} /* Optional: Adds a nice border using your theme's color */
+}
+/* --- END OF NEW RULE --- */
+
+.hero-content h1 { font-size: 3.5rem; }
+.hero-content p { font-size: 1.2rem; }
+.profile-picture {
+  /* Size */
+  width: 150px;  /* Adjust the size as you wish */
+  height: 150px; /* Keep this the same as the width for a perfect circle */
+
+  /* Shape & Appearance */
+  border-radius: 50%; /* This is the property that creates the circle shape */
+  object-fit: cover;  /* This prevents the image from looking stretched or squashed */
+  
+  /* Optional Border */
+  border: 3px solid var(--primary-color); /* Adds a colored border using your theme's color */
+
+  /* Spacing */
+  margin-bottom: 2rem; /* Creates space between the picture and the title below it */
+}
+/* --- END OF NEW RULE --- */
 
 .about-content {
   max-width: 800px;
@@ -167,11 +183,11 @@ body {
 }
 
 .project-card {
-  background-color: var(--surface-color);
   padding: 2rem;
   border-radius: 8px;
   border: 1px solid #333;
   text-align: left;
+  /* Transparent background */
 }
 
 .project-card h3 {
@@ -192,9 +208,8 @@ body {
 /* --- Contact Section --- */
 .contact-section {
   padding: 5rem 2rem;
-  background-color: rgba(26, 26, 26, 0.8);
-  backdrop-filter: blur(8px);
   text-align: center;
+  /* Transparent background */
 }
 
 .contact-section h2 {
@@ -223,36 +238,74 @@ body {
   font-size: 1.2rem;
 }
 
-/* --- Blog Page --- */
+/* --- Blog Pages --- */
 .blog-page {
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.blog-page > h1 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.blog-list {
+  display: grid;
+  gap: 2rem;
   max-width: 800px;
   margin: 0 auto;
 }
 
-.blog-post {
+.blog-post-summary {
   padding: 2rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  margin-bottom: 2rem;
+  border-radius: 8px;
+  border: 1px solid #333;
   text-align: left;
-  line-height: 1.6;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Transparent background */
 }
 
-.blog-post:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+.blog-post-summary h2 {
+  margin-top: 0;
 }
 
-.blog-post h2 {
-  margin-bottom: 0.5rem;
-  color: #aab2f0;
+.blog-post-summary h2 a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.date {
+  color: var(--secondary-text-color);
+  font-size: 0.9em;
+  margin-top: -10px;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* --- Single Blog Post Page --- */
+.blog-post {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  text-align: left;
+}
+
+.blog-post h1 {
+  font-size: 3rem;
+}
+
+.blog-post p {
+  font-size: 1.1rem;
+  line-height: 1.7;
 }
 
 .blog-post .date {
-  font-size: 0.9rem;
-  opacity: 0.7;
-  margin-bottom: 1rem;
-  display: block;
+  margin-top: -1.5rem;
+  margin-bottom: 2rem;
+}
+
+.blog-post a {
+  display: inline-block;
+  margin-top: 2rem;
+  font-weight: bold;
+  color: var(--secondary-text-color);
 }
