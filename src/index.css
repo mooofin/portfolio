@@ -86,6 +86,22 @@ body {
   align-items: center;
   text-align: center;
 }
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-pfp {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; /* circular avatar */
+  border: 3px solid #fff; /* optional border */
+  margin-bottom: 1rem;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* subtle shadow */
+}
 
 .hero-content h1 { font-size: 3.5rem; }
 .hero-content p { font-size: 1.2rem; }
@@ -205,4 +221,38 @@ body {
   color: var(--secondary-text-color);
   text-decoration: none;
   font-size: 1.2rem;
+}
+
+/* --- Blog Page --- */
+.blog-page {
+  padding: 4rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.blog-post {
+  padding: 2rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+  text-align: left;
+  line-height: 1.6;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog-post:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.blog-post h2 {
+  margin-bottom: 0.5rem;
+  color: #aab2f0;
+}
+
+.blog-post .date {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+  display: block;
 }

@@ -4,7 +4,12 @@ function Hero() {
   return (
     <section id="home" className="hero">
       <div className="hero-content">
-        <h1>Hi, I'm mooofin</h1>
+        <img 
+          src="https://github.com/mooofin.png" 
+          alt="GitHub Profile" 
+          className="hero-pfp"
+        />
+        <h1>Hi, I'm siddharth</h1>
         <p>A Mod Developer & Reverse Engineer specializing in game mechanics and physics.</p>
         <a 
           href="https://github.com/mooofin" 
