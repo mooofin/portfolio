@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Component Imports
 import Header from './components/Header';
 import Hero from './components/Hero';
+import Blog from './components/blog';
 import About from './components/About';
 import Contact from './components/Contact';
 import Dither from './components/Dither';

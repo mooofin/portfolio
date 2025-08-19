@@ -309,3 +309,77 @@ body {
   font-weight: bold;
   color: var(--secondary-text-color);
 }
+
+/* --- Blog Section & Markdown Styling --- */
+.blog-section {
+  padding: 5rem 2rem;
+  background-color: rgba(36, 36, 36, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.blog-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.blog-content h2 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.markdown-container {
+  background-color: var(--surface-color);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  text-align: left;
+  line-height: 1.7;
+}
+
+/* Styles for the generated HTML from Markdown */
+.markdown-container h1,
+.markdown-container h2,
+.markdown-container h3 {
+  color: var(--primary-color);
+  border-bottom: 1px solid #444;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+.markdown-container p {
+  margin-bottom: 1rem;
+  color: var(--secondary-text-color);
+}
+
+.markdown-container a {
+  color: #a0a0ff;
+  text-decoration: none;
+}
+
+.markdown-container code {
+  background-color: #1a1a1a;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.markdown-container pre {
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.markdown-container pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.markdown-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
