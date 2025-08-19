@@ -10,7 +10,7 @@ export const posts = [
 
 So you’ve built some amazing software. It runs beautifully on your machine,flawless, fast, and bug-free(hopefully) . You package it up, send it out into github and get stars showering in , and then the issues start pouring in: *“It crashes on startup.”* *“I’m getting an error.”* *“It doesn’t work.”* \_"your SAAS sucks "
 
-How is this possible? Your software was perfect. At-least the AI said so
+How is this possible? Your software was perfect. At-least the LLM said so
 
 Tbh this frustrating gap between your machine and a user’s machine is the central problem of software deployment. It can be traced back to two perennial stuff : environment issues (sucks ) and manageability issues.(oml)
 ![A diagram showing deployment complexities](/images/screenshot-1755422412.png)
