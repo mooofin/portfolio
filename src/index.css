@@ -140,13 +140,92 @@ body {
 }
 /* --- END OF NEW RULE --- */
 
+/* Decrypted Text Animation */
+.decrypted-text {
+  position: relative;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  margin-bottom: 2rem;
+}
+
+.decrypted-content {
+  font-family: inherit;
+  color: inherit;
+}
+
+.cursor {
+  color: #ff0000;
+  font-weight: bold;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Terminal-style glow effect */
+.decrypted-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 0, 0, 0.1),
+    transparent
+  );
+  opacity: 0;
+  animation: terminalGlow 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes terminalGlow {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Enhanced about section */
 .about-content {
   max-width: 800px;
   margin: 0 auto;
+  position: relative;
 }
 
-.about-content h2 { font-size: 2.5rem; }
-.about-content h3 { font-size: 1.8rem; margin-top: 3rem; }
+.about-content h2 { 
+  font-size: 2.5rem; 
+  margin-bottom: 2rem;
+  color: #ff0000;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.about-content h3 { 
+  font-size: 2.5rem; 
+  margin-top: 3rem; 
+  margin-bottom: 1rem;
+  color: #ff0000;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
 .about-content p { font-size: 1.1rem; line-height: 1.7; }
 
 /* Enhance skill chips */
@@ -232,6 +311,8 @@ body {
 .contact-section h2 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: #ff0000;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
 /* --- Footer --- */
