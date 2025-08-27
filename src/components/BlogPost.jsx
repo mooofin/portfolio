@@ -1,32 +1,41 @@
-// src/components/BlogPost.jsx
-import React from "react";
-import { useParams, Link } from "react-router-dom";
-// This path needs to be correct. '../' goes up one directory.
-import { posts } from "../posts";
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import { useEffect, useState } from 'react';
+import { loadPostBySlug } from '../posts.js';
+
+function transformObsidianEmbeds(markdown) {
+  if (!markdown) return markdown;
+  // Convert Obsidian image embeds ![[file.png]] -> ![file](/images/file.png)
+  return markdown.replace(/!\[\[([^\]]+)\]\]/g, (m, file) => {
+    const alt = file.replace(/\.[^/.]+$/, '');
+    return `![${alt}](\/images\/${file})`;
+  });
+}
 
 function BlogPost() {
   const { slug } = useParams();
-  const post = posts.find((p) => p.slug === slug);
+  const [post, setPost] = useState(null);
 
-  if (!post) {
-    return (
-      <div>
-        <h1>Post not found</h1>
-        <Link to="/blog">← Back to all posts</Link>
-      </div>
-    );
-  }
+  useEffect(() => {
+    (async () => {
+      const loaded = await loadPostBySlug(slug);
+      setPost(loaded);
+    })();
+  }, [slug]);
+  
+  const postContent = post ? post.content : `# Loading...`;
+  const processed = transformObsidianEmbeds(postContent);
 
   return (
-    <main className="blog-page">
-      <article className="blog-post">
-        <h1>{post.title}</h1>
-        <p className="date">{post.date}</p>
-        <p style={{ whiteSpace: 'pre-wrap' }}>{post.content.trim()}</p>
-        <br />
-        <Link to="/blog">← Back to all posts</Link>
-      </article>
-    </main>
+    <>
+      <div className="blog-page-container">
+        <Link to="/" className="back-link">&larr; Back to Portfolio</Link>
+        <div className="markdown-container blog-article">
+          <ReactMarkdown>{processed}</ReactMarkdown>
+        </div>
+      </div>
+    </>
   );
 }
 

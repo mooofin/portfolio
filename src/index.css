@@ -259,9 +259,10 @@ body {
 .blog-post-summary {
   padding: 2rem;
   border-radius: 8px;
-  border: 1px solid #333;
+  border: 1px solid rgba(255,255,255,0.08);
   text-align: left;
-  /* Transparent background */
+  background: rgba(20,20,20,0.35);
+  backdrop-filter: blur(6px);
 }
 
 .blog-post-summary h2 {
@@ -282,6 +283,17 @@ body {
 }
 
 /* --- Single Blog Post Page --- */
+.blog-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 2rem 6rem;
+}
+
+.blog-article {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .blog-post {
   max-width: 800px;
   margin: 0 auto;
@@ -329,20 +341,21 @@ body {
 }
 
 .markdown-container {
-  background-color: var(--surface-color);
+  background: rgba(20,20,20,0.35);
+  backdrop-filter: blur(6px);
   padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid #333;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
   text-align: left;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 /* Styles for the generated HTML from Markdown */
 .markdown-container h1,
 .markdown-container h2,
 .markdown-container h3 {
-  color: var(--primary-color);
-  border-bottom: 1px solid #444;
+  color: #e4e7ff;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   padding-bottom: 0.5rem;
   margin-top: 2rem;
 }
@@ -358,14 +371,14 @@ body {
 }
 
 .markdown-container code {
-  background-color: #1a1a1a;
+  background-color: rgba(0,0,0,0.45);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Courier New', Courier, monospace;
 }
 
 .markdown-container pre {
-  background-color: #1a1a1a;
+  background-color: rgba(0,0,0,0.5);
   padding: 1rem;
   border-radius: 8px;
   overflow-x: auto;
@@ -382,4 +395,11 @@ body {
   border-radius: 8px;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #c7c7ff;
+  text-decoration: none;
 }

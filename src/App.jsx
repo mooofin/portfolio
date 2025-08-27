@@ -10,8 +10,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Dither from './components/Dither';
 import BlogPage from './components/BlogPage';
-import BlogPost from './components/BlogPost'; // <-- Make sure this import is correct
-
+import BlogPost from './components/BlogPost'; 
 function App() {
   return (
     // The Router must wrap your entire application

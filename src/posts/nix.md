@@ -1,3 +1,7 @@
+---
+title: The Deployment Gap: From Your Machine to Theirs
+date: 2025-08-27
+---
 
 # The Deployment Gap: From Your Machine to Theirs
 
