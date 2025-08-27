@@ -4,9 +4,16 @@ function Contact() {
   return (
     <section id="contact" className="contact-section">
       <h2>contact me :3</h2>
-      <p>
-        <a href="mailto:siddharthqln@gmail.com" className="back-link">siddharthqln@gmail.com</a>
-      </p>
+      <div className="contact-links">
+        <a href="mailto:siddharthqln@gmail.com" className="contact-link shape-blur">
+          <div className="shape-blur-bg"></div>
+          <span>siddharthqln@gmail.com</span>
+        </a>
+        <a href="https://www.linkedin.com/in/siddharthu5799/" target="_blank" rel="noopener noreferrer" className="contact-link shape-blur">
+          <div className="shape-blur-bg"></div>
+          <span>LinkedIn</span>
+        </a>
+      </div>
     </section>
   );
 }
