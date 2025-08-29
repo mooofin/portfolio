@@ -1,1 +1,1 @@
-personal portfolio website
+This repository contains the source code for my personal portfolio website. Built with React and Vite, this single-page application showcases my projects, includes a personal blog, and provides my contact information. The project is styled using pure CSS and is set up for seamless deployment on Vercel.
