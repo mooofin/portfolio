@@ -10,7 +10,7 @@ function BlogPage() {
   const [decryptedIntro, setDecryptedIntro] = useState('');
   const [isDecrypting, setIsDecrypting] = useState(false);
 
-  const introText = "my stupid rants :(";
+  const introText = "my silly rants :(";
 
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
