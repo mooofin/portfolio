@@ -1032,7 +1032,6 @@ body {
   .markdown-container,
   .blog-post-summary,
   .contact-link {
-    backdrop-filter: none !important;
     background: rgba(20, 20, 20, 0.8) !important;
   }
   
@@ -1217,6 +1216,56 @@ body {
   
   .nav-links a {
     font-size: 0.8rem;
+  }
+}
+
+
+/* Mobile Red Animation Optimizations */
+@media (max-width: 768px) {
+  /* Keep red animations but optimize performance */
+  .glass-icon-inner,
+  .markdown-container,
+  .blog-post-summary,
+  .contact-link {
+    backdrop-filter: blur(5px) !important;
+    background: rgba(20, 20, 20, 0.6) !important;
+  }
+  
+  /* Optimize red glow effects */
+  .electric-text {
+    animation: electricFlow 2s ease-in-out infinite;
+  }
+  
+  .electric-border-bg {
+    animation: electricFlow 2s ease-in-out infinite;
+  }
+  
+  .electric-border-bg-small {
+    animation: electricFlow 1.5s ease-in-out infinite;
+  }
+  
+  /* Optimize decrypted text cursor */
+  .cursor {
+    animation: blink 0.8s infinite;
+  }
+  
+  /* Optimize glass icon hover effects */
+  .glass-icon:hover .glass-icon-inner::before {
+    left: 100%;
+    transition: left 0.3s ease;
+  }
+  
+  .glass-icon:hover .footer-glow {
+    width: 150px;
+    height: 150px;
+    animation: footerGlow 1.5s ease-in-out infinite;
+  }
+  
+  /* Optimize contact link glow */
+  .contact-link:hover .shape-blur-bg {
+    width: 150px;
+    height: 150px;
+    animation: shapeBlur 1.5s ease-in-out infinite;
   }
 }
 
