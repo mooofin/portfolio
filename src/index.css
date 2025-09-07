@@ -1281,3 +1281,18 @@ body {
   }
 }
 
+
+/* Mobile background: phone1.jpg full-bleed */
+@media (max-width: 768px) {
+  html, body {
+    height: 100%;
+    min-height: 100vh;
+  }
+  body {
+    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone1.jpg') !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+}
+
