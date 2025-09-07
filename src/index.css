@@ -1296,3 +1296,15 @@ body {
   }
 }
 
+
+/* Mobile heading colors: switch to white for cohesion */
+@media (max-width: 768px) {
+  .about-content h2,
+  .about-content h3,
+  .contact-section h2,
+  .blog-title {
+    color: #ffffff !important;
+    text-shadow: none !important;
+  }
+}
+
