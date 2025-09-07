@@ -1269,3 +1269,15 @@ body {
   }
 }
 
+
+/* Mobile background image */
+@media (max-width: 768px) {
+  body {
+    background-color: var(--background-color);
+    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
