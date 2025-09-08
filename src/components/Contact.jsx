@@ -13,6 +13,10 @@ function Contact() {
           <div className="shape-blur-bg"></div>
           <span>LinkedIn</span>
         </a>
+        <a href="https://open.spotify.com/user/314ikabu7m4lwg6rljojtmhf74uq" target="_blank" rel="noopener noreferrer" className="contact-link shape-blur">
+          <div className="shape-blur-bg"></div>
+          <span>Spotify</span>
+        </a>
       </div>
     </section>
   );

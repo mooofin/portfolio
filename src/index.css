@@ -1308,3 +1308,94 @@ body {
   }
 }
 
+
+/* Desktop background: pc.jpg full-bleed */
+@media (min-width: 769px) {
+  html, body { height: 100%; min-height: 100vh; }
+  body {
+    background-image: linear-gradient(rgba(10,10,10,0.45), rgba(10,10,10,0.45)), url('/images/pc.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+
+/* Theme toggle button */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+/* Image theme: use pc/phone backgrounds and neutralize red accents */
+body.theme-image {
+  --primary-color: #ffffff;
+}
+
+@media (min-width: 769px) {
+  body.theme-image {
+    background-image: linear-gradient(rgba(10,10,10,0.45), rgba(10,10,10,0.45)), url('/images/pc.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+@media (max-width: 768px) {
+  body.theme-image {
+    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+  .about-content h2,
+  .about-content h3,
+  .contact-section h2,
+  .blog-title {
+    color: #ffffff !important;
+    text-shadow: none !important;
+  }
+}
+
+
+/* Ensure toggle actually switches background */
+body:not(.theme-image) {
+  background-image: none !important;
+  background-color: var(--background-color) !important;
+}
+
+/* Stronger priority for image theme */
+@media (min-width: 769px) {
+  body.theme-image {
+    background-image: linear-gradient(rgba(10,10,10,0.45), rgba(10,10,10,0.45)), url('/images/pc.jpg') !important;
+  }
+}
+@media (max-width: 768px) {
+  body.theme-image {
+    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone1.jpg') !important;
+  }
+}
+
+/* Spotify icon and toggle button coherent styling */
+.theme-toggle {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+}
+
+.theme-toggle:hover {
+  box-shadow: 0 4px 16px rgba(255,0,0,0.2);
+}
+

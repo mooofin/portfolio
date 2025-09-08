@@ -11,7 +11,11 @@ function Hero() {
           className="hero-pfp"
         />
         <h1 className="electric-text">Hi, I'm siddharth</h1>
-        <p>A Mod Developer & Reverse Engineer specializing in game mechanics and physics.</p>
+        <p>
+          A Mod Developer & Reverse Engineer specializing in game mechanics and physics.<br/>
+          NixOS witch.<br/>
+          Lighting engines with Havok. LLVM enthusiast.
+        </p>
         <a 
           href="https://github.com/mooofin" 
           className="cta-button electric-border-small" 
