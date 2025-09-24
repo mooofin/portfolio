@@ -1,10 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
+  const [isVisible, setIsVisible] = useState(true);
+
   useEffect(() => {
     document.body.classList.add('theme-image');
     try { localStorage.setItem('theme-image', '1'); } catch {}
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsVisible(scrollTop < 100); // Show header when within 100px of top
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToContact = (e) => {
@@ -19,7 +31,7 @@ function Header() {
   };
 
   return (
-    <header className="header">
+    <header className={`header ${isVisible ? 'header-visible' : 'header-hidden'}`}>
       <nav className="navbar">
         <Link to="/" className="logo">mooofin</Link>
         <ul className="nav-links">
