@@ -6,8 +6,8 @@ function Hero() {
       <div className="hero-content electric-border">
         <div className="electric-border-bg"></div>
         <img 
-          src="https://github.com/mooofin.png" 
-          alt="GitHub Profile" 
+          src="/images/icons/blogicon.gif" 
+          alt="Profile" 
           className="hero-pfp"
         />
         <h1 className="electric-text">Hi, I'm siddharth</h1>

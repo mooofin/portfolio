@@ -47,6 +47,9 @@ function BlogPage() {
   return (
     <main className="blog-page">
       <h1 className="blog-title">Blog</h1>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+        <img src="/images/icons/blogicon.gif" alt="blog fun icon" style={{ width: '96px', height: '96px', borderRadius: '10px' }} />
+      </div>
       
       <div className="blog-intro">
         <div className="decrypted-text blog-decrypted">
