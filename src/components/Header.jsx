@@ -2,42 +2,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     document.body.classList.add('theme-image');
     try { localStorage.setItem('theme-image', '1'); } catch {}
   }, []);
 
-  const lastScrollYRef = useRef(0);
-  const mouseNearTopRef = useRef(false);
-
   useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.pageYOffset || document.documentElement.scrollTop;
-      lastScrollYRef.current = currentY;
-
-      // Visible only when at top or when cursor is near the top edge
-      const atTop = currentY <= 0;
-      const mouseNearTop = mouseNearTopRef.current;
-      setIsVisible(atTop || mouseNearTop);
-    };
-
     const handleMouseMove = (e) => {
-      // Consider "near top" as within 80px from top
-      const nearTop = e.clientY <= 80;
-      mouseNearTopRef.current = nearTop;
-
-      // Update visibility immediately on mouse move
-      const currentY = window.pageYOffset || document.documentElement.scrollTop;
-      const atTop = currentY <= 0;
-      setIsVisible(atTop || nearTop);
+      // Only show header when cursor is within 50px from top
+      const nearTop = e.clientY <= 50;
+      setIsVisible(nearTop);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
