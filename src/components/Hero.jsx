@@ -1,4 +1,5 @@
 import React from 'react';
+import NowPlaying from './NowPlaying';
 
 function Hero() {
   return (
@@ -16,18 +17,19 @@ function Hero() {
           NixOS witch.<br/>
           Lighting engines with Havok. LLVM enthusiast.
         </p>
-        <a 
-          href="https://github.com/mooofin" 
-          className="cta-button electric-border-small" 
-          target="_blank" 
+        <a
+          href="https://github.com/mooofin"
+          className="cta-button electric-border-small"
+          target="_blank"
           rel="noopener noreferrer"
         >
           <div className="electric-border-bg-small"></div>
           <span>View My GitHub</span>
         </a>
+        <NowPlaying />
       </div>
     </section>
   );
-}
+       }
 
 export default Hero;

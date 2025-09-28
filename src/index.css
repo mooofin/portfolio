@@ -12,7 +12,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--background-color);
+  background: #0a0a0a;
   color: var(--text-color);
   scroll-behavior: smooth;
   padding-top: var(--header-height);
@@ -52,7 +52,7 @@ body {
   background: transparent;
   backdrop-filter: none;
   border-bottom: none;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header-visible {
@@ -164,7 +164,7 @@ body {
   
   .hero-pfp {
   /* ...other styles... */
-  border: 3px solid #ff4d4d; /* This will make the outline a vibrant red */
+  border: 3px solid #ff0000; /* This will make the outline a vibrant red */
 } /* Optional: Adds a nice border using your theme's color */
 }
 /* --- END OF NEW RULE --- */
@@ -198,7 +198,7 @@ body {
   background: rgba(0, 0, 0, 0.2);
   padding: 1.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 2rem;
 }
 
@@ -235,7 +235,7 @@ body {
   background: linear-gradient(
     45deg,
     transparent,
-    rgba(255, 0, 0, 0.1),
+    rgba(255, 255, 255, 0.05),
     transparent
   );
   opacity: 0;
@@ -916,7 +916,7 @@ body {
   font-size: 1.1rem;
   text-align: center;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 2rem;
   margin-top: 1rem;
 }
@@ -976,7 +976,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 0, 0, 0.2),
+    rgba(255, 255, 255, 0.1),
     transparent
   );
   transition: left 0.5s ease;
@@ -994,9 +994,9 @@ body {
   padding: 1px;
   background: linear-gradient(
     45deg,
-    #ff0000,
-    #ff6b6b,
-    #ff0000
+    #333333,
+    #555555,
+    #333333
   );
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
@@ -1420,22 +1420,8 @@ body.theme-image {
   --primary-color: #ffffff;
 }
 
-@media (min-width: 769px) {
-  body.theme-image {
-    background-image: linear-gradient(rgba(10,10,10,0.45), rgba(10,10,10,0.45)), url('/images/pc.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-  }
-}
-
+/* Using iridescence background instead of image backgrounds */
 @media (max-width: 768px) {
-  body.theme-image {
-    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone1.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-  }
   .about-content h2,
   .about-content h3,
   .contact-section h2,
@@ -1453,16 +1439,7 @@ body:not(.theme-image) {
 }
 
 /* Stronger priority for image theme */
-@media (min-width: 769px) {
-  body.theme-image {
-    background-image: linear-gradient(rgba(10,10,10,0.45), rgba(10,10,10,0.45)), url('/images/pc.jpg') !important;
-  }
-}
-@media (max-width: 768px) {
-  body.theme-image {
-    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone1.jpg') !important;
-  }
-}
+/* Duplicate theme backgrounds removed */
 
 /* Spotify icon and toggle button coherent styling */
 .theme-toggle {
@@ -1483,6 +1460,106 @@ body:not(.theme-image) {
   box-shadow: 0 4px 16px rgba(255,0,0,0.2);
 }
 
+
+/* Now Playing Styles - Small Component */
+.now-playing {
+  margin: 1.5rem auto 0;
+  max-width: 320px;
+}
+
+.now-playing-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.now-playing-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.now-playing-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+}
+
+.track-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.track-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.track-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-bottom: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.track-artist {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-icon {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.now-playing-body {
+  padding: 0 1rem 0.75rem;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.track-album {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 400;
+}
+
+.track-status {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
 
 /* Profile Card Styles (ReactBits-inspired) */
 .profile-card {
