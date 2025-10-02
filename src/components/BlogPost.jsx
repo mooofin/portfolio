@@ -36,8 +36,7 @@ function BlogPost() {
   const postContent = post ? post.content : `# Loading...`;
   const processed = transformObsidianEmbeds(postContent);
   
-  // Add the upcoming content text at the end
-  const finalContent = processed + '\n\n---\n\nIn my upcoming blogs, I\'ll explain how flakes and configuration.nix works along with the Nix programming language.';
+  const finalContent = processed;
 
   const components = useMemo(() => ({
     img: ({ src, alt }) => {
