@@ -144,6 +144,47 @@ Enough yapping , lets see an actual flake now which i use for my hyprland ecosys
 
 This flake defines a **NixOS system configuration** using the experimental **flakes system**. At its core, the flake is a self-contained directory that includes a `flake.nix` file, specifying inputs, outputs, and the system it builds. The flake begins with a `description` field, giving a human-readable label for the configuration, in this case `"My NixOS configuration"`.
 
+```nix
+{
+  description = "My NixOS configuration";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = { self, nixpkgs, caelestia-shell, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
+
+        modules = [
+          ./configuration.nix
+
+          # Inline module to add Caelestia Shell with CLI
+          {
+            environment.systemPackages = [
+              (caelestia-shell.packages.${system}.with-cli)
+            ];
+          }
+        ];
+
+        specialArgs = { inherit inputs system; };
+      };
+    };
+}
+```
+
+
+
+
 The `inputs` section declares dependencies required by this flake. It includes `nixpkgs`, referencing the unstable branch of the official NixOS package collection from GitHub. It also includes a custom flake, `caelestia-shell`, which represents a shell environment maintained externally. To ensure consistency, `caelestia-shell` is configured to use the same `nixpkgs` version as the main flake via `inputs.nixpkgs.follows = "nixpkgs"`. This prevents version mismatches between package sets when building the system.
 
 The `outputs` function defines what this flake produces. It takes all declared inputs and makes them available for use within the flake. Inside `outputs`, the `system` variable is set to `"x86_64-linux"`, and `pkgs` is assigned the corresponding `nixpkgs` package set for that system. This allows the flake to reference packages specific to the target architecture during system construction.
@@ -251,7 +292,7 @@ SO to summarise
 Coming back to the project we can see that muhehe
 ![[nix-blog2/12.png]]
 
-
+![[nix-blog2/13.png]]
 Let's break down what the nix approach using flakes solves here , ill adress the main things in packaging 
 
 ### 1. Reproducibility
