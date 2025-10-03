@@ -31,6 +31,61 @@ body {
   object-fit: cover;
 }
 
+/* Desktop Icons Layer */
+.desktop-icons-grid {
+  position: fixed;
+  top: 96px;
+  right: 48px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  z-index: 10;
+}
+
+.desktop-shortcut {
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  opacity: 0.9;
+}
+.desktop-shortcut img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.45));
+}
+.desktop-shortcut span {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+.desktop-shortcut:hover { opacity: 1; }
+
+@media (max-width: 900px) {
+  .desktop-icons-grid {
+    right: 16px;
+    top: 72px;
+    gap: 18px;
+  }
+  .desktop-shortcut { width: 84px; }
+  .desktop-shortcut img { width: 54px; height: 54px; }
+  .desktop-shortcut span { font-size: 0.8rem; }
+}
+
+@media (max-width: 560px) {
+  .desktop-icons-grid {
+    position: absolute;
+    bottom: 20px;
+    right: 12px;
+    top: auto;
+    grid-template-columns: repeat(3, 84px);
+    gap: 14px;
+  }
+}
+
 /* Desktop Overlay Theme */
 .desktop-overlay {
   position: relative;

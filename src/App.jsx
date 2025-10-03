@@ -10,6 +10,7 @@ import Blog from './components/blog';
 import About from './components/About';
 import Contact from './components/Contact';
 import VideoBackground from './components/VideoBackground.jsx';
+import DesktopIcons from './components/DesktopIcons.jsx';
 import BlogPage from './components/BlogPage';
 import BlogPost from './components/BlogPost'; 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <VideoBackground src="/images/video/blg.mp4" />
         <div className="content-container">
           <Header />
+          <DesktopIcons />
           <main>
             {/* The Routes component acts as a switch for your pages */}
             <Routes>
