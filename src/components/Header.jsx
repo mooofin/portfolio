@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
@@ -11,7 +11,6 @@ function Header() {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      // Only show header when cursor is within 50px from top
       const nearTop = e.clientY <= 50;
       setIsVisible(nearTop);
     };
@@ -22,15 +21,10 @@ function Header() {
     };
   }, []);
 
-  const scrollToContact = (e) => {
+  const scrollToId = (e, id) => {
     e.preventDefault();
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -39,8 +33,8 @@ function Header() {
         <Link to="/" className="logo">mooofin</Link>
         <ul className="nav-links">
           <li><Link to="/">Home</Link></li>
-          <li><Link to="/#about">About</Link></li>
-          <li><a href="#contact" onClick={scrollToContact}>Contact</a></li>
+          <li><a href="#about" onClick={(e) => scrollToId(e, 'about')}>About</a></li>
+          <li><a href="#contact" onClick={(e) => scrollToId(e, 'contact')}>Contact</a></li>
           <li><Link to="/blog">Blog</Link></li>
           <li>
             <a href="https://open.spotify.com/user/314ikabu7m4lwg6rljojtmhf74uq" target="_blank" rel="noopener noreferrer" className="theme-toggle" aria-label="Spotify">

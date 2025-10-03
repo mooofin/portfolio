@@ -18,6 +18,87 @@ body {
   padding-top: var(--header-height);
 }
 
+/* Fullscreen Video Background */
+.video-background {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+.video-background-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Desktop Overlay Theme */
+.desktop-overlay {
+  position: relative;
+  min-height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.desktop-topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  color: #fff;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+}
+
+.desktop-brand { font-weight: 700; letter-spacing: 0.5px; }
+.desktop-top-links { display: flex; gap: 16px; }
+.desktop-top-links a { color: #fff; text-decoration: none; opacity: 0.9; }
+.desktop-top-links a:hover { opacity: 1; }
+
+.desktop-clock { opacity: 0.9; font-variant-numeric: tabular-nums; }
+
+.desktop-sticky {
+  position: absolute;
+  top: 88px; left: 124px;
+  background: rgba(255, 192, 203, 0.9);
+  color: #000;
+  padding: 14px 18px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  width: 210px;
+  font-weight: 600;
+}
+
+.desktop-icons-right {
+  position: absolute;
+  top: 100px; right: 48px;
+  display: grid;
+  gap: 22px;
+}
+
+.desktop-icon {
+  color: #fff;
+  text-decoration: none;
+  text-align: right;
+  opacity: 0.9;
+}
+
+.desktop-icon:hover { opacity: 1; text-decoration: underline; }
+
+.desktop-mail {
+  position: absolute;
+  top: 220px; left: 520px;
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.desktop-mail:hover { opacity: 1; text-decoration: underline; }
+
 /* --- Main Layout (Corrected for Global Theme & Routing) --- */
 .fullscreen-background {
   position: fixed;
@@ -1561,59 +1642,5 @@ body:not(.theme-image) {
   letter-spacing: 0.3px;
 }
 
-/* Profile Card Styles (ReactBits-inspired) */
-.profile-card {
-  position: relative;
-  max-width: 720px;
-  margin: 1rem auto 2rem;
-  border-radius: 16px;
-  overflow: hidden;
-}
-.profile-card-body {
-  position: relative;
-  padding: 1.5rem;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.16);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-}
-.profile-card-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-.profile-card-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.profile-card-meta {
-  display: flex;
-  flex-direction: column;
-}
-.profile-card-name {
-  margin: 0;
-  font-size: 1.4rem;
-}
-.profile-card-title {
-  opacity: 0.9;
-  font-size: 0.95rem;
-}
-.profile-card-bio p {
-  margin: 0.5rem 0 0.75rem;
-  line-height: 1.6;
-  color: rgba(255,255,255,0.9);
-}
-.profile-card-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-@media (max-width: 768px) {
-  .profile-card-body { padding: 1rem; }
-  .profile-card-avatar { width: 60px; height: 60px; }
-}
+/* Removed ReactBits ProfileCard styles */
 

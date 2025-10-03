@@ -5,10 +5,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Component Imports
 import Header from './components/Header';
 import Hero from './components/Hero';
+// import DesktopOverlay from './components/DesktopOverlay.jsx';
 import Blog from './components/blog';
 import About from './components/About';
 import Contact from './components/Contact';
-import Iridescence from './components/Iridescence';
+import VideoBackground from './components/VideoBackground.jsx';
 import BlogPage from './components/BlogPage';
 import BlogPost from './components/BlogPost'; 
 function App() {
@@ -16,7 +17,7 @@ function App() {
     // The Router must wrap your entire application
     <Router>
       <div className="app-container">
-        <Iridescence color={[0.2, 0.2, 0.2]} speed={0.5} amplitude={0.2} />
+        <VideoBackground src="/images/video/blg.mp4" />
         <div className="content-container">
           <Header />
           <main>
