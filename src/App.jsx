@@ -31,15 +31,14 @@ function App() {
                 element={
                   <>
                     <Hero />
+                    <div style={{ minHeight: '60vh' }}></div>
                     <About />
                     <Contact />
                   </>
                 }
               />
-
               {/* Route for the blog list page */}
               <Route path="/blog" element={<BlogPage />} />
-
               {/* Route for a single, dynamic blog post. This is crucial. */}
               <Route path="/blog/:slug" element={<BlogPost />} />
             </Routes>

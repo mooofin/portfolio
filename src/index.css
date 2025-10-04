@@ -86,6 +86,62 @@ body {
   }
 }
 
+.left-desktop-icons {
+  position: fixed;
+  top: 96px;
+  left: 48px;
+  right: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  z-index: 10;
+}
+@media (max-width: 900px) {
+  .left-desktop-icons {
+    left: 16px;
+    top: 72px;
+    gap: 18px;
+  }
+}
+@media (max-width: 560px) {
+  .left-desktop-icons {
+    position: absolute;
+    bottom: 20px;
+    left: 12px;
+    top: auto;
+    grid-template-columns: repeat(3, 84px);
+    gap: 14px;
+  }
+}
+
+.right-desktop-icons {
+  position: fixed;
+  top: 96px;
+  right: 48px;
+  left: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  z-index: 10;
+}
+@media (max-width: 900px) {
+  .right-desktop-icons {
+    right: 16px;
+    top: 72px;
+    gap: 18px;
+  }
+}
+@media (max-width: 560px) {
+  .right-desktop-icons {
+    position: absolute;
+    bottom: 20px;
+    right: 12px;
+    top: auto;
+    grid-template-columns: repeat(3, 84px);
+    gap: 14px;
+  }
+}
+
 /* Desktop Overlay Theme */
 .desktop-overlay {
   position: relative;
@@ -1698,4 +1754,193 @@ body:not(.theme-image) {
 }
 
 /* Removed ReactBits ProfileCard styles */
+
+/* --- PC Desktop Hero Custom Styles --- */
+.pc-hero {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+}
+.pc-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(20, 20, 20, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  padding: 3rem 2.5rem 2rem 2.5rem;
+  position: relative;
+}
+.pc-image-row {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.pc-hero-img {
+  width: 180px;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 0 0 4px #fff3, 0 0 16px #fff6;
+  background: #222;
+  padding: 0.5rem;
+  object-fit: contain;
+}
+.pc-hero-labels {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+.pc-hero-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0,0,0,0.45);
+  border-radius: 8px;
+  padding: 0.4rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  letter-spacing: 1px;
+  text-shadow: 0 1px 8px #000a;
+}
+@media (max-width: 700px) {
+  .pc-image-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .pc-hero-labels {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .pc-hero-img {
+    width: 120px;
+  }
+}
+
+.hero.hero-right {
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-right: 7vw;
+  padding-top: 10vh;
+}
+.hero-content.hero-content-small {
+  max-width: 380px;
+  width: 100%;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  background: rgba(20, 20, 20, 0.7);
+}
+@media (max-width: 900px) {
+  .hero.hero-right {
+    padding-right: 2vw;
+    padding-top: 4vh;
+  }
+  .hero-content.hero-content-small {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
+}
+
+.pink-sticky {
+  background: #f8a9cb;
+  color: #222;
+  border-radius: 14px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.2rem;
+  min-width: 220px;
+  max-width: 320px;
+  font-size: 1.15rem;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+  border: none;
+}
+.hero-left-sticky {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  top: 8vh;
+  left: 5vw;
+  z-index: 10;
+}
+.hero-sticky {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+.hero-pfp-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.hero-pfp {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0.7rem;
+  border: 2px solid #fff3;
+}
+.hero-sticky-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+}
+.github-sticky {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+}
+.github-link {
+  color: #222;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.github-link:hover {
+  text-decoration: underline;
+}
+.spotify-sticky {
+  padding: 0.7rem 1.2rem;
+  min-width: 220px;
+  max-width: 320px;
+}
+/* Make right-side desktop icons bigger */
+.right-desktop-icons .desktop-shortcut img {
+  width: 90px;
+  height: 90px;
+}
+.right-desktop-icons .desktop-shortcut {
+  width: 120px;
+}
+@media (max-width: 900px) {
+  .hero-left-sticky {
+    left: 2vw;
+    top: 3vh;
+  }
+  .pink-sticky {
+    min-width: 160px;
+    max-width: 98vw;
+    padding: 0.7rem 0.7rem;
+    font-size: 1rem;
+  }
+  .right-desktop-icons .desktop-shortcut img {
+    width: 64px;
+    height: 64px;
+  }
+  .right-desktop-icons .desktop-shortcut {
+    width: 90px;
+  }
+}
 

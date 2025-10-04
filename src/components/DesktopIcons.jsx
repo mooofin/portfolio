@@ -14,21 +14,19 @@ export default function DesktopIcons() {
   };
 
   return (
-    <div className="desktop-icons-grid" aria-label="desktop shortcuts">
+    <div className="desktop-icons-grid right-desktop-icons" aria-label="desktop shortcuts right">
       <a href="/blog" className="desktop-shortcut" onClick={goTo('/blog')}
          title="Blog">
         <img src="/stuff/234.png" alt="Blog folder" />
         <span>Blog</span>
       </a>
-      <a href="#about" className="desktop-shortcut" onClick={goTo(null, 'about')}
-         title="About Me">
-        <img src="/stuff/234.png" alt="About folder" />
-        <span>About Me</span>
+      <a href="#gucci" className="desktop-shortcut" title="Gucci">
+        <img src="/images/gucci.png" alt="Gucci icon" />
+        <span>Gucci</span>
       </a>
-      <a href="#contact" className="desktop-shortcut" onClick={goTo(null, 'contact')}
-         title="Contact">
-        <img src="/stuff/Mail.png" alt="Mail icon" />
-        <span>Contact</span>
+      <a href="#vivienne" className="desktop-shortcut" title="Vivienne Westwood">
+        <img src="/images/vivi.png" alt="Vivienne Westwood icon" />
+        <span>Vivienne Westwood</span>
       </a>
     </div>
   );
