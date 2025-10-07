@@ -133,7 +133,7 @@ body {
 }
 
 .right-desktop-icons {
-  position: fixed;
+  position: static;
   top: 96px;
   right: 48px;
   left: auto;
@@ -1972,13 +1972,21 @@ body:not(.theme-image) {
   border: none;
 }
 
-.hero-left-sticky {
+/* .hero-left-sticky {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   position: absolute;
   top: 8vh;
   left: 5vw;
+  z-index: 10;
+} */
+
+.hero-left-sticky {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  position: static;
   z-index: 10;
 }
 
