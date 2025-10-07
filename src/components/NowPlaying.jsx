@@ -10,21 +10,21 @@ function NowPlaying() {
       try {
         // Using Last.fm API to get recent tracks
         const response = await fetch(
-          //`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=1`
+          // `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=1`
         );
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch track data');
         }
-        
+
         const data = await response.json();
-        
+
         if (data.recenttracks && data.recenttracks.track && data.recenttracks.track.length > 0) {
           const currentTrack = data.recenttracks.track[0];
-          
+
           // Check if track is currently playing (has @attr.nowplaying)
           const isNowPlaying = currentTrack['@attr'] && currentTrack['@attr'].nowplaying === 'true';
-          
+
           // Always show the track - either currently playing or last played
           setTrack({
             name: currentTrack.name,
@@ -44,10 +44,10 @@ function NowPlaying() {
     };
 
     fetchNowPlaying();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchNowPlaying, 30000);
-    
+
     return () => clearInterval(interval);
   }, []);
 

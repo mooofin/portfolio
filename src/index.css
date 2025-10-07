@@ -34,11 +34,11 @@ body {
 
 /* Desktop Icons Layer */
 .desktop-icons-grid {
-  position: fixed;
   top: 96px;
   right: 48px;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, min-content);
+  grid-auto-flow: column;
   gap: 28px;
   z-index: 10;
 }
@@ -61,8 +61,17 @@ body {
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
 }
 
-.desktop-shortcut span {
+/* .desktop-shortcut span {
   margin-top: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+} */
+
+.desktop-shortcut,
+.uncenter {
+  margin-left: 20%;
+  margin-top: 10%;
+  text-align: left;
   font-size: 0.9rem;
 }
 
@@ -86,7 +95,8 @@ body {
     height: 54px;
   }
 
-  .desktop-shortcut span {
+  .desktop-shortcut,
+  .uncenter {
     font-size: 0.8rem;
   }
 }
@@ -103,7 +113,7 @@ body {
 }
 
 .left-desktop-icons {
-  position: fixed;
+  position: static;
   top: 96px;
   left: 48px;
   right: auto;
@@ -123,23 +133,20 @@ body {
 
 @media (max-width: 560px) {
   .left-desktop-icons {
-    position: absolute;
+    position: static;
     bottom: 20px;
     left: 12px;
     top: auto;
-    grid-template-columns: repeat(3, 84px);
+    grid-template-columns: 1fr;
     gap: 14px;
   }
 }
 
 .right-desktop-icons {
   position: static;
-  top: 96px;
-  right: 48px;
-  left: auto;
   display: grid;
-  grid-template-columns: 1fr;
   gap: 28px;
+  justify-content: center;
   z-index: 10;
 }
 
@@ -152,14 +159,22 @@ body {
 }
 
 @media (max-width: 560px) {
-  .right-desktop-icons {
+
+  /*  .right-desktop-icons {
     position: absolute;
     bottom: 20px;
     right: 12px;
     top: auto;
     grid-template-columns: repeat(3, 84px);
     gap: 14px;
+  } */
+  .right-desktop-icons {
+    position: static;
+    bottom: 20px;
+    left: 50%;
+    gap: 14px;
   }
+
 }
 
 /* Desktop Overlay Theme */
@@ -1985,7 +2000,7 @@ body:not(.theme-image) {
 .hero-left-sticky {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   position: static;
   z-index: 10;
 }
@@ -2071,5 +2086,33 @@ body:not(.theme-image) {
 
   .right-desktop-icons .desktop-shortcut {
     width: 90px;
+  }
+}
+
+.first-name {
+  margin-left: 20%;
+  margin-top: 10%;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.last-name {
+  margin-left: 17%;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .first-name {
+    margin-left: 10%;
+    margin-top: 10%;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+
+  .last-name {
+    margin-left: 7%;
+    text-align: left;
+    font-size: 0.9rem;
   }
 }
