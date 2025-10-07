@@ -552,6 +552,7 @@ body {
 .about-content h2 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
+  text-align: center;
   color: #ff0000;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
@@ -560,6 +561,7 @@ body {
   font-size: 2.5rem;
   margin-top: 3rem;
   margin-bottom: 1rem;
+  text-align: center;
   color: #ff0000;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }

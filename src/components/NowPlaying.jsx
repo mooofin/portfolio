@@ -10,7 +10,7 @@ function NowPlaying() {
       try {
         // Using Last.fm API to get recent tracks
         const response = await fetch(
-          // `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=1`
+          `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=1`
         );
 
         if (!response.ok) {
