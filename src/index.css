@@ -25,6 +25,7 @@ body {
   z-index: -2;
   overflow: hidden;
 }
+
 .video-background-media {
   width: 100%;
   height: 100%;
@@ -33,11 +34,11 @@ body {
 
 /* Desktop Icons Layer */
 .desktop-icons-grid {
-  position: fixed;
   top: 96px;
   right: 48px;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, min-content);
+  grid-auto-flow: column;
   gap: 28px;
   z-index: 10;
 }
@@ -46,23 +47,37 @@ body {
   width: 110px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: auto;
   text-decoration: none;
   color: #fff;
   opacity: 0.9;
 }
+
 .desktop-shortcut img {
   width: 68px;
   height: 68px;
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.45));
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
 }
-.desktop-shortcut span {
+
+/* .desktop-shortcut span {
   margin-top: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+} */
+
+.desktop-shortcut,
+.uncenter {
+  margin-left: 20%;
+  margin-top: 10%;
+  text-align: left;
   font-size: 0.9rem;
 }
-.desktop-shortcut:hover { opacity: 1; }
+
+.desktop-shortcut:hover {
+  opacity: 1;
+}
 
 @media (max-width: 900px) {
   .desktop-icons-grid {
@@ -70,9 +85,20 @@ body {
     top: 72px;
     gap: 18px;
   }
-  .desktop-shortcut { width: 84px; }
-  .desktop-shortcut img { width: 54px; height: 54px; }
-  .desktop-shortcut span { font-size: 0.8rem; }
+
+  .desktop-shortcut {
+    width: 84px;
+  }
+
+  .desktop-shortcut img {
+    width: 54px;
+    height: 54px;
+  }
+
+  .desktop-shortcut,
+  .uncenter {
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 560px) {
@@ -87,7 +113,7 @@ body {
 }
 
 .left-desktop-icons {
-  position: fixed;
+  position: static;
   top: 96px;
   left: 48px;
   right: auto;
@@ -96,6 +122,7 @@ body {
   gap: 28px;
   z-index: 10;
 }
+
 @media (max-width: 900px) {
   .left-desktop-icons {
     left: 16px;
@@ -103,27 +130,26 @@ body {
     gap: 18px;
   }
 }
+
 @media (max-width: 560px) {
   .left-desktop-icons {
-    position: absolute;
+    position: static;
     bottom: 20px;
     left: 12px;
     top: auto;
-    grid-template-columns: repeat(3, 84px);
+    grid-template-columns: 1fr;
     gap: 14px;
   }
 }
 
 .right-desktop-icons {
-  position: fixed;
-  top: 96px;
-  right: 48px;
-  left: auto;
+  position: static;
   display: grid;
-  grid-template-columns: 1fr;
   gap: 28px;
+  justify-content: center;
   z-index: 10;
 }
+
 @media (max-width: 900px) {
   .right-desktop-icons {
     right: 16px;
@@ -131,15 +157,24 @@ body {
     gap: 18px;
   }
 }
+
 @media (max-width: 560px) {
-  .right-desktop-icons {
+
+  /*  .right-desktop-icons {
     position: absolute;
     bottom: 20px;
     right: 12px;
     top: auto;
     grid-template-columns: repeat(3, 84px);
     gap: 14px;
+  } */
+  .right-desktop-icons {
+    position: static;
+    bottom: 20px;
+    left: 50%;
+    gap: 14px;
   }
+
 }
 
 /* Desktop Overlay Theme */
@@ -153,40 +188,62 @@ body {
 
 .desktop-topbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 12px;
   color: #fff;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(6px);
   z-index: 1000;
 }
 
-.desktop-brand { font-weight: 700; letter-spacing: 0.5px; }
-.desktop-top-links { display: flex; gap: 16px; }
-.desktop-top-links a { color: #fff; text-decoration: none; opacity: 0.9; }
-.desktop-top-links a:hover { opacity: 1; }
+.desktop-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
 
-.desktop-clock { opacity: 0.9; font-variant-numeric: tabular-nums; }
+.desktop-top-links {
+  display: flex;
+  gap: 16px;
+}
+
+.desktop-top-links a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.desktop-top-links a:hover {
+  opacity: 1;
+}
+
+.desktop-clock {
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
+}
 
 .desktop-sticky {
   position: absolute;
-  top: 88px; left: 124px;
+  top: 88px;
+  left: 124px;
   background: rgba(255, 192, 203, 0.9);
   color: #000;
   padding: 14px 18px;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   width: 210px;
   font-weight: 600;
 }
 
 .desktop-icons-right {
   position: absolute;
-  top: 100px; right: 48px;
+  top: 100px;
+  right: 48px;
   display: grid;
   gap: 22px;
 }
@@ -198,17 +255,24 @@ body {
   opacity: 0.9;
 }
 
-.desktop-icon:hover { opacity: 1; text-decoration: underline; }
+.desktop-icon:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
 
 .desktop-mail {
   position: absolute;
-  top: 220px; left: 520px;
+  top: 220px;
+  left: 520px;
   color: #fff;
   text-decoration: none;
   opacity: 0.9;
 }
 
-.desktop-mail:hover { opacity: 1; text-decoration: underline; }
+.desktop-mail:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
 
 /* --- Main Layout (Corrected for Global Theme & Routing) --- */
 .fullscreen-background {
@@ -217,7 +281,8 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1; /* This forces the background BEHIND all content */
+  z-index: -1;
+  /* This forces the background BEHIND all content */
 }
 
 .content-container {
@@ -226,7 +291,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  overflow-y: auto; /* This makes ONLY the content scrollable */
+  overflow-y: auto;
+  /* This makes ONLY the content scrollable */
 }
 
 /* --- Header --- */
@@ -320,8 +386,13 @@ body {
   text-align: center;
 }
 
-.hero-content h1 { font-size: 3.5rem; }
-.hero-content p { font-size: 1.2rem; }
+.hero-content h1 {
+  font-size: 3.5rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+}
 
 .cta-button {
   display: inline-block;
@@ -348,36 +419,58 @@ body {
 
 /* --- ADD THIS NEW CSS RULE FOR YOUR PFP --- */
 .hero-pfp {
-  width: 150px; /* Controls the size - feel free to change */
-  height: 150px; /* Keep this the same as the width */
-  border-radius: 50%; /* This is what makes it a circle */
-  object-fit: cover; /* Prevents the image from being distorted */
-  margin-bottom: 2rem; /* Adds space between the PFP and your name */
-  
+  width: 150px;
+  /* Controls the size - feel free to change */
+  height: 150px;
+  /* Keep this the same as the width */
+  border-radius: 50%;
+  /* This is what makes it a circle */
+  object-fit: cover;
+  /* Prevents the image from being distorted */
+  margin-bottom: 2rem;
+  /* Adds space between the PFP and your name */
+
   .hero-pfp {
-  /* ...other styles... */
-  border: 3px solid #ff0000; /* This will make the outline a vibrant red */
-} /* Optional: Adds a nice border using your theme's color */
+    /* ...other styles... */
+    border: 3px solid #ff0000;
+    /* This will make the outline a vibrant red */
+  }
+
+  /* Optional: Adds a nice border using your theme's color */
 }
+
 /* --- END OF NEW RULE --- */
 
-.hero-content h1 { font-size: 3.5rem; }
-.hero-content p { font-size: 1.2rem; }
+.hero-content h1 {
+  font-size: 3.5rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+}
+
 .profile-picture {
   /* Size */
-  width: 150px;  /* Adjust the size as you wish */
-  height: 150px; /* Keep this the same as the width for a perfect circle */
+  width: 150px;
+  /* Adjust the size as you wish */
+  height: 150px;
+  /* Keep this the same as the width for a perfect circle */
 
   /* Shape & Appearance */
-  border-radius: 50%; /* This is the property that creates the circle shape */
-  object-fit: cover;  /* This prevents the image from looking stretched or squashed */
-  
+  border-radius: 50%;
+  /* This is the property that creates the circle shape */
+  object-fit: cover;
+  /* This prevents the image from looking stretched or squashed */
+
   /* Optional Border */
-  border: 3px solid var(--primary-color); /* Adds a colored border using your theme's color */
+  border: 3px solid var(--primary-color);
+  /* Adds a colored border using your theme's color */
 
   /* Spacing */
-  margin-bottom: 2rem; /* Creates space between the picture and the title below it */
+  margin-bottom: 2rem;
+  /* Creates space between the picture and the title below it */
 }
+
 /* --- END OF NEW RULE --- */
 
 /* Decrypted Text Animation */
@@ -407,10 +500,14 @@ body {
 }
 
 @keyframes blink {
-  0%, 50% {
+
+  0%,
+  50% {
     opacity: 1;
   }
-  51%, 100% {
+
+  51%,
+  100% {
     opacity: 0;
   }
 }
@@ -424,21 +521,22 @@ body {
   right: 0;
   bottom: 0;
   border-radius: 8px;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
+  background: linear-gradient(45deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent);
   opacity: 0;
   animation: terminalGlow 3s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes terminalGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
@@ -451,22 +549,27 @@ body {
   position: relative;
 }
 
-.about-content h2 { 
-  font-size: 2.5rem; 
+.about-content h2 {
+  font-size: 2.5rem;
   margin-bottom: 2rem;
+  text-align: center;
   color: #ff0000;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
-.about-content h3 { 
-  font-size: 2.5rem; 
-  margin-top: 3rem; 
+.about-content h3 {
+  font-size: 2.5rem;
+  margin-top: 3rem;
   margin-bottom: 1rem;
+  text-align: center;
   color: #ff0000;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
-.about-content p { font-size: 1.1rem; line-height: 1.7; }
+.about-content p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
 
 /* Enhance skill chips */
 .skills-grid {
@@ -478,25 +581,26 @@ body {
 }
 
 .skill-item {
-  background-color: rgba(51,51,51,0.8);
+  background-color: rgba(51, 51, 51, 0.8);
   padding: 0.6rem 1.2rem;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: transform 150ms ease, box-shadow 200ms ease, background-color 150ms ease;
   will-change: transform;
 }
 
-.skill-item:hover, .skill-item:focus {
+.skill-item:hover,
+.skill-item:focus {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.35), 0 0 12px rgba(100,108,255,0.25);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), 0 0 12px rgba(100, 108, 255, 0.25);
   outline: none;
-  background-color: rgba(60,60,60,0.85);
+  background-color: rgba(60, 60, 60, 0.85);
 }
 
 .skill-item:active {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* --- Projects Section --- */
@@ -582,7 +686,7 @@ body {
   text-align: center;
 }
 
-.blog-page > h1 {
+.blog-page>h1 {
   font-size: 2.5rem;
   margin-bottom: 3rem;
 }
@@ -597,9 +701,9 @@ body {
 .blog-post-summary {
   padding: 2rem;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   text-align: left;
-  background: rgba(20,20,20,0.35);
+  background: rgba(20, 20, 20, 0.35);
   backdrop-filter: blur(6px);
 }
 
@@ -679,11 +783,11 @@ body {
 }
 
 .markdown-container {
-  background: rgba(20,20,20,0.35);
+  background: rgba(20, 20, 20, 0.35);
   backdrop-filter: blur(6px);
   padding: 2rem;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   text-align: left;
   line-height: 1.75;
 }
@@ -693,7 +797,7 @@ body {
 .markdown-container h2,
 .markdown-container h3 {
   color: #e4e7ff;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 0.5rem;
   margin-top: 2rem;
 }
@@ -709,14 +813,14 @@ body {
 }
 
 .markdown-container code {
-  background-color: rgba(0,0,0,0.45);
+  background-color: rgba(0, 0, 0, 0.45);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Courier New', Courier, monospace;
 }
 
 .markdown-container pre {
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   padding: 1rem;
   border-radius: 8px;
   overflow-x: auto;
@@ -799,12 +903,10 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -818,11 +920,9 @@ body {
   inset: 0;
   border-radius: 16px;
   padding: 1px;
-  background: linear-gradient(
-    45deg,
-    hsl(var(--hue), 70%, 60%),
-    hsl(var(--hue), 70%, 40%)
-  );
+  background: linear-gradient(45deg,
+      hsl(var(--hue), 70%, 60%),
+      hsl(var(--hue), 70%, 40%));
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   opacity: 0.3;
@@ -859,6 +959,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -871,11 +972,11 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
   }
-  
+
   .glass-icon {
     height: 100px;
   }
-  
+
   .glass-icon-text {
     font-size: 0.8rem;
   }
@@ -943,10 +1044,13 @@ body {
 }
 
 @keyframes shapeBlur {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 0.6;
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.2);
     opacity: 0.8;
@@ -958,7 +1062,7 @@ body {
   .contact-links {
     gap: 0.8rem;
   }
-  
+
   .contact-link {
     padding: 0.8rem 1.5rem;
     font-size: 0.9rem;
@@ -980,16 +1084,14 @@ body {
   inset: 0;
   border-radius: 16px;
   padding: 2px;
-  background: linear-gradient(
-    45deg,
-    #ff006e,
-    #8338ec,
-    #3a86ff,
-    #06ffa5,
-    #ffbe0b,
-    #fb5607,
-    #ff006e
-  );
+  background: linear-gradient(45deg,
+      #ff006e,
+      #8338ec,
+      #3a86ff,
+      #06ffa5,
+      #ffbe0b,
+      #fb5607,
+      #ff006e);
   background-size: 400% 400%;
   animation: electricFlow 3s ease-in-out infinite;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -1007,16 +1109,14 @@ body {
   inset: 0;
   border-radius: 8px;
   padding: 1px;
-  background: linear-gradient(
-    45deg,
-    #ff006e,
-    #8338ec,
-    #3a86ff,
-    #06ffa5,
-    #ffbe0b,
-    #fb5607,
-    #ff006e
-  );
+  background: linear-gradient(45deg,
+      #ff006e,
+      #8338ec,
+      #3a86ff,
+      #06ffa5,
+      #ffbe0b,
+      #fb5607,
+      #ff006e);
   background-size: 300% 300%;
   animation: electricFlow 2s ease-in-out infinite;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -1025,15 +1125,13 @@ body {
 
 .electric-text {
   position: relative;
-  background: linear-gradient(
-    45deg,
-    #ff006e,
-    #8338ec,
-    #3a86ff,
-    #06ffa5,
-    #ffbe0b,
-    #fb5607
-  );
+  background: linear-gradient(45deg,
+      #ff006e,
+      #8338ec,
+      #3a86ff,
+      #06ffa5,
+      #ffbe0b,
+      #fb5607);
   background-size: 400% 400%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -1043,15 +1141,20 @@ body {
 }
 
 @keyframes electricFlow {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   25% {
     background-position: 100% 50%;
   }
+
   50% {
     background-position: 100% 100%;
   }
+
   75% {
     background-position: 0% 100%;
   }
@@ -1165,12 +1268,10 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -1184,12 +1285,10 @@ body {
   inset: 0;
   border-radius: 16px;
   padding: 1px;
-  background: linear-gradient(
-    45deg,
-    #333333,
-    #555555,
-    #333333
-  );
+  background: linear-gradient(45deg,
+      #333333,
+      #555555,
+      #333333);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   opacity: 0.3;
@@ -1239,34 +1338,39 @@ body {
 }
 
 @keyframes footerGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 0.6;
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.2);
     opacity: 0.8;
   }
 }
+
 /* Mobile Performance Optimizations */
 
 /* Mobile Performance Optimizations */
 @media (max-width: 768px) {
+
   /* Disable heavy background animation on mobile */
   .fullscreen-background {
     display: none !important;
   }
-  
+
   body {
     background-color: var(--background-color);
   }
-  
+
   /* Reduce animation complexity for better performance */
   * {
     animation-duration: 0.2s !important;
     transition-duration: 0.15s !important;
   }
-  
+
   /* Disable backdrop filters on mobile */
   .glass-icon-inner,
   .markdown-container,
@@ -1274,7 +1378,7 @@ body {
   .contact-link {
     background: rgba(20, 20, 20, 0.8) !important;
   }
-  
+
   /* Optimize header for mobile */
   .header {
     position: fixed;
@@ -1286,151 +1390,147 @@ body {
     background: rgba(10, 10, 10, 0.45);
     backdrop-filter: blur(8px);
   }
-  
+
   .header-visible {
     transform: translateY(0);
     opacity: 1;
   }
-  
+
   .header-hidden {
     transform: translateY(-100%);
     opacity: 0;
   }
-  
-  body {
-    /* No padding needed for sticky positioning */
-  }
-  
+
   .navbar {
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.3rem;
     border-radius: 30px;
   }
-  
+
   .nav-links {
     gap: 0.3rem;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .nav-links a {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
   }
-  
+
   .logo {
     padding: 0.4rem 0.8rem;
     font-size: 1rem;
     margin-right: 0;
     margin-bottom: 0.5rem;
   }
-  
+
   /* Optimize hero section */
   .hero {
     min-height: 60vh;
     padding: 1rem;
   }
-  
+
   .hero-content h1 {
     font-size: 2rem;
   }
-  
+
   .hero-content p {
     font-size: 1rem;
   }
-  
+
   .hero-pfp {
     width: 100px;
     height: 100px;
   }
-  
+
   /* Simplify electric effects */
   .electric-border {
     padding: 1rem;
     margin: 1rem;
   }
-  
+
   .electric-text {
     font-size: 1.8rem;
   }
-  
+
   /* Optimize about section */
   .about-content {
     padding: 0 1rem;
   }
-  
+
   .about-content h2,
   .about-content h3 {
     font-size: 2rem;
   }
-  
+
   .decrypted-text {
     font-size: 1rem;
     padding: 1rem;
     margin: 1rem 0;
   }
-  
+
   /* Optimize skills grid */
   .glass-icons-container {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
     padding: 0 1rem;
   }
-  
+
   .glass-icon {
     height: 80px;
   }
-  
+
   .glass-icon-text {
     font-size: 0.8rem;
   }
-  
+
   /* Optimize contact section */
   .contact-section {
     padding: 3rem 1rem;
   }
-  
+
   .contact-links {
     gap: 0.8rem;
   }
-  
+
   .contact-link {
     padding: 0.8rem 1.5rem;
     font-size: 0.9rem;
   }
-  
+
   /* Optimize blog sections */
   .blog-page {
     padding: 2rem 1rem;
   }
-  
+
   .blog-title {
     font-size: 2rem;
   }
-  
+
   .blog-decrypted {
     font-size: 1rem;
     padding: 1.5rem;
   }
-  
+
   .blog-list {
     gap: 1rem;
   }
-  
+
   .blog-post-summary {
     padding: 1.5rem;
   }
-  
+
   .blog-page-container {
     padding: 2rem 1rem 4rem;
   }
-  
+
   .markdown-container {
     padding: 1.5rem;
     font-size: 0.95rem;
   }
-  
+
   .markdown-container h1,
   .markdown-container h2,
   .markdown-container h3 {
@@ -1449,12 +1549,13 @@ body {
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
+
   .glass-icon:hover,
   .contact-link:hover,
   .skill-item:hover {
     transform: none;
   }
-  
+
   .glass-icon:active,
   .contact-link:active,
   .skill-item:active {
@@ -1467,28 +1568,28 @@ body {
   .hero-content h1 {
     font-size: 1.8rem;
   }
-  
+
   .about-content h2,
   .about-content h3 {
     font-size: 1.8rem;
   }
-  
+
   .glass-icons-container {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
-  
+
   .glass-icon {
     height: 70px;
   }
-  
+
   .glass-icon-text {
     font-size: 0.7rem;
   }
-  
+
   .nav-links {
     gap: 0.3rem;
   }
-  
+
   .nav-links a {
     font-size: 0.8rem;
     padding: 0.3rem 0.6rem;
@@ -1498,6 +1599,7 @@ body {
 
 /* Mobile Red Animation Optimizations */
 @media (max-width: 768px) {
+
   /* Keep red animations but optimize performance */
   .glass-icon-inner,
   .markdown-container,
@@ -1506,37 +1608,37 @@ body {
     backdrop-filter: blur(5px) !important;
     background: rgba(20, 20, 20, 0.6) !important;
   }
-  
+
   /* Optimize red glow effects */
   .electric-text {
     animation: electricFlow 2s ease-in-out infinite;
   }
-  
+
   .electric-border-bg {
     animation: electricFlow 2s ease-in-out infinite;
   }
-  
+
   .electric-border-bg-small {
     animation: electricFlow 1.5s ease-in-out infinite;
   }
-  
+
   /* Optimize decrypted text cursor */
   .cursor {
     animation: blink 0.8s infinite;
   }
-  
+
   /* Optimize glass icon hover effects */
   .glass-icon:hover .glass-icon-inner::before {
     left: 100%;
     transition: left 0.3s ease;
   }
-  
+
   .glass-icon:hover .footer-glow {
     width: 150px;
     height: 150px;
     animation: footerGlow 1.5s ease-in-out infinite;
   }
-  
+
   /* Optimize contact link glow */
   .contact-link:hover .shape-blur-bg {
     width: 150px;
@@ -1550,7 +1652,7 @@ body {
 @media (max-width: 768px) {
   body {
     background-color: var(--background-color);
-    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone');
+    background-image: linear-gradient(rgba(10, 10, 10, 0.55), rgba(10, 10, 10, 0.55)), url('/images/phone');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -1560,12 +1662,15 @@ body {
 
 /* Mobile background: phone1.jpg full-bleed */
 @media (max-width: 768px) {
-  html, body {
+
+  html,
+  body {
     height: 100%;
     min-height: 100vh;
   }
+
   body {
-    background-image: linear-gradient(rgba(10,10,10,0.55), rgba(10,10,10,0.55)), url('/images/phone1.jpg') !important;
+    background-image: linear-gradient(rgba(10, 10, 10, 0.55), rgba(10, 10, 10, 0.55)), url('/images/phone1.jpg') !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     background-position: center center !important;
@@ -1575,6 +1680,7 @@ body {
 
 /* Mobile heading colors: switch to white for cohesion */
 @media (max-width: 768px) {
+
   .about-content h2,
   .about-content h3,
   .contact-section h2,
@@ -1587,9 +1693,15 @@ body {
 
 /* Desktop background: pc.jpg full-bleed */
 @media (min-width: 769px) {
-  html, body { height: 100%; min-height: 100vh; }
+
+  html,
   body {
-    background-image: linear-gradient(rgba(10,10,10,0.45), rgba(10,10,10,0.45)), url('/images/pc.jpg');
+    height: 100%;
+    min-height: 100vh;
+  }
+
+  body {
+    background-image: linear-gradient(rgba(10, 10, 10, 0.45), rgba(10, 10, 10, 0.45)), url('/images/pc.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -1600,7 +1712,7 @@ body {
 /* Theme toggle button */
 .theme-toggle {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   border-radius: 8px;
   padding: 0.3rem 0.6rem;
@@ -1614,6 +1726,7 @@ body.theme-image {
 
 /* Using iridescence background instead of image backgrounds */
 @media (max-width: 768px) {
+
   .about-content h2,
   .about-content h3,
   .contact-section h2,
@@ -1635,8 +1748,8 @@ body:not(.theme-image) {
 
 /* Spotify icon and toggle button coherent styling */
 .theme-toggle {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #fff;
   border-radius: 10px;
   padding: 0.35rem 0.55rem;
@@ -1649,7 +1762,7 @@ body:not(.theme-image) {
 }
 
 .theme-toggle:hover {
-  box-shadow: 0 4px 16px rgba(255,0,0,0.2);
+  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.2);
 }
 
 
@@ -1763,16 +1876,18 @@ body:not(.theme-image) {
   align-items: center;
   background: none;
 }
+
 .pc-hero-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   background: rgba(20, 20, 20, 0.7);
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   padding: 3rem 2.5rem 2rem 2.5rem;
   position: relative;
 }
+
 .pc-image-row {
   display: flex;
   flex-direction: row;
@@ -1781,15 +1896,17 @@ body:not(.theme-image) {
   justify-content: center;
   margin-bottom: 1.5rem;
 }
+
 .pc-hero-img {
   width: 180px;
   height: auto;
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 0 0 4px #fff3, 0 0 16px #fff6;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 0 0 4px #fff3, 0 0 16px #fff6;
   background: #222;
   padding: 0.5rem;
   object-fit: contain;
 }
+
 .pc-hero-labels {
   display: flex;
   flex-direction: row;
@@ -1797,26 +1914,30 @@ body:not(.theme-image) {
   justify-content: center;
   margin-top: 0.5rem;
 }
+
 .pc-hero-label {
   font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   border-radius: 8px;
   padding: 0.4rem 1.2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   letter-spacing: 1px;
   text-shadow: 0 1px 8px #000a;
 }
+
 @media (max-width: 700px) {
   .pc-image-row {
     flex-direction: column;
     gap: 1.5rem;
   }
+
   .pc-hero-labels {
     flex-direction: column;
     gap: 0.5rem;
   }
+
   .pc-hero-img {
     width: 120px;
   }
@@ -1829,19 +1950,22 @@ body:not(.theme-image) {
   padding-right: 7vw;
   padding-top: 10vh;
 }
+
 .hero-content.hero-content-small {
   max-width: 380px;
   width: 100%;
   padding: 2rem 1.5rem 1.5rem 1.5rem;
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   background: rgba(20, 20, 20, 0.7);
 }
+
 @media (max-width: 900px) {
   .hero.hero-right {
     padding-right: 2vw;
     padding-top: 4vh;
   }
+
   .hero-content.hero-content-small {
     max-width: 98vw;
     padding: 1.2rem 0.5rem;
@@ -1852,7 +1976,7 @@ body:not(.theme-image) {
   background: #f8a9cb;
   color: #222;
   border-radius: 14px;
-  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.18);
   padding: 1.2rem 1.5rem;
   margin-bottom: 1.2rem;
   min-width: 220px;
@@ -1864,7 +1988,8 @@ body:not(.theme-image) {
   z-index: 2;
   border: none;
 }
-.hero-left-sticky {
+
+/* .hero-left-sticky {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1872,75 +1997,124 @@ body:not(.theme-image) {
   top: 8vh;
   left: 5vw;
   z-index: 10;
+} */
+
+.hero-left-sticky {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: static;
+  z-index: 10;
 }
+
 .hero-sticky {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.7rem;
 }
+
 .hero-pfp-row {
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin: auto;
 }
+
 .hero-pfp {
   width: 70px;
   height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 0.7rem;
   border: 2px solid #fff3;
 }
+
 .hero-sticky-text {
   font-size: 1.1rem;
   font-weight: 500;
   color: #222;
+  margin: auto;
 }
+
 .github-sticky {
   font-size: 1.1rem;
   font-weight: 600;
-  text-align: left;
+  text-align: auto;
 }
+
 .github-link {
   color: #222;
   text-decoration: none;
   font-weight: 700;
   font-size: 1.1rem;
 }
+
 .github-link:hover {
   text-decoration: underline;
 }
+
 .spotify-sticky {
   padding: 0.7rem 1.2rem;
   min-width: 220px;
   max-width: 320px;
 }
+
 /* Make right-side desktop icons bigger */
 .right-desktop-icons .desktop-shortcut img {
   width: 90px;
   height: 90px;
 }
+
 .right-desktop-icons .desktop-shortcut {
   width: 120px;
 }
+
 @media (max-width: 900px) {
   .hero-left-sticky {
     left: 2vw;
     top: 3vh;
   }
+
   .pink-sticky {
     min-width: 160px;
     max-width: 98vw;
     padding: 0.7rem 0.7rem;
     font-size: 1rem;
   }
+
   .right-desktop-icons .desktop-shortcut img {
     width: 64px;
     height: 64px;
   }
+
   .right-desktop-icons .desktop-shortcut {
     width: 90px;
   }
 }
 
+.first-name {
+  margin-left: 20%;
+  margin-top: 10%;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.last-name {
+  margin-left: 17%;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .first-name {
+    margin-left: 10%;
+    margin-top: 10%;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+
+  .last-name {
+    margin-left: 7%;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+}
