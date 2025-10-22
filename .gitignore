@@ -1,2 +1,27 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Editor files
 *.backup
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# GitHub Copilot instructions (keep local only)
+.github/copilot-instructions.md

@@ -6,7 +6,7 @@ export default function ProfileCard() {
       <div className="electric-border-bg"></div>
       <div className="profile-card-body">
         <div className="profile-card-header">
-          <img className="profile-card-avatar" src="/images/icons/blogicon.gif" alt="avatar" loading="lazy" />
+          <img className="profile-card-avatar" src="/images/icons/icon.jpg" alt="avatar" loading="lazy" />
           <div className="profile-card-meta">
             <h3 className="profile-card-name">siddharth</h3>
             <div className="profile-card-title">A Mod Developer & Reverse Engineer</div>

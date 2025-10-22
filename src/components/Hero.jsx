@@ -7,7 +7,7 @@ function Hero() {
       <div className="pink-sticky hero-sticky">
         <div className="hero-pfp-row">
           <img 
-            src="/images/icons/blogicon.gif" 
+            src="/images/icons/icon.jpg" 
             alt="Profile" 
             className="hero-pfp"
           />

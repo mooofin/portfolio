@@ -1976,11 +1976,11 @@ body:not(.theme-image) {
   background: #f8a9cb;
   color: #222;
   border-radius: 14px;
-  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.18);
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 1.2rem;
-  min-width: 220px;
-  max-width: 320px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  padding: 2.1rem 2rem; /* Increased padding for airiness */
+  margin-bottom: 0;
+  min-width: 250px;
+  max-width: 350px;
   font-size: 1.15rem;
   font-family: 'Segoe UI', Arial, sans-serif;
   font-weight: 500;
@@ -1994,9 +1994,10 @@ body:not(.theme-image) {
   flex-direction: column;
   align-items: flex-start;
   position: absolute;
-  top: 8vh;
-  left: 5vw;
+  top: 10vh;
+  left: 6vw;
   z-index: 10;
+  gap: 2.2rem;
 } */
 
 .hero-left-sticky {
@@ -2060,30 +2061,35 @@ body:not(.theme-image) {
 
 /* Make right-side desktop icons bigger */
 .right-desktop-icons .desktop-shortcut img {
-  width: 90px;
-  height: 90px;
+  width: 100px;  /* Slightly bigger icons */
+  height: 100px;
 }
 
 .right-desktop-icons .desktop-shortcut {
-  width: 120px;
+  width: 130px;
 }
 
 @media (max-width: 900px) {
   .hero-left-sticky {
     left: 2vw;
     top: 3vh;
+    gap: 1.2rem;
   }
 
   .pink-sticky {
     min-width: 160px;
     max-width: 98vw;
-    padding: 0.7rem 0.7rem;
+    padding: 1.1rem 0.8rem;
     font-size: 1rem;
   }
-
+  .right-desktop-icons {
+    right: 16px;
+    top: 90px;
+    gap: 32px;
+  }
   .right-desktop-icons .desktop-shortcut img {
-    width: 64px;
-    height: 64px;
+    width: 72px;
+    height: 72px;
   }
 
   .right-desktop-icons .desktop-shortcut {
@@ -2116,5 +2122,120 @@ body:not(.theme-image) {
     margin-left: 7%;
     text-align: left;
     font-size: 0.9rem;
+  }
+}
+
+/* Brand Modal Styles */
+.brand-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  cursor: pointer;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.brand-modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  cursor: default;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.brand-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.brand-modal-close:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: rotate(90deg);
+}
+
+.brand-modal-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.brand-modal-gallery img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.brand-modal-gallery img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .brand-modal-content {
+    padding: 20px;
+    max-width: 95vw;
+  }
+
+  .brand-modal-gallery {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .brand-modal-close {
+    width: 35px;
+    height: 35px;
+    font-size: 24px;
   }
 }

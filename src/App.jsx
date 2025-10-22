@@ -30,7 +30,7 @@ function App() {
                 element={
                   <>
                     <Hero />
-                    <div></div>
+                    <div style={{ minHeight: '60vh' }}></div>
                     <DesktopIcons />
                     <About />
                     <Contact />
