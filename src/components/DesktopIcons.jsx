@@ -50,6 +50,11 @@ export default function DesktopIcons() {
           <img src="/stuff/234.png" alt="Blog folder" />
           <span className='uncenter'>Blog</span>
         </a>
+        <a href="https://github.com/mooofin" className="desktop-shortcut" target="_blank" rel="noopener noreferrer"
+          title="GitHub">
+          <img src="/stuff/234.png" alt="GitHub folder" />
+          <span className='uncenter'>GitHub</span>
+        </a>
         <a href="#gucci" className="desktop-shortcut" title="Gucci" onClick={openModal(brandImages.gucci)}>
           <img src="/images/gucci.png" alt="Gucci icon" />
           <span className='uncenter'>Gucci</span>

@@ -1,18 +1,6 @@
 // src/components/Blog.jsx
 import ReactMarkdown from 'react-markdown';
 
-// --- PASTE YOUR ENTIRE MARKDOWN POST INSIDE THESE BACKTICKS ---
-const markdownContent = `
-# My First Post
-This is where your blog post content goes.
-
-You can have **bold text**, *italic text*, and even code blocks.
-
-\`\`\`
-const example = "Hello, World!";
-\`\`\`
-`;
-// ----------------------------------------------------------------
 
 function Blog() {
   return (

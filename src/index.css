@@ -684,6 +684,22 @@ body {
 .blog-page {
   padding: 5rem 2rem;
   text-align: center;
+  position: relative;
+  min-height: 100vh;
+}
+
+.blog-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/icons/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
 .blog-page>h1 {
@@ -729,6 +745,22 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: 3rem 2rem 6rem;
+  position: relative;
+  min-height: 100vh;
+}
+
+.blog-page-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/icons/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
 .blog-article {
@@ -1977,7 +2009,7 @@ body:not(.theme-image) {
   color: #222;
   border-radius: 14px;
   box-shadow: 0 6px 32px rgba(0,0,0,0.18);
-  padding: 2.1rem 2rem; /* Increased padding for airiness */
+  padding: 3rem 2.5rem;
   margin-bottom: 0;
   min-width: 250px;
   max-width: 350px;
@@ -1997,7 +2029,7 @@ body:not(.theme-image) {
   top: 10vh;
   left: 6vw;
   z-index: 10;
-  gap: 2.2rem;
+  gap: 3.5rem;
 } */
 
 .hero-left-sticky {
@@ -2073,7 +2105,7 @@ body:not(.theme-image) {
   .hero-left-sticky {
     left: 2vw;
     top: 3vh;
-    gap: 1.2rem;
+    gap: 2rem;
   }
 
   .pink-sticky {
@@ -2238,4 +2270,13 @@ body:not(.theme-image) {
     height: 35px;
     font-size: 24px;
   }
+}
+
+/* Bio text styling */
+.bio-text-red {
+  color: #ff0000 !important;
+}
+
+.bio-text-red * {
+  color: #ff0000 !important;
 }

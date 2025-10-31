@@ -13,11 +13,10 @@ function Hero() {
           />
         </div>
         <div className="hero-sticky-text">
-          <div>NixOS witch<br/>LLVM enthusiast</div>
+          <div>Sid
+            
+            <br/>Anxious speedwalker | Nix-OS</div>
         </div>
-      </div>
-      <div className="pink-sticky github-sticky">
-        <a href="https://github.com/mooofin" target="_blank" rel="noopener noreferrer" className="github-link">My GitHub</a>
       </div>
       <div className="pink-sticky spotify-sticky">
         <NowPlaying />

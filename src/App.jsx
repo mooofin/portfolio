@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // Component Imports
 import Header from './components/Header';
@@ -13,14 +13,16 @@ import VideoBackground from './components/VideoBackground.jsx';
 import DesktopIcons from './components/DesktopIcons.jsx';
 import BlogPage from './components/BlogPage';
 import BlogPost from './components/BlogPost';
-function App() {
+
+function AppContent() {
+  const location = useLocation();
+  const isBlogRoute = location.pathname.startsWith('/blog');
+
   return (
-    // The Router must wrap your entire application
-    <Router>
-      <div className="app-container">
-        <VideoBackground src="/images/video/blg.mp4" />
-        <div className="content-container">
-          <Header />
+    <div className="app-container">
+      {!isBlogRoute && <VideoBackground src="/images/video/blg.mp4" />}
+      <div className="content-container">
+        <Header />
           <main>
             {/* The Routes component acts as a switch for your pages */}
             <Routes>
@@ -45,6 +47,13 @@ function App() {
           </main>
         </div>
       </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

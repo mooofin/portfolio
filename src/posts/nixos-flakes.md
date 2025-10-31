@@ -12,22 +12,21 @@ Before getting into this , let me explain what functional programming languages 
 
 The wikepedia quotes  - **functional programming** is a [programming paradigm](https://en.wikipedia.org/wiki/Programming_paradigm "Programming paradigm") where programs are constructed by [applying](https://en.wikipedia.org/wiki/Function_application "Function application") and [composing](https://en.wikipedia.org/wiki/Function_composition_\(computer_science\) "Function composition (computer science)") [functions](https://en.wikipedia.org/wiki/Function_\(computer_science\) "Function (computer science)"). It is a [declarative programming](https://en.wikipedia.org/wiki/Declarative_programming "Declarative programming") paradigm in which function definitions are [trees](https://en.wikipedia.org/wiki/Tree_\(data_structure\) "Tree (data structure)") of [expressions](https://en.wikipedia.org/wiki/Expression_\(computer_science\) "Expression (computer science)") that map [values](https://en.wikipedia.org/wiki/Value_\(computer_science\) "Value (computer science)") to other values, rather than a sequence of [imperative](https://en.wikipedia.org/wiki/Imperative_programming "Imperative programming") [statements](https://en.wikipedia.org/wiki/Statement_\(computer_science\) "Statement (computer science)") which update the [running state](https://en.wikipedia.org/wiki/State_\(computer_science\) "State (computer science)") of the program.
 
-Hmm lets see that visually with an , ill explain the use of functional programming with a example 
+Let's see that visually , ive written some examples to help understand this better 
 
 
-Let me first establish an important notion: **defining components through functions that accept values for their variation points** provides far greater flexibility than approaches where these variation points are bound using **global variables**.
+Let me  establish an important notion: **defining components through functions that accept values for their variation points** provides far greater flexibility than approaches where these variation points are bound using **global variables**.
 
 
-Imagine we have a  library called muffin (YES) , it has several options built it , and one option called " confict checker" is enabled . now imagine that this setting is important and it can change semantics . The point i'm trying to make is a build with "conflict-checker" cannot be substituted by
-a build without "confict-checker" , and vice versa . 
+Imagine we have a library called muffin (YES) , it has several options built it , and one option called " confict checker" is enabled . now imagine that this setting is important and it can change semantics . The point is that trying to make is a build with "conflict-checker" cannot be substituted by
+a build without "confict-checker" , and vice versa.
 
 
-Now furhter adding to this lets say i have a component , consisting of two programs, foo and bar, that require the muffin library with and without
-"conflict-checker" respectively .
+Now further adding to this lets say i have a component , consisting of two programs, foo and bar, that require the muffin library with and without "conflict-checker" respectively .
 
 It's very cutesey to model this in a purely functional langauge 
 
-we could just make a function for the muffin 
+I could just make a function for muffin which does so 
 
 
 ![[nix-blog2/1.png]]
@@ -42,15 +41,18 @@ respectively:
 
 Mhmm so how do we adress this issue moving forward  ?
 
+
+
+
 If the language were a Makefile-like declarative formalism, then
-it would be quite hard to implement this example. Makefiles  are a formalism to
+ it would be quite hard to implement this example. Makefiles  are a formalism to
 describe the construction of (small-grained) components. Variability in a component is
-typically expressed by setting variables
+typically expressed by setting variables  globally before invoking `make`. For example, one might write:
 
 ![[nix-blog2/3.png]]
 
 
-A significant challenge with Make is building a component in multiple configurations at the same time. For example, it's not obvious how to build both `foo` and `bar` with their different library variants in a single, clean process.
+A significant challenge with Make is building a component in multiple configurations at the same time. For example, it's not obvious how to build both `foo` and `bar` with their different library variants in a single, clean process 
 
 When developers need to do this, they often resort to special workarounds. A common technique is to call `make` multiple times (recursively), passing different flags on each call and manually renaming the output files to avoid conflicts.
 
@@ -61,10 +63,55 @@ An imperative scripting language, however, would make this task more straightfor
 
 However, this imperative approach introduces the same classic problems found in general-purpose scripting. The biggest issue is that the **order of execution is critical**, which makes it difficult to know the exact configuration being passed to a build function like `muffin()` at any given moment.
 
-While you can trace the logic in a trivial example, the complexity quickly becomes unmanageable as the build script grows with more functions, variables, and `if/else` branches. It's important to note that this isn't just a problem with global variables. Even if `conflictChecker` were a property of a `muffin` object, you would still need to track the program's execution step-by-step to understand the object's state when `muffin()` is called, which makes the whole build process hard to reason about.
+While you can trace the logic in a trivial example, the complexity quickly becomes unmanageable as the build script grows with more functions, variables, and `if/else` branches. It's important to note that this isn't just a problem with global variables. Even if `conflictChecker` were a property of a `muffin` object, you would still need to track the program's execution step-by-step to understand the object's state when `muffin()` is called, which makes the whole build process hard to reason about :( 
 
 
-Laziness (JIT compilation )
+## Laziness (JIT compilation)
+
+Ok so a way to solve this would be to use a lazy language 
+A key feature of a **lazy language** is that it only computes a value at the exact moment it's needed. This property is incredibly powerful for a language used to describe software packages and systems. 
+
+
+
+Consider a typical `flake.nix` (ill explain this on the way but for now think of it as a substitute for a make file ) for a project. You can define a large and varied collection of outputs in that single file, such as:
+
+- `packages` for a web server and a command-line tool.
+  
+- `devShells` for your frontend and backend teams.
+  
+- `nixosConfigurations` for a production server and a local virtual machine.
+  
+
+Because the language is **lazy**, if you run a command like `nix build .#server`, Nix will **only** evaluate and build that specific server package and its dependencies. It completely ignores the definitions for the command-line tool, the development shells, and the other system configurations, saving a huge amount of time and resources. You can define an entire universe of components without paying the price for anything you don't immediately use
+
+
+![[nix-blog2/5.png]]
+
+Since the language is **lazy**, the right-hand sides of the attributes will not be evaluated until they are actually needed, if at all.
+
+For instance, if we install any specific component from this set, say,
+
+```
+nix-env -i hello
+```
+
+then only the **hello** value will be evaluated (although it may in turn require other values to be evaluated, such as **stdenv**).
+
+Laziness also allows greater efficiency if only parts of a complex data structure are needed.
+
+Take the operation:
+
+```
+nix-env -qa
+```
+
+which prints the **name** attribute of all top-level derivations in a Nix expression.
+
+
+
+ ![[nix-blog2/6.png]]
+
+Laziness allows arguments to be passed to functions that may not be used is the main idea . 
 
 Ok so a way to solve this would be to use a lazy language 
 A key feature of a **lazy language** is that it only computes a value at the exact moment it's needed. This property is incredibly powerful for a language used to describe software packages and systems. 
@@ -112,23 +159,26 @@ which prints the **name** attribute of all top-level derivations in a Nix expres
 Laziness allows arguments to be passed to functions that may not be used is the main idea . 
 
 
+![[nix-blog2/7.png]]
+
 
 ## NIX FLAKES : ) 
+
 
 
  A **Nix expression** is code written in the Nix language that describes how to build or configure something, while a **Nix file** is a `.nix` file that contains one or more of these Nix expressions.
 
 For example: 
 
-![[nix-blog2/7.png]]
 
+![[nix-blog2/8.png]]
 
 The first line, `{ pkgs ? import <nixpkgs> {} }:`, defines a function that takes an argument named `pkgs`, which by default is set to the result of importing `<nixpkgs>`. This gives the expression access to the standard Nix package set, allowing the use of common utilities and build functions. The next expression, `pkgs.stdenv.mkDerivation { ... }`, declares a derivation, which is a build recipe describing how to construct a package. Inside this derivation, the attributes `pname = "muffin";` and `version = "1.0.0";` specify the package name and version. The `src = ./.;` line indicates that the source files for the package are located in the current directory, i.e., the same directory as the `.nix` file itself. The `buildPhase` section is a shell script that runs during the build process; in this case, it simply creates a file named `muffin.txt` containing the message “Baking a delicious muffin…”.
 
 
 Hopefully this muffin example gave an idea about how nix expressions work , just the syntax tho :3 
 
-So what the fuck are flakes now ? 
+## So what the fuck are flakes now ? 
 
 
 The basic idea of flakes isn't that complicated, but it does require a little bit of basic understanding of the nix programming language(try making your own .nix expression adhering to the muffin example the nix error checker is very nice and :) ) . A `flake.nix` file is an attribute set with two attributes called `inputs` and `outputs`. The `inputs` attribute describes the other flakes that you would like to use; things like nixpkgs or home-manager. You have to give it the url where the code for that other flake is, and usually people use GitHub. The `outputs` attribute is a _function_, which is where we really start getting into the nix programming language. Nix will go and fetch all the inputs, load up _their_ `flake.nix` files, and it will call your `outputs` function with all of _their outputs_ as arguments. The outputs of a flake are just whatever its `outputs` function returns, which can be basically anything the flake wants it to be. Finally, nix records exactly which revision was fetched from GitHub in `flake.lock` so that the versions of all your inputs are pinned to the same thing until you manually update the lock file.
@@ -139,7 +189,6 @@ Now, I said that the outputs of a flake can be basically anything you want, but 
 Enough yapping , lets see an actual flake now which i use for my hyprland ecosystem
 
 
-![[nix-blog2/8.png]]
 
 
 This flake defines a **NixOS system configuration** using the experimental **flakes system**. At its core, the flake is a self-contained directory that includes a `flake.nix` file, specifying inputs, outputs, and the system it builds. The flake begins with a `description` field, giving a human-readable label for the configuration, in this case `"My NixOS configuration"`.
@@ -232,11 +281,33 @@ Use this for tools specific to one project, such as compilers and libraries for 
 
 (Note that for Bad Reasons, `nix-shell -p` is not equivalent to `nix shell`: the latter does not provide a compiler or `stdenv` as would be necessary to build software. The technical reason here is that `nix shell` constructs the shell within C++ code in Nix, whereas `nix-shell -p` is more or less `nix develop` on a questionable string templated expression involving `pkgs.mkShell`)
 
-To demonstrate this Rust + Nix project with **multi-target cross-compilation and Docker support**
+To demonstrate this i've written a  Rust + Nix project with **multi-target cross-compilation and Docker support**
 
 In this guide, we’ll learn how to build a **Rust project** using **Nix flakes** with full **multi-target cross-compilation** and **Docker image generation**. Instead of relying on local toolchains or ad-hoc scripts, we’ll declare everything Rust versions, dependencies, targets, and environment inside a single `flake.nix` file. This gives us a fully reproducible, isolated, and declarative setup. By the end, you’ll understand how Nix ensures consistent builds across machines, how it provisions multiple targets like `x86_64-unknown-linux-musl`, `aarch64-unknown-linux-gnu`, and `x86_64-pc-windows-gnu`, and how to package your Rust binary inside a lightweight Docker image all from one flake-based configuration
 
-![[nix-blog2/9.png]]
+
+### Why Use Nix Flakes for ANY Projects?
+
+![[nix-blog2/Rustflakes.png]]
+
+
+
+When building Rust applications, especially for production or cross-platform distribution, you face several common challenges. Different machines often have different Rust versions installed via `rustup`, leading to toolchain drift. Native libraries like OpenSSL vary wildly across distros, creating system dependency chaos. Setting up Windows or ARM targets requires painful manual linker configuration. Build scripts that work perfectly on your local machine mysteriously break in CI environments, and multi-stage Dockerfiles end up duplicating build logic in confusing ways.
+
+**Nix Flakes Solution:**
+
+With the [Rustflakes](https://github.com/mooofin/Rustflakes) approach, you get a much cleaner solution. One `flake.nix` file becomes your single source of truth, declaring the Rust version, all system dependencies, and build targets in one place. Builds are hermetic—they don't rely on whatever happens to be installed on your host system. Cross-compilation becomes trivial: just add a target to `flake.nix` and run `nix build .#windows` or `.#aarch64`. You even get Docker images for free, generated directly from Nix derivations. Since dependencies are vendored in `vendor/`, builds work offline without network access.
+
+This makes Rustflakes particularly valuable for teams needing consistent builds across developer machines and CI, projects targeting multiple platforms like Linux, Windows, and ARM, embedded or IoT applications requiring specific toolchain versions, and security-conscious environments requiring reproducible builds.
+
+The repository demonstrates this with working examples for `x86_64-linux`, `aarch64-linux`, and `x86_64-windows` targets, all built from the same declarative configuration.
+
+
+
+### Building the Project
+
+Let's walk through using this Nix-based Rust project:
+
 
 ![[nix-blog2/10.png]]
 
@@ -299,19 +370,19 @@ Let's break down what the nix approach using flakes solves here , ill adress the
 
 Normally, if you just run `cargo build`, your binary depends on several local factors: the version of Rust installed on your machine, the versions of system libraries like `libssl` or `libsqlite`, and the state of your local `Cargo.lock`. With Nix, the build becomes fully reproducible. It uses a specific Rust toolchain (nightly in our example), relies on vendored dependencies in the `vendor/` directory, and incorporates all libraries declared in the `flake.nix` dev shell. The result is that anyone on any machine with Nix installed can build the exact same binary, eliminating the common “works on my machine” problems.
 
----
+
 
 ### 2. Isolation
 
 Nix builds everything inside a sandbox located in `/nix/store`, which prevents accidental dependencies on files outside the project or on system-installed libraries or Rust versions. This isolation ensures that builds are deterministic and safe, making it ideal for continuous integration and deployment pipelines.
 
----
+
 
 ### 3. Cross-compilation
 
 Building for multiple targets such as Linux, ARM, or Windows normally requires installing Rust targets manually and configuring toolchains and linker flags. With Nix, you can declare all your targets in `flake.nix` for example, `x86_64-unknown-linux-musl`, `aarch64-unknown-linux-gnu`, and `x86_64-pc-windows-gnu`. Nix automatically sets up all the required compilers and Rust standard libraries for these targets, making cross-compilation seamless.
 
----
+
 
 ### 4. Automation and Declarative Builds
 
@@ -396,4 +467,6 @@ I don't think NixOS is intrinsically more work or more complicated than Debian. 
 I'd argue using NixOS is more involved at the beginning but gets much less involved after you set things up as generally things don't break. Once in a while you get a deprecation message and may need to adjust your configuration - that's it.
 
 I find myself however stumbling upon better ways of configuring my system and steadily improving my set up. I believe I wouldn't be doing that on a traditional distro so much because it would be much harder to do these things while keeping state. So if you are a perfectionist or an enthusiast you will probably spend more time just because it's much more fun :3 
+
+
 
