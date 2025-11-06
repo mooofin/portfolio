@@ -113,53 +113,7 @@ which prints the **name** attribute of all top-level derivations in a Nix expres
 
 Laziness allows arguments to be passed to functions that may not be used is the main idea . 
 
-Ok so a way to solve this would be to use a lazy language 
-A key feature of a **lazy language** is that it only computes a value at the exact moment it's needed. This property is incredibly powerful for a language used to describe software packages and systems. 
 
-
-
-Consider a typical `flake.nix` (ill explain this on the way but for now think of it as a substitute for a make file ) for a project. You can define a large and varied collection of outputs in that single file, such as:
-
-- `packages` for a web server and a command-line tool.
-    
-- `devShells` for your frontend and backend teams.
-    
-- `nixosConfigurations` for a production server and a local virtual machine.
-    
-
-Because the language is **lazy**, if you run a command like `nix build .#server`, Nix will **only** evaluate and build that specific server package and its dependencies. It completely ignores the definitions for the command-line tool, the development shells, and the other system configurations, saving a huge amount of time and resources. You can define an entire universe of components without paying the price for anything you don't immediately use
-
-
-![[nix-blog2/5.png]]
-
-Since the language is **lazy**, the right-hand sides of the attributes will not be evaluated until they are actually needed, if at all.
-
-For instance, if we install any specific component from this set, say,
-
-```
-nix-env -i hello
-```
-
-then only the **hello** value will be evaluated (although it may in turn require other values to be evaluated, such as **stdenv**).
-
-Laziness also allows greater efficiency if only parts of a complex data structure are needed.
-
-Take the operation:
-
-```
-nix-env -qa
-```
-
-which prints the **name** attribute of all top-level derivations in a Nix expression.
-
-
-
- ![[nix-blog2/6.png]]
-
-Laziness allows arguments to be passed to functions that may not be used is the main idea . 
-
-
-![[nix-blog2/7.png]]
 
 
 ## NIX FLAKES : ) 
