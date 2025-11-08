@@ -381,9 +381,16 @@ body {
 .hero {
   min-height: 90vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   text-align: center;
+  padding: 10vh 5vw 0;
+  position: relative;
+}
+
+.hero-left-side,
+.hero-right-side {
+  z-index: 10;
 }
 
 .hero-content h1 {
@@ -406,16 +413,6 @@ body {
 
 
 /* --- About Section --- */
-
-/* --- Add this rule inside the "About Section" in your CSS file --- */
-/* --- Hero Section --- */
-.hero {
-  min-height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
 
 /* --- ADD THIS NEW CSS RULE FOR YOUR PFP --- */
 .hero-pfp {
@@ -2007,13 +2004,13 @@ body:not(.theme-image) {
 .pink-sticky {
   background: #f8a9cb;
   color: #222;
-  border-radius: 14px;
-  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
-  padding: 3rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  padding: 1.5rem 1.8rem;
   margin-bottom: 0;
-  min-width: 250px;
-  max-width: 350px;
-  font-size: 1.15rem;
+  min-width: 180px;
+  max-width: 250px;
+  font-size: 1rem;
   font-family: 'Segoe UI', Arial, sans-serif;
   font-weight: 500;
   position: relative;
@@ -2054,15 +2051,15 @@ body:not(.theme-image) {
 }
 
 .hero-pfp {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #fff3;
 }
 
 .hero-sticky-text {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: #222;
   margin: auto;
