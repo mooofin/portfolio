@@ -18,6 +18,29 @@ function AboutPage() {
 
   const originalText = "For the past few years, I've been working on a Dark Souls project by making an entirely new DLC with new areas (The models being the un-used assets from Bloodborne and Dark Souls 2 cut content), NPC's questlines, weapons, spells and overall a vision to bring back the rushed development lifecycle that FromSoftware followed, in order to make up for the 2nd half of Dark Souls. Some of my other modding projects include a lighting system for PTDE edition Dark Souls and more.";
 
+  // Cool ideas for different sections you can add:
+  const additionalSections = {
+    philosophy: "I believe in the beauty of declarative systems and the elegance of functional programming. NixOS and Gentoo aren't just distros—they're philosophies of control, reproducibility, and understanding your system from the ground up.",
+    
+    interests: "When I'm not reverse engineering game engines or crafting Nix configurations, you'll find me exploring the intersection of gothic aesthetics and modern technology, or diving deep into memory editing and low-level systems.",
+    
+    currentProjects: [
+      "🎮 Dark Souls DLC expansion with cut content restoration",
+      "💡 Custom lighting system for PTDE Dark Souls",
+      "🔧 NixOS configuration experiments",
+      "🎯 Reverse engineering Havok Engine implementations"
+    ],
+    
+    techStack: [
+      "Languages: Nix, C/C++, Assembly, Python, JavaScript/TypeScript",
+      "Tools: Cheat Engine, IDA Pro, Ghidra, Visual Studio",
+      "Systems: NixOS, Gentoo, Linux kernel customization",
+      "Game Engines: Havok Physics, FromSoftware's engine (Dark Souls)"
+    ],
+    
+    aesthetic: "Southern Gothic meets Cyberpunk - where tradition meets rebellion, where declarative code meets chaos theory.",
+  };
+
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
   const decryptText = useCallback(() => {

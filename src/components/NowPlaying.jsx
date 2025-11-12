@@ -81,7 +81,6 @@ function NowPlaying() {
     return (
       <div className="now-playing">
         <div className="now-playing-content loading-crazy">
-          <div className="music-icon spinning-icon">♫</div>
           <span className="glitch-text">Loading music...</span>
         </div>
       </div>
@@ -92,7 +91,6 @@ function NowPlaying() {
     return (
       <div className="now-playing">
         <div className="now-playing-content">
-          <div className="music-icon">♫</div>
           <span>No recent tracks</span>
         </div>
       </div>
@@ -123,7 +121,6 @@ function NowPlaying() {
             <div className="track-name glitch-text-subtle">{track.name}</div>
             <div className="track-artist">{track.artist}</div>
           </div>
-          <div className={`music-icon ${track.isNowPlaying ? 'music-icon-active' : ''}`}>♫</div>
         </div>
         <div className="now-playing-body">
           <div className="track-album">{track.album}</div>

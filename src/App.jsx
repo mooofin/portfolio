@@ -12,12 +12,15 @@ import VideoBackground from './components/VideoBackground.jsx';
 import BlogPage from './components/BlogPage';
 import BlogPost from './components/BlogPost';
 import AboutPage from './components/AboutPage';
+import MusicPage from './components/MusicPage';
+import PinkCursor from './components/PinkCursor';
 
 function AppContent() {
   const location = useLocation();
 
   return (
     <div className="app-container">
+      <PinkCursor />
       <VideoBackground src="/images/video/blg.mp4" />
       <div className="content-container">
         <Header />
@@ -38,6 +41,8 @@ function AppContent() {
               />
               {/* Route for the about page */}
               <Route path="/about" element={<AboutPage />} />
+              {/* Route for the music page */}
+              <Route path="/music" element={<MusicPage />} />
               {/* Route for the blog list page */}
               <Route path="/blog" element={<BlogPage />} />
               {/* Route for a single, dynamic blog post. This is crucial. */}

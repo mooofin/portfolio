@@ -18,6 +18,13 @@ function Hero() {
             <div>Southern Gothic Salvation<br/>NixOS Witch<br/><br/>Loves NixOS and Gentoo, and I enjoy declarative, functional programming using Nix</div>
           </div>
         </div>
+        
+        <div className="github-card">
+          <a href="https://github.com/mooofin" target="_blank" rel="noopener noreferrer" className="github-link">
+            <img src="/stuff/234.png" alt="GitHub" />
+            <span>GitHub</span>
+          </a>
+        </div>
       </div>
       
       <div className="hero-right-side">

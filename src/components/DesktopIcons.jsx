@@ -23,15 +23,15 @@ export default function DesktopIcons() {
           <img src="/stuff/234.png" alt="About Me folder" />
           <span className='uncenter'>About Me</span>
         </a>
+        <a href="/music" className="desktop-shortcut" onClick={goTo('/music')}
+          title="Music">
+          <img src="/stuff/234.png" alt="Music folder" />
+          <span className='uncenter'>Music</span>
+        </a>
         <a href="/blog" className="desktop-shortcut" onClick={goTo('/blog')}
           title="Blog">
           <img src="/stuff/234.png" alt="Blog folder" />
           <span className='uncenter'>Blog</span>
-        </a>
-        <a href="https://github.com/mooofin" className="desktop-shortcut" target="_blank" rel="noopener noreferrer"
-          title="GitHub">
-          <img src="/stuff/234.png" alt="GitHub folder" />
-          <span className='uncenter'>GitHub</span>
         </a>
       </div>
 
