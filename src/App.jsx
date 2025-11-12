@@ -7,20 +7,18 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 // import DesktopOverlay from './components/DesktopOverlay.jsx';
 import Blog from './components/blog';
-import About from './components/About';
 import Contact from './components/Contact';
 import VideoBackground from './components/VideoBackground.jsx';
-import DesktopIcons from './components/DesktopIcons.jsx';
 import BlogPage from './components/BlogPage';
 import BlogPost from './components/BlogPost';
+import AboutPage from './components/AboutPage';
 
 function AppContent() {
   const location = useLocation();
-  const isBlogRoute = location.pathname.startsWith('/blog');
 
   return (
     <div className="app-container">
-      {!isBlogRoute && <VideoBackground src="/images/video/blg.mp4" />}
+      <VideoBackground src="/images/video/blg.mp4" />
       <div className="content-container">
         <Header />
           <main>
@@ -31,14 +29,15 @@ function AppContent() {
                 path="/"
                 element={
                   <>
-                    <Hero />
-                    <div style={{ minHeight: '60vh' }}></div>
-                    <DesktopIcons />
-                    <About />
+                    <div className="single-screen-layout">
+                      <Hero />
+                    </div>
                     <Contact />
                   </>
                 }
               />
+              {/* Route for the about page */}
+              <Route path="/about" element={<AboutPage />} />
               {/* Route for the blog list page */}
               <Route path="/blog" element={<BlogPage />} />
               {/* Route for a single, dynamic blog post. This is crucial. */}
