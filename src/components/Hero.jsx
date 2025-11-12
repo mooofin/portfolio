@@ -9,13 +9,13 @@ function Hero() {
         <div className="pink-sticky hero-sticky">
           <div className="hero-pfp-row">
             <img 
-              src="/images/screenshot-1755421557.png" 
+              src="/images/about-me/PFP400x400.jpg" 
               alt="Profile" 
               className="hero-pfp"
             />
           </div>
           <div className="hero-sticky-text">
-            <div>Southern Gothic Salvation<br/>NixOS Witch</div>
+            <div>Southern Gothic Salvation<br/>NixOS Witch<br/><br/>Loves NixOS and Gentoo, and I enjoy declarative, functional programming using Nix</div>
           </div>
         </div>
       </div>

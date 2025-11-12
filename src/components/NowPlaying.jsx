@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import './NowPlaying.css';
 
 function NowPlaying() {
   const [track, setTrack] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [pulseIntensity, setPulseIntensity] = useState(1);
+  const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
     const fetchNowPlaying = async () => {
@@ -51,12 +55,34 @@ function NowPlaying() {
     return () => clearInterval(interval);
   }, []);
 
+  // Crazy pulsing effect
+  useEffect(() => {
+    if (track?.isNowPlaying) {
+      const pulseInterval = setInterval(() => {
+        setPulseIntensity(prev => prev === 1 ? 1.15 : 1);
+      }, 600);
+      return () => clearInterval(pulseInterval);
+    }
+  }, [track?.isNowPlaying]);
+
+  // Spinning album art
+  useEffect(() => {
+    if (track?.isNowPlaying) {
+      const rotateInterval = setInterval(() => {
+        setRotation(prev => (prev + 1) % 360);
+      }, 50);
+      return () => clearInterval(rotateInterval);
+    } else {
+      setRotation(0);
+    }
+  }, [track?.isNowPlaying]);
+
   if (loading) {
     return (
       <div className="now-playing">
-        <div className="now-playing-content">
-          <div className="music-icon">♫</div>
-          <span>Loading music...</span>
+        <div className="now-playing-content loading-crazy">
+          <div className="music-icon spinning-icon">♫</div>
+          <span className="glitch-text">Loading music...</span>
         </div>
       </div>
     );
@@ -74,24 +100,60 @@ function NowPlaying() {
   }
 
   return (
-    <div className="now-playing">
-      <div className="now-playing-card">
+    <div 
+      className={`now-playing ${track.isNowPlaying ? 'now-playing-active' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="now-playing-card crazy-card">
         <div className="now-playing-header">
-          <div className="track-image">
+          <div 
+            className="track-image" 
+            style={{ 
+              transform: `rotate(${rotation}deg) scale(${isHovered ? 1.1 : pulseIntensity})`,
+              transition: isHovered ? 'transform 0.3s ease' : 'transform 0.1s ease'
+            }}
+          >
             <img src={track.image} alt={`${track.artist} - ${track.name}`} />
+            {track.isNowPlaying && (
+              <div className="vinyl-effect"></div>
+            )}
           </div>
           <div className="track-meta">
-            <div className="track-name">{track.name}</div>
+            <div className="track-name glitch-text-subtle">{track.name}</div>
             <div className="track-artist">{track.artist}</div>
           </div>
-          <div className="music-icon">♫</div>
+          <div className={`music-icon ${track.isNowPlaying ? 'music-icon-active' : ''}`}>♫</div>
         </div>
         <div className="now-playing-body">
           <div className="track-album">{track.album}</div>
-          <div className="track-status">
-            {track.isNowPlaying ? 'Now Playing' : 'Last Played'}
+          <div className={`track-status ${track.isNowPlaying ? 'status-active' : ''}`}>
+            {track.isNowPlaying ? (
+              <>
+                <span className="status-dot"></span>
+                <span className="status-text">NOW PLAYING</span>
+              </>
+            ) : (
+              'Last Played'
+            )}
           </div>
         </div>
+        {track.isNowPlaying && (
+          <>
+            <div className="sound-wave">
+              <div className="bar"></div>
+              <div className="bar"></div>
+              <div className="bar"></div>
+              <div className="bar"></div>
+              <div className="bar"></div>
+            </div>
+            <div className="particle-container">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="particle" style={{ animationDelay: `${i * 0.2}s` }}></div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
