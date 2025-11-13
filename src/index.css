@@ -2343,35 +2343,37 @@ body {
     min-height: auto;
     padding: 1rem;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
   }
 
   .hero-left-side,
   .hero-right-side {
     width: 100%;
-    max-width: 500px;
+    max-width: 350px;
     align-items: center;
   }
 
   .hero-left-side {
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   /* Profile Card Mobile */
   .hero-sticky {
-    padding: 1.5rem;
-    gap: 1rem;
+    padding: 1rem 1.2rem;
+    gap: 0.8rem;
     width: 100%;
+    max-width: 100%;
   }
 
   .hero-pfp {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
 
   .hero-sticky-text {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
   }
 
   /* GitHub Card Mobile */
@@ -2380,43 +2382,76 @@ body {
   }
 
   .github-link {
-    padding: 0.8rem;
+    padding: 0.7rem;
     gap: 0.3rem;
   }
 
   .github-link img {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
   }
 
   .github-link span {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   /* Now Playing Mobile */
   .spotify-sticky {
     width: 100%;
+    max-width: 100%;
   }
 
   .now-playing {
-    padding: 1rem;
+    padding: 0.8rem;
+  }
+
+  .now-playing-header {
+    gap: 0.8rem;
   }
 
   .track-image {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+  }
+
+  .track-meta {
+    flex: 1;
+    min-width: 0;
   }
 
   .track-name {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .track-artist {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .track-album {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .track-status {
+    font-size: 0.75rem;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* Hide some effects on mobile for cleaner look */
+  .particle {
+    display: none;
+  }
+
+  .sound-wave {
+    gap: 3px;
+  }
+
+  .sound-wave .bar {
+    width: 3px;
   }
 
   /* Desktop Icons Mobile */
