@@ -2341,78 +2341,113 @@ body {
   /* Optimize hero section - Mobile Layout */
   .hero {
     min-height: auto;
-    padding: 1rem;
+    padding: 0.8rem;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
   }
 
   .hero-left-side,
   .hero-right-side {
     width: 100%;
-    max-width: 350px;
+    max-width: 280px;
     align-items: center;
   }
 
   .hero-left-side {
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
-  /* Profile Card Mobile */
+  /* Profile Card Mobile - Liquid Glass */
+  .pink-sticky {
+    background: linear-gradient(135deg, 
+      rgba(255, 182, 193, 0.15) 0%,
+      rgba(255, 105, 180, 0.2) 50%,
+      rgba(255, 192, 203, 0.15) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(255, 105, 180, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -1px 0 rgba(255, 105, 180, 0.2);
+  }
+
   .hero-sticky {
-    padding: 1rem 1.2rem;
-    gap: 0.8rem;
-    width: 100%;
+    padding: 0.7rem 0.9rem;
+    gap: 0.5rem;
+    width: auto;
     max-width: 100%;
   }
 
   .hero-pfp {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
   }
 
   .hero-sticky-text {
-    font-size: 0.85rem;
-    line-height: 1.4;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   }
 
-  /* GitHub Card Mobile */
+  /* GitHub Card Mobile - Liquid Glass */
   .github-card {
     width: 100%;
+    max-width: 100%;
   }
 
   .github-link {
-    padding: 0.7rem;
-    gap: 0.3rem;
+    padding: 0.6rem;
+    gap: 0.25rem;
+    background: linear-gradient(135deg, 
+      rgba(255, 182, 193, 0.12) 0%,
+      rgba(255, 105, 180, 0.18) 100%);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+      0 4px 20px rgba(255, 105, 180, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   .github-link img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 4px 8px rgba(255, 105, 180, 0.4));
   }
 
   .github-link span {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
   }
 
-  /* Now Playing Mobile */
+  /* Now Playing Mobile - Liquid Glass */
   .spotify-sticky {
     width: 100%;
     max-width: 100%;
   }
 
   .now-playing {
-    padding: 0.8rem;
+    padding: 0.7rem;
+    background: linear-gradient(135deg, 
+      rgba(255, 182, 193, 0.15) 0%,
+      rgba(255, 105, 180, 0.2) 50%,
+      rgba(255, 192, 203, 0.15) 100%) !important;
   }
 
   .now-playing-header {
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
 
   .track-image {
-    width: 60px;
-    height: 60px;
-    min-width: 60px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
   }
 
   .track-meta {
@@ -2421,19 +2456,36 @@ body {
   }
 
   .track-name {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   }
 
   .track-artist {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
   }
 
   .track-album {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   .track-status {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
+    color: #fff !important;
+  }
+
+  .status-text {
+    color: #fff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
   }
 
   .status-dot {
