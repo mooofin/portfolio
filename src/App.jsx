@@ -21,7 +21,7 @@ function AppContent() {
   return (
     <div className="app-container">
       <PinkCursor />
-      <VideoBackground src="/images/video/blg.mp4" />
+      <VideoBackground />
       <div className="content-container">
         <Header />
           <main>
