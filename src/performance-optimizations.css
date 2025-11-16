@@ -1,0 +1,109 @@
+/* Performance Optimizations */
+
+/* Use will-change for animated elements */
+.cursor-dot,
+.cursor-trail {
+  will-change: transform;
+}
+
+.album-card,
+.track-item,
+.stat-card {
+  will-change: transform;
+}
+
+/* Optimize animations with GPU acceleration */
+.glitch-title,
+.music-visualizer .bar,
+.now-playing-indicator span,
+.sound-wave .bar {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .cursor-trail {
+    display: none !important;
+  }
+  
+  .particle-container {
+    display: none !important;
+  }
+}
+
+/* Optimize image rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Use contain for isolated components */
+.album-card,
+.track-item,
+.stat-card,
+.now-playing-card {
+  contain: layout style paint;
+}
+
+/* Optimize video background */
+.video-background-media {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Reduce repaints */
+.music-section::before,
+.album-glow {
+  will-change: opacity;
+}
+
+/* Optimize scroll performance */
+.music-page,
+.music-page-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce complexity of shadows on lower-end devices */
+@media (max-width: 768px) {
+  .album-card,
+  .track-item,
+  .stat-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  .glitch-title {
+    text-shadow: 0 0 20px rgba(255, 105, 180, 0.6) !important;
+  }
+}
+
+/* Optimize font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Prevent layout shifts */
+.album-image,
+.track-image {
+  aspect-ratio: 1;
+}
+
+/* Optimize backdrop-filter (expensive operation) */
+@supports not (backdrop-filter: blur(10px)) {
+  .music-section,
+  .stat-card,
+  .search-box {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: none !important;
+  }
+}

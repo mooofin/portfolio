@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, memo, useCallback } from 'react';
 
-export default function VideoBackground({ poster }) {
+const VideoBackground = memo(function VideoBackground({ poster }) {
   const [currentVideo, setCurrentVideo] = useState('/images/video/blg.mp4');
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
@@ -10,17 +10,17 @@ export default function VideoBackground({ poster }) {
     '/images/video/bg1.mp4'
   ];
   
-  const toggleVideo = () => {
+  const toggleVideo = useCallback(() => {
     setCurrentVideo(prev => {
       const currentIndex = videos.indexOf(prev);
       const nextIndex = (currentIndex + 1) % videos.length;
       return videos[nextIndex];
     });
-  };
+  }, []);
   
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     setIsMuted(prev => !prev);
-  };
+  }, []);
   
   return (
     <>
@@ -35,6 +35,7 @@ export default function VideoBackground({ poster }) {
           muted={isMuted}
           loop
           playsInline
+          preload="metadata"
         />
       </div>
       <div className="video-controls">
@@ -70,6 +71,6 @@ export default function VideoBackground({ poster }) {
       </div>
     </>
   );
-}
+});
 
-
+export default VideoBackground;
