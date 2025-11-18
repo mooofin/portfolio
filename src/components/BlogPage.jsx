@@ -46,26 +46,28 @@ function BlogPage() {
 
   return (
     <main className="blog-page">
-      <h1 className="blog-title">Blog</h1>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-        <img src="/images/icons/blogicon.gif" alt="blog fun icon" style={{ width: '96px', height: '96px', borderRadius: '10px' }} />
-      </div>
-      
-      <div className="blog-intro">
-        <div className="decrypted-text blog-decrypted">
-          <span className="decrypted-content">{decryptedIntro}</span>
-          {isDecrypting && <span className="cursor">|</span>}
+      <div className="blog-header">
+        <h1 className="blog-title">Blog</h1>
+        <div className="blog-icon-wrapper">
+          <img src="/images/icons/blogicon.gif" alt="blog fun icon" className="blog-icon" />
+        </div>
+        
+        <div className="blog-intro">
+          <div className="decrypted-text blog-decrypted">
+            <span className="decrypted-content">{decryptedIntro}</span>
+            {isDecrypting && <span className="cursor">|</span>}
+          </div>
         </div>
       </div>
 
       <div className="blog-list">
         {posts.map((post) => (
-          <article className="blog-post-summary" key={post.slug}>
-            <h2>
-              <Link to={`/blog/${post.slug}`}>{post.title}</Link>
-            </h2>
-            <p className="date">{post.date}</p>
-            <p>{`${post.content.substring(0, 150)}...`}</p>
+          <article className="blog-post-item" key={post.slug}>
+            <Link to={`/blog/${post.slug}`} className="blog-post-link">
+              <h2 className="blog-post-title">{post.title}</h2>
+            </Link>
+            <p className="blog-post-date">{post.date}</p>
+            <p className="blog-post-excerpt">{post.content.substring(0, 200)}...</p>
           </article>
         ))}
       </div>
