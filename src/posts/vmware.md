@@ -5,7 +5,7 @@ date: 2025-12-12
 
 Running `file` on the binary shows a standard ELF executable:
 
-![file info](https://github.com/user-attachments/assets/045f0e79-743e-495b-bf71-e659cf48e529)
+![file info](/images/image-1.png)
 
 Nothing unusual here 
 
@@ -14,13 +14,13 @@ Nothing unusual here
 
 When executed, the binary asks for user input. Supplying anything incorrect leads to an immediate failure response, with no visible comparison or transformation in plaintext:
 
-![runtime input](https://github.com/user-attachments/assets/22333440-13b2-45dc-b729-17359151a572)
+![runtime input](/images/image-2.png)
 
 
 
 Opening the binary in Binary Ninja reveals that the validation logic is **not normal control flow**. Instead, it looks like a **nested VM / emulator**, where execution is handled through multiple small functions acting like opcode handlers:
 
-![vm view](https://github.com/user-attachments/assets/df9c875f-828a-4de1-9ef1-9524d25f782d)
+![vm view](/images/image-3.png)
 
 Rather than direct comparisons, input seems to be processed through this interpreter.
 
@@ -28,9 +28,9 @@ Rather than direct comparisons, input seems to be processed through this interpr
 
 Below the opcode-handling logic are several **hardcoded byte arrays** that resemble Base64-encoded data:
 
-![b64 array 1](https://github.com/user-attachments/assets/fc80bc60-f72f-4c6a-8517-cd48512a9f04)
+![b64 array 1](/images/image-4.png)
 
-![b64 array 2](https://github.com/user-attachments/assets/3c5f69b1-5edd-4fee-8873-140500aa47a4)
+![b64 array 2](/images/image-5.png)
 
 These are likely VM data or encrypted constants consumed by the interpreter rather than decoded directly in native code.
 
@@ -42,12 +42,12 @@ The registers are 25 in count so we need to figure out the opcode for the instru
 Ill use radare 2 for finding what each of the instrucions mean ; 
 
 
-<img width="579" height="606" alt="image" src="https://github.com/user-attachments/assets/f2ebfca8-6050-489a-ab95-aaac3d1af051" />
+<img width="579" height="606" alt="image" src="/images/image-6.png" />
 
 
 Before the virtual machine executes any bytecode, it initializes an opcode dispatch table. This is done through a helper function (fcn.00001238), which is repeatedly called during VM setup.
 
-<img width="840" height="870" alt="image" src="https://github.com/user-attachments/assets/7c3bcd85-f42f-484b-b555-34cfdd51cc92" />
+<img width="840" height="870" alt="image" src="/images/image-7.png" />
 
 In my best attempts this would be like 
 ```c
@@ -62,7 +62,7 @@ opcode_table[hash(opcode)] = entry;
 ```
 It seems like it is indeed the dispatcher for the architecture 
 
-<img width="776" height="966" alt="image" src="https://github.com/user-attachments/assets/10311753-cc48-4357-a730-67b8a7a235d6" />
+<img width="776" height="966" alt="image" src="/images/image-8.png" />
 
 
 After allocating the opcode table, the program registers every VM instruction by pairing:
@@ -162,7 +162,7 @@ s 0x00001dde
 
 This instruction pops two values from the VM stack, multiplies them, applies modulo `0x7fffffff`, and pushes the result back onto the stack.
 
-![MUL](https://github.com/user-attachments/assets/5a78b6ac-82ff-4197-94d4-4503f9e24eb4)
+![MUL](/images/image-9.png)
 
 ---
 
@@ -176,7 +176,7 @@ Handler: 0x00001438
 The XOR instruction pops two values from the stack, performs a bitwise XOR, and pushes the result back.
 Unlike other arithmetic operations, XOR does **not** apply modulo.
 
-![XOR](https://github.com/user-attachments/assets/908da7f2-c71c-415e-8f35-9cba4a3a6a65)
+![XOR](/images/image-10.png)
 
 ---
 
@@ -189,7 +189,7 @@ Handler: 0x00001590
 
 Performs bitwise AND between two stack values and pushes the result.
 
-![AND](https://github.com/user-attachments/assets/a308a294-587a-4047-8aec-5abd66199b8a)
+![AND](/images/image-11.png)
 
 ---
 
@@ -202,7 +202,7 @@ Handler: 0x000017bb
 
 Returns from a VM function by restoring the program counter from the Link Register (LR).
 
-![RET](https://github.com/user-attachments/assets/7b61d34d-f73e-438b-b567-099e143a4a4a)
+![RET](/images/image-12.png)
 
 ---
 
@@ -216,7 +216,7 @@ Handler: 0x000017d4
 Immediately terminates execution by calling `exit(1)`.
 Used for invalid execution paths.
 
-![ABORT](https://github.com/user-attachments/assets/d065fb47-827b-4cc7-9c00-255dae69fa21)
+![ABORT](/images/image-13.png)
 
 ---
 
@@ -228,7 +228,7 @@ Handler: 0x000017ea
 
 Pushes a 32-bit immediate value (fetched from ROM) onto the VM stack.
 
-![PUSH_IMM](https://github.com/user-attachments/assets/0ac161da-17f5-4fc1-a85c-1a5675452559)
+![PUSH_IMM](/images/image-14.png)
 
 ---
 
@@ -242,7 +242,7 @@ Handler: 0x00001866
 Pops two values from the stack.
 If they are equal, the program counter is adjusted using a signed immediate offset.
 
-![JZ](https://github.com/user-attachments/assets/7a0712a2-f6fb-4459-aa35-83f44be8d74f)
+![JZ](/images/image-15.png)
 
 ---
 
@@ -256,7 +256,7 @@ Handler: 0x000018f9
 Pops two values from the stack.
 If they are **not** equal, PC is updated by a signed immediate offset.
 
-![JNZ](https://github.com/user-attachments/assets/f7ae199b-444a-4ae7-abc3-9fef92f33e15)
+![JNZ](/images/image-16.png)
 
 ---
 
@@ -269,7 +269,7 @@ Handler: 0x0000198c
 
 Another hard failure instruction that immediately exits the program.
 
-![FAIL](https://github.com/user-attachments/assets/550f0ca8-0053-4f12-8fab-46bbef4b2725)
+![FAIL](/images/image-17.png)
 
 ---
 
@@ -282,7 +282,7 @@ Handler: 0x000019a2
 
 Updates the VM memory pointer, used for subsequent memory read/write instructions.
 
-![SET_MEMPTR](https://github.com/user-attachments/assets/2d1bf26d-de93-4d80-a445-8f94800173f6)
+![SET_MEMPTR](/images/image-18.png)
 
 ---
 
@@ -295,7 +295,7 @@ Handler: 0x000019de
 
 Stores the current PC into the Link Register (LR) and jumps to a new address.
 
-![CALL](https://github.com/user-attachments/assets/71663722-a784-4b29-bcae-ddb9d24c5309)
+![CALL](/images/image-19.png)
 
 ---
 
@@ -308,7 +308,7 @@ Handler: 0x00001a1d
 
 Sets the exit code and terminates VM execution cleanly.
 
-![HALT](https://github.com/user-attachments/assets/d9659e0e-1b82-4620-9dab-e8d34179e6a3)
+![HALT](/images/image-20.png)
 
 ---
 
@@ -321,7 +321,7 @@ Handler: 0x00001a64
 
 Loads a 32-bit value from ROM into a register.
 
-![LOAD_REG](https://github.com/user-attachments/assets/da5d0f84-9458-44df-a390-e047d621503b)
+![LOAD_REG](/images/image-21.png)
 
 ---
 
@@ -334,7 +334,7 @@ Handler: 0x00001abf
 
 Outputs a character using `putchar()` and sets the VM `PUT_FLAG`.
 
-![PUTCHAR](https://github.com/user-attachments/assets/8d25fd9a-1d96-4e0e-bb36-3bc244f0b94d)
+![PUTCHAR](/images/image-22.png)
 
 ---
 
@@ -346,7 +346,7 @@ Outputs a character using `putchar()` and sets the VM `PUT_FLAG`.
 Handler: 0x00001b03
 ```
 
-![INC](https://github.com/user-attachments/assets/b5efc681-ad4f-4045-b91f-1ea4bc737550)
+![INC](/images/image-23.png)
 
  DEC
 
@@ -354,7 +354,7 @@ Handler: 0x00001b03
 Handler: 0x00001b46
 ```
 
-![DEC](https://github.com/user-attachments/assets/c4b7dfbd-68fc-4920-bb3a-5022570ec6b2)
+![DEC](/images/image-24.png)
 
 ---
 
@@ -366,7 +366,7 @@ Handler: 0x00001724
 
 Performs modulo operation using a register and pushes the result onto the stack.
 
-![MOD](https://github.com/user-attachments/assets/579d41d8-d2c0-46ec-b249-35fbdd6d3f5a)
+![MOD](/images/image-25.png)
 
 ---
 
@@ -378,7 +378,7 @@ Handler: 0x00001be5
 
 Pops a value from the stack into a register.
 
-![POP_REG](https://github.com/user-attachments/assets/a7553de8-b589-4f85-b2df-c38d06f59df5)
+![POP_REG](/images/image-26.png)
 
 ---
 
@@ -390,7 +390,7 @@ Handler: 0x00001c41
 
 Adjusts internal VM memory pointers.
 
-![SET_MEM_PTR](https://github.com/user-attachments/assets/bd1d0a5c-acbc-48b5-8af2-c6a25670f9aa)
+![SET_MEM_PTR](/images/image-27.png)
 
 ---
 
@@ -402,7 +402,7 @@ Handler: 0x00001ca4
 
 Stores a register value into VM memory at `VM_MEM_PTR`.
 
-![MEMSTORE](https://github.com/user-attachments/assets/b2640f51-dd28-4533-b55d-3c9fb82ff527)
+![MEMSTORE](/images/image-28.png)
 
 ---
 
@@ -414,13 +414,13 @@ Handler: 0x00001cf7
 
 Loads a value from VM memory into a register.
 
-![MEMFETCH](https://github.com/user-attachments/assets/6f56d714-437f-4725-9b09-e14cd8820a4b)
+![MEMFETCH](/images/image-29.png)
 
 
 
 TO put it simply here's the functioning of the VM 
 
-<img width="709" height="388" alt="image" src="https://github.com/user-attachments/assets/d1081542-ade3-4c9e-8977-92a7e21b7af3" />
+<img width="709" height="388" alt="image" src="/images/image-30.png" />
 
 
 
@@ -439,7 +439,7 @@ By implementing this VM as a custom architecture in Miasm, the VM bytecode can b
 
 So after reading some guides u need to make some files for misam , which like in the diagram below
 
-![miasm vm architecture layout](https://github.com/user-attachments/assets/b50939b3-d433-4ca0-b085-46ff8b62b4a8)
+![miasm vm architecture layout](/images/image-31.png)
 
 
 the `regs.py` file is used to define the VM registers, `arch.py` ties the architecture together and describes basic properties like the program counter, and `sem.py` defines the actual semantics of each VM instruction
@@ -661,16 +661,16 @@ Miasm has a component called **Jitter**, which is used to *execute* instructions
 At the core of this system is a generic `Jitter` class, which provides common execution logic that works the same for every architecture. On top of that, Miasm defines architecture-specific subclasses such as `jitter_x86_64`, `jitter_arm`, or `jitter_mips32`. Each of these subclasses explains how instructions for that particular CPU should behave at runtime. This is why Miasm’s documentation shows a large inheritance diagram: many different architectures all extend the same base Jitter class.
 
 
-<img width="1408" height="711" alt="image" src="https://github.com/user-attachments/assets/fe3b2f8c-c18d-4408-a56b-b102a13b3c56" />
+<img width="1408" height="711" alt="image" src="/images/image-32.png" />
 
 
 Jitter is also closely tied to **symbolic execution**. Instead of running instructions with real concrete values, Miasm can execute them symbolically, meaning registers and memory can hold expressions rather than actual numbers. As Jitter steps through instructions, it updates these symbolic expressions and builds constraints that describe how program inputs affect the program state. This is useful for exploring multiple execution paths, understanding key checks, or reasoning about conditions without needing a specific input. In short, symbolic execution uses Jitter as its execution engine, but replaces concrete values with symbolic ones.
 
-<img width="447" height="442" alt="image" src="https://github.com/user-attachments/assets/9bd6dff1-8750-4178-ac25-2daeec804f2b" />
+<img width="447" height="442" alt="image" src="/images/image-33.png" />
 
 
 Each layer produced an assembly-level CFG (*_asmcfg*.png), which shows the decoded VM instructions and their control flow, and for the final VM layer an IR-level CFG (*_ircfg*.png) was also generated
-<img width="762" height="248" alt="image" src="https://github.com/user-attachments/assets/ca618b69-a0c0-4526-bd03-e317bd27916e" />
+<img width="762" height="248" alt="image" src="/images/image-34.png" />
 
 Ng
 
@@ -679,7 +679,7 @@ After setting up the custom disassembler, I began analyzing the generated assemb
 
 
 
-![VM Layer 1 CFG](https://github.com/user-attachments/assets/bbe373c4-9da6-4fcb-a551-15af7a587d62)
+![VM Layer 1 CFG](/images/image-35.png)
 
 
 The first VM layer is the largest and most complex. It is dominated by dispatcher logic: instruction fetch loops, register movement, memory initialization, and indirect jumps. At this stage, the VM mainly focuses on setting up the execution environment and preparing the next bytecode buffer. There are no meaningful input-dependent checks here, only infrastructure code required to emulate the VM.
@@ -687,7 +687,7 @@ The first VM layer is the largest and most complex. It is dominated by dispatche
 
 
 
-![VM Layer 2 CFG](https://github.com/user-attachments/assets/adc916a5-b277-4eaa-9d78-8b91368e2960)
+![VM Layer 2 CFG](/images/image-36.png)
 
 
 The second VM layer closely resembles the first. While some constants and register roles differ due to re-encoding, the overall structure remains the same: a large dispatcher loop with instruction handlers branching from it. 
@@ -695,27 +695,27 @@ The second VM layer closely resembles the first. While some constants and regist
 
 
 
-![VM Layer 3 CFG](https://github.com/user-attachments/assets/ecf8ffa4-5558-4d23-8cc6-cc2fcd15f2c0)
+![VM Layer 3 CFG](/images/image-37.png)
 
 
 By the third VM layer, the CFG begins to shrink slightly. While dispatcher logic is still clearly visible, there are fewer blocks and less overall noise. 
 
 
 
-![VM Layer 4 CFG](https://github.com/user-attachments/assets/764eba8b-9de7-4ffb-9ae3-cbe5d782bcf8)
+![VM Layer 4 CFG](/images/image-38.png)
 
 Although a dispatcher is still present, the CFG is noticeably smaller and more structured. Many repetitive VM bookkeeping blocks disappear tho 
 
 
 
-![VM Layer 5 CFG](https://github.com/user-attachments/assets/164ed9e3-e381-47e2-a6f8-3229b057aae8)
+![VM Layer 5 CFG](/images/image-39.png)
 
 
  The CFG is much smaller and no longer dominated by VM dispatch infrastructure. Instead, it consists of relatively straight-line code with arithmetic operations and branches based on computed values. 
 
 
 
-![Final SSA IR CFG](https://github.com/user-attachments/assets/f1170f17-6a0f-4b96-85aa-390c5fe1e731)
+![Final SSA IR CFG](/images/image-40.png)
 
 
 The VM abstraction is very less honestly and we can see the register data's etc . 
@@ -727,16 +727,16 @@ From the SSA graph, it becomes clear that the input key is read from the VM ROM 
 
 Only if all constraints succeed does execution reach the final block, which consists of a series of putchar calls that print the flag one character at a time.
 
-<img width="762" height="621" alt="image" src="https://github.com/user-attachments/assets/7f29c980-f747-4ee5-9ab8-0d8bb91b833a" />
+<img width="762" height="621" alt="image" src="/images/image-41.png" />
 
 
 So i made a smol keygen 
 
 
-<img width="1915" height="955" alt="image" src="https://github.com/user-attachments/assets/f6ae443b-05b4-4e88-855c-dd707409d225" />
+<img width="1915" height="955" alt="image" src="/images/image-42.png" />
 
 
-<img width="454" height="88" alt="image" src="https://github.com/user-attachments/assets/a1ce76a8-babe-48e1-848c-6660e64d8e61" />
+<img width="454" height="88" alt="image" src="/images/image-43.png" />
 
 
 
