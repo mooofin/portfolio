@@ -42,12 +42,12 @@ The registers are 25 in count so we need to figure out the opcode for the instru
 Ill use radare 2 for finding what each of the instrucions mean ; 
 
 
-<img width="579" height="606" alt="image" src="/images/image-6.png" />
+![image](/images/image-6.png)
 
 
 Before the virtual machine executes any bytecode, it initializes an opcode dispatch table. This is done through a helper function (fcn.00001238), which is repeatedly called during VM setup.
 
-<img width="840" height="870" alt="image" src="/images/image-7.png" />
+![image](/images/image-7.png)
 
 In my best attempts this would be like 
 ```c
@@ -62,7 +62,7 @@ opcode_table[hash(opcode)] = entry;
 ```
 It seems like it is indeed the dispatcher for the architecture 
 
-<img width="776" height="966" alt="image" src="/images/image-8.png" />
+![image](/images/image-8.png)
 
 
 After allocating the opcode table, the program registers every VM instruction by pairing:
@@ -413,14 +413,14 @@ Handler: 0x00001cf7
 ```
 
 Loads a value from VM memory into a register.
-
-![MEMFETCH](/images/image-29.png)
+[MEMFETCH](/images/image-29.png)
 
 
 
 TO put it simply here's the functioning of the VM 
 
-<img width="709" height="388" alt="image" src="/images/image-30.png" />
+![image](/images/image-30.png)
+!
 
 
 
@@ -661,16 +661,16 @@ Miasm has a component called **Jitter**, which is used to *execute* instructions
 At the core of this system is a generic `Jitter` class, which provides common execution logic that works the same for every architecture. On top of that, Miasm defines architecture-specific subclasses such as `jitter_x86_64`, `jitter_arm`, or `jitter_mips32`. Each of these subclasses explains how instructions for that particular CPU should behave at runtime. This is why Miasm’s documentation shows a large inheritance diagram: many different architectures all extend the same base Jitter class.
 
 
-<img width="1408" height="711" alt="image" src="/images/image-32.png" />
+![image](/images/image-32.png)
 
 
 Jitter is also closely tied to **symbolic execution**. Instead of running instructions with real concrete values, Miasm can execute them symbolically, meaning registers and memory can hold expressions rather than actual numbers. As Jitter steps through instructions, it updates these symbolic expressions and builds constraints that describe how program inputs affect the program state. This is useful for exploring multiple execution paths, understanding key checks, or reasoning about conditions without needing a specific input. In short, symbolic execution uses Jitter as its execution engine, but replaces concrete values with symbolic ones.
 
-<img width="447" height="442" alt="image" src="/images/image-33.png" />
+![image](/images/image-33.png)
 
 
 Each layer produced an assembly-level CFG (*_asmcfg*.png), which shows the decoded VM instructions and their control flow, and for the final VM layer an IR-level CFG (*_ircfg*.png) was also generated
-<img width="762" height="248" alt="image" src="/images/image-34.png" />
+![image](/images/image-34.png)
 
 Ng
 
@@ -727,16 +727,16 @@ From the SSA graph, it becomes clear that the input key is read from the VM ROM 
 
 Only if all constraints succeed does execution reach the final block, which consists of a series of putchar calls that print the flag one character at a time.
 
-<img width="762" height="621" alt="image" src="/images/image-41.png" />
+![image](/images/image-41.png)
 
 
 So i made a smol keygen 
 
 
-<img width="1915" height="955" alt="image" src="/images/image-42.png" />
+![image](/images/image-42.png)
 
 
-<img width="454" height="88" alt="image" src="/images/image-43.png" />
+![image](/images/image-43.png)
 
 
 
