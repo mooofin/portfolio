@@ -62,10 +62,20 @@ function BlogPost() {
 
   return (
     <>
-      <div className="blog-page-container">
-        <Link to="/" className="back-link">&larr; Back to Portfolio</Link>
-        <div className="markdown-container blog-article">
-          <ReactMarkdown components={components}>{finalContent}</ReactMarkdown>
+      <div className="hymnals-blog">
+        <div className="hymnals-blog-post-container">
+          <img 
+            src="/my-melody-kuromi-lolita-ipad-wallpaper-kawaii-hoshi.jpg" 
+            alt="muffin's profile" 
+            className="hymnals-pfp"
+          />
+          <h1 className="hymnals-title">
+            {post ? post.title : 'Loading...'}
+          </h1>
+          <Link to="/blog" className="hymnals-back-link">&larr; back to blog</Link>
+          <div className="markdown-container blog-article">
+            <ReactMarkdown components={components}>{finalContent}</ReactMarkdown>
+          </div>
         </div>
       </div>
     </>

@@ -32,6 +32,7 @@ function AppContent() {
   return (
     <div className="app-container">
       <PinkCursor />
+      <VideoBackground />
       <div className="content-container">
         <Header />
           <main>
@@ -42,7 +43,6 @@ function AppContent() {
                   path="/"
                   element={
                     <>
-                      <VideoBackground />
                       <div className="single-screen-layout">
                         <Hero />
                       </div>

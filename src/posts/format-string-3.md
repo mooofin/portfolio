@@ -156,3 +156,6 @@ And just like that, we have a shell!
 
 **References:**
 *   [Hack Using Global Offset Table](https://nuc13us.wordpress.com/2015/12/25/hack-using-global-offset-table/)
+
+
+

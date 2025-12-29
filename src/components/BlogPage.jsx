@@ -1,36 +1,11 @@
 // src/components/BlogPage.jsx
 import React from "react";
-import ReactMarkdown from 'react-markdown'
 import { Link } from "react-router-dom";
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { loadAllPosts } from "../posts";
 
 function BlogPage() {
   const [posts, setPosts] = useState([]);
-  const [decryptedIntro, setDecryptedIntro] = useState('');
-  const [isDecrypting, setIsDecrypting] = useState(false);
-
-  const introText = "my silly rants :(";
-
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-  const decryptIntro = useCallback(() => {
-    setIsDecrypting(true);
-    let currentIndex = 0;
-
-    const interval = setInterval(() => {
-      if (currentIndex < introText.length) {
-        const scrambled = introText.slice(0, currentIndex) + 
-          characters.charAt(Math.floor(Math.random() * characters.length));
-        setDecryptedIntro(scrambled);
-        currentIndex++;
-      } else {
-        setDecryptedIntro(introText);
-        setIsDecrypting(false);
-        clearInterval(interval);
-      }
-    }, 30);
-  }, [introText]);
 
   useEffect(() => {
     (async () => {
@@ -39,37 +14,28 @@ function BlogPage() {
     })();
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(decryptIntro, 500);
-    return () => clearTimeout(timer);
-  }, [decryptIntro]);
-
   return (
-    <main className="blog-page">
-      <div className="blog-header">
-        <h1 className="blog-title">Blog</h1>
-        <div className="blog-icon-wrapper">
-          <img src="/images/icons/blogicon.gif" alt="blog fun icon" className="blog-icon" />
-        </div>
-        
-        <div className="blog-intro">
-          <div className="decrypted-text blog-decrypted">
-            <span className="decrypted-content">{decryptedIntro}</span>
-            {isDecrypting && <span className="cursor">|</span>}
-          </div>
-        </div>
-      </div>
+    <main className="hymnals-blog">
+      <div className="hymnals-container">
+        <img 
+          src="/my-melody-kuromi-lolita-ipad-wallpaper-kawaii-hoshi.jpg" 
+          alt="muffin's profile" 
+          className="hymnals-pfp"
+        />
+        <h1 className="hymnals-title">
+          muffin's blog page :3
+        </h1>
 
-      <div className="blog-list">
-        {posts.map((post) => (
-          <article className="blog-post-item" key={post.slug}>
-            <Link to={`/blog/${post.slug}`} className="blog-post-link">
-              <h2 className="blog-post-title">{post.title}</h2>
-            </Link>
-            <p className="blog-post-date">{post.date}</p>
-            <p className="blog-post-excerpt">{post.content.substring(0, 200)}...</p>
-          </article>
-        ))}
+        <ul className="hymnals-post-list">
+          {posts.map((post) => (
+            <li key={post.slug}>
+              <span className="hymnals-date">{post.date}</span>{' '}
+              <Link to={`/blog/${post.slug}`} className="hymnals-post-link">
+                {post.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </main>
   );
