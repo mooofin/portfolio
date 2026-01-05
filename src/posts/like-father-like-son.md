@@ -1,9 +1,19 @@
 ---
-title: like father like son
-date: 2025-12-17
+title: "Like Father Like Son - DFIR report"
+date: "2025-12-17"
 ---
 
-lets first see the profile of the dump 
+# Description
+
+Damian Wayne stored a secret in his old pc, but Dr. Simon Hurt who got this information, planned a contingency against Damian by the help of Starlab's techies, poor Damaian was so eager to view the encrypted secret file that Raven sent him long back but Simon knows this piece of information as well as the decryption process, will he win this situation like a Wayne? will Damaian's Redemption be successful!?
+
+Note: This challenge doesn't have any questions but the flag itself!
+
+File Password : vOCorthoAGESeNsivEli
+
+## Initial Analysis
+
+Let's first see the profile of the dump 
 
 
 ```

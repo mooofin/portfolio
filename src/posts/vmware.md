@@ -1,4 +1,4 @@
---- 
+---
 title: Slay the JIT: From Hotpatches to Symbolic Couture in Miasm
 date: 2025-12-12
 ---
