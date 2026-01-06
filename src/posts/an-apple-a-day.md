@@ -1117,10 +1117,10 @@ static wint_t _IO_wstrn_overflow (FILE *fp, wint_t c)
 
 
 
-| Phase | Memory @ 0x2a410310 | Explanation |
-|-------|---------------------|-------------|
-| BEFORE | 0x1122334455667788 | Controlled fill value |
-| AFTER | 0x00007fd0ca82b770 | stderr->overflow_buf address! |
+| Phase | Memory Address | Value | Explanation |
+|-------|----------------|-------|-------------|
+| **BEFORE** | `0x2a410310` | `0x1122334455667788` | Controlled fill value we set initially |
+| **AFTER** | `0x2a410310` | `0x00007fd0ca82b770` | `stderr->overflow_buf` address leaked! |
 
 **This demonstrates:** We can write a known address (overflow_buf = heap/libc addr) to ANY memory location we control via `_wide_data` :)
 
