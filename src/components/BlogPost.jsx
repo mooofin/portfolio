@@ -1,8 +1,12 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useEffect, useState, useMemo } from 'react';
 import { loadPostBySlug } from '../posts.js';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import MarkdownTable from './MarkdownTable';
 
 function transformObsidianEmbeds(markdown) {
   if (!markdown) return markdown;
@@ -39,6 +43,21 @@ function BlogPost() {
   const finalContent = processed;
 
   const components = useMemo(() => ({
+    code: ({ node, inline, className, children, ...props }) => {
+      const match = /language-(\w+)/.exec(className || '');
+      const language = match ? match[1] : 'bash';
+      
+      if (inline) {
+        return <code className={className} {...props}>{children}</code>;
+      }
+      
+      return (
+        <SyntaxHighlighter language={language} style={atomDark} {...props}>
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      );
+    },
+    table: ({ children }) => <MarkdownTable>{children}</MarkdownTable>,
     img: ({ src, alt }) => {
       const [currentSrc, setCurrentSrc] = React.useState(src);
       return (
@@ -74,7 +93,11 @@ function BlogPost() {
           </h1>
           <Link to="/blog" className="hymnals-back-link">&larr; back to blog</Link>
           <div className="markdown-container blog-article">
-            <ReactMarkdown components={components}>{finalContent}</ReactMarkdown>
+            {slug === 'havok-engine-reverse-engineering' ? (
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>{finalContent}</ReactMarkdown>
+            ) : (
+              <ReactMarkdown components={components}>{finalContent}</ReactMarkdown>
+            )}
           </div>
         </div>
       </div>

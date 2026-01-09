@@ -177,7 +177,7 @@ function MusicPage() {
     <main className="music-page">
       <div className="music-hero-image">
         <img 
-          src="/images/music-hero.jpg" 
+          src="/music_page_banner.jpg" 
           alt="Music vibes"
           loading="eager"
         />

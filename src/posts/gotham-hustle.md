@@ -9,7 +9,7 @@ Gotham's underbelly trembles as whispers spread—The Riddler's back, leaving cr
 
 ## Initial Analysis
 
-First, I ran `imageinfo` to identify the memory profile and basic system details.
+First, I ran imageinfo to identify the memory profile and basic system details.
 
 ![Memory Profile](/images/gotham-1.png)
 
@@ -23,7 +23,7 @@ First, I ran `imageinfo` to identify the memory profile and basic system details
 
 ## Process Enumeration
 
-Next, I ran `pslist` to observe active processes.
+Next, I ran pslist to observe active processes.
 
 ```text
 
@@ -35,16 +35,16 @@ multiple chrome.exe processes
 
 ### Notable Processes
 
-* `cmd.exe` (PID 3944): Command prompt activity
-* `notepad.exe` (PID 2592): Notepad open
-* `mspaint.exe` (PID 2516): Paint running
-* Multiple `chrome.exe`: Browser activity
+* cmd.exe (PID 3944): Command prompt activity
+* notepad.exe (PID 2592): Notepad open
+* mspaint.exe (PID 2516): Paint running
+* Multiple chrome.exe: Browser activity
 
 
 
 ## Command History
 
-To check user activity, I ran `cmdscan`.
+To check user activity, I ran cmdscan.
 
 ![Command History](/images/gotham-2.png)
 
@@ -81,7 +81,7 @@ h0p3_th15_
 
 ## File Extraction
 
-From `filescan`, I noticed `flag5.rar` on the Desktop and dumped it:
+From filescan, I noticed flag5.rar on the Desktop and dumped it:
 
 ```powershell
 vol -f gotham.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000011fdaff20 --dump-dir=D:\DFIR
@@ -95,7 +95,7 @@ The archive was password-protected.
 
 ## Credential Dump
 
-Using `hashdump`:
+Using hashdump:
 
 ```text
 bruce:1001:...:b7265f8cc4f00b58f413076ead262720:::
@@ -103,7 +103,7 @@ bruce:1001:...:b7265f8cc4f00b58f413076ead262720:::
 
 ![Credential Dump](/images/gotham-5.png)
 
-The password was **`batman`**.
+The password was **batman**.
 
 Extracting the archive revealed another base64 string:
 
@@ -119,8 +119,8 @@ m0r3_13337431}
 
 ## Flag 4
 
-Dumping Notepad with `procdump` showed a search for `flag4`.
-Running `strings` revealed:
+Dumping Notepad with procdump showed a search for flag4.
+Running strings revealed:
 
 ```
 YjNuM2YxNzVfeTB1Xw==
@@ -132,7 +132,7 @@ YjNuM2YxNzVfeTB1Xw==
 
 ## Flag 2 (MS Paint)
 
-From `pslist`, `mspaint.exe` was active.
+From pslist, mspaint.exe was active.
 I dumped the process memory, renamed it to `.data`, and opened it in GIMP.
 
 ![GIMP Analysis](/images/gotham-8.png)
