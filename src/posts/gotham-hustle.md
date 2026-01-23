@@ -44,7 +44,7 @@ multiple chrome.exe processes
 
 ## Command History
 
-To check user activity, I ran cmdscan.
+To check user activity, I ran cmdscan 
 
 ![Command History](/images/gotham-2.png)
 

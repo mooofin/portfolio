@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npx vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
+    "lint": "bunx eslint .",
+    "preview": "bunx --bun vite preview"
   },
   "dependencies": {
     "@react-three/fiber": "^9.3.0",
@@ -28,6 +28,7 @@
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
+    "baseline-browser-mapping": "^2.9.17",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

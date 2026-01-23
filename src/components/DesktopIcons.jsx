@@ -33,6 +33,11 @@ export default function DesktopIcons() {
           <img src="/stuff/234.png" alt="Blog folder" />
           <span className='uncenter'>Blog</span>
         </a>
+        <a href="https://hymnals.bearblog.dev/blog/" className="desktop-shortcut" target="_blank" rel="noopener noreferrer"
+          title="Poetry">
+          <img src="/stuff/poetry.png" alt="Poetry folder" />
+          <span className='uncenter'>Poetry</span>
+        </a>
       </div>
 
 

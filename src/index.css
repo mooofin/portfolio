@@ -4441,15 +4441,19 @@ Music Page Responsive Styles */
 /* Hymnals Blog Design */
 .hymnals-blog {
   min-height: 100vh;
-  background: #fff;
-  color: #000;
-  padding: 2rem;
+  background: transparent;
+  color: #fff;
+  padding: 4rem 2rem 6rem 2rem;
   font-family: 'Courier New', 'Courier', monospace;
   cursor: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hymnals-container {
-  max-width: 800px;
+  max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
 }
@@ -4461,15 +4465,22 @@ Music Page Responsive Styles */
   object-fit: cover;
   margin: 0 auto 1.5rem;
   display: block;
-  border: 2px solid #000;
+  border: 3px solid #ff69b4;
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
 }
 
 .hymnals-title {
-  font-size: 2.5rem;
-  margin: 0 0 2rem 0;
+  font-size: 3rem;
+  margin: 0 0 3rem 0;
   font-weight: normal;
   font-family: 'Courier New', 'Courier', monospace;
   letter-spacing: -0.5px;
+  color: #ff69b4;
+  text-shadow: 
+    0 0 10px rgba(0, 0, 0, 0.9),
+    0 0 20px rgba(0, 0, 0, 0.8),
+    0 0 30px rgba(255, 105, 180, 0.6),
+    2px 2px 4px rgba(0, 0, 0, 1);
 }
 
 .hymnals-post-list {
@@ -4478,45 +4489,92 @@ Music Page Responsive Styles */
   margin: 0 0 3rem 0;
   text-align: left;
   display: inline-block;
+  width: 100%;
+  max-width: 700px;
 }
 
 .hymnals-post-list li {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
   font-size: 1.2rem;
   line-height: 1.8;
-  white-space: nowrap;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border-left: 4px solid #ff69b4;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.hymnals-post-list li:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateX(8px);
+  box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
 }
 
 .hymnals-date {
   font-style: italic;
-  color: #000;
+  color: #ff69b4;
   font-family: 'Courier New', 'Courier', monospace;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  white-space: nowrap;
+  opacity: 0.9;
+  min-width: 110px;
+  text-shadow: 
+    0 0 8px rgba(0, 0, 0, 1),
+    0 0 12px rgba(0, 0, 0, 1),
+    2px 2px 6px rgba(0, 0, 0, 1),
+    -1px -1px 0 rgba(0, 0, 0, 1),
+    1px -1px 0 rgba(0, 0, 0, 1),
+    -1px 1px 0 rgba(0, 0, 0, 1),
+    1px 1px 0 rgba(0, 0, 0, 1);
 }
 
 .hymnals-post-link {
-  color: #5555ff;
-  text-decoration: underline;
-  text-decoration-color: #5555ff;
+  color: #ff69b4;
+  text-decoration: none;
   font-family: 'Courier New', 'Courier', monospace;
   font-size: 1.2rem;
+  transition: color 0.3s ease;
+  flex: 1;
+  text-shadow: 
+    0 0 8px rgba(0, 0, 0, 1),
+    0 0 12px rgba(0, 0, 0, 1),
+    2px 2px 6px rgba(0, 0, 0, 1),
+    -1px -1px 0 rgba(0, 0, 0, 1),
+    1px -1px 0 rgba(0, 0, 0, 1),
+    -1px 1px 0 rgba(0, 0, 0, 1),
+    1px 1px 0 rgba(0, 0, 0, 1);
 }
 
 .hymnals-post-link:hover {
-  color: #3333dd;
+  color: #fff;
+  text-decoration: underline;
+  text-shadow: 
+    0 0 15px rgba(255, 105, 180, 0.8),
+    0 0 8px rgba(0, 0, 0, 1),
+    2px 2px 6px rgba(0, 0, 0, 1);
 }
 
 .hymnals-back-link {
   display: inline-block;
-  color: #5555ff;
-  text-decoration: underline;
-  text-decoration-color: #5555ff;
+  color: #ff69b4;
+  text-decoration: none;
   margin-bottom: 2rem;
   font-family: 'Courier New', 'Courier', monospace;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 105, 180, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  transition: all 0.3s ease;
 }
 
 .hymnals-back-link:hover {
-  color: #3333dd;
+  background: rgba(255, 105, 180, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
 }
 
 .hymnals-blog-post-container {

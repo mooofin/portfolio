@@ -15,7 +15,7 @@ function Hero() {
             />
           </div>
           <div className="hero-sticky-text">
-            <div>Siddharth<br/><br/>Southern Gothic Salvation<br/>NixOS Witch<br/><br/>Loves NixOS and Gentoo, and I enjoy declarative, functional programming using Nix</div>
+            <div>Siddharth<br/><br/>Loves NixOS and Gentoo, and I enjoy declarative, functional programming using Nix</div>
           </div>
         </div>
         

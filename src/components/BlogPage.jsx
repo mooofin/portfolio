@@ -17,9 +17,9 @@ function BlogPage() {
   return (
     <main className="hymnals-blog">
       <div className="hymnals-container">
-        <img
-          src="/my-melody-kuromi-lolita-ipad-wallpaper-kawaii-hoshi.jpg"
-          alt="muffin's profile"
+        <img 
+          src="/stuff/6de1c27b5814e2f876565ede5be506ac.jpg" 
+          alt="Profile" 
           className="hymnals-pfp"
         />
         <h1 className="hymnals-title">
