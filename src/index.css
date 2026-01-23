@@ -4594,7 +4594,7 @@ Music Page Responsive Styles */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.8;
   font-size: 1.1rem;
-  color: #000;
+  color: #ff69b4;
 }
 
 .hymnals-blog .blog-article h1,
@@ -4604,7 +4604,7 @@ Music Page Responsive Styles */
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-weight: 600;
-  color: #000;
+  color: #ff69b4;
 }
 
 .hymnals-blog .blog-article h1 {
@@ -4621,25 +4621,25 @@ Music Page Responsive Styles */
 
 .hymnals-blog .blog-article p {
   margin-bottom: 1rem;
-  color: #000;
+  color: #ff69b4;
 }
 
 .hymnals-blog .blog-article a {
-  color: #5555ff;
+  color: #ff1493;
   text-decoration: underline;
 }
 
 .hymnals-blog .blog-article a:hover {
-  color: #3333dd;
+  color: #ff69b4;
 }
 
 .hymnals-blog .blog-article code {
-  background: #f5f5f5;
+  background: rgba(255, 105, 180, 0.1);
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-family: 'Courier New', 'Courier', monospace;
   font-size: 0.9em;
-  color: #000;
+  color: #ff69b4;
 }
 
 .hymnals-blog .blog-article pre {
@@ -4670,4 +4670,31 @@ Music Page Responsive Styles */
 
 .hymnals-blog .blog-article li {
   margin-bottom: 0.5rem;
+  color: #ff69b4;
+}
+
+/* Override markdown-container styles for blog */
+.hymnals-blog .markdown-container p,
+.hymnals-blog .markdown-container li {
+  color: #ff69b4 !important;
+}
+
+.hymnals-blog .markdown-container h1,
+.hymnals-blog .markdown-container h2,
+.hymnals-blog .markdown-container h3,
+.hymnals-blog .markdown-container h4,
+.hymnals-blog .markdown-container h5,
+.hymnals-blog .markdown-container h6 {
+  color: #ff69b4 !important;
+}
+
+.hymnals-blog .markdown-container strong,
+.hymnals-blog .markdown-container b,
+.hymnals-blog .markdown-container em,
+.hymnals-blog .markdown-container i {
+  color: #ff69b4 !important;
+}
+
+.hymnals-blog .markdown-container {
+  color: #ff69b4 !important;
 }
