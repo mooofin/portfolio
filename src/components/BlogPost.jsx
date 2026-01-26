@@ -5,8 +5,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useEffect, useState, useMemo } from 'react';
 import { loadPostBySlug } from '../posts.js';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MarkdownTable from './MarkdownTable';
 
 function transformObsidianEmbeds(markdown) {
@@ -45,18 +43,7 @@ function BlogPost() {
 
   const components = useMemo(() => ({
     code: ({ node, inline, className, children, ...props }) => {
-      const match = /language-(\w+)/.exec(className || '');
-      const language = match ? match[1] : 'bash';
-
-      if (inline) {
-        return <code className={className} {...props}>{children}</code>;
-      }
-
-      return (
-        <SyntaxHighlighter language={language} style={atomDark} {...props}>
-          {String(children).replace(/\n$/, '')}
-        </SyntaxHighlighter>
-      );
+      return <code className={className} {...props}>{children}</code>;
     },
     table: ({ children }) => <MarkdownTable>{children}</MarkdownTable>,
     img: ({ src, alt }) => {
