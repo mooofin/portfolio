@@ -1,34 +1,36 @@
 # Portfolio
 
-This is my personal portfolio website built with React and Vite. The site features a video background with custom UI components and a blog section for writeups and technical posts.
+This is my portfolio website. It uses React and Vite, with a video background and a custom blog system.
 
-The entire project runs on Bun for package management and development. All build and dev scripts use Bun instead of npm or yarn for faster installation and execution times.
+I use Bun for package management and development scripts.
 
-The blog system uses a simple markdown file approach where posts are stored in the src/posts directory. Each post includes frontmatter for metadata like title and date. The posts are loaded dynamically at runtime using Vite's import.meta.glob feature.
+## System Overview
 
-The site has a custom pink cursor animation that follows mouse movement with smooth easing. Desktop icons on the homepage link to different sections including an About page, Music page, Blog, and an external Poetry blog hosted on Bear Blog.
+The blog uses markdown files stored in `src/posts`. Vite imports them at runtime using `import.meta.glob`, parsing frontmatter for metadata. This avoids the need for a separate CMS.
 
-Styling is mostly done through vanilla CSS with some performance optimizations applied. The video background component handles the main visual element with proper aspect ratio handling and playback controls.
+The site includes a custom cursor animation and links to my other pages (Music, external Poetry blog). Styling is primarily vanilla CSS for performance.
 
-Deployment happens automatically through Vercel whenever changes are pushed to the main branch. The vercel.json config handles SPA routing by rewriting all non-file paths to index.html.
+Deployments are handled by Vercel on git push, with a `vercel.json` config to handle SPA routing.
 
 ## Development
 
-Run the dev server with hot reload:
-```
+Run the dev server:
+```bash
 bun run dev
 ```
 
 Build for production:
-```
+```bash
 bun run build
 ```
 
-Preview the production build locally:
-```
+Preview locally:
+```bash
 bun run preview
 ```
 
-## Tech Stack
+## Stack
 
-Built with React 19, React Router for navigation, and Vite as the build tool. Uses React Three Fiber and postprocessing for any 3D elements. Markdown rendering is handled by react-markdown with remark-gfm for GitHub-flavored markdown support. Code syntax highlighting comes from react-syntax-highlighter with Prism themes.
+- **Core**: React 19, Vite, React Router
+- **Graphics**: React Three Fiber
+- **Content**: react-markdown, remark-gfm, react-syntax-highlighter
