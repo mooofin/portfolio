@@ -518,7 +518,7 @@ Onto the malware binary , lemme try to dump it and try to reverse it using ghidr
 Before that lemme check what dll's were being used - 
 
 
-![image](/images/batman-1.png)
+![image](/images/posts/like-father-like-son/batman-1.png)
 
 
 
@@ -536,33 +536,33 @@ Running strings on the binary revealed a lot , Privilege escalation capabilities
 Enough bs lets run it on ghidra . 
 
 
-![image](/images/batman-2.png)
+![image](/images/posts/like-father-like-son/batman-2.png)
 
 
 The dissasembly seems to be a mess , then on the program trees , it showed that the exe has been packed with UPX , so lets unpack and load it again 
 
 
-![image](/images/batman-3.png)
+![image](/images/posts/like-father-like-son/batman-3.png)
 
 I wasted a lot of time trying to dump this , but got a error with UPX .
 
 Malware sometimes alters its UPX headers in memory to block unpacking, so using `procdump` can produce a tampered binary that UPX refuses to decompress. In this case, `dumpfiles` from Volatility pulled the untouched executable from the Windows file cache instead of process memory, allowing UPX to successfully unpack it. When UPX fails with a “possibly modified/hacked” error on a memory dump, always try retrieving the file from cache.
 
-![image](/images/batman-4.png)
+![image](/images/posts/like-father-like-son/batman-4.png)
 
 Now that the procdump version is working let's move onto reversing this . 
 
 
 I am using ghidra because idk ida 
 
-![image](/images/batman-5.png)
+![image](/images/posts/like-father-like-son/batman-5.png)
 
 
 We see some sus strings 
 
 
 Also i spotted a starnge env called AZRAEL
-![image](/images/batman-6.png)
+![image](/images/posts/like-father-like-son/batman-6.png)
 
 Let's try to understand what this malware is doing  .
 
@@ -571,7 +571,7 @@ Let's try to understand what this malware is doing  .
 This is a lot , ill try to explain the important parts 
 
 
-![image](/images/batman-7.png)
+![image](/images/posts/like-father-like-son/batman-7.png)
 
 
 Checks if running with admin privileges, If not elevated, uses ShellExecuteExA() with "runas" to relaunch "scvhost.exe" with admin rights , Exits if user cancels UAC prompt (error 0x4c7)
@@ -580,23 +580,23 @@ Checks if running with admin privileges, If not elevated, uses ShellExecuteExA()
 
 I spotted the malware using  a function  for privilage escalation  . 
 
-![image](/images/batman-8.png)
+![image](/images/posts/like-father-like-son/batman-8.png)
 
 
 This function enables SeDebugPrivilege for the current process by opening the process token, looking up the SeDebugPrivilege LUID, and calling AdjustTokenPrivileges to turn it on. Enabling that privilege lets the program open and manipulate other processes, including system-owned ones, which malware commonly uses to inject code, read memory (for credential theft), or tamper with protected processes. The sequence is a classic first step in process injection and privilege escalation.
 
-![image](/images/batman-9.png)
+![image](/images/posts/like-father-like-son/batman-9.png)
 
 In short this does - K32EnumProcesses() → K32EnumProcessModules() → K32GetModuleFileNameExA()
 MultiByteToWideChar() → FUN_140031c70(L"Notepad.exe") , im guessing this is to store , its process ID for later injection . 
 
 
-![image](/images/batman-10.png)
+![image](/images/posts/like-father-like-son/batman-10.png)
 
 
 Retrieves encryption key from environment variable "AZRAEL" , XORs the key with 0x33
 
-![image](/images/batman-11.png)
+![image](/images/posts/like-father-like-son/batman-11.png)
 
 
 Opens C:\confidential.bin for reading -> Creates C:\Windows\windowsupdate.bin for output
@@ -604,7 +604,7 @@ Opens C:\confidential.bin for reading -> Creates C:\Windows\windowsupdate.bin fo
 Im not sure right now about whats being done next but an XOR is happening tho and it's doing twice ? 
 
 
-![image](/images/batman-12.png)
+![image](/images/posts/like-father-like-son/batman-12.png)
 
 Classic DLL injection ah . Opens Notepad process with full access ->Allocates memory in Notepad's address space->Writes path to malicious DLL: Msrct.dll->Creates remote thread to load the DLL
 
@@ -965,7 +965,7 @@ Then the malware tries to hide itself by deleating everything
                               "C:\\Windows\\System32\\config\\systemprofile\\AppData\\Local\\Temp\\* "
                              );
 ```
-![image](/images/batman-13.png)
+![image](/images/posts/like-father-like-son/batman-13.png)
 
 Also this is how the malware enumerates the list : ) 
 
@@ -973,7 +973,7 @@ Also this is how the malware enumerates the list : )
 Azrael was very sus , lets try running envars plugin to see the stuff which the variable uses . 
 
 
-![image](/images/batman-14.png)
+![image](/images/posts/like-father-like-son/batman-14.png)
 
 
 Im guessting that this is the key ? 
@@ -985,7 +985,7 @@ Now xoring it with 0x33 the value which we found earlier
 Since the malware deleated some stuff , i looked at MFT-table which on memlabs expereicne  has some flag parts or clues related to it ? 
 
 
-![image](/images/batman-15.png)
+![image](/images/posts/like-father-like-son/batman-15.png)
 
 
 Onto the next part , i need some explanations - 
@@ -996,9 +996,9 @@ To determine the memory protection constants for a specific VAD node, use the �
 
 VAD is a tree structure and like any tree structure it has a root (which is called Vadroot) and nodes/leafs (Vadnodes) that contains all the information related to memory ranges reserved for a specific process by the memory manager. For each chunk of a continuous virtual memory address allocations, memory manager creates a corresponding VAD node that contains the information about this continuous allocations 
 
-![image](/images/batman-16.png)
+![image](/images/posts/like-father-like-son/batman-16.png)
 
-![image](/images/batman-17.png)
+![image](/images/posts/like-father-like-son/batman-17.png)
 
 ```
 PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f Damian.mem --profile Win7SP1x64 vaddump -p 1924 -D vads/
@@ -1060,7 +1060,7 @@ Since we now the flag format -biosCTF{} we can try to encrypt it with the arlogr
 Encryption algorithm: Double pass of (add digit → XOR → add digit → XOR) 
 
 
-![image](/images/batman-18.png)
+![image](/images/posts/like-father-like-son/batman-18.png)
 
 
 ```
@@ -1078,7 +1078,7 @@ Result: `q2sWRN`
 ```
 
 
-![image](/images/batman-19.png)
+![image](/images/posts/like-father-like-son/batman-19.png)
 
 
 

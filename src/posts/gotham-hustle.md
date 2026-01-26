@@ -11,7 +11,7 @@ Gotham's underbelly trembles as whispers spread—The Riddler's back, leaving cr
 
 First, I ran imageinfo to identify the memory profile and basic system details.
 
-![Memory Profile](/images/gotham-1.png)
+![Memory Profile](/images/posts/gotham-hustle/gotham-1.png)
 
 **System Information**
 - OS Profile: Win7SP1x64
@@ -46,7 +46,7 @@ multiple chrome.exe processes
 
 To check user activity, I ran cmdscan 
 
-![Command History](/images/gotham-2.png)
+![Command History](/images/posts/gotham-hustle/gotham-2.png)
 
 ```text
 Cmd #4: Ymkwc2N0Znt3M2xjMG0zXw==
@@ -69,7 +69,7 @@ Dumping Notepad directly failed due to Volatility version mismatch.
 I dumped process memory and ran `strings`, which mostly yielded DLL data.
 One extracted link led to the following page:
 
-![Notepad Strings](/images/gotham-3.png)
+![Notepad Strings](/images/posts/gotham-hustle/gotham-3.png)
 
 This contained another base64 string, decoding to:
 
@@ -87,7 +87,7 @@ From filescan, I noticed flag5.rar on the Desktop and dumped it:
 vol -f gotham.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000011fdaff20 --dump-dir=D:\DFIR
 ```
 
-![File Extraction](/images/gotham-4.png)
+![File Extraction](/images/posts/gotham-hustle/gotham-4.png)
 
 The archive was password-protected.
 
@@ -101,13 +101,13 @@ Using hashdump:
 bruce:1001:...:b7265f8cc4f00b58f413076ead262720:::
 ```
 
-![Credential Dump](/images/gotham-5.png)
+![Credential Dump](/images/posts/gotham-hustle/gotham-5.png)
 
 The password was **batman**.
 
 Extracting the archive revealed another base64 string:
 
-![Archive Contents](/images/gotham-6.png)
+![Archive Contents](/images/posts/gotham-hustle/gotham-6.png)
 
 Decoded:
 
@@ -126,7 +126,7 @@ Running strings revealed:
 YjNuM2YxNzVfeTB1Xw==
 ```
 
-![Flag 4](/images/gotham-7.png)
+![Flag 4](/images/posts/gotham-hustle/gotham-7.png)
 
 
 
@@ -135,7 +135,7 @@ YjNuM2YxNzVfeTB1Xw==
 From pslist, mspaint.exe was active.
 I dumped the process memory, renamed it to `.data`, and opened it in GIMP.
 
-![GIMP Analysis](/images/gotham-8.png)
+![GIMP Analysis](/images/posts/gotham-hustle/gotham-8.png)
 
 I referred a writeup for the MS Paint part; the offsets there were not correct so I had to adjust them manually.
 
@@ -149,7 +149,7 @@ dDBfZGYxcl9sNGl1Xw==
 
 The data appeared flipped in the output, so I rotated and flipped the image to make the text readable.
 
-![Final Flag](/images/gotham-9.png)
+![Final Flag](/images/posts/gotham-hustle/gotham-9.png)
 
 Decoding the base64 revealed the final combined flag:
 

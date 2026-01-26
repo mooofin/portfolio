@@ -67,7 +67,7 @@ Post-crash, the application's state was meticulously examined within the GDB deb
 
 The final step involved leveraging the unique property of the cyclic pattern. Using GEF's `pattern offset` utility, the captured EIP value (`0x61616168` or "haaa") was submitted for analysis. The tool's output, `[+] Searching for '61616168'/'68616161' with period=4` and `[+] Found at offset 25 (little-endian search) likely`, definitively established that the EIP register is precisely overwritten beginning at the 25th byte of the input buffer.
 
-![Cyclic pattern analysis](/images/ropfu/screenshot-1.png)
+![Cyclic pattern analysis](/images/posts/ropfu/screenshot-1.png)
 
 With the EIP offset now precisely identified, the next critical phase involves directing the program's execution to our controlled data. Our strategy hinges on leveraging a "jump to EAX" instruction, which effectively serves as a pivot point.
 
@@ -75,9 +75,9 @@ During our analysis, we identified a `jmp eax` instruction located at the fixed 
 
 Recall that our EAX register, as observed in the initial crash state (`$eax : 0xffff8cc0 → "aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaama[...]"`), already points directly into our input buffer. This means if we overwrite EIP with the address of `jmp eax` (i.e., `0x0805333b`), the CPU will then execute `jmp eax`. Because EAX points to a location within our input where we can place arbitrary code (like a NOP sled followed by shellcode), the program counter will consequently jump to that location and begin executing our injected instructions. This forms the direct path to achieving arbitrary code execution.
 
-![Jump to EAX instruction](/images/ropfu/screenshot-2.png)
+![Jump to EAX instruction](/images/posts/ropfu/screenshot-2.png)
 
-![Memory layout](/images/ropfu/screenshot-3.png)
+![Memory layout](/images/posts/ropfu/screenshot-3.png)
 
 ```python
 import pwn 
@@ -108,4 +108,4 @@ For debugging and analysis purposes, the crafted `payload` is also written to a 
 
 The exploit's execution then shifts to interacting with the remote target. A connection is established using `pwn.remote('saturn.picoctf.net', 61004)`, targeting a server at `saturn.picoctf.net` on port `61004`. Once connected, the `payload` is sent to the server using `p.sendline(payload)`. This action typically injects the carefully constructed payload into a vulnerable buffer on the remote program, overwriting the return address and causing the program to execute the NOP sled and subsequently the shellcode. The final command, `p.interactive()`, is critical for post-exploitation. If the exploit is successful and the shellcode executes as intended, `p.interactive()` takes over the current terminal, allowing the user to directly interact with the newly spawned remote shell on `saturn.picoctf.net`, effectively giving them control over the compromised system.
 
-![Successful exploitation](/images/ropfu/screenshot-4.png)
+![Successful exploitation](/images/posts/ropfu/screenshot-4.png)

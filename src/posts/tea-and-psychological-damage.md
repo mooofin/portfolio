@@ -3,17 +3,17 @@ title: "32 Rounds of TEA and Psychological Damage, Surviving a Stripped 32-bit B
 date: "2025-12-29"
 ---
 
-![Binary Analysis](/images/vm2-1.png)
+![Binary Analysis](/images/posts/tea-and-psychological-damage/vm2-1.png)
 
 This program is a 32-bit ARM binary. This means it is meant to run on ARM systems and not on regular x86 machines, so it cannot be run directly. The binary is also stripped, meaning there are no useful function names, and it is dynamically linked. Even though it cannot be executed easily, running it is not required. Static analysis is enough to understand the logic and solve the challenge.
 
 ## Initial Analysis
 
-![Program Output](/images/vm2-2.png)
+![Program Output](/images/posts/tea-and-psychological-damage/vm2-2.png)
 
 When the program starts, it prints a message and waits for user input. The input is read using the `read()` function. Instead of keeping the input as raw text, the program parses it into numbers and stores them contiguously in a heap-allocated buffer. These parsed values are later treated as fake registers for a custom virtual machine implemented by the binary.
 
-![Input Parsing](/images/vm2-3.png)
+![Input Parsing](/images/posts/tea-and-psychological-damage/vm2-3.png)
 
 ## The Virtual Machine
 
@@ -29,19 +29,19 @@ By analyzing where the jump table leads and observing what each handler does, th
 
 ### Load Lower Immediate (LLi)
 
-![Load Lower Immediate](/images/vm2-4.png)
+![Load Lower Immediate](/images/posts/tea-and-psychological-damage/vm2-4.png)
 
 This instruction loads an immediate value into the lower portion of a register.
 
 ### Load Upper Immediate (LUi)
 
-![Load Upper Immediate](/images/vm2-5.png)
+![Load Upper Immediate](/images/posts/tea-and-psychological-damage/vm2-5.png)
 
 Another similar instruction was identified as Load Upper Immediate, which loads an immediate value into the upper portion of a register.
 
 ### Addition (vm_add)
 
-![Addition Operation](/images/vm2-6.png)
+![Addition Operation](/images/posts/tea-and-psychological-damage/vm2-6.png)
 
 The next instruction handled addition between values.
 
@@ -51,42 +51,42 @@ The next instruction was particularly complex. It combines two bytes into a 16-b
 
 ### Compare Instruction
 
-![Compare Instruction](/images/vm2-7.png)
+![Compare Instruction](/images/posts/tea-and-psychological-damage/vm2-7.png)
 
 After that, another instruction was identified which performs comparisons between values.
 
 ### Stack Operations
 
-![Push Operation](/images/vm2-8.png)
+![Push Operation](/images/posts/tea-and-psychological-damage/vm2-8.png)
 
 Two instructions handle stack management:
 - **Push**: Pushes values onto the VM stack
 
-![Pop Operation](/images/vm2-9.png)
+![Pop Operation](/images/posts/tea-and-psychological-damage/vm2-9.png)
 
 - **Pop**: Pops values from the VM stack
 
 ### Subtraction (vm_sub)
 
-![Subtraction Operation](/images/vm2-10.png)
+![Subtraction Operation](/images/posts/tea-and-psychological-damage/vm2-10.png)
 
 Another instruction performs subtraction between values.
 
 ### Bit Shifting
 
-![Bit Shifting](/images/vm2-11.png)
+![Bit Shifting](/images/posts/tea-and-psychological-damage/vm2-11.png)
 
 This instruction was more math-heavy and performs bit shifting operations before producing a result.
 
 ### XOR Operation
 
-![XOR Operation](/images/vm2-12.png)
+![XOR Operation](/images/posts/tea-and-psychological-damage/vm2-12.png)
 
 The next instruction performs an XOR operation.
 
 ### NOP
 
-![NOP Instruction](/images/vm2-13.png)
+![NOP Instruction](/images/posts/tea-and-psychological-damage/vm2-13.png)
 
 Finally, this instruction does nothing and serves as a NOP.
 
@@ -94,21 +94,21 @@ Finally, this instruction does nothing and serves as a NOP.
 
 After finally renaming all the VM instructions in radare2, I ended up with a clear structure of how the virtual machine works internally.
 
-![VM Structure](/images/vm2-14.png)
+![VM Structure](/images/posts/tea-and-psychological-damage/vm2-14.png)
 
 I also identified the main VM dispatcher, which is responsible for fetching each instruction, decoding the opcode, and jumping to the correct handler.
 
-![VM Dispatcher](/images/vm2-15.png)
+![VM Dispatcher](/images/posts/tea-and-psychological-damage/vm2-15.png)
 
 Since the opcode handlers were already renamed and understood, I mapped out the full opcode table.
 
-![Opcode Table](/images/vm2-16.png)
+![Opcode Table](/images/posts/tea-and-psychological-damage/vm2-16.png)
 
 With this information, the extracted VM bytecode could now be mapped properly, because we know what each register represents and what each instruction does.
 
-![Bytecode Dump](/images/vm2-17.png)
+![Bytecode Dump](/images/posts/tea-and-psychological-damage/vm2-17.png)
 
-![Keygen](/images/vm2-20.png)
+![Keygen](/images/posts/tea-and-psychological-damage/vm2-20.png)
 
 ## Discovering TEA Encryption
 
@@ -116,13 +116,13 @@ At this point, the next goal was figuring out how to convert this raw bytecode d
 
 When the VM starts running, it first loads two constant values. One of them is `0x9e3779b9`, which is a well-known constant used in the TEA (Tiny Encryption Algorithm) encryption algorithm. This immediately hints that some kind of encryption or mixing logic is involved.
 
-![TEA Constant](/images/vm2-18.png)
+![TEA Constant](/images/posts/tea-and-psychological-damage/vm2-18.png)
 
 ## The Algorithm
 
 Instead of explaining everything line by line, the image below gives a clean high-level view of what the VM is actually doing.
 
-![Algorithm Overview](/images/vm2-19.png)
+![Algorithm Overview](/images/posts/tea-and-psychological-damage/vm2-19.png)
 
 In short, the program takes your input key and scrambles it using a small encryption-like routine that runs for 32 rounds. After all rounds are done, the final result is compared against two hardcoded secret values. If the values match, the key is accepted.
 
@@ -200,7 +200,7 @@ The keygen generates valid serials by:
 1. Starting with the target values (`0xba01aafe` and `0xbbff31a3`)
 2. Generating random values for the other four registers
 3. Running the TEA algorithm forward for 32 rounds
-![Output](/images/vm2-21.png)
+![Output](/images/posts/tea-and-psychological-damage/vm2-21.png)
 
 4. The resulting values become valid input keys
 

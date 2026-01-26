@@ -46,10 +46,10 @@ ELF64: | Canary: true  CFI: false SafeStack: false Fortify: false Fortified:  0 
 RUNPATH: . - The binary looks for shared libraries in the current directory first (potential security risk)
 
 file 
-![Binary File Info](/images/apple-1.png)
+![Binary File Info](/images/posts/an-apple-a-day/apple-1.png)
  strings so this is a notes app , 
 
-![Strings Output](/images/apple-2.png)
+![Strings Output](/images/posts/an-apple-a-day/apple-2.png)
 
 The decompilation for the binary was more helpful as i got the whole understanding of the program ; 
 ```c
@@ -488,7 +488,7 @@ Ill try to write a demo program to understand hoa-2 better and what does it solv
 
 
 
-![Decompiled Code](/images/apple-3.png)
+![Decompiled Code](/images/posts/an-apple-a-day/apple-3.png)
 
 
 ### glibc Internals
@@ -541,7 +541,7 @@ If _wide_vtable is fake and heap-controlled, glibc jumps to an attacker-controll
 
 Internally, libc has three global FILE objects: stdin, stdout, stderr. Each of these is a fully-initialized _IO_FILE structure with valid locks, valid mode flags, valid wide I/O state, and most importantly our trusted vtables.
 
-![Wide Data Structure](/images/apple-4.png)
+![Wide Data Structure](/images/posts/an-apple-a-day/apple-4.png)
 
 ## What _mode does
 
@@ -570,7 +570,7 @@ stderr_fp->_mode = 1;
 
 That guarantees _wide_data will be accessed, _wide_vtable will be dereferenced, and normal byte vtable is bypassed.
 
-![Mode Field](/images/apple-5.png)
+![Mode Field](/images/posts/an-apple-a-day/apple-5.png)
 
 After compiling with these flags i got an error ; we needed to do bc the FILE vtable itself is wrong, so glibc never reaches _IO_WOVERFLOW
 
@@ -578,7 +578,7 @@ Apple 2 still needs a legitimate FILE vtable to route execution into the wide pa
 
 While looking through more on house of apple i found this image , which was on the idea of exploit this chalelnge closely resembleded 
 
-![House of Apple 2 Diagram](/images/apple-6.png)
+![House of Apple 2 Diagram](/images/posts/an-apple-a-day/apple-6.png)
 
 In older glibc versions (< 2.24), you could directly overwrite FILE structure vtables. But glibc added **vtable validation** that checks if vtable pointers are within valid memory ranges.
 
@@ -644,7 +644,7 @@ When we call exit ; this is somewhat of a representation of whats happening
 
 
 
-![Exit Flow](/images/apple-7.png)
+![Exit Flow](/images/posts/an-apple-a-day/apple-7.png)
 
 
 
@@ -658,7 +658,7 @@ The program lets us read memory using a negative index, which means we can read 
 
 Once we have the leaked address of free, we subtract its known offset inside libc. This gives us the base address of libc in memory. From that single value, we can calculate the addresses of all other libc functions, including system, which we will need later in the exploit
 
-![Memory Leak](/images/apple-8.png)
+![Memory Leak](/images/posts/an-apple-a-day/apple-8.png)
 
 We need to create a fake `_IO_FILE_plus` structure on the heap with three 
 parts:
@@ -803,7 +803,7 @@ write_note(0, 0x1e0, p64(heap_addr + 0x200)) # _wide_vtable
 
 Finally, we patch the `_wide_vtable` pointer to point to our fake wide vtable, which we placed at offset `0x200`. This is the most important pointer, because glibc does **not validate** it. When glibc later calls a wide-character function, it will jump to whatever function pointer we placed there.
 
-![Fake FILE Structure](/images/apple-9.png)
+![Fake FILE Structure](/images/posts/an-apple-a-day/apple-9.png)
 
 
 
@@ -1044,7 +1044,7 @@ void _IO_vtable_check(struct _IO_jump_t *vtable) {
 3. When `doallocate` is called from `_wide_vtable`, it executes our function
 
 
-![Exploit Diagram](/images/apple-10.png)
+![Exploit Diagram](/images/posts/an-apple-a-day/apple-10.png)
 
 
 ## More on house of apple how it works 

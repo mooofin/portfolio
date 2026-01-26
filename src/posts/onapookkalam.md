@@ -23,32 +23,32 @@ While preparing for Onapookkalam, notes were recorded on a mobile device. The ph
 
 After extraction, numerous files were discovered:
 
-![Extracted Files](/images/onam-1.png)
+![Extracted Files](/images/posts/onapookkalam/onam-1.png)
 
 ### Notes Recovery
 
 The challenge focused on recovering notes. During the search for notes files, one file was found with a base64-encoded name:
 
-![Base64 Named File](/images/onam-2.png)
+![Base64 Named File](/images/posts/onapookkalam/onam-2.png)
 
 This directory contained the following files:
 
-![Directory Contents](/images/onam-3.png)
+![Directory Contents](/images/posts/onapookkalam/onam-3.png)
 
 ### Flutter App Analysis
 
 Further exploration revealed this was about recovering data from a Flutter app:
 
-![Flutter App Evidence 1](/images/onam-4.png)
+![Flutter App Evidence 1](/images/posts/onapookkalam/onam-4.png)
 
-![Flutter App Evidence 2](/images/onam-5.png)
+![Flutter App Evidence 2](/images/posts/onapookkalam/onam-5.png)
 
 ### Source Code Discovery
-![Source Code](/images/onam-6.png)
+![Source Code](/images/posts/onapookkalam/onam-6.png)
 
 Since Flutter uses Python (via Flet framework), i  searched for Python files containing the APK logic. The main application file was found:
 
-![Python File Location](/images/onam-7.png)
+![Python File Location](/images/posts/onapookkalam/onam-7.png)
 
 ### Encryption Implementation
 
@@ -235,9 +235,9 @@ print("\n✓ Decryption complete!\n")
 
 After an hour of going through all the files i found this snapshots folder  ( i tried organising the files by images , txt , png etc and came across this title 0 
 
-![Snapshots Folder](/images/onam-8.png)
+![Snapshots Folder](/images/posts/onapookkalam/onam-8.png)
 
-![App Screenshot](/images/onam-9.png)
+![App Screenshot](/images/posts/onapookkalam/onam-9.png)
 
 After analyzing the Android filesystem dump, we identified two key applications in the `/data/app/` directory:
 1. `com.sp3p3x.notesapp` - A notes application (already analyzed for flagPart1)
@@ -772,7 +772,7 @@ Offset: 0x800000, Type: 0x11, Count: 534043, Object: [
 ]
 ```
 
-![Deleted Data](/images/onam-10.png)
+![Deleted Data](/images/posts/onapookkalam/onam-10.png)
 
 
 

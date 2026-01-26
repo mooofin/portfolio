@@ -4,7 +4,7 @@ date: "2024-12-29"
 excerpt: "Multi-part CTF challenge involving Dark Souls map modding, Rust binary exploitation, and nested steganography. Covers FromSoftware file formats, dnSpy patching, ELF header repair, and advanced image forensics."
 ---
 
-![Challenge Header](/images/havok-engine/header.png)
+![Challenge Header](/images/posts/havok-engine-reverse-engineering/header.png)
 
 **Category:** Forensics / Reverse Engineering  
 **Difficulty:** Hard  
@@ -154,7 +154,7 @@ For example, below are screenshots of Clever’s Moveset Modpack being added bot
 
 
 
-![File structure example](/images/havok-engine/image-1.png)
+![File structure example](/images/posts/havok-engine-reverse-engineering/image-1.png)
 
 
 This is correct and will work, because all these folders and the regulation.bin file are things that the mod loader is looking for, being part of the game’s internal file structure, and they are placed directly in the “mod” folder. In the case of ME3, it would be the equivalent “eldenring-mods” folder by default.
@@ -255,14 +255,14 @@ Now we’ll use **dnSpy** to reverse engineer the **mod loader** so we can adapt
 
 
 
-![dnSpy CheckProgramUpdate function](/images/havok-engine/image-2.png)
+![dnSpy CheckProgramUpdate function](/images/posts/havok-engine-reverse-engineering/image-2.png)
 
 
 
 
 The function CheckProgramUpdate() is responsible for checking for new releases of DSMapStudio by querying GitHub. It creates a GitHubClient instance, fetches the latest release from the soulsmods/DSMapStudio repository, extracts the version number from the tag, and compares it against the local version stored in this._version. If the remote version is newer, it sets _programUpdateAvailable to true and stores the release URL, which later triggers an update prompt inside the application. For a customized or offline build, this behavior is unnecessary and can cause unwanted network requests or popups.
 
-![Patched CheckProgramUpdate](/images/havok-engine/image-3.png)
+![Patched CheckProgramUpdate](/images/posts/havok-engine-reverse-engineering/image-3.png)
 
 To disable this check, we can patch the method using dnSpy. After opening the executable in dnSpy, navigate to the method under its containing class, right-click it, and select Edit Method (C#). We then replace the entire body of the function with a minimal stub that does nothing. For example:
 
@@ -476,7 +476,7 @@ the bindings of Unity data structures to Souls ones grew very messy and buggy, a
 Also reading the file formatter for HAVOC we get , we get a diagram of the loader pipeline 
 
 
-![Havok loader pipeline diagram](/images/havok-engine/image-4.png)
+![Havok loader pipeline diagram](/images/posts/havok-engine-reverse-engineering/image-4.png)
 
 
 
@@ -507,19 +507,19 @@ hkaPartition
 
 This is to understand what the GAME dump means to annotate and see what sections and options to be checked for , also we'd need a pugin to display the model GIZMOS , A map and model viewer for NinjaBlade/DeS/DS1/DS2/DS3/Bloodborne preferability  for fucntions like FLVER Model Parsing , MSB Map Layout Parsing , TPF / TPFBHD Texture Pack Parsing , PS4 Texture Headerization , DX11 Texture Support Patch to MonoGame, Binder & DCX Container Parsing , HKX Collision Parsing(collision meshes, ragdoll setups, and physics constraints) , 
 
-![DS Map Studio view 1](/images/havok-engine/image-5.png)
+![DS Map Studio view 1](/images/posts/havok-engine-reverse-engineering/image-5.png)
 
 
 Since we dont know what model id refers to the Firekeeper model , we can see the Drawparams which takes arguments and passes it into the model's 
 
 
-![DS Map Studio DrawParams](/images/havok-engine/image-6.png)
+![DS Map Studio DrawParams](/images/posts/havok-engine-reverse-engineering/image-6.png)
 
 
 The text is in japaneese so are the original functions in . so we have to refer a Language dump online for Darksouls 1 and get the charIDred as reference , The reason why we are doing this is , NPc's have interaction navmeshes (to put it simply) 
 Simple in theory, but it does seem painful to get right. I use A* to identify the nodes (individual polygons), then used the funnel algorithm to actually map out the detailed path [NAVMESH](https://github.com/recastnavigation/recastnavigation)
 
-![Language dump reference](/images/havok-engine/image-7.png)
+![Language dump reference](/images/posts/havok-engine-reverse-engineering/image-7.png)
 
 
 After cross referencing we get to the mappeice which has the asset , we we are doing this is because NPC's have set game flags to move from one location to anbother and they behave as different entities depending on the flag bits set to them . In order to avoid the hassble FROMSOFTWARE uses multiple ID's but refer them under the game AI for the template charectarestics .
@@ -527,23 +527,23 @@ After cross referencing we get to the mappeice which has the asset , we we are d
 Now lets start looking at the model editor to see for NPC's  : ) 
 
 
-![Model editor view](/images/havok-engine/image-8.png)
+![Model editor view](/images/posts/havok-engine-reverse-engineering/image-8.png)
 
 I'll remove the lightfilter becuase it's annoying to see through 
 
-![Light filter removed](/images/havok-engine/image-9.png)
+![Light filter removed](/images/posts/havok-engine-reverse-engineering/image-9.png)
 
 
 And then we find the dialouge in the current setted mappeice to the position DEX 
 
 
-![Dialogue position DEX](/images/havok-engine/image-10.png)
+![Dialogue position DEX](/images/posts/havok-engine-reverse-engineering/image-10.png)
 
 
 After scrolling and peedking the area we find the model : )
 
 
-![Firekeeper model found](/images/havok-engine/image-11.png)
+![Firekeeper model found](/images/posts/havok-engine-reverse-engineering/image-11.png)
 
 
 ### THE VALUES FOR THE MODEL ID AND THE LOCATION ARE THE FLAG BITS 
@@ -767,7 +767,7 @@ Ghidra provides a powerful static analysis environment that makes reverse engine
 
 
 
-![Ghidra entry function analysis](/images/havok-engine/image-12.png)
+![Ghidra entry function analysis](/images/posts/havok-engine-reverse-engineering/image-12.png)
 
 
 In the entry function we can see that 
@@ -1064,7 +1064,7 @@ Another useful step in reverse engineering, especially when the decompiled code 
 Looking at the strings we see a hint to the flag 
 
 
-![Strings analysis showing flag hint](/images/havok-engine/image-13.png)
+![Strings analysis showing flag hint](/images/posts/havok-engine-reverse-engineering/image-13.png)
 
 
 
@@ -1075,7 +1075,7 @@ Lets  move onto the looking at the flag functions .
 
 We see a function that has something called flag_generator and in the huge dissass we see PTR_s_Execution_finished._0017baf8 . So this might be the main logic handling of the binary . 
 
-![Flag generator function](/images/havok-engine/image-14.png)
+![Flag generator function](/images/posts/havok-engine-reverse-engineering/image-14.png)
 
 ALsooo investigating the huge dump we find , a function call to FUN_00113590 included a long embedded string containing a complete Python script. The script defines a function named generate_flag_part(seed), which takes an integer seed, converts it to bytes, computes its SHA-256 hash, and returns the first eight hexadecimal characters of the resulting digest. This pattern suggests that the binary relies on Python code execution to dynamically produce a portion of the final flag
 
@@ -1111,7 +1111,7 @@ Investigating more through this huge rust dump we get ,
                  69 6f 6e 
 ```
 
-![iptables-audit strings](/images/havok-engine/image-15.png)
+![iptables-audit strings](/images/posts/havok-engine-reverse-engineering/image-15.png)
 
 The "[iptables-audit] DENY-EVENT-DATA: " string is part of a static message table that FUN_0010fec0 uses to log results. Because the same codebase embeds a Python snippet that computes generate_flag_part(seed) and also contains the "Execution finished." message, the evidence indicates the program executes the Python/VM code and then logs its output using these prefixes. By tracing references from the pointer table into FUN_0010fec0 and inspecting the buffer written by the Python runner (the &local_248 passed to FUN_00113590), we can capture the generated segments and reconstruct the full flag also :) it provides the keyword, iptables-audit, needed to find the messages. Second, the presence of separate DATA and KEY fields is a massive hint that the flag is encrypted 
 
@@ -1125,7 +1125,7 @@ journalctl is a command-line utility used on Linux systems that use systemd. It 
 Unlike traditional text logs (/var/log/syslog, /var/log/messages), the journal stores logs in a binary format, allowing structured queries, filtering, and metadata access. It includes not only messages from the kernel and services, but also stdout/stderr of systemd services
 
 
-![journalctl output](/images/havok-engine/image-16.png)
+![journalctl output](/images/posts/havok-engine-reverse-engineering/image-16.png)
 
 
 ```python
@@ -1223,7 +1223,7 @@ print(json.dumps(objs))
 Inspect the output for root node values. These numbers are combined to form the **zip password**, e.g., `498`.
 
 
-![Blender root node values](/images/havok-engine/image-16.png)
+![Blender root node values](/images/posts/havok-engine-reverse-engineering/image-16.png)
 
 ---
 

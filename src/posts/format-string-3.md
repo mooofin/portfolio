@@ -3,7 +3,7 @@ title: how to make your program spill tea
 date: 2025-12-17
 ---
 
-![Format String Challenge](/images/fmt-str-chal.png)
+![Format String Challenge](/images/posts/format-string-3/fmt-str-chal.png)
 
 ## Introduction
 
@@ -57,7 +57,7 @@ void hello() {
 
 This function helpfully prints the runtime address of `setvbuf`. This is crucial because modern systems use **ASLR (Address Space Layout Randomization)** and **PIE (Position Independent Executable)**, meaning memory addresses change every time the program runs.
 
-![Leak Output](/images/fmt-str-1.png)
+![Leak Output](/images/posts/format-string-3/fmt-str-1.png)
 
 By knowing the runtime address of `setvbuf` and its static offset in the provided `libc.so.6`, we can calculate the **base address of libc**. Once we have the base address, we can find the runtime address of any other function in libc, including `system`.
 
@@ -75,24 +75,24 @@ By knowing the runtime address of `setvbuf` and its static offset in the provide
 
 The **Global Offset Table (GOT)** is used by dynamically linked programs to resolve function addresses at runtime. When `puts` is called, the program looks up its address in the GOT. If we overwrite that entry with the address of `system`, the program will jump to `system` instead.
 
-![Program Segfaults on Bad Input](/images/fmt-str-3.png)
+![Program Segfaults on Bad Input](/images/posts/format-string-3/fmt-str-3.png)
 *Figure: We can verify control over execution flow by crashing the program.*
 
 ## Debugging & Exploitation
 
 To verify our strategy, we can use GDB. We need to find the location of `puts` in the GOT.
 
-![GDB Disassembly](/images/fmt-str-5.png)
+![GDB Disassembly](/images/posts/format-string-3/fmt-str-5.png)
 
 In GDB, we can inspect the PLT and GOT entries. The disassembly shows calls to `puts@plt`, which eventually jumps to the address stored in `puts@got`.
 
-![GDB PLT Analysis](/images/fmt-str-6.png)
+![GDB PLT Analysis](/images/posts/format-string-3/fmt-str-6.png)
 
 ### Calculating Offsets
 
 Since we have the `libc.so.6` file, the offsets are static. We can calculate the distance between `setvbuf` and `system` beforehand or let `pwntools` handle it dynamically.
 
-![Offset Calculation](/images/fmt-str-7.png)
+![Offset Calculation](/images/posts/format-string-3/fmt-str-7.png)
 
 ## The Exploit Script
 
@@ -148,11 +148,11 @@ When we run the script:
 3.  Sends a payload that writes the `system` address into the `puts` GOT entry.
 4.  When `puts("/bin/sh")` is called next, `system("/bin/sh")` executes instead.
 
-![Final Shell](/images/fmt-str-8.png)
+![Final Shell](/images/posts/format-string-3/fmt-str-8.png)
 
 And just like that, we have a shell!
 
-![Success Meme](/images/fmt-str-10.png)
+![Success Meme](/images/posts/format-string-3/fmt-str-10.png)
 
 **References:**
 *   [Hack Using Global Offset Table](https://nuc13us.wordpress.com/2015/12/25/hack-using-global-offset-table/)

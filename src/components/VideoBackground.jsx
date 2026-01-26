@@ -1,15 +1,15 @@
-import { useState, useRef, memo, useCallback } from 'react';
+import { useState, useRef, memo, useCallback, useEffect } from 'react';
 
 const VideoBackground = memo(function VideoBackground({ poster }) {
   const [currentVideo, setCurrentVideo] = useState('/images/video/blg.mp4');
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
-  
+
   const videos = [
     '/images/video/blg.mp4',
     '/images/video/bg1.mp4'
   ];
-  
+
   const toggleVideo = useCallback(() => {
     setCurrentVideo(prev => {
       const currentIndex = videos.indexOf(prev);
@@ -17,11 +17,23 @@ const VideoBackground = memo(function VideoBackground({ poster }) {
       return videos[nextIndex];
     });
   }, []);
-  
+
   const toggleMute = useCallback(() => {
     setIsMuted(prev => !prev);
   }, []);
-  
+
+  useEffect(() => {
+    if (videoRef.current) {
+      // Attempt to play the video.
+      // We use a catch block because some browsers might block autoplay
+      // even with muted=true if the user hasn't interacted yet,
+      // though usually muted autoplay is allowed.
+      videoRef.current.play().catch(error => {
+        console.error("Video autoplay failed:", error);
+      });
+    }
+  }, [currentVideo]);
+
   return (
     <>
       <div className="video-background">
@@ -39,7 +51,7 @@ const VideoBackground = memo(function VideoBackground({ poster }) {
         />
       </div>
       <div className="video-controls">
-        <button 
+        <button
           className="video-toggle-btn"
           onClick={toggleVideo}
           aria-label="Toggle background video"
@@ -50,7 +62,7 @@ const VideoBackground = memo(function VideoBackground({ poster }) {
             <line x1="12" y1="22.08" x2="12" y2="12" />
           </svg>
         </button>
-        <button 
+        <button
           className="video-toggle-btn video-sound-btn"
           onClick={toggleMute}
           aria-label={isMuted ? "Unmute video" : "Mute video"}

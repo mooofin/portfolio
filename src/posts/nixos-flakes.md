@@ -29,14 +29,14 @@ It's very cutesey to model this in a purely functional langauge
 I could just make a function for muffin which does so 
 
 
-![[nix-blog2/1.png]]
+![](/images/posts/nixos-flakes/1.png)
 
 We can now call this function twice with different values, in the derivations of foo and bar
 respectively:
 
 
 
-![[nix-blog2/2.png]]
+![](/images/posts/nixos-flakes/2.png)
 
 
 Mhmm so how do we adress this issue moving forward  ?
@@ -49,7 +49,7 @@ If the language were a Makefile-like declarative formalism, then
 describe the construction of (small-grained) components. Variability in a component is
 typically expressed by setting variables  globally before invoking `make`. For example, one might write:
 
-![[nix-blog2/3.png]]
+![](/images/posts/nixos-flakes/3.png)
 
 
 A significant challenge with Make is building a component in multiple configurations at the same time. For example, it's not obvious how to build both `foo` and `bar` with their different library variants in a single, clean process 
@@ -58,7 +58,7 @@ When developers need to do this, they often resort to special workarounds. A com
 
 An imperative scripting language, however, would make this task more straightforward. A script written in that style might look like this
 
-![[nix-blog2/4.png]]
+![](/images/posts/nixos-flakes/4.png)
 
 
 However, this imperative approach introduces the same classic problems found in general-purpose scripting. The biggest issue is that the **order of execution is critical**, which makes it difficult to know the exact configuration being passed to a build function like `muffin()` at any given moment.
@@ -85,7 +85,7 @@ Consider a typical `flake.nix` (ill explain this on the way but for now think of
 Because the language is **lazy**, if you run a command like `nix build .#server`, Nix will **only** evaluate and build that specific server package and its dependencies. It completely ignores the definitions for the command-line tool, the development shells, and the other system configurations, saving a huge amount of time and resources. You can define an entire universe of components without paying the price for anything you don't immediately use
 
 
-![[nix-blog2/5.png]]
+![](/images/posts/nixos-flakes/5.png)
 
 Since the language is **lazy**, the right-hand sides of the attributes will not be evaluated until they are actually needed, if at all.
 
@@ -109,7 +109,7 @@ which prints the **name** attribute of all top-level derivations in a Nix expres
 
 
 
- ![[nix-blog2/6.png]]
+ ![](/images/posts/nixos-flakes/6.png)
 
 Laziness allows arguments to be passed to functions that may not be used is the main idea . 
 
@@ -125,7 +125,7 @@ Laziness allows arguments to be passed to functions that may not be used is the 
 For example: 
 
 
-![[nix-blog2/8.png]]
+![](/images/posts/nixos-flakes/8.png)
 
 The first line, `{ pkgs ? import <nixpkgs> {} }:`, defines a function that takes an argument named `pkgs`, which by default is set to the result of importing `<nixpkgs>`. This gives the expression access to the standard Nix package set, allowing the use of common utilities and build functions. The next expression, `pkgs.stdenv.mkDerivation { ... }`, declares a derivation, which is a build recipe describing how to construct a package. Inside this derivation, the attributes `pname = "muffin";` and `version = "1.0.0";` specify the package name and version. The `src = ./.;` line indicates that the source files for the package are located in the current directory, i.e., the same directory as the `.nix` file itself. The `buildPhase` section is a shell script that runs during the build process; in this case, it simply creates a file named `muffin.txt` containing the message “Baking a delicious muffin…”.
 
@@ -242,7 +242,7 @@ In this guide, we’ll learn how to build a **Rust project** using **Nix flakes*
 
 ### Why Use Nix Flakes for ANY Projects?
 
-![[nix-blog2/Rustflakes.png]]
+![](/images/posts/nixos-flakes/Rustflakes.png)
 
 
 
@@ -263,11 +263,11 @@ The repository demonstrates this with working examples for `x86_64-linux`, `aarc
 Let's walk through using this Nix-based Rust project:
 
 
-![[nix-blog2/10.png]]
+![](/images/posts/nixos-flakes/10.png)
 
 Entering the environment gives us 
 
-![[nix-blog2/11.png]]
+![](/images/posts/nixos-flakes/11.png)
 
 - If you want to run a simple stand-alone binary just once, use nix run. E.g. `nix run nixpkgs#tree` (the command will have to live in `$out/bin/<pname>`) (or `meta.mainProgram`, if that exists)
     
@@ -315,9 +315,9 @@ SO to summarise
 - nix build: ensure a derivation is available in your /nix/store. Either download or build. Optionally: create symlink in ./result, and/or print the output path to stdout, and/or print build noise to stderr (`--print-build-logs`).
 
 Coming back to the project we can see that muhehe
-![[nix-blog2/12.png]]
+![](/images/posts/nixos-flakes/12.png)
 
-![[nix-blog2/13.png]]
+![](/images/posts/nixos-flakes/13.png)
 Let's break down what the nix approach using flakes solves here , ill adress the main things in packaging 
 
 ### 1. Reproducibility

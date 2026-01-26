@@ -5,7 +5,7 @@ date: 2025-12-12
 
 Running `file` on the binary shows a standard ELF executable:
 
-![file info](/images/image-1.png)
+![file info](/images/posts/vmware/image-1.png)
 
 Nothing unusual here 
 
@@ -14,13 +14,13 @@ Nothing unusual here
 
 When executed, the binary asks for user input. Supplying anything incorrect leads to an immediate failure response, with no visible comparison or transformation in plaintext:
 
-![runtime input](/images/image-2.png)
+![runtime input](/images/posts/vmware/image-2.png)
 
 
 
 Opening the binary in Binary Ninja reveals that the validation logic is **not normal control flow**. Instead, it looks like a **nested VM / emulator**, where execution is handled through multiple small functions acting like opcode handlers:
 
-![vm view](/images/image-3.png)
+![vm view](/images/posts/vmware/image-3.png)
 
 Rather than direct comparisons, input seems to be processed through this interpreter.
 
@@ -28,9 +28,9 @@ Rather than direct comparisons, input seems to be processed through this interpr
 
 Below the opcode-handling logic are several **hardcoded byte arrays** that resemble Base64-encoded data:
 
-![b64 array 1](/images/image-4.png)
+![b64 array 1](/images/posts/vmware/image-4.png)
 
-![b64 array 2](/images/image-5.png)
+![b64 array 2](/images/posts/vmware/image-5.png)
 
 These are likely VM data or encrypted constants consumed by the interpreter rather than decoded directly in native code.
 
@@ -42,12 +42,12 @@ The registers are 25 in count so we need to figure out the opcode for the instru
 Ill use radare 2 for finding what each of the instrucions mean ; 
 
 
-![image](/images/image-6.png)
+![image](/images/posts/vmware/image-6.png)
 
 
 Before the virtual machine executes any bytecode, it initializes an opcode dispatch table. This is done through a helper function (fcn.00001238), which is repeatedly called during VM setup.
 
-![image](/images/image-7.png)
+![image](/images/posts/vmware/image-7.png)
 
 In my best attempts this would be like 
 ```c
@@ -62,7 +62,7 @@ opcode_table[hash(opcode)] = entry;
 ```
 It seems like it is indeed the dispatcher for the architecture 
 
-![image](/images/image-8.png)
+![image](/images/posts/vmware/image-8.png)
 
 
 After allocating the opcode table, the program registers every VM instruction by pairing:
@@ -162,7 +162,7 @@ s 0x00001dde
 
 This instruction pops two values from the VM stack, multiplies them, applies modulo `0x7fffffff`, and pushes the result back onto the stack.
 
-![MUL](/images/image-9.png)
+![MUL](/images/posts/vmware/image-9.png)
 
 ---
 
@@ -176,7 +176,7 @@ Handler: 0x00001438
 The XOR instruction pops two values from the stack, performs a bitwise XOR, and pushes the result back.
 Unlike other arithmetic operations, XOR does **not** apply modulo.
 
-![XOR](/images/image-10.png)
+![XOR](/images/posts/vmware/image-10.png)
 
 ---
 
@@ -189,7 +189,7 @@ Handler: 0x00001590
 
 Performs bitwise AND between two stack values and pushes the result.
 
-![AND](/images/image-11.png)
+![AND](/images/posts/vmware/image-11.png)
 
 ---
 
@@ -202,7 +202,7 @@ Handler: 0x000017bb
 
 Returns from a VM function by restoring the program counter from the Link Register (LR).
 
-![RET](/images/image-12.png)
+![RET](/images/posts/vmware/image-12.png)
 
 ---
 
@@ -216,7 +216,7 @@ Handler: 0x000017d4
 Immediately terminates execution by calling `exit(1)`.
 Used for invalid execution paths.
 
-![ABORT](/images/image-13.png)
+![ABORT](/images/posts/vmware/image-13.png)
 
 ---
 
@@ -228,7 +228,7 @@ Handler: 0x000017ea
 
 Pushes a 32-bit immediate value (fetched from ROM) onto the VM stack.
 
-![PUSH_IMM](/images/image-14.png)
+![PUSH_IMM](/images/posts/vmware/image-14.png)
 
 ---
 
@@ -242,7 +242,7 @@ Handler: 0x00001866
 Pops two values from the stack.
 If they are equal, the program counter is adjusted using a signed immediate offset.
 
-![JZ](/images/image-15.png)
+![JZ](/images/posts/vmware/image-15.png)
 
 ---
 
@@ -256,7 +256,7 @@ Handler: 0x000018f9
 Pops two values from the stack.
 If they are **not** equal, PC is updated by a signed immediate offset.
 
-![JNZ](/images/image-16.png)
+![JNZ](/images/posts/vmware/image-16.png)
 
 ---
 
@@ -269,7 +269,7 @@ Handler: 0x0000198c
 
 Another hard failure instruction that immediately exits the program.
 
-![FAIL](/images/image-17.png)
+![FAIL](/images/posts/vmware/image-17.png)
 
 ---
 
@@ -282,7 +282,7 @@ Handler: 0x000019a2
 
 Updates the VM memory pointer, used for subsequent memory read/write instructions.
 
-![SET_MEMPTR](/images/image-18.png)
+![SET_MEMPTR](/images/posts/vmware/image-18.png)
 
 ---
 
@@ -295,7 +295,7 @@ Handler: 0x000019de
 
 Stores the current PC into the Link Register (LR) and jumps to a new address.
 
-![CALL](/images/image-19.png)
+![CALL](/images/posts/vmware/image-19.png)
 
 ---
 
@@ -308,7 +308,7 @@ Handler: 0x00001a1d
 
 Sets the exit code and terminates VM execution cleanly.
 
-![HALT](/images/image-20.png)
+![HALT](/images/posts/vmware/image-20.png)
 
 ---
 
@@ -321,7 +321,7 @@ Handler: 0x00001a64
 
 Loads a 32-bit value from ROM into a register.
 
-![LOAD_REG](/images/image-21.png)
+![LOAD_REG](/images/posts/vmware/image-21.png)
 
 ---
 
@@ -334,7 +334,7 @@ Handler: 0x00001abf
 
 Outputs a character using `putchar()` and sets the VM `PUT_FLAG`.
 
-![PUTCHAR](/images/image-22.png)
+![PUTCHAR](/images/posts/vmware/image-22.png)
 
 ---
 
@@ -346,7 +346,7 @@ Outputs a character using `putchar()` and sets the VM `PUT_FLAG`.
 Handler: 0x00001b03
 ```
 
-![INC](/images/image-23.png)
+![INC](/images/posts/vmware/image-23.png)
 
  DEC
 
@@ -354,7 +354,7 @@ Handler: 0x00001b03
 Handler: 0x00001b46
 ```
 
-![DEC](/images/image-24.png)
+![DEC](/images/posts/vmware/image-24.png)
 
 ---
 
@@ -366,7 +366,7 @@ Handler: 0x00001724
 
 Performs modulo operation using a register and pushes the result onto the stack.
 
-![MOD](/images/image-25.png)
+![MOD](/images/posts/vmware/image-25.png)
 
 ---
 
@@ -378,7 +378,7 @@ Handler: 0x00001be5
 
 Pops a value from the stack into a register.
 
-![POP_REG](/images/image-26.png)
+![POP_REG](/images/posts/vmware/image-26.png)
 
 ---
 
@@ -390,7 +390,7 @@ Handler: 0x00001c41
 
 Adjusts internal VM memory pointers.
 
-![SET_MEM_PTR](/images/image-27.png)
+![SET_MEM_PTR](/images/posts/vmware/image-27.png)
 
 ---
 
@@ -402,7 +402,7 @@ Handler: 0x00001ca4
 
 Stores a register value into VM memory at `VM_MEM_PTR`.
 
-![MEMSTORE](/images/image-28.png)
+![MEMSTORE](/images/posts/vmware/image-28.png)
 
 ---
 
@@ -413,13 +413,13 @@ Handler: 0x00001cf7
 ```
 
 Loads a value from VM memory into a register.
-[MEMFETCH](/images/image-29.png)
+[MEMFETCH](/images/posts/vmware/image-29.png)
 
 
 
 TO put it simply here's the functioning of the VM 
 
-![image](/images/image-30.png)
+![image](/images/posts/vmware/image-30.png)
 !
 
 
@@ -439,7 +439,7 @@ By implementing this VM as a custom architecture in Miasm, the VM bytecode can b
 
 So after reading some guides u need to make some files for misam , which like in the diagram below
 
-![miasm vm architecture layout](/images/image-31.png)
+![miasm vm architecture layout](/images/posts/vmware/image-31.png)
 
 
 the `regs.py` file is used to define the VM registers, `arch.py` ties the architecture together and describes basic properties like the program counter, and `sem.py` defines the actual semantics of each VM instruction
@@ -661,16 +661,16 @@ Miasm has a component called **Jitter**, which is used to *execute* instructions
 At the core of this system is a generic `Jitter` class, which provides common execution logic that works the same for every architecture. On top of that, Miasm defines architecture-specific subclasses such as `jitter_x86_64`, `jitter_arm`, or `jitter_mips32`. Each of these subclasses explains how instructions for that particular CPU should behave at runtime. This is why Miasm’s documentation shows a large inheritance diagram: many different architectures all extend the same base Jitter class.
 
 
-![image](/images/image-32.png)
+![image](/images/posts/vmware/image-32.png)
 
 
 Jitter is also closely tied to **symbolic execution**. Instead of running instructions with real concrete values, Miasm can execute them symbolically, meaning registers and memory can hold expressions rather than actual numbers. As Jitter steps through instructions, it updates these symbolic expressions and builds constraints that describe how program inputs affect the program state. This is useful for exploring multiple execution paths, understanding key checks, or reasoning about conditions without needing a specific input. In short, symbolic execution uses Jitter as its execution engine, but replaces concrete values with symbolic ones.
 
-![image](/images/image-33.png)
+![image](/images/posts/vmware/image-33.png)
 
 
 Each layer produced an assembly-level CFG (*_asmcfg*.png), which shows the decoded VM instructions and their control flow, and for the final VM layer an IR-level CFG (*_ircfg*.png) was also generated
-![image](/images/image-34.png)
+![image](/images/posts/vmware/image-34.png)
 
 Ng
 
@@ -679,7 +679,7 @@ After setting up the custom disassembler, I began analyzing the generated assemb
 
 
 
-![VM Layer 1 CFG](/images/image-35.png)
+![VM Layer 1 CFG](/images/posts/vmware/image-35.png)
 
 
 The first VM layer is the largest and most complex. It is dominated by dispatcher logic: instruction fetch loops, register movement, memory initialization, and indirect jumps. At this stage, the VM mainly focuses on setting up the execution environment and preparing the next bytecode buffer. There are no meaningful input-dependent checks here, only infrastructure code required to emulate the VM.
@@ -687,7 +687,7 @@ The first VM layer is the largest and most complex. It is dominated by dispatche
 
 
 
-![VM Layer 2 CFG](/images/image-36.png)
+![VM Layer 2 CFG](/images/posts/vmware/image-36.png)
 
 
 The second VM layer closely resembles the first. While some constants and register roles differ due to re-encoding, the overall structure remains the same: a large dispatcher loop with instruction handlers branching from it. 
@@ -695,27 +695,27 @@ The second VM layer closely resembles the first. While some constants and regist
 
 
 
-![VM Layer 3 CFG](/images/image-37.png)
+![VM Layer 3 CFG](/images/posts/vmware/image-37.png)
 
 
 By the third VM layer, the CFG begins to shrink slightly. While dispatcher logic is still clearly visible, there are fewer blocks and less overall noise. 
 
 
 
-![VM Layer 4 CFG](/images/image-38.png)
+![VM Layer 4 CFG](/images/posts/vmware/image-38.png)
 
 Although a dispatcher is still present, the CFG is noticeably smaller and more structured. Many repetitive VM bookkeeping blocks disappear tho 
 
 
 
-![VM Layer 5 CFG](/images/image-39.png)
+![VM Layer 5 CFG](/images/posts/vmware/image-39.png)
 
 
  The CFG is much smaller and no longer dominated by VM dispatch infrastructure. Instead, it consists of relatively straight-line code with arithmetic operations and branches based on computed values. 
 
 
 
-![Final SSA IR CFG](/images/image-40.png)
+![Final SSA IR CFG](/images/posts/vmware/image-40.png)
 
 
 The VM abstraction is very less honestly and we can see the register data's etc . 
@@ -727,16 +727,16 @@ From the SSA graph, it becomes clear that the input key is read from the VM ROM 
 
 Only if all constraints succeed does execution reach the final block, which consists of a series of putchar calls that print the flag one character at a time.
 
-![image](/images/image-41.png)
+![image](/images/posts/vmware/image-41.png)
 
 
 So i made a smol keygen 
 
 
-![image](/images/image-42.png)
+![image](/images/posts/vmware/image-42.png)
 
 
-![image](/images/image-43.png)
+![image](/images/posts/vmware/image-43.png)
 
 
 
