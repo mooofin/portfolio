@@ -4,13 +4,13 @@ date: "2026-01-26"
 excerpt: "Fast as fuck terminal editing in C++20."
 ---
 
+I got tired of waiting for my editor to load, and I got tired of remembering which mode I was in. So I wrote my own.
+
 **FUCK VIM.**
 
-And Honeymoon doesn’t run a Lisp interpreter that eats 4GB of RAM on startup.
+And Honeymoon doesn’t run a Lisp interpreter that eats 4GB of RAM on startup. It is a minimal, Emacs-inspired terminal text editor written in **C++20**.
 
-A minimal, Emacs-inspired terminal text editor written in **C++20**.
-
-Fast as fuck.
+It is fast.
 
 ## Features
 
