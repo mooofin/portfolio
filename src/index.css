@@ -21,6 +21,14 @@ body {
 }
 
 /* Pink Glitter Cursor */
+@media (prefers-reduced-motion: no-preference) {
+
+  body,
+  * {
+    cursor: none !important;
+  }
+}
+
 .cursor-dot {
   position: fixed;
   width: 20px;
@@ -4476,7 +4484,7 @@ Music Page Responsive Styles */
   font-family: 'Courier New', 'Courier', monospace;
   letter-spacing: -0.5px;
   color: #ff69b4;
-  text-shadow: 
+  text-shadow:
     0 0 10px rgba(0, 0, 0, 0.9),
     0 0 20px rgba(0, 0, 0, 0.8),
     0 0 30px rgba(255, 105, 180, 0.6),
@@ -4522,7 +4530,7 @@ Music Page Responsive Styles */
   white-space: nowrap;
   opacity: 0.9;
   min-width: 110px;
-  text-shadow: 
+  text-shadow:
     0 0 8px rgba(0, 0, 0, 1),
     0 0 12px rgba(0, 0, 0, 1),
     2px 2px 6px rgba(0, 0, 0, 1),
@@ -4539,7 +4547,7 @@ Music Page Responsive Styles */
   font-size: 1.2rem;
   transition: color 0.3s ease;
   flex: 1;
-  text-shadow: 
+  text-shadow:
     0 0 8px rgba(0, 0, 0, 1),
     0 0 12px rgba(0, 0, 0, 1),
     2px 2px 6px rgba(0, 0, 0, 1),
@@ -4552,7 +4560,7 @@ Music Page Responsive Styles */
 .hymnals-post-link:hover {
   color: #fff;
   text-decoration: underline;
-  text-shadow: 
+  text-shadow:
     0 0 15px rgba(255, 105, 180, 0.8),
     0 0 8px rgba(0, 0, 0, 1),
     2px 2px 6px rgba(0, 0, 0, 1);
@@ -4594,7 +4602,7 @@ Music Page Responsive Styles */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.8;
   font-size: 1.1rem;
-  color: #ff69b4;
+  color: #eeeeee;
 }
 
 .hymnals-blog .blog-article h1,
@@ -4621,7 +4629,6 @@ Music Page Responsive Styles */
 
 .hymnals-blog .blog-article p {
   margin-bottom: 1rem;
-  color: #ff69b4;
 }
 
 .hymnals-blog .blog-article a {
@@ -4631,6 +4638,11 @@ Music Page Responsive Styles */
 
 .hymnals-blog .blog-article a:hover {
   color: #ff69b4;
+}
+
+.hymnals-blog .blog-article strong,
+.hymnals-blog .blog-article b {
+  font-weight: bold;
 }
 
 .hymnals-blog .blog-article code {
@@ -4670,13 +4682,12 @@ Music Page Responsive Styles */
 
 .hymnals-blog .blog-article li {
   margin-bottom: 0.5rem;
-  color: #ff69b4;
 }
 
 /* Override markdown-container styles for blog */
 .hymnals-blog .markdown-container p,
 .hymnals-blog .markdown-container li {
-  color: #ff69b4 !important;
+  color: inherit !important;
 }
 
 .hymnals-blog .markdown-container h1,
@@ -4690,11 +4701,122 @@ Music Page Responsive Styles */
 
 .hymnals-blog .markdown-container strong,
 .hymnals-blog .markdown-container b,
-.hymnals-blog .markdown-container em,
-.hymnals-blog .markdown-container i {
+.hymnals-blog .markdown-container em {
   color: #ff69b4 !important;
 }
 
+/* Mobile Optimization for Blog Sections */
+@media (max-width: 768px) {
+  .hymnals-blog {
+    display: block;
+    padding: 2rem 1rem 4rem 1rem;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .hymnals-blog-post-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .hymnals-pfp {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .hymnals-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+    /* Simplified shadow for mobile */
+  }
+
+  .hymnals-post-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 1rem;
+  }
+
+  .hymnals-date {
+    min-width: auto;
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .hymnals-post-link {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .hymnals-blog .blog-article {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ffffff;
+    padding: 0 0.5rem;
+    /* Extra breathing room */
+  }
+
+  .hymnals-blog .blog-article p,
+  .hymnals-blog .blog-article li {
+    color: #eee !important;
+  }
+
+  .hymnals-blog .blog-article h1,
+  .hymnals-blog .blog-article h2,
+  .hymnals-blog .blog-article h3 {
+    font-size: 1.4rem;
+    color: #ff69b4 !important;
+  }
+
+  .hymnals-back-link {
+    margin-bottom: 2rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    display: inline-block;
+  }
+}
+
+@media (max-width: 480px) {
+  .hymnals-title {
+    font-size: 1.5rem;
+  }
+
+  .hymnals-blog .blog-article {
+    font-size: 0.95rem;
+  }
+}
+
+/* Markdown Table Responsiveness */
+.markdown-table-wrapper {
+  overflow-x: auto;
+  margin: 2rem 0;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 1.5rem;
+  border: 1px solid rgba(199, 199, 255, 0.15);
+  -webkit-overflow-scrolling: touch;
+}
+
+.markdown-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .markdown-table-wrapper {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .markdown-table-wrapper table {
+    font-size: 0.9rem;
+  }
+}
+
 .hymnals-blog .markdown-container {
-  color: #ff69b4 !important;
+  color: #eeeeee !important;
 }
