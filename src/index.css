@@ -4789,30 +4789,25 @@ Music Page Responsive Styles */
 }
 
 /* Markdown Table Responsiveness */
-.markdown-table-wrapper {
-  overflow-x: auto;
-  margin: 2rem 0;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 1.5rem;
-  border: 1px solid rgba(199, 199, 255, 0.15);
-  -webkit-overflow-scrolling: touch;
-}
-
-.markdown-table-wrapper table {
+.hymnals-blog .markdown-container table {
+  display: block;
   width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2rem 0;
   border-collapse: collapse;
   text-align: left;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 1rem;
+  border: 1px solid rgba(199, 199, 255, 0.15);
 }
 
 @media (max-width: 768px) {
-  .markdown-table-wrapper {
+  .hymnals-blog .markdown-container table {
     margin: 1rem 0;
     padding: 0.75rem;
     border-radius: 8px;
-  }
-
-  .markdown-table-wrapper table {
     font-size: 0.9rem;
   }
 }

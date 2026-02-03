@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.id }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={`${entry.data.title} | muffin`}>
+  <div class="hymnals-blog">
+    <div class="hymnals-blog-post-container">
+      <img
+        src="/my-melody-kuromi-lolita-ipad-wallpaper-kawaii-hoshi.jpg"
+        alt="muffin's profile"
+        class="hymnals-pfp"
+      />
+      <h1 class="hymnals-title">
+        {entry.data.title}
+      </h1>
+      <a href="/blog" class="hymnals-back-link">&larr; back to blog</a>
+      <div class="markdown-container blog-article">
+        <Content />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

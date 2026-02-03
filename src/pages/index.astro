@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero';
+import Contact from '../components/Contact';
+---
+
+<BaseLayout>
+	<div class="single-screen-layout">
+		<Hero client:load />
+	</div>
+	<Contact client:load />
+</BaseLayout>

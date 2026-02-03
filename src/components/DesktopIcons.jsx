@@ -1,15 +1,15 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
 export default function DesktopIcons() {
-  const navigate = useNavigate();
-
   const goTo = (path, hash) => (e) => {
-    e.preventDefault();
-    if (path) navigate(path);
+    if (path) {
+      e.preventDefault();
+      window.location.href = path;
+    }
     if (hash) {
       const el = document.getElementById(hash);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   };
 

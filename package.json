@@ -4,14 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "bunx --bun vite build",
+    "dev": "astro dev",
+    "build": "astro build",
     "lint": "bunx eslint .",
-    "preview": "bunx --bun vite preview"
+    "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@astrojs/react": "^4.4.2",
     "@react-three/fiber": "^9.3.0",
     "@react-three/postprocessing": "^3.0.4",
+    "astro": "^5.17.1",
     "ogl": "^1.0.11",
     "postprocessing": "^6.37.7",
     "react": "^19.1.1",
@@ -20,7 +23,8 @@
     "react-router-dom": "^7.8.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "three": "^0.179.1"
+    "three": "^0.179.1",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="blog | muffin">
+  <main class="hymnals-blog">
+    <div class="hymnals-container">
+      <img 
+        src="/stuff/6de1c27b5814e2f876565ede5be506ac.jpg" 
+        alt="Profile" 
+        class="hymnals-pfp"
+      />
+      <h1 class="hymnals-title">
+        muffin's blog page :3
+      </h1>
+
+      <ul class="hymnals-post-list">
+        {sortedPosts.map((post) => (
+          <li>
+            <span class="hymnals-date">{post.data.date.toISOString().split('T')[0]}</span>{' '}
+            <a href={`/blog/${post.id}`} class="hymnals-post-link">
+              {post.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import GlassIcons from './GlassIcons';
 
 function AboutPage() {
@@ -21,23 +20,23 @@ function AboutPage() {
   // Cool ideas for different sections you can add:
   const additionalSections = {
     philosophy: "I believe in the beauty of declarative systems and the elegance of functional programming. NixOS and Gentoo aren't just distros—they're philosophies of control, reproducibility, and understanding your system from the ground up.",
-    
+
     interests: "When I'm not reverse engineering game engines or crafting Nix configurations, you'll find me exploring the intersection of gothic aesthetics and modern technology, or diving deep into memory editing and low-level systems.",
-    
+
     currentProjects: [
       "🎮 Dark Souls DLC expansion with cut content restoration",
       "💡 Custom lighting system for PTDE Dark Souls",
       "🔧 NixOS configuration experiments",
       "🎯 Reverse engineering Havok Engine implementations"
     ],
-    
+
     techStack: [
       "Languages: Nix, C/C++, Assembly, Python, JavaScript/TypeScript",
       "Tools: Cheat Engine, IDA Pro, Ghidra, Visual Studio",
       "Systems: NixOS, Gentoo, Linux kernel customization",
       "Game Engines: Havok Physics, FromSoftware's engine (Dark Souls)"
     ],
-    
+
     aesthetic: "Southern Gothic meets Cyberpunk - where tradition meets rebellion, where declarative code meets chaos theory.",
   };
 
@@ -49,7 +48,7 @@ function AboutPage() {
 
     const interval = setInterval(() => {
       if (currentIndex < originalText.length) {
-        const scrambled = originalText.slice(0, currentIndex) + 
+        const scrambled = originalText.slice(0, currentIndex) +
           characters.charAt(Math.floor(Math.random() * characters.length));
         setDecryptedText(scrambled);
         currentIndex++;
@@ -88,10 +87,10 @@ function AboutPage() {
   return (
     <main className="about-page">
       <div className="about-page-header">
-        <Link to="/" className="back-link">← Back to Home</Link>
+        <a href="/" className="back-link">← Back to Home</a>
         <h1>About Me</h1>
       </div>
-      
+
       <div className="about-page-content">
         <div className="about-intro-card">
           <p className="decrypted-text">
@@ -102,26 +101,26 @@ function AboutPage() {
 
         <div className="project-section">
           <h2>Project Gallery</h2>
-          
+
           <div className="project-gallery">
-            <img 
-              src="/images/about-me/G5Z0Io6boAIC3uo.jpg" 
-              alt="Dark Souls mod screenshot 1" 
+            <img
+              src="/images/about-me/G5Z0Io6boAIC3uo.jpg"
+              alt="Dark Souls mod screenshot 1"
               onClick={() => openImage("/images/about-me/G5Z0Io6boAIC3uo.jpg")}
             />
-            <img 
-              src="/images/about-me/G5ZxtlcbsAADX1Z.jpg" 
-              alt="Dark Souls mod screenshot 2" 
+            <img
+              src="/images/about-me/G5ZxtlcbsAADX1Z.jpg"
+              alt="Dark Souls mod screenshot 2"
               onClick={() => openImage("/images/about-me/G5ZxtlcbsAADX1Z.jpg")}
             />
-            <img 
-              src="/images/about-me/G5Zz4PGawAAh_cf.jpg" 
-              alt="Dark Souls mod screenshot 3" 
+            <img
+              src="/images/about-me/G5Zz4PGawAAh_cf.jpg"
+              alt="Dark Souls mod screenshot 3"
               onClick={() => openImage("/images/about-me/G5Zz4PGawAAh_cf.jpg")}
             />
-            <img 
-              src="/images/about-me/G5ZzZ9ya4AAkoGd.jpg" 
-              alt="Dark Souls mod screenshot 4" 
+            <img
+              src="/images/about-me/G5ZzZ9ya4AAkoGd.jpg"
+              alt="Dark Souls mod screenshot 4"
               onClick={() => openImage("/images/about-me/G5ZzZ9ya4AAkoGd.jpg")}
             />
           </div>

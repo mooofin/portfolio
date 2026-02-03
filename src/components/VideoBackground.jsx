@@ -24,10 +24,8 @@ const VideoBackground = memo(function VideoBackground({ poster }) {
 
   useEffect(() => {
     if (videoRef.current) {
-      // Attempt to play the video.
-      // We use a catch block because some browsers might block autoplay
-      // even with muted=true if the user hasn't interacted yet,
-      // though usually muted autoplay is allowed.
+      // Make it play faster!
+      videoRef.current.playbackRate = 1.5;
       videoRef.current.play().catch(error => {
         console.error("Video autoplay failed:", error);
       });

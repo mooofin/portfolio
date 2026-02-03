@@ -1,6 +1,6 @@
 ---
-title: Slay the JIT: From Hotpatches to Symbolic Couture in Miasm
-date: 2025-12-12
+title: "Slay the JIT: From Hotpatches to Symbolic Couture in Miasm"
+date: "2025-12-12"
 ---
 
 Running `file` on the binary shows a standard ELF executable:

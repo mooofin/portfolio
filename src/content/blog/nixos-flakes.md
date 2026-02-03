@@ -1,6 +1,6 @@
 ---
 title: "Provenance and Purity: Nix programming language & Fixed-Output Flakes"
-date: 2025-10-02
+date: "2025-10-02"
 ---
 
 # Provenance and Purity: Nix programming language & Fixed-Output Flakes

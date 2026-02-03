@@ -1,6 +1,6 @@
 ---
-title: how to make your program spill tea
-date: 2025-12-17
+title: "how to make your program spill tea"
+date: "2025-12-17"
 ---
 
 ![Format String Challenge](/images/posts/format-string-3/fmt-str-chal.png)
