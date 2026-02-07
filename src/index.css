@@ -20,69 +20,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Pink Glitter Cursor */
-@media (prefers-reduced-motion: no-preference) {
-
-  body,
-  * {
-    cursor: none !important;
-  }
-}
-
-.cursor-dot {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  background: radial-gradient(circle, #ff69b4, #ff1493);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99999;
-  mix-blend-mode: normal;
-  animation: cursorPulse 1s ease-in-out infinite;
-  box-shadow: 0 0 20px #ff69b4, 0 0 40px #ff1493;
-  will-change: transform;
-}
-
-.cursor-trail {
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  background: #ff69b4;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99998;
-  mix-blend-mode: normal;
-  opacity: 0;
-  animation: trailFade 0.6s ease-out forwards;
-  box-shadow: 0 0 10px #ff69b4;
-  will-change: transform;
-}
-
-@keyframes cursorPulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-}
-
-@keyframes trailFade {
-  0% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-}
 
 /* Single Screen Layout */
 .single-screen-layout {
@@ -4814,4 +4751,504 @@ Music Page Responsive Styles */
 
 .hymnals-blog .markdown-container {
   color: #eeeeee !important;
+}
+/* --- About Page Revamp --- */
+.about-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: calc(var(--header-height)*-1);
+  padding: 2rem 1.5rem 8rem 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.about-page-header {
+  margin-bottom: 2rem;
+}
+
+.back-link {
+  color: #ff69b4;
+  text-decoration: none;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.back-link:hover {
+  opacity: 1;
+}
+
+.about-page-hero {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.header-gif {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+}
+
+.about-intro-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2.5rem;
+  border-radius: 16px;
+  margin-bottom: 4rem;
+  backdrop-filter: blur(10px);
+}
+
+.about-page h2 {
+  font-size: 2rem;
+  color: #ff69b4;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.modding-section, .tools-section, .repos-section {
+  margin-bottom: 6rem;
+}
+
+.modding-section p {
+  text-align: center;
+  margin-bottom: 3rem;
+  opacity: 0.9;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.comparison-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+.comparison-item h3 {
+  margin-bottom: 1.5rem;
+  color: #fff;
+  opacity: 0.9;
+  font-size: 1.25rem;
+}
+
+.comparison-item img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.comparison-item:hover img {
+  transform: scale(1.03);
+  border-color: #ff69b4;
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+}
+
+.tech-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: 3rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tech-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.tech-badge img {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.tech-badge span {
+  font-size: 0.95rem;
+  color: #fff;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.tech-badge:hover {
+  transform: translateY(-8px) scale(1.1);
+}
+
+.tech-badge:hover span {
+  opacity: 1;
+  color: #ff69b4;
+}
+
+.repos-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.repos-gif {
+  max-width: 450px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.repos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+.repo-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.repo-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ff69b4;
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 105, 180, 0.1);
+}
+
+.repo-card.full-width {
+  grid-column: span 2;
+}
+
+.repo-img-container {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.repo-card.full-width .repo-img-container {
+  height: 350px;
+}
+
+.repo-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  opacity: 0.9;
+}
+
+.repo-card:hover .repo-img-container img {
+  transform: scale(1.08);
+  opacity: 1;
+}
+
+.repo-info {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+.repo-info h3 {
+  margin-bottom: 0.75rem;
+  color: #ff69b4;
+  font-size: 1.4rem;
+}
+
+.repo-info p {
+  font-size: 1rem;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    padding: 1rem 1rem 6rem 1rem;
+  }
+  
+  .about-intro-card {
+    padding: 1.5rem;
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .repos-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .repo-card.full-width {
+    grid-column: span 1;
+  }
+
+  .repo-card.full-width .repo-img-container {
+    height: 240px;
+  }
+  
+  .tech-badges {
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .tech-badge img {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+.skills-section {
+  margin-bottom: 5rem;
+}
+
+.skills-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Apply pink color to About page text */
+.about-page {
+  color: #ff69b4;
+}
+
+.about-page p, 
+.about-page section p,
+.about-intro-card p,
+.comparison-item h3,
+.tech-badge span,
+.repo-info p {
+  color: #ff69b4 !important;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.about-page b, 
+.about-page strong {
+  color: #ff1493; /* Slightly deeper pink for bold text */
+}
+
+/* Ensure headings stay pink as intended */
+.about-page h2, 
+.repo-info h3 {
+  color: #ff69b4;
+}
+
+/* --- About Page Typography Refinement (Blog Style) --- */
+.about-page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.about-page h1,
+.about-page h2,
+.about-page h3,
+.repo-info h3,
+.comparison-item h3 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #ff69b4 !important;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.about-page p,
+.about-page li,
+.about-intro-card p,
+.modding-section p,
+.tech-badge span,
+.repo-info p {
+  color: #eeeeee !important;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.about-page b,
+.about-page strong {
+  color: #ff69b4;
+  font-weight: 700;
+}
+
+.decrypted-text {
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.decrypted-content {
+  color: #eeeeee !important;
+}
+
+.back-link {
+  color: #ff69b4;
+  font-family: 'Courier New', monospace;
+}
+
+/* Fix for lint warning: line-clamp */
+.repo-info p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 3; /* Standard property */
+}
+
+/* Repository Grid Refinements */
+.repo-img-container img {
+  object-fit: contain !important;
+  background: #000;
+  padding: 10px;
+}
+
+.repo-card.full-width .repo-img-container {
+  height: 240px !important; /* Make full-width repos same height as regular repos */
+}
+
+/* --- About Page Refinement: Exact Blog Style --- */
+.about-page-v2 {
+  min-height: 100vh;
+  background: transparent;
+  color: #eeeeee;
+  padding: 4rem 2rem 6rem 2rem;
+  font-family: 'Courier New', 'Courier', monospace;
+}
+
+.blog-style-card {
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border-left: 4px solid #ff69b4;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.blog-style-card:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateX(8px);
+  box-shadow: 0 4px 30px rgba(255, 105, 180, 0.3);
+}
+
+.about-page-v2 .hymnals-title {
+  text-align: center;
+  width: 100%;
+}
+
+.about-page-v2 h2 {
+  color: #ff69b4;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Courier New', 'Courier', monospace;
+  text-align: left;
+}
+
+.about-page-v2 .decrypted-text {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+.about-page-v2 .comparison-grid {
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.about-page-v2 .comparison-item h3 {
+  color: #ff69b4;
+  font-family: 'Courier New', 'Courier', monospace;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.about-page-v2 .tech-badges {
+  background: transparent;
+  padding: 0;
+}
+
+.repo-card.blog-style-card {
+  padding: 0;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.repo-card.blog-style-card .repo-info {
+  padding: 1.5rem;
+}
+
+.repo-card.blog-style-card.full-width {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .about-page-v2 {
+    padding: 2rem 1rem 4rem;
+  }
+  .repo-card.blog-style-card.full-width {
+    grid-column: span 1;
+  }
+}
+
+/* Project Gallery & Comparison Grid Refinements */
+.modding-section .about-intro-content {
+  margin-bottom: 2rem;
+}
+
+.project-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.project-gallery img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  transition: all 0.3s ease;
+}
+
+.project-gallery img:hover {
+  transform: scale(1.03);
+  border-color: #ff69b4;
+  box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+}
+
+.about-page-v2 .comparison-grid {
+  border-top: 1px solid rgba(255, 105, 180, 0.1);
+  padding-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .project-gallery {
+    grid-template-columns: 1fr;
+  }
 }

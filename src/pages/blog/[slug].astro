@@ -11,6 +11,13 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+const blogEntries = await getCollection('blog');
+const sortedPosts = blogEntries.sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const currentIndex = sortedPosts.findIndex(post => post.id === entry.id);
+
+const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
 ---
 
 <BaseLayout title={`${entry.data.title} | muffin`}>
@@ -28,6 +35,25 @@ const { Content } = await render(entry);
       <div class="markdown-container blog-article">
         <Content />
       </div>
+
+      <nav class="blog-post-navigation">
+        <div class="nav-prev">
+          {prevPost && (
+            <a href={`/blog/${prevPost.id}`} class="nav-link">
+              <span class="nav-label">&larr; Previous</span>
+              <span class="nav-title">{prevPost.data.title}</span>
+            </a>
+          )}
+        </div>
+        <div class="nav-next">
+          {nextPost && (
+            <a href={`/blog/${nextPost.id}`} class="nav-link">
+              <span class="nav-label">Next &rarr;</span>
+              <span class="nav-title">{nextPost.data.title}</span>
+            </a>
+          )}
+        </div>
+      </nav>
     </div>
   </div>
 </BaseLayout>

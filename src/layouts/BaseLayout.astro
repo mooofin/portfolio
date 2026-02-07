@@ -1,6 +1,6 @@
 ---
 import Header from '../components/Header';
-import PinkCursor from '../components/PinkCursor';
+
 import VideoBackground from '../components/VideoBackground';
 import '../index.css';
 
@@ -21,7 +21,7 @@ const { title = "muffin" } = Astro.props;
 	</head>
 	<body class="theme-image">
 		<div id="root" class="app-container">
-			<PinkCursor client:load />
+
 			<VideoBackground client:load />
 			<div class="content-container">
 				<Header client:load />

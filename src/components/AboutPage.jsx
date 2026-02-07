@@ -2,43 +2,11 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import GlassIcons from './GlassIcons';
 
 function AboutPage() {
-  const baseSkills = useMemo(() => ([
-    'Mod Development',
-    'Reverse Engineering',
-    'Havok Engine',
-    'Cheat Engine',
-    'Memory Editing',
-  ]), []);
-
-  const [skills, setSkills] = useState(baseSkills);
   const [decryptedText, setDecryptedText] = useState('');
   const [isDecrypting, setIsDecrypting] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const originalText = "For the past few years, I've been working on a Dark Souls project by making an entirely new DLC with new areas (The models being the un-used assets from Bloodborne and Dark Souls 2 cut content), NPC's questlines, weapons, spells and overall a vision to bring back the rushed development lifecycle that FromSoftware followed, in order to make up for the 2nd half of Dark Souls. Some of my other modding projects include a lighting system for PTDE edition Dark Souls and more.";
-
-  // Cool ideas for different sections you can add:
-  const additionalSections = {
-    philosophy: "I believe in the beauty of declarative systems and the elegance of functional programming. NixOS and Gentoo aren't just distros—they're philosophies of control, reproducibility, and understanding your system from the ground up.",
-
-    interests: "When I'm not reverse engineering game engines or crafting Nix configurations, you'll find me exploring the intersection of gothic aesthetics and modern technology, or diving deep into memory editing and low-level systems.",
-
-    currentProjects: [
-      "🎮 Dark Souls DLC expansion with cut content restoration",
-      "💡 Custom lighting system for PTDE Dark Souls",
-      "🔧 NixOS configuration experiments",
-      "🎯 Reverse engineering Havok Engine implementations"
-    ],
-
-    techStack: [
-      "Languages: Nix, C/C++, Assembly, Python, JavaScript/TypeScript",
-      "Tools: Cheat Engine, IDA Pro, Ghidra, Visual Studio",
-      "Systems: NixOS, Gentoo, Linux kernel customization",
-      "Game Engines: Havok Physics, FromSoftware's engine (Dark Souls)"
-    ],
-
-    aesthetic: "Southern Gothic meets Cyberpunk - where tradition meets rebellion, where declarative code meets chaos theory.",
-  };
+  const originalText = "For the past few years, I've been working on an entirely new Dark Souls DLC featuring new areas (using unused assets from Bloodborne and Dark Souls 2 cut content), original NPC questlines, weapons, spells, and a vision focused on restoring the spark lost during the rushed second half of the original game. I've also implemented a custom lighting documentation system for the PTDE edition.";
 
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
@@ -57,24 +25,13 @@ function AboutPage() {
         setIsDecrypting(false);
         clearInterval(interval);
       }
-    }, 50);
-  }, [originalText, characters]);
+    }, 20);
+  }, [originalText]);
 
   useEffect(() => {
-    const timer = setTimeout(decryptText, 1000);
+    const timer = setTimeout(decryptText, 500);
     return () => clearTimeout(timer);
   }, [decryptText]);
-
-  const shuffleSkills = useCallback(() => {
-    setSkills(prev => {
-      const arr = [...prev];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    });
-  }, []);
 
   const openImage = (imageSrc) => {
     setSelectedImage(imageSrc);
@@ -84,23 +41,54 @@ function AboutPage() {
     setSelectedImage(null);
   };
 
-  return (
-    <main className="about-page">
-      <div className="about-page-header">
-        <a href="/" className="back-link">← Back to Home</a>
-        <h1>About Me</h1>
-      </div>
+  const repositories = [
+    { title: "Honeymoon", desc: "An Emacs-inspired C++20 terminal editor. No Lisp. No bloat.", img: "/images/about-me/github/honeymoon.gif", link: "https://github.com/mooofin/honeymoon", full: true },
+    { title: "nix-dotfiles", desc: "NixOS setup with Niri + Hyprland, Quickshell and Home-manager", img: "/images/about-me/github/nix-dotfiles.gif", link: "https://github.com/mooofin/nix-dotfiles" },
+    { title: "Portfolio Website", desc: "Personal portfolio & blogs", img: "/images/about-me/github/portfolio.gif", link: "https://github.com/mooofin/portfolio" },
+    { title: "AETHERION", desc: "A raycaster engine inspired by DOOM.", img: "/images/about-me/github/aetherion.gif", link: "https://github.com/mooofin/Aetherion" },
+    { title: "AFL-exercises", desc: "Coverage-guided fuzzing experiments using AFL++", img: "/images/about-me/github/afl-exercises.gif", link: "https://github.com/mooofin/AFL-exercises" },
+    { title: "JuliaScope", desc: "Multithreaded subdomain enumerator written in Julia", img: "/images/about-me/github/juliascope.gif", link: "https://github.com/mooofin/JuliaScope" },
+    { title: "Clair-Obscur", desc: "Featuring Lune :3", img: "/images/about-me/github/lune.gif", link: "https://github.com/mooofin/Clair-Obscur" },
+    { title: "DS_AnorLondoLightFix", desc: "A mod to restore and enhance the lighting in Anor Londo.", img: "/images/about-me/github/ds-anorlondo.gif", link: "https://github.com/mooofin/DS_AnorLondoLightFix" },
+    { title: "Thalix", desc: "A high-performance process management and memory editing toolkit", img: "/images/about-me/github/thalix.gif", link: "https://github.com/mooofin/Thalix" },
+    { title: "God-of-War-Ragnarok", desc: "Cheat Engine Scripts & Tools for modifying the single-player experience.", img: "/images/about-me/github/goww.png", link: "https://github.com/mooofin/God-of-War-Ragnarok" },
+    { title: "Theia-BC", desc: "A K-Nearest Neighbors (KNN) classifier for breast cancer diagnosis.", img: "/images/about-me/github/theia-bc.gif", link: "https://github.com/mooofin/KNN-DiagnosisModel" },
+    { title: "Rustflakes", desc: "Rust project with Nix flakes for multi-target cross-compilation & Docker", img: "/images/about-me/github/rustflakes.gif", link: "https://github.com/mooofin/Rustflakes" },
+    { title: "CTFs", desc: "CTF writeups :3", img: "/images/about-me/github/ctfs.gif", link: "https://github.com/mooofin/CTFs" },
+  ];
 
-      <div className="about-page-content">
-        <div className="about-intro-card">
-          <p className="decrypted-text">
-            <span className="decrypted-content">{decryptedText}</span>
-            {isDecrypting && <span className="cursor">|</span>}
-          </p>
+  const tools = [
+    { name: "NixOS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nixos/nixos-original.svg" },
+    { name: "Gentoo", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/gentoo/gentoo-plain.svg" },
+    { name: "Julia", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/julia/julia-original.svg" },
+    { name: "Emacs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/emacs/emacs-original.svg" },
+    { name: "Rust", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" },
+    { name: "C++", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" },
+    { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+    { name: "Blender", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/blender/blender-original.svg" },
+  ];
+
+  return (
+    <main className="hymnals-blog about-page-v2">
+      <div className="hymnals-container">
+        <div className="about-page-header">
+          <a href="/" className="hymnals-back-link">← Back to Home</a>
+          <img src="/images/about-me/pfp.jpg" alt="Profile" className="hymnals-pfp" />
+          <h1 className="hymnals-title">About Me</h1>
         </div>
 
-        <div className="project-section">
-          <h2>Project Gallery</h2>
+        <div className="about-page-hero">
+          <img src="/images/about-me/github/aboutme2.gif" alt="About Me" className="header-gif" />
+        </div>
+
+        <section className="blog-style-card modding-section">
+          <h2>Dark Souls Restoration Project</h2>
+          <div className="about-intro-content">
+            <p className="decrypted-text">
+              <span className="decrypted-content">{decryptedText}</span>
+              {isDecrypting && <span className="cursor">|</span>}
+            </p>
+          </div>
 
           <div className="project-gallery">
             <img
@@ -124,15 +112,62 @@ function AboutPage() {
               onClick={() => openImage("/images/about-me/G5ZzZ9ya4AAkoGd.jpg")}
             />
           </div>
-        </div>
 
-        <div className="skills-section">
-          <h2>My Skills</h2>
-          <p className="skills-hint">Click to shuffle!</p>
-          <div className="skills-container" onClick={shuffleSkills} title="Click to shuffle">
-            <GlassIcons skills={skills} />
+          <div className="comparison-grid">
+            <div className="comparison-item" onClick={() => openImage("/images/about-me/github/ds_before.png")}>
+              <h3>Before</h3>
+              <img src="/images/about-me/github/ds_before.png" alt="Dark Souls Lighting Before" />
+            </div>
+            <div className="comparison-item" onClick={() => openImage("/images/about-me/github/ds_after.png")}>
+              <h3>After</h3>
+              <img src="/images/about-me/github/ds_after.png" alt="Dark Souls Lighting After" />
+            </div>
           </div>
-        </div>
+        </section>
+
+        <section className="blog-style-card tools-section">
+          <h2>Tools & Technologies</h2>
+          <div className="tech-badges">
+            {tools.map(tool => (
+              <div key={tool.name} className="tech-badge">
+                <img src={tool.icon} alt={tool.name} title={tool.name} />
+                <span>{tool.name}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="blog-style-card skills-section">
+          <h2>My Skills</h2>
+          <div className="skills-container">
+            <GlassIcons skills={['Mod Development', 'Reverse Engineering', 'Havok Engine', 'Cheat Engine', 'Memory Editing']} />
+          </div>
+        </section>
+
+        <section className="repos-section">
+          <div className="repos-header">
+            <img src="/images/about-me/github/repos1.gif" alt="Repositories" className="repos-gif" />
+          </div>
+          <div className="repos-grid">
+            {repositories.map(repo => (
+              <a
+                key={repo.title}
+                href={repo.link}
+                className={`repo-card blog-style-card ${repo.full ? 'full-width' : ''}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div className="repo-img-container">
+                  <img src={repo.img} alt={repo.title} />
+                </div>
+                <div className="repo-info">
+                  <h3>{repo.title}</h3>
+                  <p>{repo.desc}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
       </div>
 
       {/* Image Modal */}
