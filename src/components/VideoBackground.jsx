@@ -1,14 +1,14 @@
 import { useState, useRef, memo, useCallback, useEffect } from 'react';
 
+const videos = [
+  '/images/video/blg.mp4',
+  '/images/video/bg1.mp4'
+];
+
 const VideoBackground = memo(function VideoBackground({ poster }) {
   const [currentVideo, setCurrentVideo] = useState('/images/video/blg.mp4');
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
-
-  const videos = [
-    '/images/video/blg.mp4',
-    '/images/video/bg1.mp4'
-  ];
 
   const toggleVideo = useCallback(() => {
     setCurrentVideo(prev => {
@@ -16,7 +16,7 @@ const VideoBackground = memo(function VideoBackground({ poster }) {
       const nextIndex = (currentIndex + 1) % videos.length;
       return videos[nextIndex];
     });
-  }, []);
+  }, [videos]);
 
   const toggleMute = useCallback(() => {
     setIsMuted(prev => !prev);

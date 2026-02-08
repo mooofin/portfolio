@@ -5252,3 +5252,34 @@ Music Page Responsive Styles */
     grid-template-columns: 1fr;
   }
 }
+
+/* Fix for stretched comparison images */
+.about-page-v2 .comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.comparison-item h3 {
+  color: #ff69b4;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.comparison-item img {
+  width: 100%;
+  aspect-ratio: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .about-page-v2 .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}

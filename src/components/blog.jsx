@@ -8,7 +8,7 @@ function Blog() {
       <div className="blog-content">
         <h2>From the Archives</h2>
         <div className="markdown-container">
-          <ReactMarkdown>{markdownContent}</ReactMarkdown>
+          <ReactMarkdown>{""}</ReactMarkdown>
         </div>
       </div>
     </section>

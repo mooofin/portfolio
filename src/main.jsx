@@ -11,7 +11,9 @@ try {
     document.body.classList.add('theme-image');
     if (stored === null) localStorage.setItem('theme-image', '1');
   }
-} catch {}
+} catch (e) {
+  console.error('Failed to set theme:', e);
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

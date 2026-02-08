@@ -2,6 +2,8 @@ import React from 'react';
 import NowPlaying from './NowPlaying';
 import DesktopIcons from './DesktopIcons';
 
+import pfp from '../assets/images/about-me/pfp.jpg';
+
 function Hero() {
   return (
     <section id="home" className="hero">
@@ -9,7 +11,7 @@ function Hero() {
         <div className="pink-sticky hero-sticky">
           <div className="hero-pfp-row">
             <img
-              src="/images/about-me/pfp.jpg"
+              src={pfp.src}
               alt="Profile"
               className="hero-pfp"
             />

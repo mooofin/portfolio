@@ -1,0 +1,86 @@
+$ astro build
+[2m01:53:46[22m [34m[content][39m Syncing content
+[2m01:53:46[22m [34m[content][39m Synced content
+[2m01:53:46[22m [34m[types][39m Generated [2m1.40s[22m
+[2m01:53:46[22m [34m[build][39m output: [34m"static"[39m
+[2m01:53:46[22m [34m[build][39m mode: [34m"static"[39m
+[2m01:53:46[22m [34m[build][39m directory: [34mD:\portfolio\dist\[39m
+[2m01:53:46[22m [34m[build][39m Collecting build info...
+[2m01:53:46[22m [34m[build][39m [32mΓ£ô Completed in 1.44s.[39m
+[2m01:53:46[22m [34m[build][39m Building static entrypoints...
+[33m[1m01:53:48[22m [WARN] [vite][39m 
+/images/icons/bg.jpg referenced in /images/icons/bg.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+[33m[1m01:53:48[22m [WARN] [vite][39m 
+/images/pc.jpg referenced in /images/pc.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+[2m01:53:49[22m [34m[vite][39m [32mΓ£ô built in 2.48s[39m
+[2m01:53:49[22m [34m[build][39m [32mΓ£ô Completed in 2.53s.[39m
+
+[42m[30m building client (vite) [39m[49m
+[2m01:53:49[22m [34m[vite][39m transforming...
+[2m01:53:50[22m [34m[vite][39m [32mΓ£ô[39m 41 modules transformed.
+[2m01:53:50[22m [34m[vite][39m rendering chunks...
+[2m01:53:51[22m [34m[vite][39m computing gzip size...
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[32m_astro/pfp.DfGiAuc4.jpg             [39m[1m[2m 15.63 kB[22m[1m[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/jsx-runtime.D_zvdyIk.js      [39m[1m[2m  0.73 kB[22m[1m[22m[2m Γöé gzip:  0.46 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/Contact.CAQfGdMU.js          [39m[1m[2m  0.85 kB[22m[1m[22m[2m Γöé gzip:  0.42 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/Header.CYoDyrtk.js           [39m[1m[2m  1.32 kB[22m[1m[22m[2m Γöé gzip:  0.67 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/VideoBackground.vZpxf4zp.js  [39m[1m[2m  1.96 kB[22m[1m[22m[2m Γöé gzip:  0.86 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/Hero.CcBvxuC8.js             [39m[1m[2m  4.89 kB[22m[1m[22m[2m Γöé gzip:  1.67 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/MusicPage.BQP7nMdF.js        [39m[1m[2m  6.69 kB[22m[1m[22m[2m Γöé gzip:  1.92 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/index.Cd_vQiNd.js            [39m[1m[2m  7.85 kB[22m[1m[22m[2m Γöé gzip:  3.05 kB[22m
+[2m01:53:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/client.BfPWZUkF.js           [39m[1m[2m186.62 kB[22m[1m[22m[2m Γöé gzip: 58.53 kB[22m
+[2m01:53:51[22m [34m[vite][39m [32mΓ£ô built in 2.04s[39m
+
+[42m[30m generating static routes [39m[49m
+[2m01:53:52[22m [32mΓû╢[39m src/pages/about.astro
+[2m01:53:52[22m   [34mΓööΓöÇ[39m [2m/about/index.html[22m [2m(+174ms)[22m 
+[2m01:53:52[22m [32mΓû╢[39m src/pages/blog/[slug].astro
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/nix/index.html[22m [2m(+25ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/like-father-like-son/index.html[22m [2m(+34ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/ropfu/index.html[22m [2m(+33ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/format-string-3/index.html[22m [2m(+27ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/gotham-hustle/index.html[22m [2m(+17ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/strings-dont-lie-packers-do/index.html[22m [2m(+26ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/an-apple-a-day/index.html[22m [2m(+41ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/honeymoon/index.html[22m [2m(+34ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/nixos-flakes/index.html[22m [2m(+29ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/havok-engine-reverse-engineering/index.html[22m [2m(+17ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/vmware/index.html[22m [2m(+30ms)[22m 
+[2m01:53:52[22m   [34mΓö£ΓöÇ[39m [2m/blog/tea-and-psychological-damage/index.html[22m [2m(+10ms)[22m 
+[2m01:53:52[22m   [34mΓööΓöÇ[39m [2m/blog/onapookkalam/index.html[22m [2m(+25ms)[22m 
+[2m01:53:52[22m [32mΓû╢[39m src/pages/blog/index.astro
+[2m01:53:52[22m   [34mΓööΓöÇ[39m [2m/blog/index.html[22m [2m(+29ms)[22m 
+[2m01:53:52[22m [32mΓû╢[39m src/pages/music.astro
+[2m01:53:52[22m   [34mΓööΓöÇ[39m [2m/music/index.html[22m [2m(+21ms)[22m 
+[2m01:53:52[22m [32mΓû╢[39m src/pages/index.astro
+[2m01:53:52[22m   [34mΓööΓöÇ[39m [2m/index.html[22m [2m(+33ms)[22m 
+[2m01:53:52[22m [32mΓ£ô Completed in 1.32s.
+[39m
+[42m[30m generating optimized images [39m[49m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/pfp.DfGiAuc4_ZPcoU9.webp [2m(before: 15kB, after: 1kB)[22m [2m(+1.77s)[22m [2m(1/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/repos1.0pQRwf7J_8jHNx.webp [2m(before: 232kB, after: 51kB)[22m [2m(+1.76s)[22m [2m(2/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/G5Zz4PGawAAh_cf.BFD0PFwp_1487sR.webp [2m(before: 184kB, after: 102kB)[22m [2m(+1.77s)[22m [2m(3/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/G5ZxtlcbsAADX1Z.VSOsRtqN_bs59F.webp [2m(before: 268kB, after: 166kB)[22m [2m(+1.78s)[22m [2m(4/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/G5Z0Io6boAIC3uo.Bu6cjRfu_Z2anyXv.webp [2m(before: 44kB, after: 24kB)[22m [2m(+1.93s)[22m [2m(5/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/G5ZzZ9ya4AAkoGd.B7QXo_ID_1BRfYM.webp [2m(before: 369kB, after: 262kB)[22m [2m(+1.93s)[22m [2m(6/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/aboutme2.BXQlcMu4_Z1piFby.webp [2m(before: 182kB, after: 33kB)[22m [2m(+1.94s)[22m [2m(7/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/ds_after.BrBdrXMd_Z8bmfU.webp [2m(before: 1180kB, after: 56kB)[22m [2m(+1.94s)[22m [2m(8/23)[22m
+[2m01:53:54[22m   [32mΓû╢[39m /_astro/ds_before.Dc4mJZml_ZdzIYn.webp [2m(before: 1891kB, after: 92kB)[22m [2m(+1.95s)[22m [2m(9/23)[22m
+[2m01:53:58[22m   [32mΓû╢[39m /_astro/afl-exercises.HBHz48CQ_Zgf5Tb.webp [2m(before: 446kB, after: 72kB)[22m [2m(+3.60s)[22m [2m(10/23)[22m
+[2m01:53:58[22m   [32mΓû╢[39m /_astro/portfolio.DCtxzDIu_2usOBx.webp [2m(before: 1608kB, after: 372kB)[22m [2m(+5.54s)[22m [2m(11/23)[22m
+[2m01:53:58[22m   [32mΓû╢[39m /_astro/nix-dotfiles.DOqOaAhV_Z2sYRIl.webp [2m(before: 2589kB, after: 460kB)[22m [2m(+5.98s)[22m [2m(12/23)[22m
+[2m01:53:59[22m   [32mΓû╢[39m /_astro/juliascope.C3GXDfo4_ZksGKs.webp [2m(before: 1281kB, after: 514kB)[22m [2m(+4.77s)[22m [2m(13/23)[22m
+[2m01:53:59[22m   [32mΓû╢[39m /_astro/goww.CwRejKkB_2gUPA3.webp [2m(before: 514kB, after: 70kB)[22m [2m(+4.76s)[22m [2m(14/23)[22m
+[2m01:53:59[22m   [32mΓû╢[39m /_astro/thalix.aUu91brU_15G4YT.webp [2m(before: 812kB, after: 239kB)[22m [2m(+4.77s)[22m [2m(15/23)[22m
+[2m01:53:59[22m   [32mΓû╢[39m /_astro/lune.Bxdtcr24_yPRgA.webp [2m(before: 1152kB, after: 721kB)[22m [2m(+4.81s)[22m [2m(16/23)[22m
+[2m01:53:59[22m   [32mΓû╢[39m /_astro/rustflakes.CDTjqrvp_ZvCAuY.webp [2m(before: 496kB, after: 126kB)[22m [2m(+4.83s)[22m [2m(17/23)[22m
+[2m01:53:59[22m   [32mΓû╢[39m /_astro/aetherion.D1lv1XGC_1ls32h.webp [2m(before: 2192kB, after: 330kB)[22m [2m(+5.04s)[22m [2m(18/23)[22m
+[2m01:54:00[22m   [32mΓû╢[39m /_astro/my-melody-kuromi-lolita-ipad-wallpaper-kawaii-hoshi.BgDTIFz3_ZDNptn.webp [2m(before: 1265kB, after: 3kB)[22m [2m(+1.55s)[22m [2m(19/23)[22m
+[2m01:54:00[22m   [32mΓû╢[39m /_astro/honeymoon.0kmss2p7_Z1CcKbi.webp [2m(before: 3306kB, after: 1052kB)[22m [2m(+7.55s)[22m [2m(20/23)[22m
+[2m01:54:01[22m   [32mΓû╢[39m /_astro/ds-anorlondo.DQvzJprP_2c9xG4.webp [2m(before: 3334kB, after: 570kB)[22m [2m(+6.67s)[22m [2m(21/23)[22m
+[2m01:54:02[22m   [32mΓû╢[39m /_astro/theia-bc.BgOsgWcT_ZxGdjX.webp [2m(before: 2809kB, after: 455kB)[22m [2m(+7.13s)[22m [2m(22/23)[22m
+[2m01:54:02[22m   [32mΓû╢[39m /_astro/ctfs.DfbFezN3_usNd5.webp [2m(before: 2270kB, after: 630kB)[22m [2m(+3.86s)[22m [2m(23/23)[22m
+[2m01:54:02[22m [32mΓ£ô Completed in 9.41s.
+[39m
+[2m01:54:02[22m [34m[build][39m 17 page(s) built in [1m17.24s[22m
+[2m01:54:02[22m [34m[build][39m [1mComplete![22m

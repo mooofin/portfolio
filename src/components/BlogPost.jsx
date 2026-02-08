@@ -42,30 +42,34 @@ function BlogPost() {
   const finalContent = processed;
 
   const components = useMemo(() => ({
-    code: ({ node, inline, className, children, ...props }) => {
+    code: ({ className, children, ...props }) => {
       return <code className={className} {...props}>{children}</code>;
     },
     table: ({ children }) => <MarkdownTable>{children}</MarkdownTable>,
     img: ({ src, alt }) => {
-      const [currentSrc, setCurrentSrc] = React.useState(src);
-      return (
-        <img
-          src={currentSrc}
-          alt={alt || ''}
-          loading="lazy"
-          onError={() => {
-            if (currentSrc.startsWith('/')) {
-              setCurrentSrc(currentSrc.replace(/^\//, ''));
-              return;
-            }
-            if (!currentSrc.startsWith('public/')) {
-              setCurrentSrc(`public/${currentSrc}`);
-            }
-          }}
-        />
-      );
+      return <ImageComponent src={src} alt={alt} />;
     }
   }), []);
+
+  const ImageComponent = ({ src, alt }) => {
+    const [currentSrc, setCurrentSrc] = React.useState(src);
+    return (
+      <img
+        src={currentSrc}
+        alt={alt || ''}
+        loading="lazy"
+        onError={() => {
+          if (currentSrc.startsWith('/')) {
+            setCurrentSrc(currentSrc.replace(/^\//, ''));
+            return;
+          }
+          if (!currentSrc.startsWith('public/')) {
+            setCurrentSrc(`public/${currentSrc}`);
+          }
+        }}
+      />
+    );
+  };
 
   return (
     <>

@@ -1,0 +1,107 @@
+$ astro build
+[2m01:13:46[22m [34m[content][39m Syncing content
+[2m01:13:46[22m [34m[content][39m Synced content
+[2m01:13:46[22m [34m[types][39m Generated [2m694ms[22m
+[2m01:13:46[22m [34m[build][39m output: [34m"static"[39m
+[2m01:13:46[22m [34m[build][39m mode: [34m"static"[39m
+[2m01:13:46[22m [34m[build][39m directory: [34mD:\portfolio\dist\[39m
+[2m01:13:46[22m [34m[build][39m Collecting build info...
+[2m01:13:46[22m [34m[build][39m [32mΓ£ô Completed in 727ms.[39m
+[2m01:13:46[22m [34m[build][39m Building static entrypoints...
+[33m[1m01:13:47[22m [WARN] [vite][39m 
+/images/icons/bg.jpg referenced in /images/icons/bg.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+[33m[1m01:13:47[22m [WARN] [vite][39m 
+/images/pc.jpg referenced in /images/pc.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/aboutme2.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/repos1.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/G5Z0Io6boAIC3uo.jpg is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/G5ZxtlcbsAADX1Z.jpg is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/G5Zz4PGawAAh_cf.jpg is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/G5ZzZ9ya4AAkoGd.jpg is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/ds_before.png is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/ds_after.png is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/honeymoon.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/nix-dotfiles.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/portfolio.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/aetherion.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/afl-exercises.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/juliascope.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/lune.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/ds-anorlondo.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/thalix.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/goww.png is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/theia-bc.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/rustflakes.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[33m[1m01:13:48[22m [WARN] [vite][39m [33m[plugin vite:reporter] 
+(!) D:/portfolio/src/assets/images/about-me/github/ctfs.gif is dynamically imported by D:/portfolio/src/pages/about.astro but also statically imported by D:/portfolio/src/pages/about.astro, dynamic import will not move module into another chunk.
+[39m
+[2m01:13:48[22m [34m[vite][39m [32mΓ£ô built in 2.21s[39m
+[2m01:13:48[22m [34m[build][39m [32mΓ£ô Completed in 2.24s.[39m
+
+[42m[30m building client (vite) [39m[49m
+[2m01:13:48[22m [34m[vite][39m transforming...
+[2m01:13:51[22m [34m[vite][39m [32mΓ£ô[39m 41 modules transformed.
+[2m01:13:51[22m [34m[vite][39m rendering chunks...
+[2m01:13:51[22m [34m[vite][39m computing gzip size...
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[32m_astro/pfp.DfGiAuc4.jpg             [39m[1m[2m 15.63 kB[22m[1m[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/jsx-runtime.D_zvdyIk.js      [39m[1m[2m  0.73 kB[22m[1m[22m[2m Γöé gzip:  0.46 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/Contact.CAQfGdMU.js          [39m[1m[2m  0.85 kB[22m[1m[22m[2m Γöé gzip:  0.42 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/Header.CYoDyrtk.js           [39m[1m[2m  1.32 kB[22m[1m[22m[2m Γöé gzip:  0.67 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/VideoBackground.vZpxf4zp.js  [39m[1m[2m  1.96 kB[22m[1m[22m[2m Γöé gzip:  0.86 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/Hero.CcBvxuC8.js             [39m[1m[2m  4.89 kB[22m[1m[22m[2m Γöé gzip:  1.67 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/MusicPage.BQP7nMdF.js        [39m[1m[2m  6.69 kB[22m[1m[22m[2m Γöé gzip:  1.92 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/index.Cd_vQiNd.js            [39m[1m[2m  7.85 kB[22m[1m[22m[2m Γöé gzip:  3.05 kB[22m
+[2m01:13:51[22m [34m[vite][39m [2mdist/[22m[36m_astro/client.BfPWZUkF.js           [39m[1m[2m186.62 kB[22m[1m[22m[2m Γöé gzip: 58.53 kB[22m
+[2m01:13:51[22m [34m[vite][39m [32mΓ£ô built in 2.77s[39m
+
+[42m[30m generating static routes [39m[49m
+[2m01:13:51[22m [32mΓû╢[39m src/pages/about.astro
+im is not defined
+  Stack trace:
+    at file:///D:/portfolio/dist/pages/about.astro.mjs?time=1770493431707:292:3
+    at callComponentAsTemplateResultOrResponse (file:///D:/portfolio/node_modules/astro/dist/runtime/server/render/astro/render.js:96:31)
+    at renderPage (file:///D:/portfolio/node_modules/astro/dist/runtime/server/render/page.js:49:18)
+    at async NOOP_MIDDLEWARE_FN (file:///D:/portfolio/node_modules/astro/dist/core/middleware/noop-middleware.js:3:20)
+    at async RenderContext.render (file:///D:/portfolio/node_modules/astro/dist/core/render-context.js:249:22)
+error: script "build" exited with code 1
+[2m01:13:51[22m   [34mΓööΓöÇ[39m [2m/about/index.html[22m

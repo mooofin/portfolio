@@ -1,0 +1,60 @@
+$ astro build
+[2m01:15:06[22m [34m[content][39m Syncing content
+[2m01:15:06[22m [34m[content][39m Synced content
+[2m01:15:06[22m [34m[types][39m Generated [2m2.20s[22m
+[2m01:15:06[22m [34m[build][39m output: [34m"static"[39m
+[2m01:15:06[22m [34m[build][39m mode: [34m"static"[39m
+[2m01:15:06[22m [34m[build][39m directory: [34mD:\portfolio\dist\[39m
+[2m01:15:06[22m [34m[build][39m Collecting build info...
+[2m01:15:06[22m [34m[build][39m [32mΓ£ô Completed in 2.25s.[39m
+[2m01:15:07[22m [34m[build][39m Building static entrypoints...
+[33m[1m01:15:12[22m [WARN] [vite][39m 
+/images/icons/bg.jpg referenced in /images/icons/bg.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+[33m[1m01:15:12[22m [WARN] [vite][39m 
+/images/pc.jpg referenced in /images/pc.jpg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+[2m01:15:15[22m [34m[vite][39m [32mΓ£ô built in 8.13s[39m
+[2m01:15:15[22m [34m[build][39m [32mΓ£ô Completed in 8.29s.[39m
+
+[42m[30m building client (vite) [39m[49m
+[2m01:15:15[22m [34m[vite][39m transforming...
+[2m01:15:18[22m [34m[vite][39m [32mΓ£ô[39m 41 modules transformed.
+[2m01:15:18[22m [34m[vite][39m rendering chunks...
+[2m01:15:19[22m [34m[vite][39m computing gzip size...
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[32m_astro/pfp.DfGiAuc4.jpg             [39m[1m[2m 15.63 kB[22m[1m[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/jsx-runtime.D_zvdyIk.js      [39m[1m[2m  0.73 kB[22m[1m[22m[2m Γöé gzip:  0.46 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/Contact.CAQfGdMU.js          [39m[1m[2m  0.85 kB[22m[1m[22m[2m Γöé gzip:  0.42 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/Header.CYoDyrtk.js           [39m[1m[2m  1.32 kB[22m[1m[22m[2m Γöé gzip:  0.67 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/VideoBackground.vZpxf4zp.js  [39m[1m[2m  1.96 kB[22m[1m[22m[2m Γöé gzip:  0.86 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/Hero.CcBvxuC8.js             [39m[1m[2m  4.89 kB[22m[1m[22m[2m Γöé gzip:  1.67 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/MusicPage.BQP7nMdF.js        [39m[1m[2m  6.69 kB[22m[1m[22m[2m Γöé gzip:  1.92 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/index.Cd_vQiNd.js            [39m[1m[2m  7.85 kB[22m[1m[22m[2m Γöé gzip:  3.05 kB[22m
+[2m01:15:19[22m [34m[vite][39m [2mdist/[22m[36m_astro/client.BfPWZUkF.js           [39m[1m[2m186.62 kB[22m[1m[22m[2m Γöé gzip: 58.53 kB[22m
+[2m01:15:19[22m [34m[vite][39m [32mΓ£ô built in 3.25s[39m
+
+[42m[30m generating static routes [39m[49m
+[2m01:15:19[22m [32mΓû╢[39m src/pages/about.astro
+[2m01:15:19[22m   [34mΓööΓöÇ[39m [2m/about/index.html[22m [2m(+121ms)[22m 
+[2m01:15:19[22m [32mΓû╢[39m src/pages/blog/[slug].astro
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/nix/index.html[22m [2m(+33ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/like-father-like-son/index.html[22m [2m(+15ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/ropfu/index.html[22m [2m(+12ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/format-string-3/index.html[22m [2m(+22ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/gotham-hustle/index.html[22m [2m(+15ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/strings-dont-lie-packers-do/index.html[22m [2m(+20ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/an-apple-a-day/index.html[22m [2m(+14ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/honeymoon/index.html[22m [2m(+19ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/nixos-flakes/index.html[22m [2m(+18ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/havok-engine-reverse-engineering/index.html[22m [2m(+11ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/vmware/index.html[22m [2m(+5ms)[22m 
+[2m01:15:19[22m   [34mΓö£ΓöÇ[39m [2m/blog/tea-and-psychological-damage/index.html[22m [2m(+13ms)[22m 
+[2m01:15:19[22m   [34mΓööΓöÇ[39m [2m/blog/onapookkalam/index.html[22m [2m(+10ms)[22m 
+[2m01:15:19[22m [32mΓû╢[39m src/pages/blog/index.astro
+getCollection is not defined
+  Stack trace:
+    at file:///D:/portfolio/dist/pages/blog.astro.mjs?time=1770493519824:8:17
+    at callComponentAsTemplateResultOrResponse (file:///D:/portfolio/node_modules/astro/dist/runtime/server/render/astro/render.js:96:31)
+    at renderPage (file:///D:/portfolio/node_modules/astro/dist/runtime/server/render/page.js:49:18)
+    at async NOOP_MIDDLEWARE_FN (file:///D:/portfolio/node_modules/astro/dist/core/middleware/noop-middleware.js:3:20)
+    at async RenderContext.render (file:///D:/portfolio/node_modules/astro/dist/core/render-context.js:249:22)
+error: script "build" exited with code 1
+[2m01:15:19[22m   [34mΓööΓöÇ[39m [2m/blog/index.html[22m

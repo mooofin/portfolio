@@ -1,8 +1,236 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AboutPageReact from '../components/AboutPage';
+import GlassIcons from '../components/GlassIcons.astro';
+import { Image } from 'astro:assets';
+
+// Asset Imports
+import pfpImage from '../assets/images/about-me/pfp.jpg';
+import headerGif from '../assets/images/about-me/github/aboutme2.gif';
+import reposGif from '../assets/images/about-me/github/repos1.gif';
+
+// Project Screenshots
+import ds_gallery1 from '../assets/images/about-me/G5Z0Io6boAIC3uo.jpg';
+import ds_gallery2 from '../assets/images/about-me/G5ZxtlcbsAADX1Z.jpg';
+import ds_gallery3 from '../assets/images/about-me/G5Zz4PGawAAh_cf.jpg';
+import ds_gallery4 from '../assets/images/about-me/G5ZzZ9ya4AAkoGd.jpg';
+import ds_before from '../assets/images/about-me/github/ds_before.png';
+import ds_after from '../assets/images/about-me/github/ds_after.png';
+
+// Repo GIFs
+import honeymoonGif from '../assets/images/about-me/github/honeymoon.gif';
+import nixDotfilesGif from '../assets/images/about-me/github/nix-dotfiles.gif';
+import portfolioGif from '../assets/images/about-me/github/portfolio.gif';
+import aetherionGif from '../assets/images/about-me/github/aetherion.gif';
+import aflExercisesGif from '../assets/images/about-me/github/afl-exercises.gif';
+import juliascopeGif from '../assets/images/about-me/github/juliascope.gif';
+import luneGif from '../assets/images/about-me/github/lune.gif';
+import dsAnorLondoGif from '../assets/images/about-me/github/ds-anorlondo.gif';
+import thalixGif from '../assets/images/about-me/github/thalix.gif';
+import gowwPng from '../assets/images/about-me/github/goww.png';
+import theiaBcGif from '../assets/images/about-me/github/theia-bc.gif';
+import rustflakesGif from '../assets/images/about-me/github/rustflakes.gif';
+import ctfsGif from '../assets/images/about-me/github/ctfs.gif';
+
+const originalText = "For the past few years, I've been working on an entirely new Dark Souls DLC featuring new areas (using unused assets from Bloodborne and Dark Souls 2 cut content), original NPC questlines, weapons, spells, and a vision focused on restoring the spark lost during the rushed second half of the original game. I've also implemented a custom lighting documentation system for the PTDE edition.";
+
+const repositories = [
+  { title: "Honeymoon", desc: "An Emacs-inspired C++20 terminal editor. No Lisp. No bloat.", img: honeymoonGif, link: "https://github.com/mooofin/honeymoon", full: true },
+  { title: "nix-dotfiles", desc: "NixOS setup with Niri + Hyprland, Quickshell and Home-manager", img: nixDotfilesGif, link: "https://github.com/mooofin/nix-dotfiles" },
+  { title: "Portfolio Website", desc: "Personal portfolio & blogs", img: portfolioGif, link: "https://github.com/mooofin/portfolio", full: false },
+  { title: "AETHERION", desc: "A raycaster engine inspired by DOOM.", img: aetherionGif, link: "https://github.com/mooofin/Aetherion", full: false },
+  { title: "AFL-exercises", desc: "Coverage-guided fuzzing experiments using AFL++", img: aflExercisesGif, link: "https://github.com/mooofin/AFL-exercises", full: false },
+  { title: "JuliaScope", desc: "Multithreaded subdomain enumerator written in Julia", img: juliascopeGif, link: "https://github.com/mooofin/JuliaScope", full: false },
+  { title: "Clair-Obscur", desc: "Featuring Lune :3", img: luneGif, link: "https://github.com/mooofin/Clair-Obscur", full: false },
+  { title: "DS_AnorLondoLightFix", desc: "A mod to restore and enhance the lighting in Anor Londo.", img: dsAnorLondoGif, link: "https://github.com/mooofin/DS_AnorLondoLightFix", full: false },
+  { title: "Thalix", desc: "A high-performance process management and memory editing toolkit", img: thalixGif, link: "https://github.com/mooofin/Thalix", full: false },
+  { title: "God-of-War-Ragnarok", desc: "Cheat Engine Scripts & Tools for modifying the single-player experience.", img: gowwPng, link: "https://github.com/mooofin/God-of-War-Ragnarok", full: false },
+  { title: "Theia-BC", desc: "A K-Nearest Neighbors (KNN) classifier for breast cancer diagnosis.", img: theiaBcGif, link: "https://github.com/mooofin/KNN-DiagnosisModel", full: false },
+  { title: "Rustflakes", desc: "Rust project with Nix flakes for multi-target cross-compilation & Docker", img: rustflakesGif, link: "https://github.com/mooofin/Rustflakes", full: false },
+  { title: "CTFs", desc: "CTF writeups :3", img: ctfsGif, link: "https://github.com/mooofin/CTFs", full: false }
+];
+
+const tools = [
+  { name: "NixOS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nixos/nixos-original.svg" },
+  { name: "Gentoo", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/gentoo/gentoo-plain.svg" },
+  { name: "Julia", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/julia/julia-original.svg" },
+  { name: "Emacs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/emacs/emacs-original.svg" },
+  { name: "Rust", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" },
+  { name: "C++", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" },
+  { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+  { name: "Blender", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/blender/blender-original.svg" }
+];
+
+const skills = ['Mod Development', 'Reverse Engineering', 'Havok Engine', 'Cheat Engine', 'Memory Editing'];
 ---
 
 <BaseLayout title="about | muffin">
-	<AboutPageReact client:load />
+  <main class="hymnals-blog about-page-v2">
+    <div class="hymnals-container">
+      <div class="about-page-header">
+        <a href="/" class="hymnals-back-link">← Back to Home</a>
+        <Image src={pfpImage} alt="Profile" class="hymnals-pfp" width={100} height={100} />
+        <h1 class="hymnals-title">About Me</h1>
+      </div>
+
+      <div class="about-page-hero">
+        <Image src={headerGif} alt="About Me" class="header-gif" />
+      </div>
+
+      <section class="blog-style-card modding-section">
+        <h2>Dark Souls Restoration Project</h2>
+        <div class="about-intro-content">
+          <p class="decrypted-text" id="decryption-text-container" data-original={originalText}>
+            <span class="decrypted-content"></span>
+            <span class="cursor">|</span>
+          </p>
+        </div>
+
+        <div class="project-gallery">
+          <Image src={ds_gallery1} alt="Dark Souls mod screenshot 1" class="gallery-img" />
+          <Image src={ds_gallery2} alt="Dark Souls mod screenshot 2" class="gallery-img" />
+          <Image src={ds_gallery3} alt="Dark Souls mod screenshot 3" class="gallery-img" />
+          <Image src={ds_gallery4} alt="Dark Souls mod screenshot 4" class="gallery-img" />
+        </div>
+
+        <div class="comparison-grid">
+          <div class="comparison-item gallery-img" data-src={ds_before.src}>
+            <h3>Before</h3>
+            <Image src={ds_before} alt="Dark Souls Lighting Before" />
+          </div>
+          <div class="comparison-item gallery-img" data-src={ds_after.src}>
+            <h3>After</h3>
+            <Image src={ds_after} alt="Dark Souls Lighting After" />
+          </div>
+        </div>
+      </section>
+
+      <section class="blog-style-card tools-section">
+        <h2>Tools & Technologies</h2>
+        <div class="tech-badges">
+          {tools.map(tool => (
+            <div class="tech-badge">
+              <img src={tool.icon} alt={tool.name} title={tool.name} />
+              <span>{tool.name}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="blog-style-card skills-section">
+        <h2>My Skills</h2>
+        <div class="skills-container">
+          <GlassIcons skills={skills} />
+        </div>
+      </section>
+
+      <section class="repos-section">
+        <div class="repos-header">
+          <Image src={reposGif} alt="Repositories" class="repos-gif" />
+        </div>
+        <div class="repos-grid">
+          {repositories.map(repo => (
+            <a
+              href={repo.link}
+              class={`repo-card blog-style-card ${repo.full ? 'full-width' : ''}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="repo-img-container">
+                <Image src={repo.img} alt={repo.title} />
+              </div>
+              <div class="repo-info">
+                <h3>{repo.title}</h3>
+                <p>{repo.desc}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="image-modal">
+      <div class="image-modal-content">
+        <button id="image-modal-close" class="image-modal-close">×</button>
+        <img id="modal-img" src="" alt="Full size screenshot" />
+      </div>
+    </div>
+  </main>
 </BaseLayout>
+
+<script>
+  // --- Decryption Animation ---
+  const container = document.getElementById('decryption-text-container');
+  const content = container?.querySelector('.decrypted-content');
+  const cursor = container?.querySelector('.cursor');
+  const originalText = container?.dataset.original || '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+  function startDecryption() {
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+      if (currentIndex <= originalText.length) {
+        if (content) {
+          content.textContent = originalText.slice(0, currentIndex) + 
+            (currentIndex < originalText.length ? characters.charAt(Math.floor(Math.random() * characters.length)) : '');
+        }
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+        if (cursor) (cursor as HTMLElement).style.display = 'none';
+      }
+    }, 20);
+  }
+
+  setTimeout(startDecryption, 500);
+
+  // --- Image Modal ---
+  const modal = document.getElementById('image-modal');
+  const modalImg = document.getElementById('modal-img') as HTMLImageElement;
+  const closeBtn = document.getElementById('image-modal-close');
+  const galleryImgs = document.querySelectorAll('.gallery-img');
+
+  galleryImgs.forEach(img => {
+    img.addEventListener('click', () => {
+      const src = img.getAttribute('data-src') || (img as HTMLImageElement).src;
+      if (modal && modalImg) {
+        modalImg.src = src;
+        modal.classList.add('active');
+      }
+    });
+  });
+
+  const closeModal = () => {
+    if (modal) modal.classList.remove('active');
+  };
+
+  closeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeModal();
+  });
+  
+  modal?.addEventListener('click', closeModal);
+  modalImg?.addEventListener('click', (e) => e.stopPropagation());
+</script>
+
+<style>
+  .image-modal {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  .image-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+</style>

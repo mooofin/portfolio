@@ -5,7 +5,7 @@ function Header() {
 
   useEffect(() => {
     document.body.classList.add('theme-image');
-    try { localStorage.setItem('theme-image', '1'); } catch { }
+    try { localStorage.setItem('theme-image', '1'); } catch (e) { console.error(e); }
   }, []);
 
   useEffect(() => {

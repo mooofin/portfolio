@@ -1,0 +1,22 @@
+---
+interface Props {
+  skills: string[];
+}
+
+const { skills } = Astro.props;
+---
+
+<div class="glass-icons-container">
+  {skills.map((skill, index) => (
+    <div
+      class="glass-icon"
+      style={`--delay: ${index * 0.1}s; --hue: ${(index * 60) % 360}`}
+    >
+      <div class="glass-icon-content">
+        <div class="glass-icon-inner">
+          <span class="glass-icon-text">{skill}</span>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>

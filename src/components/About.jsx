@@ -21,13 +21,12 @@ function About() {
 
   const decryptText = useCallback(() => {
     setIsDecrypting(true);
-    let currentText = '';
     let currentIndex = 0;
 
     const interval = setInterval(() => {
       if (currentIndex < originalText.length) {
         // Add random characters for scrambling effect
-        const scrambled = originalText.slice(0, currentIndex) + 
+        const scrambled = originalText.slice(0, currentIndex) +
           characters.charAt(Math.floor(Math.random() * characters.length));
         setDecryptedText(scrambled);
         currentIndex++;

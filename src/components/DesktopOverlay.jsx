@@ -10,7 +10,7 @@ function Clock() {
   return <div className="desktop-clock">{formatted}</div>;
 }
 
-export default function DesktopOverlay({ background }) {
+export default function DesktopOverlay() {
   return null;
 }
 
