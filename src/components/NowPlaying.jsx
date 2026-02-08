@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, memo } from 'react';
+import { LASTFM_CONFIG } from '../config';
 import './NowPlaying.css';
 
 const NowPlaying = memo(function NowPlaying() {
@@ -10,8 +11,9 @@ const NowPlaying = memo(function NowPlaying() {
   useEffect(() => {
     const fetchNowPlaying = async () => {
       try {
+        const { username, apiKey } = LASTFM_CONFIG;
         const response = await fetch(
-          `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=1`
+          `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
         );
 
         if (!response.ok) {
@@ -73,7 +75,7 @@ const NowPlaying = memo(function NowPlaying() {
   }
 
   return (
-    <div 
+    <div
       className={`now-playing ${track.isNowPlaying ? 'now-playing-active' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

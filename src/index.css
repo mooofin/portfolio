@@ -4752,6 +4752,7 @@ Music Page Responsive Styles */
 .hymnals-blog .markdown-container {
   color: #eeeeee !important;
 }
+
 /* --- About Page Revamp --- */
 .about-page {
   max-width: 1000px;
@@ -4810,7 +4811,9 @@ Music Page Responsive Styles */
   letter-spacing: 1px;
 }
 
-.modding-section, .tools-section, .repos-section {
+.modding-section,
+.tools-section,
+.repos-section {
   margin-bottom: 6rem;
 }
 
@@ -4845,7 +4848,7 @@ Music Page Responsive Styles */
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .comparison-item:hover img {
@@ -4876,7 +4879,7 @@ Music Page Responsive Styles */
 .tech-badge img {
   width: 60px;
   height: 60px;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .tech-badge span {
@@ -4902,7 +4905,7 @@ Music Page Responsive Styles */
 }
 
 .repos-gif {
-  max-width: 450px;
+  max-width: 800px;
   width: 100%;
   border-radius: 10px;
 }
@@ -4985,7 +4988,7 @@ Music Page Responsive Styles */
   .about-page {
     padding: 1rem 1rem 6rem 1rem;
   }
-  
+
   .about-intro-card {
     padding: 1.5rem;
   }
@@ -4994,12 +4997,12 @@ Music Page Responsive Styles */
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .repos-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .repo-card.full-width {
     grid-column: span 1;
   }
@@ -5007,12 +5010,12 @@ Music Page Responsive Styles */
   .repo-card.full-width .repo-img-container {
     height: 240px;
   }
-  
+
   .tech-badges {
     gap: 1.5rem;
     padding: 1.5rem;
   }
-  
+
   .tech-badge img {
     width: 45px;
     height: 45px;
@@ -5034,7 +5037,7 @@ Music Page Responsive Styles */
   color: #ff69b4;
 }
 
-.about-page p, 
+.about-page p,
 .about-page section p,
 .about-intro-card p,
 .comparison-item h3,
@@ -5044,13 +5047,14 @@ Music Page Responsive Styles */
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
-.about-page b, 
+.about-page b,
 .about-page strong {
-  color: #ff1493; /* Slightly deeper pink for bold text */
+  color: #ff1493;
+  /* Slightly deeper pink for bold text */
 }
 
 /* Ensure headings stay pink as intended */
-.about-page h2, 
+.about-page h2,
 .repo-info h3 {
   color: #ff69b4;
 }
@@ -5109,7 +5113,8 @@ Music Page Responsive Styles */
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 3; /* Standard property */
+  line-clamp: 3;
+  /* Standard property */
 }
 
 /* Repository Grid Refinements */
@@ -5120,7 +5125,8 @@ Music Page Responsive Styles */
 }
 
 .repo-card.full-width .repo-img-container {
-  height: 240px !important; /* Make full-width repos same height as regular repos */
+  height: 240px !important;
+  /* Make full-width repos same height as regular repos */
 }
 
 /* --- About Page Refinement: Exact Blog Style --- */
@@ -5209,6 +5215,7 @@ Music Page Responsive Styles */
   .about-page-v2 {
     padding: 2rem 1rem 4rem;
   }
+
   .repo-card.blog-style-card.full-width {
     grid-column: span 1;
   }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
+import { LASTFM_CONFIG } from '../config';
 
 // Memoized album card component
 const AlbumCard = memo(({ album, index, hoveredAlbum, setHoveredAlbum }) => (
@@ -93,8 +94,9 @@ function MusicPage() {
     const fetchTopAlbums = async () => {
       setLoadingAlbums(true);
       try {
+        const { username, apiKey } = LASTFM_CONFIG;
         const response = await fetch(
-          `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=12&period=${timePeriod}`
+          `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${username}&api_key=${apiKey}&format=json&limit=12&period=${timePeriod}`
         );
         const data = await response.json();
 
@@ -110,8 +112,9 @@ function MusicPage() {
 
     const fetchRecentTracks = async () => {
       try {
+        const { username, apiKey } = LASTFM_CONFIG;
         const response = await fetch(
-          `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json&limit=10`
+          `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=10`
         );
         const data = await response.json();
 
@@ -127,8 +130,9 @@ function MusicPage() {
 
     const fetchUserStats = async () => {
       try {
+        const { username, apiKey } = LASTFM_CONFIG;
         const response = await fetch(
-          `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=kxllswxch&api_key=f267c25a5476436b36dbfcb7dc93a540&format=json`
+          `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`
         );
         const data = await response.json();
         if (data.user) {
@@ -176,7 +180,7 @@ function MusicPage() {
     <main className="music-page">
       <div className="music-hero-image">
         <img
-          src="/music_page_banner.jpg"
+          src="/images/music-page.gif"
           alt="Music vibes"
           loading="eager"
         />
