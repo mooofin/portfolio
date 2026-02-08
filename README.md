@@ -1,36 +1,34 @@
 # Portfolio
 
-This is my portfolio website. It uses React and Vite, with a video background and a custom blog system.
+This is my portfolio website. I recently moved it over to **Astro 5** but kept **React** for all the interactive bits. It's got a custom blog and a Music Space where I track what I'm listening to.
 
-I use Bun for package management and development scripts.
+I use **Bun** for everything management-wise because it's fast.
 
-## System Overview
+## How it works
 
-The blog uses markdown files stored in `src/posts`. Vite imports them at runtime using `import.meta.glob`, parsing frontmatter for metadata. This avoids the need for a separate CMS.
-
-The site includes a custom cursor animation and links to my other pages (Music, external Poetry blog). Styling is primarily vanilla CSS for performance.
-
-Deployments are handled by Vercel on git push, with a `vercel.json` config to handle SPA routing.
+The site is pretty simple under the hood. I keep my blog posts as markdown files in `src/content/blog` and let Astro's content collections handle all the heavy lifting so I don't have to deal with a CMS. There's also a Music Space that pulls in my top albums and recent scrobbles from Last.fm. For the visuals, I'm using vanilla CSS for most of the styling, with some React Three Fiber and a custom cursor to keep things feeling snappy. Everything is hosted on Vercel and deploys automatically whenever I push to git.
 
 ## Development
 
-Run the dev server:
+Spin up the dev server:
 ```bash
 bun run dev
 ```
 
-Build for production:
+Build it:
 ```bash
 bun run build
 ```
 
-Preview locally:
+Check the build locally:
 ```bash
 bun run preview
 ```
 
-## Stack
+## The Stack
 
-- **Core**: React 19, Vite, React Router
-- **Graphics**: React Three Fiber
-- **Content**: react-markdown, remark-gfm, react-syntax-highlighter
+- **Framework**: Astro 5
+- **UI**: React 19
+- **Graphics**: Three.js / React Three Fiber
+- **Styling**: Vanilla CSS
+- **Content**: Markdown/MDX with Remark-GFM
