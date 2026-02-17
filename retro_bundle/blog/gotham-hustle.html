@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gotham Hustle, DFIR report">
+  <title>Gotham Hustle, DFIR report - ~siddharth~</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Blog specific styles */
+    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+    .blog-content p { margin-bottom: 15px; }
+    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
+    .blog-content .img-container { text-align: center; margin: 20px 0; }
+    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
+    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
+    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
+    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="top-banner">
+  <marquee behavior="scroll" direction="left" scrollamount="3">
+    *** Reading: Gotham Hustle, DFIR report *** Post Date: 2025-01-04 ***
+  </marquee>
+</div>
+
+<table class="main-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="sidebar" valign="top">
+      <div class="sidebar-box">
+        <div class="sidebar-title">Navigation</div>
+        <ul class="nav-list">
+          <li><a href="../index.html">[ Home ]</a></li>
+          <li><a href="../about.html">[ About Me ]</a></li>
+          <li><a href="../projects.html">[ Projects ]</a></li>
+          <li><a href="../blog.html">[ Blog ]</a></li>
+
+        </ul>
+      </div>
+      
+      <div class="sidebar-box">
+        <div class="sidebar-title">Actions</div>
+        <ul class="nav-list">
+          <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
+          <li><a href="#">Top of Page</a></li>
+        </ul>
+      </div>
+    </td>
+
+    <td class="content" valign="top">
+      <div class="page-header">
+        <h1>Gotham Hustle, DFIR report</h1>
+        <hr class="fancy-hr">
+      </div>
+
+      <p class="breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../blog.html">Blog</a> &gt; Gotham Hustle, DFIR report</p>
+
+      <div class="content-box">
+        <div class="blog-meta">
+           <strong>Date:</strong> 2025-01-04 | <strong>Tags:</strong> 
+        </div>
+        
+        <div class="blog-content">
+          <h1>Description</h1>
+<p>
+Gotham's underbelly trembles as whispers spread—The Riddler's back, leaving cryptic puzzles across the city's darkest corners. Every clue is a trap, every answer another step into madness. Think you can outsmart him? Step into Gotham's shadows and prove it. Let the Batman's Hustle get its recognition!
+</p>
+<h2>Initial Analysis</h2>
+<p>
+First, I ran imageinfo to identify the memory profile and basic system details.
+</p>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-1.png" alt="Memory Profile"></div>
+<p>
+<strong>System Information</strong>
+- OS Profile: Win7SP1x64
+- Processors: 6 CPUs
+- Image Date/Time: 2024-08-06 18:37:19 UTC
+- Memory Size: 4.6 GB
+</p>
+<h2>Process Enumeration</h2>
+<p>
+Next, I ran pslist to observe active processes.
+</p>
+<pre class="code-block"><code>cmd.exe (PID 3944)
+notepad.exe (PID 2592)
+mspaint.exe (PID 2516)
+multiple chrome.exe processes
+</code></pre>
+<p>
+`
+</p>
+<h3>Notable Processes</h3>
+<ul><li>cmd.exe (PID 3944): Command prompt activity</li><li>notepad.exe (PID 2592): Notepad open</li><li>mspaint.exe (PID 2516): Paint running</li><li>Multiple chrome.exe: Browser activity</li></ul>
+<h2>Command History</h2>
+<p>
+To check user activity, I ran cmdscan
+</p>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-2.png" alt="Command History"></div>
+<pre class="code-block"><code>Cmd #4: Ymkwc2N0Znt3M2xjMG0zXw==
+Cmd #5: azr43ln1ght.github.io
+Cmd #6: Azr43lKn1ght
+Cmd #7: did you find flag1?
+</code></pre>
+<p>
+The base64 string decodes to:
+</p>
+<pre class="code-block"><code>bi0sctf{w3lc0m3_
+</code></pre>
+<h2>Notepad & Memory Strings</h2>
+<p>
+Dumping Notepad directly failed due to Volatility version mismatch.
+I dumped process memory and ran <code>strings</code>, which mostly yielded DLL data.
+One extracted link led to the following page:
+</p>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-3.png" alt="Notepad Strings"></div>
+<p>
+This contained another base64 string, decoding to:
+</p>
+<pre class="code-block"><code>h0p3_th15_
+</code></pre>
+<h2>File Extraction</h2>
+<p>
+From filescan, I noticed flag5.rar on the Desktop and dumped it:
+</p>
+<pre class="code-block"><code>vol -f gotham.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000011fdaff20 --dump-dir=D:\DFIR
+</code></pre>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-4.png" alt="File Extraction"></div>
+<p>
+The archive was password-protected.
+</p>
+<h2>Credential Dump</h2>
+<p>
+Using hashdump:
+</p>
+<pre class="code-block"><code>bruce:1001:...:b7265f8cc4f00b58f413076ead262720:::
+</code></pre>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-5.png" alt="Credential Dump"></div>
+<p>
+The password was <strong>batman</strong>.
+</p>
+<p>
+Extracting the archive revealed another base64 string:
+</p>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-6.png" alt="Archive Contents"></div>
+<p>
+Decoded:
+</p>
+<pre class="code-block"><code>m0r3_13337431}
+</code></pre>
+<h2>Flag 4</h2>
+<p>
+Dumping Notepad with procdump showed a search for flag4.
+Running strings revealed:
+</p>
+<pre class="code-block"><code>YjNuM2YxNzVfeTB1Xw==
+</code></pre>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-7.png" alt="Flag 4"></div>
+<h2>Flag 2 (MS Paint)</h2>
+<p>
+From pslist, mspaint.exe was active.
+I dumped the process memory, renamed it to <code>.data</code>, and opened it in GIMP.
+</p>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-8.png" alt="GIMP Analysis"></div>
+<p>
+I referred a writeup for the MS Paint part; the offsets there were not correct so I had to adjust them manually.
+</p>
+<p>
+I had to use <strong>Unsigned Integer</strong> because I was loading raw process memory, not a real image file. The pixel values in memory are stored as normal positive numbers, especially for RGB 16-bit, which expects values between 0 and 65535. When I tried signed or floating point, the same bytes were misinterpreted and the image completely fell apart into noise. Unsigned was the only option that kept the colors stable and readable. Since MSPaint stores its canvas as raw pixel data in memory without headers, I had to manually line everything up.
+</p>
+<p>
+After inspecting and tweaking values for hours, I finally managed to align a base64 string in the image:
+</p>
+<pre class="code-block"><code>dDBfZGYxcl9sNGl1Xw==
+</code></pre>
+<p>
+The data appeared flipped in the output, so I rotated and flipped the image to make the text readable.
+</p>
+<div class="img-container"><img src="../images/posts/gotham-hustle/gotham-9.png" alt="Final Flag"></div>
+<p>
+Decoding the base64 revealed the final combined flag:
+</p>
+<pre class="code-block"><code>bi0sctf{w3lc0m3_t0_df1r_l4b5_h0p3_th15_b3n3f175_y0u_m0r3_13337431}
+</code></pre>
+        </div>
+      </div>
+
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  <hr class="fancy-hr">
+  <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
+</div>
+
+</body>
+</html>

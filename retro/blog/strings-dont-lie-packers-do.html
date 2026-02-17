@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Strings Don't Lie, Packers Do">
+  <title>Strings Don't Lie, Packers Do - ~siddharth~</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Blog specific styles */
+    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+    .blog-content p { margin-bottom: 15px; }
+    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
+    .blog-content .img-container { text-align: center; margin: 20px 0; }
+    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
+    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
+    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
+    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="top-banner">
+  <marquee behavior="scroll" direction="left" scrollamount="3">
+    *** Reading: Strings Don't Lie, Packers Do *** Post Date: 2025-12-29 ***
+  </marquee>
+</div>
+
+<table class="main-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="sidebar" valign="top">
+      <div class="sidebar-box">
+        <div class="sidebar-title">Navigation</div>
+        <ul class="nav-list">
+          <li><a href="../index.html">[ Home ]</a></li>
+          <li><a href="../about.html">[ About Me ]</a></li>
+          <li><a href="../projects.html">[ Projects ]</a></li>
+          <li><a href="../blog.html">[ Blog ]</a></li>
+
+        </ul>
+      </div>
+      
+      <div class="sidebar-box">
+        <div class="sidebar-title">Actions</div>
+        <ul class="nav-list">
+          <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
+          <li><a href="#">Top of Page</a></li>
+        </ul>
+      </div>
+    </td>
+
+    <td class="content" valign="top">
+      <div class="page-header">
+        <h1>Strings Don't Lie, Packers Do</h1>
+        <hr class="fancy-hr">
+      </div>
+
+      <p class="breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../blog.html">Blog</a> &gt; Strings Don't Lie, Packers Do</p>
+
+      <div class="content-box">
+        <div class="blog-meta">
+           <strong>Date:</strong> 2025-12-29 | <strong>Tags:</strong> 
+        </div>
+        
+        <div class="blog-content">
+          <p>
+<em>Note - always check for UPX, wasted half an hour because i didnt unpack the binary</em>
+</p>
+<h2>Binary Analysis</h2>
+<pre class="code-block"><code>$ file './flag{key1+key2}'
+./flag{key1+key2}: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV),
+dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.32,
+BuildID[sha1]=77c06ef6af332d2e5def19f42f2b60fcf2c5d2e6, not stripped
+</code></pre>
+<p>
+Key observations:
+- 32-bit ELF binary
+- Dynamically linked (requires 32-bit libraries)
+- Not stripped (symbols intact - easier to analyze)
+</p>
+<h2>Initial Execution</h2>
+<pre class="code-block"><code>$ ./flag{key1+key2}
+[No output]
+</code></pre>
+<p>
+The binary runs but produces no output. Maybe the key is in the binary itself?
+</p>
+<h2>Detecting the Packer</h2>
+<pre class="code-block"><code>$ strings './flag{key1+key2}' | grep -i upx
+$Info: This file is packed with the UPX executable packer http://upx.sf.net $
+$Id: UPX 3.91 Copyright (C) 1996-2013 the UPX Team. All Rights Reserved. $
+PROT_EXEC|PROT_WRITE failed.
+</code></pre>
+<p>
+The binary is packed with UPX (Ultimate Packer for eXecutables) version 3.91.
+</p>
+<h2>Unpacking with UPX</h2>
+<pre class="code-block"><code>$ upx -d './flag{key1+key2}'
+                       Ultimate Packer for eXecutables
+                          Copyright (C) 1996 - 2025
+UPX 5.0.2       Markus Oberhumer, Laszlo Molnar &amp; John Reiser   Jul 20th 2025
+
+        File size         Ratio      Format      Name
+   --------------------   ------   -----------   -----------
+[WARNING] bad b_info at 0x12948
+[WARNING] ... recovery at 0x12944
+    194808 &lt;-     85996   44.14%   linux/i386    flag{key1+key2}
+
+Unpacked 1 file.
+</code></pre>
+<h2>Searching for Key-Related Strings</h2>
+<pre class="code-block"><code>$ strings './flag{key1+key2}' | grep -i key
+You don't have the first part of key yet
+You dont have the entire key yet.... :(
+keyjoin.12717834333337631731.tmp.c
+mapnode_find_key
+map_key_to_index
+mapnode_subkeys
+map_keys_1
+SortedMap_keys
+mapnode_remove_key
+DenseArray_key
+map_keys
+</code></pre>
+<p>
+Important strings:
+1. <code>"You don't have the first part of key yet"</code>
+2. <code>"You dont have the entire key yet.... :("</code>
+</p>
+<p>
+These error messages indicate the binary checks for keys and displays messages when conditions aren't met.
+</p>
+<h2>Main Function Analysis</h2>
+<pre class="code-block"><code>$ objdump -d -M intel './flag{key1+key2}' | grep -A 50 "&lt;main&gt;:"
+</code></pre>
+<p>
+Output:
+</p>
+<pre class="code-block"><code>08068f89 &lt;main&gt;:
+ 8068f89:	8d 4c 24 04          	lea    ecx,[esp+0x4]
+ 8068f8d:	83 e4 f0             	and    esp,0xfffffff0
+ 8068f90:	ff 71 fc             	push   DWORD PTR [ecx-0x4]
+ 8068f93:	55                   	push   ebp
+ 8068f94:	89 e5                	mov    ebp,esp
+ 8068f96:	51                   	push   ecx
+ 8068f97:	83 ec 04             	sub    esp,0x4
+ 8068f9a:	89 c8                	mov    eax,ecx
+ 8068f9c:	83 ec 08             	sub    esp,0x8
+ 8068f9f:	ff 70 04             	push   DWORD PTR [eax+0x4]
+ 8068fa2:	ff 30                	push   DWORD PTR [eax]
+ 8068fa4:	e8 f3 93 ff ff       	call   806239c &lt;_vinit&gt;
+ 8068fa9:	83 c4 10             	add    esp,0x10
+ 8068fac:	e8 cb 8f ff ff       	call   8061f7c &lt;main__main&gt;
+ 8068fb1:	b8 00 00 00 00       	mov    eax,0x0
+ 8068fb6:	8b 4d fc             	mov    ecx,DWORD PTR [ebp-0x4]
+ 8068fb9:	c9                   	leave
+ 8068fba:	8d 61 fc             	lea    esp,[ecx-0x4]
+ 8068fbd:	c3                   	ret
+</code></pre>
+<p>
+- <code>main</code> calls <code>_vinit</code> for initialization
+- Then calls <code>main__main</code> at address <code>0x8061f7c</code>
+- Returns 0
+</p>
+<h3>Analyzing main__main</h3>
+<pre class="code-block"><code>$ objdump -d -M intel './flag{key1+key2}' | grep -A 50 "8061f7c &lt;main__main&gt;:"
+</code></pre>
+<p>
+Key sections:
+</p>
+<pre class="code-block"><code>08061f7c &lt;main__main&gt;:
+ 8061f82:	c7 45 d8 17 00 00 00 	mov    DWORD PTR [ebp-0x28],0x17
+ 8061f89:	c7 45 dc 8c 09 00 00 	mov    DWORD PTR [ebp-0x24],0x98c
+ 8061f90:	83 7d d8 2d          	cmp    DWORD PTR [ebp-0x28],0x2d
+ 8061f94:	75 07                	jne    8061f9d &lt;main__main+0x21&gt;
+ 8061f96:	e8 64 00 00 00       	call   8061fff &lt;main__one&gt;
+ 8061f9b:	eb 29                	jmp    8061fc6 &lt;main__main+0x4a&gt;
+</code></pre>
+<p>
+Summary:
+- Line <code>8061f82</code>: Stores value <code>0x17</code> (decimal 23) in local variable
+- Line <code>8061f89</code>: Stores value <code>0x98c</code> (decimal 2444) in local variable
+- Line <code>8061f90</code>: Compares first value with <code>0x2d</code> (decimal 45)
+- Since 23 ≠ 45, the jump at <code>8061f94</code> is taken
+- Line <code>8061f96</code>: This call is SKIPPED because the comparison failed
+</p>
+<p>
+The binary intentionally prevents the key functions from being called by using incorrect comparison values.
+</p>
+<h2>KEY 1: Analyzing main__one</h2>
+<pre class="code-block"><code>$ objdump -d -M intel './flag{key1+key2}' | grep -A 150 "8061fff &lt;main__one&gt;:"
+</code></pre>
+<p>
+Key sections:
+</p>
+<pre class="code-block"><code>08061fff &lt;main__one&gt;:
+ 8062030:	c7 45 a8 2d 00 00 00 	mov    DWORD PTR [ebp-0x58],0x2d
+ 8062037:	83 7d a8 1f          	cmp    DWORD PTR [ebp-0x58],0x1f
+ 806203b:	0f 8f 93 00 00 00    	jg     80620d4 &lt;main__one+0xd5&gt;
+</code></pre>
+<p>
+Loop analysis:
+</p>
+<pre class="code-block"><code> 8062058:	c7 45 a4 02 00 00 00 	mov    DWORD PTR [ebp-0x5c],0x2
+ 806207e:	83 7d a4 0b          	cmp    DWORD PTR [ebp-0x5c],0xb
+ 8062082:	7e dd                	jle    8062061 &lt;main__one+0x62&gt;
+</code></pre>
+<p>
+- Initialize counter to 2
+- Push counter value to array
+- Increment counter by 1
+- Compare counter with 0xb (11)
+- If counter ≤ 11, loop
+</p>
+<p>
+Result: Creates array <code>[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]</code>
+</p>
+<p>
+Then:
+</p>
+<pre class="code-block"><code> 806208a:	6a 08                	push   0x8
+ 806208c:	6a 02                	push   0x2
+ 806209b:	e8 d0 43 ff ff       	call   8056470 &lt;array_slice&gt;
+</code></pre>
+<p>
+Call: <code>array_slice(array, 2, 8)</code>
+</p>
+<p>
+Result: Slices array from index 2 to 8 → <code>[4, 5, 6, 7, 8, 9]</code>
+</p>
+<p>
+<strong>KEY1 = "456789"</strong>
+</p>
+<h2>KEY 2: Analyzing main__two</h2>
+<pre class="code-block"><code>$ objdump -d -M intel './flag{key1+key2}' | grep -A 250 "8062131 &lt;main__two&gt;:"
+</code></pre>
+<p>
+Memory addresses loaded:
+- <code>0x806a03d</code>
+- <code>0x806a03f</code>
+- <code>0x806a041</code>
+- <code>0x806a043</code>
+- <code>0x806a045</code>
+</p>
+<p>
+Each address is followed by length 1, suggesting single character strings.
+</p>
+<pre class="code-block"><code>$ objdump -s --start-address=0x806a014 --stop-address=0x806a050 './flag{key1+key2}'
+</code></pre>
+<p>
+Output:
+</p>
+<pre class="code-block"><code>./flag{key1+key2}:     file format elf32-i386
+
+Contents of section .rodata:
+ 806a014 596f7520 646f6e27 74206861 76652074  You don't have t
+ 806a024 68652066 69727374 20706172 74206f66  he first part of
+ 806a034 206b6579 20796574 004a004b 004c0071   key yet.J.K.L.q
+ 806a044 00350039 00550031 00330037           .5.9.U.1.3.7
+</code></pre>
+<p>
+Character mapping:
+</p>
+<pre class="code-block"><code>Offset   Hex     ASCII   Character
+------   -----   -----   ---------
+806a03d  4a 00   J \0    'J'
+806a03f  4b 00   K \0    'K'
+806a041  4c 00   L \0    'L'
+806a043  71 00   q \0    'q'
+806a045  35 00   5 \0    '5'
+</code></pre>
+<p>
+The code references only the first 5 addresses, so:
+</p>
+<p>
+<strong>KEY2 = "JKLq5"</strong>
+</p>
+<h2>Solution</h2>
+<h3>Final Keys</h3>
+<p>
+- KEY1: <code>456789</code>
+- KEY2: <code>JKLq5</code>
+</p>
+<h3>Flag Format</h3>
+<p>
+The challenge filename is <code>flag{key1+key2}</code>, which means:
+</p>
+<pre class="code-block"><code>flag{456789+JKLq5}
+</code></pre>
+        </div>
+      </div>
+
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  <hr class="fancy-hr">
+  <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
+</div>
+
+</body>
+</html>

