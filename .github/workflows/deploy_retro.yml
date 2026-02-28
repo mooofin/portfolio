@@ -30,8 +30,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Deploy the retro_bundle folder content to the root of the site
-          path: './retro_bundle'
+          path: './retro'
 
       - name: Deploy to GitHub Pages
         id: deployment
