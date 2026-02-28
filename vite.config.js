@@ -9,6 +9,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      external: ['/pagefind/pagefind.js'],
       output: {
         manualChunks: undefined,
       },

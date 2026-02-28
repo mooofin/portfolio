@@ -7,4 +7,11 @@ export default defineConfig({
     site: 'https://mooofin.vercel.app',
     integrations: [react(), sitemap()],
     output: 'static',
+    vite: {
+        build: {
+            rollupOptions: {
+                external: ['/pagefind/pagefind.js'],
+            },
+        },
+    },
 });

@@ -46,7 +46,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 	<body class="theme-image">
 		<div id="root" class="app-container">
 
-			<VideoBackground client:load />
+			<VideoBackground client:idle />
 			<div class="content-container">
 				<Header client:load />
 				<main>
