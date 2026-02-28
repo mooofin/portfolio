@@ -22,7 +22,7 @@ const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
 ---
 
-<BaseLayout title={`${entry.data.title} | muffin`}>
+<BaseLayout title={`${entry.data.title} | muffin`} description={entry.data.excerpt ?? `${entry.data.title} — muffin's blog`}>
   <div class="hymnals-blog">
     <div class="hymnals-blog-post-container">
       <Image

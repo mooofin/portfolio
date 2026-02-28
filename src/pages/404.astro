@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 | muffin" description="Page not found.">
+  <div class="not-found-container">
+    <div class="not-found-card">
+      <p class="not-found-code">404</p>
+      <h1 class="not-found-title">page not found :(</h1>
+      <p class="not-found-desc">looks like this page got lost in the void</p>
+      <a href="/" class="not-found-link">← go home</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--header-height));
+    padding: 2rem;
+  }
+
+  .not-found-card {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 105, 180, 0.2);
+    border-radius: 12px;
+    padding: 3rem 4rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .not-found-code {
+    font-size: 6rem;
+    font-weight: 700;
+    color: #ff69b4;
+    margin: 0;
+    line-height: 1;
+    opacity: 0.8;
+  }
+
+  .not-found-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .not-found-desc {
+    color: var(--secondary-text-color);
+    margin: 0 0 2rem;
+    font-size: 0.95rem;
+  }
+
+  .not-found-link {
+    display: inline-block;
+    color: #fff;
+    background: rgba(255, 105, 180, 0.2);
+    border: 1px solid #ff69b4;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+
+  .not-found-link:hover {
+    background: rgba(255, 105, 180, 0.35);
+  }
+</style>
