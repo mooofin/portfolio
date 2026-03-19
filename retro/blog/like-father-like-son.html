@@ -1,84 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Like Father Like Son - DFIR report">
-  <title>Like Father Like Son - DFIR report - ~siddharth~</title>
-  <link rel="stylesheet" href="../style.css">
-  <style>
-    /* Blog specific styles */
-    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
-    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
-    .blog-content p { margin-bottom: 15px; }
-    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
-    .blog-content .img-container { text-align: center; margin: 20px 0; }
-    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
-    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
-    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
-    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Like Father Like Son - DFIR report" />
+    <title>Like Father Like Son - DFIR report - ~siddharth~</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      /* Blog specific styles */
+      .blog-content {
+        font-family: "Verdana", sans-serif;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        color: #000080;
+        margin-top: 20px;
+        border-bottom: 1px dotted #ccc;
+        padding-bottom: 5px;
+      }
+      .blog-content p {
+        margin-bottom: 15px;
+      }
+      .blog-content img {
+        max-width: 100%;
+        border: 1px solid #999;
+        padding: 4px;
+        background: #fff;
+      }
+      .blog-content .img-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .blog-content pre {
+        background: #eee;
+        border: 1px inset #ccc;
+        padding: 10px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content code {
+        background: #f0f0f0;
+        padding: 2px 4px;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content blockquote {
+        border-left: 4px solid #000080;
+        padding-left: 10px;
+        color: #555;
+        font-style: italic;
+        margin: 15px 0;
+      }
+      .blog-meta {
+        color: #666;
+        font-size: 11px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-banner">
+      <marquee behavior="scroll" direction="left" scrollamount="3">
+        *** Reading: Like Father Like Son - DFIR report *** Post Date:
+        2025-12-17 ***
+      </marquee>
+    </div>
 
-<div class="top-banner">
-  <marquee behavior="scroll" direction="left" scrollamount="3">
-    *** Reading: Like Father Like Son - DFIR report *** Post Date: 2025-12-17 ***
-  </marquee>
-</div>
+    <table class="main-table" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="sidebar" valign="top">
+          <div class="sidebar-box">
+            <div class="sidebar-title">Navigation</div>
+            <ul class="nav-list">
+              <li><a href="../index.html">[ Home ]</a></li>
+              <li><a href="../about.html">[ About Me ]</a></li>
+              <li><a href="../projects.html">[ Projects ]</a></li>
+              <li><a href="../blog.html">[ Blog ]</a></li>
+            </ul>
+          </div>
 
-<table class="main-table" cellpadding="0" cellspacing="0">
-  <tr>
-    <td class="sidebar" valign="top">
-      <div class="sidebar-box">
-        <div class="sidebar-title">Navigation</div>
-        <ul class="nav-list">
-          <li><a href="../index.html">[ Home ]</a></li>
-          <li><a href="../about.html">[ About Me ]</a></li>
-          <li><a href="../projects.html">[ Projects ]</a></li>
-          <li><a href="../blog.html">[ Blog ]</a></li>
+          <div class="sidebar-box">
+            <div class="sidebar-title">Actions</div>
+            <ul class="nav-list">
+              <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
+              <li><a href="#">Top of Page</a></li>
+            </ul>
+          </div>
+        </td>
 
-        </ul>
-      </div>
-      
-      <div class="sidebar-box">
-        <div class="sidebar-title">Actions</div>
-        <ul class="nav-list">
-          <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
-          <li><a href="#">Top of Page</a></li>
-        </ul>
-      </div>
-    </td>
+        <td class="content" valign="top">
+          <div class="page-header">
+            <h1>Like Father Like Son - DFIR report</h1>
+            <hr class="fancy-hr" />
+          </div>
 
-    <td class="content" valign="top">
-      <div class="page-header">
-        <h1>Like Father Like Son - DFIR report</h1>
-        <hr class="fancy-hr">
-      </div>
+          <p class="breadcrumb">
+            <a href="../index.html">Home</a> &gt;
+            <a href="../blog.html">Blog</a> &gt; Like Father Like Son - DFIR
+            report
+          </p>
 
-      <p class="breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../blog.html">Blog</a> &gt; Like Father Like Son - DFIR report</p>
+          <div class="content-box">
+            <div class="blog-meta">
+              <strong>Date:</strong> 2025-12-17 | <strong>Tags:</strong>
+            </div>
 
-      <div class="content-box">
-        <div class="blog-meta">
-           <strong>Date:</strong> 2025-12-17 | <strong>Tags:</strong> 
-        </div>
-        
-        <div class="blog-content">
-          <h1>Description</h1>
-<p>
-Damian Wayne stored a secret in his old pc, but Dr. Simon Hurt who got this information, planned a contingency against Damian by the help of Starlab's techies, poor Damaian was so eager to view the encrypted secret file that Raven sent him long back but Simon knows this piece of information as well as the decryption process, will he win this situation like a Wayne? will Damaian's Redemption be successful!?
-</p>
-<p>
-Note: This challenge doesn't have any questions but the flag itself!
-</p>
-<p>
-File Password : vOCorthoAGESeNsivEli
-</p>
-<h2>Initial Analysis</h2>
-<p>
-Let's first see the profile of the dump
-</p>
-<pre class="code-block"><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem imageinfo 
+            <div class="blog-content">
+              <h1>Description</h1>
+              <p>
+                Damian Wayne stored a secret in his old pc, but Dr. Simon Hurt
+                who got this information, planned a contingency against Damian
+                by the help of Starlab's techies, poor Damaian was so eager to
+                view the encrypted secret file that Raven sent him long back but
+                Simon knows this piece of information as well as the decryption
+                process, will he win this situation like a Wayne? will Damaian's
+                Redemption be successful!?
+              </p>
+              <p>
+                Note: This challenge doesn't have any questions but the flag
+                itself!
+              </p>
+              <p>File Password : vOCorthoAGESeNsivEli</p>
+              <h2>Initial Analysis</h2>
+              <p>Let's first see the profile of the dump</p>
+              <pre
+                class="code-block"
+              ><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem imageinfo 
 Volatility Foundation Volatility Framework 2.6
 INFO    : volatility.debug    : Determining profile based on KDBG search...
           Suggested Profile(s) : Win7SP1x64, Win7SP0x64, Win2008R2SP0x64, Win2008R2SP1x64_23418, Win2008R2SP1x64, Win7SP1x64_23418
@@ -99,10 +150,10 @@ INFO    : volatility.debug    : Determining profile based on KDBG search...
            Image date and time : 2023-05-06 16:45:20 UTC+0000
      Image local date and time : 2023-05-06 22:15:20 +0530
 </code></pre>
-<p>
-Now lets enumerate the pslist
-</p>
-<pre class="code-block"><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 pslist
+              <p>Now lets enumerate the pslist</p>
+              <pre
+                class="code-block"
+              ><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 pslist
 Volatility Foundation Volatility Framework 2.6
 Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wow64 Start                          Exit
 ------------------ -------------------- ------ ------ ------ -------- ------ ------ ------------------------------ ------------------------------
@@ -143,13 +194,17 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 0xfffffa8003985060 conhost.exe            1900    412      2       51      1      0 2023-05-06 16:45:18 UTC+0000
 0xfffffa800664f1b0 svchost.exe            2168    464      5        0 ------      0 2023-05-06 16:45:49 UTC+0000
 </code></pre>
-<p>
-Ok so notepad running is always an indication to be checked as ive realised from MEMLABS
-</p>
-<p>
-So lets dump notepad and see any .dat or what started notepad , we'll use pstree to see the parent child process spawn data .
-</p>
-<pre class="code-block"><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 pslist | Select-String "2320"
+              <p>
+                Ok so notepad running is always an indication to be checked as
+                ive realised from MEMLABS
+              </p>
+              <p>
+                So lets dump notepad and see any .dat or what started notepad ,
+                we'll use pstree to see the parent child process spawn data .
+              </p>
+              <pre
+                class="code-block"
+              ><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 pslist | Select-String "2320"
 Volatility Foundation Volatility Framework 2.6
 
 0xfffffa800398f660 notepad.exe            2320   1924      2       57      1      0 2023-05-06 16:44:54 UTC+0000
@@ -161,28 +216,31 @@ Volatility Foundation Volatility Framework 2.6
 0xfffffa8003967b30 scvhost.exe            1924   1532      5       55      1      0 2023-05-06 16:44:54 UTC+0000
 0xfffffa800398f660 notepad.exe            2320   1924      2       57      1      0 2023-05-06 16:44:54 UTC+0000
 </code></pre>
-<p>
-Okie so The process name is scvhost.exe which is a typo/misspelling of the legitimate Windows process svchost.exe
-</p>
-<p>
-This could be a malware and we'll use malfind next for more investigation later  .
-</p>
-<p>
-coming back to see what the commands were
-</p>
-<pre class="code-block"><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 cmdline -p 1924              
+              <p>
+                Okie so The process name is scvhost.exe which is a
+                typo/misspelling of the legitimate Windows process svchost.exe
+              </p>
+              <p>
+                This could be a malware and we'll use malfind next for more
+                investigation later .
+              </p>
+              <p>coming back to see what the commands were</p>
+              <pre
+                class="code-block"
+              ><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 cmdline -p 1924              
 Volatility Foundation Volatility Framework 2.6
 ************************************************************************
 scvhost.exe pid:   1924
 Command line : "C:\Users\EdwardNygma7\Downloads\windows-patch-update\scvhost.exe"
 </code></pre>
-<p>
-Also edward nygma is riddler which might be a clue ?
-</p>
-<p>
-Now that we;ve made sure that this was a malware pretending to be a legitimate process lets run malfind .
-</p>
-<pre class="code-block"><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 malfind        
+              <p>Also edward nygma is riddler which might be a clue ?</p>
+              <p>
+                Now that we;ve made sure that this was a malware pretending to
+                be a legitimate process lets run malfind .
+              </p>
+              <pre
+                class="code-block"
+              ><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f .\Damian.mem --profile=Win7SP1x64 malfind        
 Volatility Foundation Volatility Framework 2.6
 Process: explorer.exe Pid: 1532 Address: 0x3dc0000
 Vad Tag: VadS Protection: PAGE_EXECUTE_READWRITE
@@ -557,107 +615,224 @@ Flags: CommitCharge: 16, MemCommit: 1, PrivateMemory: 1, Protection: 6
 
 PS D:\DFIR-LABS\bi0sctfchall1&gt;
 </code></pre>
-<p>
-Onto some explanation here - What malfind does is to look for memory pages marked for execution AND that don't have an associated file mapped to disk (signs of code injection). You still need to look at each result to find the malicios code (look for the portable executable signature or shell code)
-</p>
-<p>
-Some notes which are helpful are  -
-</p>
-<p>
-PAGE_EXECUTE_READWRITE is suspicious because normal code pages are usually PAGE_EXECUTE_READ, meaning they can run but not be modified. When a page is both executable and writable it often indicates injected or self-modifying shellcode.
-</p>
-<p>
-VadS with PrivateMemory means the memory region is not mapped from a file. Legitimate code (DLLs, EXEs) is usually file-backed. Private, executable memory is a common sign of code injection via VirtualAlloc or similar APIs.
-</p>
-<p>
-In the explorer.exe example, the instructions <code>MOV EDX, 0x80; MOV EAX, 0xfdeea138; JMP [EAX]</code> look like a hook redirecting execution, and the changing values (0x80, 0x81, 0x82) resemble a syscall or function pointer table hook. In the iexplore.exe processes, repeated patterns like <code>MOV AL, 0x0 / JMP 0xf60074</code> and <code>MOV AL, 0x1 / JMP 0xf60074</code> across multiple instances point to process injection. Identical injected code in multiple processes strongly suggests malicious activity.
-</p>
-<p>
-Onto the malware binary , lemme try to dump it and try to reverse it using ghidra .
-</p>
-<p>
-Before that lemme check what dll's were being used -
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-1.png" alt="image"></div>
-<p>
-ADVAPI32.dll provides access to the Windows registry, security functions, and service management - this allows the malware to establish persistence by creating registry keys or installing itself as a service. The sechost.dll library enables security-related operations and privilege manipulation. RPCRT4.dll provides Remote Procedure Call functionality, allowing the malware to communicate with other processes on the system.
-</p>
-<p>
-USER32.dll manages windows and user input, while GDI32.dll handles graphics rendering. SHELL32.dll is particularly significant as it provides shell and file operation functions, including the ability to execute other programs. This explains how scvhost.exe was able to spawn the notepad.exe process. SHLWAPI.dll provides additional shell utility functions for path and file operations.
-</p>
-<p>
-Running strings on the binary revealed a lot , Privilege escalation capabilities are evident through the AdjustTokenPrivileges, OpenProcessToken, and LookupPrivilegeValueA imports. These functions allow the malware to manipulate security tokens and potentially elevate its privileges . The malware imports RegOpenKeyExA, RegDeleteKeyA, RegDeleteKeyW, RegDeleteTreeA, RegDeleteTreeW, RegDeleteValueA, and RegDeleteValueW. While these functions can delete registry entries, they are typically paired with registry writing functions to establish autorun keys that would cause the malware to execute on system startup.
-</p>
-<p>
-Enough bs lets run it on ghidra .
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-2.png" alt="image"></div>
-<p>
-The dissasembly seems to be a mess , then on the program trees , it showed that the exe has been packed with UPX , so lets unpack and load it again
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-3.png" alt="image"></div>
-<p>
-I wasted a lot of time trying to dump this , but got a error with UPX .
-</p>
-<p>
-Malware sometimes alters its UPX headers in memory to block unpacking, so using <code>procdump</code> can produce a tampered binary that UPX refuses to decompress. In this case, <code>dumpfiles</code> from Volatility pulled the untouched executable from the Windows file cache instead of process memory, allowing UPX to successfully unpack it. When UPX fails with a “possibly modified/hacked” error on a memory dump, always try retrieving the file from cache.
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-4.png" alt="image"></div>
-<p>
-Now that the procdump version is working let's move onto reversing this .
-</p>
-<p>
-I am using ghidra because idk ida
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-5.png" alt="image"></div>
-<p>
-We see some sus strings
-</p>
-<p>
-Also i spotted a starnge env called AZRAEL
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-6.png" alt="image"></div>
-<p>
-Let's try to understand what this malware is doing  .
-</p>
-<p>
-This is a lot , ill try to explain the important parts
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-7.png" alt="image"></div>
-<p>
-Checks if running with admin privileges, If not elevated, uses ShellExecuteExA() with "runas" to relaunch "scvhost.exe" with admin rights , Exits if user cancels UAC prompt (error 0x4c7)
-</p>
-<p>
-I spotted the malware using  a function  for privilage escalation  .
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-8.png" alt="image"></div>
-<p>
-This function enables SeDebugPrivilege for the current process by opening the process token, looking up the SeDebugPrivilege LUID, and calling AdjustTokenPrivileges to turn it on. Enabling that privilege lets the program open and manipulate other processes, including system-owned ones, which malware commonly uses to inject code, read memory (for credential theft), or tamper with protected processes. The sequence is a classic first step in process injection and privilege escalation.
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-9.png" alt="image"></div>
-<p>
-In short this does - K32EnumProcesses() → K32EnumProcessModules() → K32GetModuleFileNameExA()
-MultiByteToWideChar() → FUN_140031c70(L"Notepad.exe") , im guessing this is to store , its process ID for later injection .
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-10.png" alt="image"></div>
-<p>
-Retrieves encryption key from environment variable "AZRAEL" , XORs the key with 0x33
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-11.png" alt="image"></div>
-<p>
-Opens C:\confidential.bin for reading -> Creates C:\Windows\windowsupdate.bin for output
-</p>
-<p>
-Im not sure right now about whats being done next but an XOR is happening tho and it's doing twice ?
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-12.png" alt="image"></div>
-<p>
-Classic DLL injection ah . Opens Notepad process with full access ->Allocates memory in Notepad's address space->Writes path to malicious DLL: Msrct.dll->Creates remote thread to load the DLL
-</p>
-<p>
-Then the malware tries to hide itself by deleating everything
-</p>
-<pre class="code-block"><code>                CloseHandle(pvVar10);
+              <p>
+                Onto some explanation here - What malfind does is to look for
+                memory pages marked for execution AND that don't have an
+                associated file mapped to disk (signs of code injection). You
+                still need to look at each result to find the malicios code
+                (look for the portable executable signature or shell code)
+              </p>
+              <p>Some notes which are helpful are -</p>
+              <p>
+                PAGE_EXECUTE_READWRITE is suspicious because normal code pages
+                are usually PAGE_EXECUTE_READ, meaning they can run but not be
+                modified. When a page is both executable and writable it often
+                indicates injected or self-modifying shellcode.
+              </p>
+              <p>
+                VadS with PrivateMemory means the memory region is not mapped
+                from a file. Legitimate code (DLLs, EXEs) is usually
+                file-backed. Private, executable memory is a common sign of code
+                injection via VirtualAlloc or similar APIs.
+              </p>
+              <p>
+                In the explorer.exe example, the instructions
+                <code>MOV EDX, 0x80; MOV EAX, 0xfdeea138; JMP [EAX]</code> look
+                like a hook redirecting execution, and the changing values
+                (0x80, 0x81, 0x82) resemble a syscall or function pointer table
+                hook. In the iexplore.exe processes, repeated patterns like
+                <code>MOV AL, 0x0 / JMP 0xf60074</code> and
+                <code>MOV AL, 0x1 / JMP 0xf60074</code> across multiple
+                instances point to process injection. Identical injected code in
+                multiple processes strongly suggests malicious activity.
+              </p>
+              <p>
+                Onto the malware binary , lemme try to dump it and try to
+                reverse it using ghidra .
+              </p>
+              <p>Before that lemme check what dll's were being used -</p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-1.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                ADVAPI32.dll provides access to the Windows registry, security
+                functions, and service management - this allows the malware to
+                establish persistence by creating registry keys or installing
+                itself as a service. The sechost.dll library enables
+                security-related operations and privilege manipulation.
+                RPCRT4.dll provides Remote Procedure Call functionality,
+                allowing the malware to communicate with other processes on the
+                system.
+              </p>
+              <p>
+                USER32.dll manages windows and user input, while GDI32.dll
+                handles graphics rendering. SHELL32.dll is particularly
+                significant as it provides shell and file operation functions,
+                including the ability to execute other programs. This explains
+                how scvhost.exe was able to spawn the notepad.exe process.
+                SHLWAPI.dll provides additional shell utility functions for path
+                and file operations.
+              </p>
+              <p>
+                Running strings on the binary revealed a lot , Privilege
+                escalation capabilities are evident through the
+                AdjustTokenPrivileges, OpenProcessToken, and
+                LookupPrivilegeValueA imports. These functions allow the malware
+                to manipulate security tokens and potentially elevate its
+                privileges . The malware imports RegOpenKeyExA, RegDeleteKeyA,
+                RegDeleteKeyW, RegDeleteTreeA, RegDeleteTreeW, RegDeleteValueA,
+                and RegDeleteValueW. While these functions can delete registry
+                entries, they are typically paired with registry writing
+                functions to establish autorun keys that would cause the malware
+                to execute on system startup.
+              </p>
+              <p>Enough bs lets run it on ghidra .</p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-2.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                The dissasembly seems to be a mess , then on the program trees ,
+                it showed that the exe has been packed with UPX , so lets unpack
+                and load it again
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-3.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                I wasted a lot of time trying to dump this , but got a error
+                with UPX .
+              </p>
+              <p>
+                Malware sometimes alters its UPX headers in memory to block
+                unpacking, so using <code>procdump</code> can produce a tampered
+                binary that UPX refuses to decompress. In this case,
+                <code>dumpfiles</code> from Volatility pulled the untouched
+                executable from the Windows file cache instead of process
+                memory, allowing UPX to successfully unpack it. When UPX fails
+                with a “possibly modified/hacked” error on a memory dump, always
+                try retrieving the file from cache.
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-4.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                Now that the procdump version is working let's move onto
+                reversing this .
+              </p>
+              <p>I am using ghidra because idk ida</p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-5.png"
+                  alt="image"
+                />
+              </div>
+              <p>We see some sus strings</p>
+              <p>Also i spotted a starnge env called AZRAEL</p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-6.png"
+                  alt="image"
+                />
+              </div>
+              <p>Let's try to understand what this malware is doing .</p>
+              <p>This is a lot , ill try to explain the important parts</p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-7.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                Checks if running with admin privileges, If not elevated, uses
+                ShellExecuteExA() with "runas" to relaunch "scvhost.exe" with
+                admin rights , Exits if user cancels UAC prompt (error 0x4c7)
+              </p>
+              <p>
+                I spotted the malware using a function for privilage escalation
+                .
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-8.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                This function enables SeDebugPrivilege for the current process
+                by opening the process token, looking up the SeDebugPrivilege
+                LUID, and calling AdjustTokenPrivileges to turn it on. Enabling
+                that privilege lets the program open and manipulate other
+                processes, including system-owned ones, which malware commonly
+                uses to inject code, read memory (for credential theft), or
+                tamper with protected processes. The sequence is a classic first
+                step in process injection and privilege escalation.
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-9.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                In short this does - K32EnumProcesses() →
+                K32EnumProcessModules() → K32GetModuleFileNameExA()
+                MultiByteToWideChar() → FUN_140031c70(L"Notepad.exe") , im
+                guessing this is to store , its process ID for later injection .
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-10.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                Retrieves encryption key from environment variable "AZRAEL" ,
+                XORs the key with 0x33
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-11.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                Opens C:\confidential.bin for reading -> Creates
+                C:\Windows\windowsupdate.bin for output
+              </p>
+              <p>
+                Im not sure right now about whats being done next but an XOR is
+                happening tho and it's doing twice ?
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-12.png"
+                  alt="image"
+                />
+              </div>
+              <p>
+                Classic DLL injection ah . Opens Notepad process with full
+                access ->Allocates memory in Notepad's address space->Writes
+                path to malicious DLL: Msrct.dll->Creates remote thread to load
+                the DLL
+              </p>
+              <p>
+                Then the malware tries to hide itself by deleating everything
+              </p>
+              <pre
+                class="code-block"
+              ><code>                CloseHandle(pvVar10);
                 *(undefined8 *)((longlong)&amp;uStack_48 + lVar4 + lVar3) = 0x140002ba6;
                 FUN_140073680();
                 *(undefined8 *)((longlong)&amp;uStack_48 + lVar4 + lVar3) = 0x140002bc6;
@@ -1009,39 +1184,72 @@ Then the malware tries to hide itself by deleating everything
                               "C:\\Windows\\System32\\config\\systemprofile\\AppData\\Local\\Temp\\* "
                              );
 </code></pre>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-13.png" alt="image"></div>
-<p>
-Also this is how the malware enumerates the list : )
-</p>
-<p>
-Azrael was very sus , lets try running envars plugin to see the stuff which the variable uses .
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-14.png" alt="image"></div>
-<p>
-Im guessting that this is the key ?
-</p>
-<p>
-Now xoring it with 0x33 the value which we found earlier
-</p>
-<p>
-Since the malware deleated some stuff , i looked at MFT-table which on memlabs expereicne  has some flag parts or clues related to it ?
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-15.png" alt="image"></div>
-<p>
-Onto the next part , i need some explanations -
-</p>
-<p>
-The Virtual Address Descriptor (VAD) node is a data structure used by the Windows operating system to manage virtual memory. Each VAD node contains information about a specific virtual memory region, including the starting and ending addresses, the memory protection constants, and other attributes.
-</p>
-<p>
-To determine the memory protection constants for a specific VAD node, use the “vadinfo” plugin in the Volatility framework.
-</p>
-<p>
-VAD is a tree structure and like any tree structure it has a root (which is called Vadroot) and nodes/leafs (Vadnodes) that contains all the information related to memory ranges reserved for a specific process by the memory manager. For each chunk of a continuous virtual memory address allocations, memory manager creates a corresponding VAD node that contains the information about this continuous allocations
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-16.png" alt="image"></div>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-17.png" alt="image"></div>
-<pre class="code-block"><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f Damian.mem --profile Win7SP1x64 vaddump -p 1924 -D vads/
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-13.png"
+                  alt="image"
+                />
+              </div>
+              <p>Also this is how the malware enumerates the list : )</p>
+              <p>
+                Azrael was very sus , lets try running envars plugin to see the
+                stuff which the variable uses .
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-14.png"
+                  alt="image"
+                />
+              </div>
+              <p>Im guessting that this is the key ?</p>
+              <p>Now xoring it with 0x33 the value which we found earlier</p>
+              <p>
+                Since the malware deleated some stuff , i looked at MFT-table
+                which on memlabs expereicne has some flag parts or clues related
+                to it ?
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-15.png"
+                  alt="image"
+                />
+              </div>
+              <p>Onto the next part , i need some explanations -</p>
+              <p>
+                The Virtual Address Descriptor (VAD) node is a data structure
+                used by the Windows operating system to manage virtual memory.
+                Each VAD node contains information about a specific virtual
+                memory region, including the starting and ending addresses, the
+                memory protection constants, and other attributes.
+              </p>
+              <p>
+                To determine the memory protection constants for a specific VAD
+                node, use the “vadinfo” plugin in the Volatility framework.
+              </p>
+              <p>
+                VAD is a tree structure and like any tree structure it has a
+                root (which is called Vadroot) and nodes/leafs (Vadnodes) that
+                contains all the information related to memory ranges reserved
+                for a specific process by the memory manager. For each chunk of
+                a continuous virtual memory address allocations, memory manager
+                creates a corresponding VAD node that contains the information
+                about this continuous allocations
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-16.png"
+                  alt="image"
+                />
+              </div>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-17.png"
+                  alt="image"
+                />
+              </div>
+              <pre
+                class="code-block"
+              ><code>PS D:\DFIR-LABS\bi0sctfchall1&gt; vol2 -f Damian.mem --profile Win7SP1x64 vaddump -p 1924 -D vads/
 Volatility Foundation Volatility Framework 2.6
 Pid        Process              Start              End                Result
 ---------- -------------------- ------------------ ------------------ ------
@@ -1094,14 +1302,24 @@ Pid        Process              Start              End                Result
       1924 scvhost.exe          0x000007fffffdb000 0x000007fffffdcfff vads/scvhost.exe.11ff67b30.0x000007fffffdb000-0x000007fffffdcfff.dmp
       1924 scvhost.exe          0x000007fffffdf000 0x000007fffffdffff vads/scvhost.exe.11ff67b30.0x000007fffffdf000-0x000007fffffdffff.dmp
 </code></pre>
-<p>
-Since we now the flag format -biosCTF{} we can try to encrypt it with the arlogrithm used by AZRAEL keyword earlier and check if that's in the vads/heap data .
-</p>
-<p>
-Encryption algorithm: Double pass of (add digit → XOR → add digit → XOR)
-</p>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-18.png" alt="image"></div>
-<pre class="code-block"><code>[muffin@muffinn bi0sctfchall1]$ python3 solve.py 
+              <p>
+                Since we now the flag format -biosCTF{} we can try to encrypt it
+                with the arlogrithm used by AZRAEL keyword earlier and check if
+                that's in the vads/heap data .
+              </p>
+              <p>
+                Encryption algorithm: Double pass of (add digit → XOR → add
+                digit → XOR)
+              </p>
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-18.png"
+                  alt="image"
+                />
+              </div>
+              <pre
+                class="code-block"
+              ><code>[muffin@muffinn bi0sctfchall1]$ python3 solve.py 
 plaintext[0] = 'b' -&gt; '`'
 plaintext[1] = 'i' -&gt; 'q'
 plaintext[2] = '0' -&gt; '2'
@@ -1113,23 +1331,26 @@ plaintext[7] = '{' -&gt; ''
 
 Result: `q2sWRN`
 </code></pre>
-<div class="img-container"><img src="../images/posts/like-father-like-son/batman-19.png" alt="image"></div>
-<pre class="code-block"><code>`q2sWRN\u009d-\x04ne\x02~5a:v"L}7\tuc4tVaT@7Xo#wg2w5w0w!q4Lfi\x04rLz5{3\x08D1Vaxj2Jc\x7f0EaK\x0etF5faD15 
+              <div class="img-container">
+                <img
+                  src="../images/posts/like-father-like-son/batman-19.png"
+                  alt="image"
+                />
+              </div>
+              <pre
+                class="code-block"
+              ><code>`q2sWRN\u009d-\x04ne\x02~5a:v"L}7\tuc4tVaT@7Xo#wg2w5w0w!q4Lfi\x04rLz5{3\x08D1Vaxj2Jc\x7f0EaK\x0etF5faD15 
 </code></pre>
-<p>
-Now just reversing the ecp is the flag :)
-</p>
-        </div>
-      </div>
+              <p>Now just reversing the ecp is the flag :)</p>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
 
-    </td>
-  </tr>
-</table>
-
-<div class="footer">
-  <hr class="fancy-hr">
-  <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
-</div>
-
-</body>
+    <div class="footer">
+      <hr class="fancy-hr" />
+      <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
+    </div>
+  </body>
 </html>

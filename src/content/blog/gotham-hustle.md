@@ -4,8 +4,8 @@ date: "2025-01-04"
 ---
 
 # Description
-Gotham's underbelly trembles as whispers spread—The Riddler's back, leaving cryptic puzzles across the city's darkest corners. Every clue is a trap, every answer another step into madness. Think you can outsmart him? Step into Gotham's shadows and prove it. Let the Batman's Hustle get its recognition!
 
+Gotham's underbelly trembles as whispers spread—The Riddler's back, leaving cryptic puzzles across the city's darkest corners. Every clue is a trap, every answer another step into madness. Think you can outsmart him? Step into Gotham's shadows and prove it. Let the Batman's Hustle get its recognition!
 
 ## Initial Analysis
 
@@ -14,12 +14,11 @@ First, I ran imageinfo to identify the memory profile and basic system details.
 ![Memory Profile](/images/posts/gotham-hustle/gotham-1.png)
 
 **System Information**
+
 - OS Profile: Win7SP1x64
 - Processors: 6 CPUs
 - Image Date/Time: 2024-08-06 18:37:19 UTC
 - Memory Size: 4.6 GB
-
-
 
 ## Process Enumeration
 
@@ -31,20 +30,18 @@ cmd.exe (PID 3944)
 notepad.exe (PID 2592)
 mspaint.exe (PID 2516)
 multiple chrome.exe processes
-````
+```
 
 ### Notable Processes
 
-* cmd.exe (PID 3944): Command prompt activity
-* notepad.exe (PID 2592): Notepad open
-* mspaint.exe (PID 2516): Paint running
-* Multiple chrome.exe: Browser activity
-
-
+- cmd.exe (PID 3944): Command prompt activity
+- notepad.exe (PID 2592): Notepad open
+- mspaint.exe (PID 2516): Paint running
+- Multiple chrome.exe: Browser activity
 
 ## Command History
 
-To check user activity, I ran cmdscan 
+To check user activity, I ran cmdscan
 
 ![Command History](/images/posts/gotham-hustle/gotham-2.png)
 
@@ -61,8 +58,6 @@ The base64 string decodes to:
 bi0sctf{w3lc0m3_
 ```
 
-
-
 ## Notepad & Memory Strings
 
 Dumping Notepad directly failed due to Volatility version mismatch.
@@ -77,8 +72,6 @@ This contained another base64 string, decoding to:
 h0p3_th15_
 ```
 
-
-
 ## File Extraction
 
 From filescan, I noticed flag5.rar on the Desktop and dumped it:
@@ -90,8 +83,6 @@ vol -f gotham.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000011fdaff20 --dump-di
 ![File Extraction](/images/posts/gotham-hustle/gotham-4.png)
 
 The archive was password-protected.
-
-
 
 ## Credential Dump
 
@@ -115,8 +106,6 @@ Decoded:
 m0r3_13337431}
 ```
 
-
-
 ## Flag 4
 
 Dumping Notepad with procdump showed a search for flag4.
@@ -127,8 +116,6 @@ YjNuM2YxNzVfeTB1Xw==
 ```
 
 ![Flag 4](/images/posts/gotham-hustle/gotham-7.png)
-
-
 
 ## Flag 2 (MS Paint)
 

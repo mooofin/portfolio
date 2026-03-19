@@ -9,6 +9,7 @@ I used AFL++ to fuzz **Xpdf 3.02**, a legacy PDF viewer, and reproduced a known 
 ## The Target
 
 We're targeting Xpdf 3.02.
+
 ```bash
 wget https://dl.xpdfreader.com/old/xpdf-3.02.tar.gz
 ```

@@ -14,7 +14,11 @@
 }
 
 .markdown-table-styled thead {
-  background: linear-gradient(90deg, rgba(199, 199, 255, 0.2), rgba(199, 199, 255, 0.05));
+  background: linear-gradient(
+    90deg,
+    rgba(199, 199, 255, 0.2),
+    rgba(199, 199, 255, 0.05)
+  );
 }
 
 .markdown-table-styled th {

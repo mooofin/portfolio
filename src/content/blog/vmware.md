@@ -7,24 +7,17 @@ Running `file` on the binary shows a standard ELF executable:
 
 ![file info](/images/posts/vmware/image-1.png)
 
-Nothing unusual here 
-
-
-
+Nothing unusual here
 
 When executed, the binary asks for user input. Supplying anything incorrect leads to an immediate failure response, with no visible comparison or transformation in plaintext:
 
 ![runtime input](/images/posts/vmware/image-2.png)
-
-
 
 Opening the binary in Binary Ninja reveals that the validation logic is **not normal control flow**. Instead, it looks like a **nested VM / emulator**, where execution is handled through multiple small functions acting like opcode handlers:
 
 ![vm view](/images/posts/vmware/image-3.png)
 
 Rather than direct comparisons, input seems to be processed through this interpreter.
-
-
 
 Below the opcode-handling logic are several **hardcoded byte arrays** that resemble Base64-encoded data:
 
@@ -34,22 +27,18 @@ Below the opcode-handling logic are several **hardcoded byte arrays** that resem
 
 These are likely VM data or encrypted constants consumed by the interpreter rather than decoded directly in native code.
 
-
-
 The registers are 25 in count so we need to figure out the opcode for the instructions that the emulator will process.
 
-
-Ill use radare 2 for finding what each of the instrucions mean ; 
-
+Ill use radare 2 for finding what each of the instrucions mean ;
 
 ![image](/images/posts/vmware/image-6.png)
-
 
 Before the virtual machine executes any bytecode, it initializes an opcode dispatch table. This is done through a helper function (fcn.00001238), which is repeatedly called during VM setup.
 
 ![image](/images/posts/vmware/image-7.png)
 
-In my best attempts this would be like 
+In my best attempts this would be like
+
 ```c
 entry = calloc(1, sizeof(opcode_entry));
 entry->opcode = opcode;
@@ -60,16 +49,16 @@ entry->next = bucket;
 opcode_table[hash(opcode)] = entry;
 
 ```
-It seems like it is indeed the dispatcher for the architecture 
+
+It seems like it is indeed the dispatcher for the architecture
 
 ![image](/images/posts/vmware/image-8.png)
-
 
 After allocating the opcode table, the program registers every VM instruction by pairing:
 
 an encoded opcode value (32-bit constant in edi) ,a handler function (function pointer in rsi)
 
-So i'll move onto the next function here which is 
+So i'll move onto the next function here which is
 
 ```bash
 [0x00001d44]> s 0x000014cd
@@ -147,10 +136,10 @@ ERROR: Cannot find function at 0x000014cd
 │           0x0000158e      5d             pop rbp
 └           0x0000158f      c3             ret
 ```
-This opcode handler implements the VM’s ADD instruction. It operates on the VM stack by popping two 32-bit values, decrementing the stack pointer accordingly. The two values are added together, and the resulting sum is reduced using a modulo operation with 0x7fffffff to constrain it within a fixed range. 
 
-After identifying the VM structure, the next step is manually identifying each opcode handler (would not reccomend) 
+This opcode handler implements the VM’s ADD instruction. It operates on the VM stack by popping two 32-bit values, decrementing the stack pointer accordingly. The two values are added together, and the resulting sum is reduced using a modulo operation with 0x7fffffff to constrain it within a fixed range.
 
+After identifying the VM structure, the next step is manually identifying each opcode handler (would not reccomend)
 
 We backtrack to the first opcode registration point:
 
@@ -158,7 +147,7 @@ We backtrack to the first opcode registration point:
 s 0x00001dde
 ```
 
- MUL Opcode
+MUL Opcode
 
 This instruction pops two values from the VM stack, multiplies them, applies modulo `0x7fffffff`, and pushes the result back onto the stack.
 
@@ -166,10 +155,10 @@ This instruction pops two values from the VM stack, multiplies them, applies mod
 
 ---
 
- XOR Opcode
+XOR Opcode
 
 ```
-Opcode: 0x48c5ccc6  
+Opcode: 0x48c5ccc6
 Handler: 0x00001438
 ```
 
@@ -180,10 +169,10 @@ Unlike other arithmetic operations, XOR does **not** apply modulo.
 
 ---
 
- AND Opcode
+AND Opcode
 
 ```
-Opcode: 0x542010a0  
+Opcode: 0x542010a0
 Handler: 0x00001590
 ```
 
@@ -193,10 +182,10 @@ Performs bitwise AND between two stack values and pushes the result.
 
 ---
 
- RET Opcode
+RET Opcode
 
 ```
-Opcode: 0xbdecfe55  
+Opcode: 0xbdecfe55
 Handler: 0x000017bb
 ```
 
@@ -206,10 +195,10 @@ Returns from a VM function by restoring the program counter from the Link Regist
 
 ---
 
- ABORT Opcode
+ABORT Opcode
 
 ```
-Opcode: 0x41f93b4b  
+Opcode: 0x41f93b4b
 Handler: 0x000017d4
 ```
 
@@ -220,7 +209,7 @@ Used for invalid execution paths.
 
 ---
 
- PUSH_IMM Opcode
+PUSH_IMM Opcode
 
 ```
 Handler: 0x000017ea
@@ -232,10 +221,10 @@ Pushes a 32-bit immediate value (fetched from ROM) onto the VM stack.
 
 ---
 
- JZ (Jump if Equal)
+JZ (Jump if Equal)
 
 ```
-Opcode: 0x180bc12d  
+Opcode: 0x180bc12d
 Handler: 0x00001866
 ```
 
@@ -246,10 +235,10 @@ If they are equal, the program counter is adjusted using a signed immediate offs
 
 ---
 
- JNZ (Jump if Not Equal)
+JNZ (Jump if Not Equal)
 
 ```
-Opcode: 0x5a0f38fc  
+Opcode: 0x5a0f38fc
 Handler: 0x000018f9
 ```
 
@@ -260,10 +249,10 @@ If they are **not** equal, PC is updated by a signed immediate offset.
 
 ---
 
- FAIL Opcode
+FAIL Opcode
 
 ```
-Opcode: 0x27497906  
+Opcode: 0x27497906
 Handler: 0x0000198c
 ```
 
@@ -273,10 +262,10 @@ Another hard failure instruction that immediately exits the program.
 
 ---
 
- SET_MEM_PTR Opcode
+SET_MEM_PTR Opcode
 
 ```
-Opcode: 0xba1116a9  
+Opcode: 0xba1116a9
 Handler: 0x000019a2
 ```
 
@@ -286,10 +275,10 @@ Updates the VM memory pointer, used for subsequent memory read/write instruction
 
 ---
 
- CALL Opcode
+CALL Opcode
 
 ```
-Opcode: 0xfa83fa5e  
+Opcode: 0xfa83fa5e
 Handler: 0x000019de
 ```
 
@@ -302,7 +291,7 @@ Stores the current PC into the Link Register (LR) and jumps to a new address.
 ## HALT Opcode
 
 ```
-Opcode: 0x818cd6b5  
+Opcode: 0x818cd6b5
 Handler: 0x00001a1d
 ```
 
@@ -315,7 +304,7 @@ Sets the exit code and terminates VM execution cleanly.
 ## LOAD_REG Opcode
 
 ```
-Opcode: 0x8d67bae1  
+Opcode: 0x8d67bae1
 Handler: 0x00001a64
 ```
 
@@ -328,7 +317,7 @@ Loads a 32-bit value from ROM into a register.
 ## PUTCHAR Opcode
 
 ```
-Opcode: 0xd1450d67  
+Opcode: 0xd1450d67
 Handler: 0x00001abf
 ```
 
@@ -338,9 +327,9 @@ Outputs a character using `putchar()` and sets the VM `PUT_FLAG`.
 
 ---
 
- INC / DEC Register Opcodes
+INC / DEC Register Opcodes
 
- INC
+INC
 
 ```
 Handler: 0x00001b03
@@ -348,7 +337,7 @@ Handler: 0x00001b03
 
 ![INC](/images/posts/vmware/image-23.png)
 
- DEC
+DEC
 
 ```
 Handler: 0x00001b46
@@ -358,7 +347,7 @@ Handler: 0x00001b46
 
 ---
 
- MOD Opcode
+MOD Opcode
 
 ```
 Handler: 0x00001724
@@ -370,7 +359,7 @@ Performs modulo operation using a register and pushes the result onto the stack.
 
 ---
 
- POP_REG Opcode
+POP_REG Opcode
 
 ```
 Handler: 0x00001be5
@@ -382,7 +371,7 @@ Pops a value from the stack into a register.
 
 ---
 
- SET_MEM_PTR Opcode
+SET_MEM_PTR Opcode
 
 ```
 Handler: 0x00001c41
@@ -394,7 +383,7 @@ Adjusts internal VM memory pointers.
 
 ---
 
- MEMSTORE Opcode
+MEMSTORE Opcode
 
 ```
 Handler: 0x00001ca4
@@ -406,7 +395,7 @@ Stores a register value into VM memory at `VM_MEM_PTR`.
 
 ---
 
- MEMFETCH Opcode
+MEMFETCH Opcode
 
 ```
 Handler: 0x00001cf7
@@ -415,19 +404,13 @@ Handler: 0x00001cf7
 Loads a value from VM memory into a register.
 [MEMFETCH](/images/posts/vmware/image-29.png)
 
-
-
-TO put it simply here's the functioning of the VM 
+TO put it simply here's the functioning of the VM
 
 ![image](/images/posts/vmware/image-30.png)
 !
 
-
-
-
 After that i came across this article which was a very embedded emulator type VM which has also very much OP codes ;
 [https://miasm.re/blog/2016/09/03/zeusvm_analysis.html](https://miasm.re/blog/2016/09/03/zeusvm_analysis.html)
-
 
 ### WHy miasm ??
 
@@ -441,16 +424,13 @@ So after reading some guides u need to make some files for misam , which like in
 
 ![miasm vm architecture layout](/images/posts/vmware/image-31.png)
 
-
 the `regs.py` file is used to define the VM registers, `arch.py` ties the architecture together and describes basic properties like the program counter, and `sem.py` defines the actual semantics of each VM instruction
 
-I first needed the bytecode that the VM actually executes, because the main binary never runs it directly on the CPU. The program decodes some Base64 data at runtime and then passes the decoded result to the VM as its instruction stream. Instead of trying to analyze everything at once, I focused on grabbing this decoded data and saving it as a raw binary file. This became the input for Miasm. For the later VM layers, the VM itself loads another bytecode buffer from a ROM-like area in its memory, so I reused those unpacked buffers as well.  
-
+I first needed the bytecode that the VM actually executes, because the main binary never runs it directly on the CPU. The program decodes some Base64 data at runtime and then passes the decoded result to the VM as its instruction stream. Instead of trying to analyze everything at once, I focused on grabbing this decoded data and saving it as a raw binary file. This became the input for Miasm. For the later VM layers, the VM itself loads another bytecode buffer from a ROM-like area in its memory, so I reused those unpacked buffers as well.
 
 Once I had the custom VM architecture wired up in Miasm, the next step was actually getting a disassembler working for the bytecode. I am not a Miasm wizard, so I did the simple thing: I read through the original writeup and kept Miasm’s own blog open as a reference, especially their “Playing with dynamic symbolic execution” article, just to understand how they build CFGs and IR and then simplify them:
 https://miasm.re/blog/2017/10/05/playing_with_dynamic_symbolic_execution.html#enhancing-coverage-breaking-a-crackme
 Using that as a guide, I wrote a small Python script that feeds the VM bytecode into Miasm’s Machine("vmv"), walks over all the basic blocks, looks for simple patterns like PUSH_REG; PUSH_IMM; JE to recover opcode values, and then saves out the control flow and simplified IR as .dot graphs. It is basically a hacked-together disassembler pass that does just enough for this challenge: discover opcodes for each nesting level, teach Miasm about them, then spit out IR I can actually reason about instead of staring at raw 32 bit words.
-
 
 ```python
 
@@ -650,116 +630,85 @@ dump_cfg(ircfg, f"output/vmv_ircfg_simp_ssa{nl + 1}.dot")
 
 
 ```
+
 At some point while trying to hook my VM into Miasm, I ran into this error saying that miasm.arch.vmv.jit did not contain something called jitter_vmv. After some digging, I realized this wasn’t actually a VM bug but a Miasm integration issue. When Miasm loads a new architecture through machine.py, it assumes that a JIT (Just-In-Time execution) backend exists and tries to import it automatically. In my case, vmv/jit.py turned out to be completely empty, so there was nothing named jitter_vmv to import. Since my disassembly and analysis pipeline never used the JIT at all, the simplest fix was to remove the JIT-related import lines for vmv inside machine.py. This effectively told Miasm that the vmv architecture does not support JIT execution, which was totally fine for static disassembly and IR lifting.
 
 After fixing the JIT issue, Miasm failed again, this time complaining about a missing LifterModelCallVmv class in vmv/ira.py. This was another case of Miasm expecting a conventionally named class without checking whether it actually existed. I opened vmv/ira.py and found that it instead defined classes named ir_a_vmv_base and ir_a_vmv. Based on the existing Miasm architectures and how the lifter is usually named, it was clear that ir_a_vmv was the correct lifter to use. To fix this, I updated the vmv branch in machine.py to import ir_a_vmv instead of LifterModelCallVmv. Once this change was made, Miasm could successfully lift VM instructions into IR without looking for non-existent classes
 
 With my knowledge , ill try to summarise how jitter the execution layer works :(
 
-Miasm has a component called **Jitter**, which is used to *execute* instructions after they have been translated into Miasm’s intermediate representation (IR). You can think of Jitter as a simple emulator that understands IR instead of raw machine code. It keeps track of things like registers, memory, and the current instruction pointer, and then steps through instructions one by one.
+Miasm has a component called **Jitter**, which is used to _execute_ instructions after they have been translated into Miasm’s intermediate representation (IR). You can think of Jitter as a simple emulator that understands IR instead of raw machine code. It keeps track of things like registers, memory, and the current instruction pointer, and then steps through instructions one by one.
 
 At the core of this system is a generic `Jitter` class, which provides common execution logic that works the same for every architecture. On top of that, Miasm defines architecture-specific subclasses such as `jitter_x86_64`, `jitter_arm`, or `jitter_mips32`. Each of these subclasses explains how instructions for that particular CPU should behave at runtime. This is why Miasm’s documentation shows a large inheritance diagram: many different architectures all extend the same base Jitter class.
 
-
 ![image](/images/posts/vmware/image-32.png)
-
 
 Jitter is also closely tied to **symbolic execution**. Instead of running instructions with real concrete values, Miasm can execute them symbolically, meaning registers and memory can hold expressions rather than actual numbers. As Jitter steps through instructions, it updates these symbolic expressions and builds constraints that describe how program inputs affect the program state. This is useful for exploring multiple execution paths, understanding key checks, or reasoning about conditions without needing a specific input. In short, symbolic execution uses Jitter as its execution engine, but replaces concrete values with symbolic ones.
 
 ![image](/images/posts/vmware/image-33.png)
 
-
-Each layer produced an assembly-level CFG (*_asmcfg*.png), which shows the decoded VM instructions and their control flow, and for the final VM layer an IR-level CFG (*_ircfg*.png) was also generated
+Each layer produced an assembly-level CFG (_\_asmcfg_.png), which shows the decoded VM instructions and their control flow, and for the final VM layer an IR-level CFG (_\_ircfg_.png) was also generated
 ![image](/images/posts/vmware/image-34.png)
 
 Ng
 
-
 After setting up the custom disassembler, I began analyzing the generated assembly-level control flow graphs (CFGs) for each VM layer. These graphs show the decoded VM instructions and how control flows within each virtual machine. Since the challenge uses nested virtualization, examining these CFGs layer by layer helps understand how complexity is gradually peeled away until the real logic is exposed.
-
-
 
 ![VM Layer 1 CFG](/images/posts/vmware/image-35.png)
 
-
 The first VM layer is the largest and most complex. It is dominated by dispatcher logic: instruction fetch loops, register movement, memory initialization, and indirect jumps. At this stage, the VM mainly focuses on setting up the execution environment and preparing the next bytecode buffer. There are no meaningful input-dependent checks here, only infrastructure code required to emulate the VM.
-
-
-
 
 ![VM Layer 2 CFG](/images/posts/vmware/image-36.png)
 
-
-The second VM layer closely resembles the first. While some constants and register roles differ due to re-encoding, the overall structure remains the same: a large dispatcher loop with instruction handlers branching from it. 
-
-
-
+The second VM layer closely resembles the first. While some constants and register roles differ due to re-encoding, the overall structure remains the same: a large dispatcher loop with instruction handlers branching from it.
 
 ![VM Layer 3 CFG](/images/posts/vmware/image-37.png)
 
-
-By the third VM layer, the CFG begins to shrink slightly. While dispatcher logic is still clearly visible, there are fewer blocks and less overall noise. 
-
-
+By the third VM layer, the CFG begins to shrink slightly. While dispatcher logic is still clearly visible, there are fewer blocks and less overall noise.
 
 ![VM Layer 4 CFG](/images/posts/vmware/image-38.png)
 
-Although a dispatcher is still present, the CFG is noticeably smaller and more structured. Many repetitive VM bookkeeping blocks disappear tho 
-
-
+Although a dispatcher is still present, the CFG is noticeably smaller and more structured. Many repetitive VM bookkeeping blocks disappear tho
 
 ![VM Layer 5 CFG](/images/posts/vmware/image-39.png)
 
-
- The CFG is much smaller and no longer dominated by VM dispatch infrastructure. Instead, it consists of relatively straight-line code with arithmetic operations and branches based on computed values. 
-
-
+The CFG is much smaller and no longer dominated by VM dispatch infrastructure. Instead, it consists of relatively straight-line code with arithmetic operations and branches based on computed values.
 
 ![Final SSA IR CFG](/images/posts/vmware/image-40.png)
 
+The VM abstraction is very less honestly and we can see the register data's etc .
 
-The VM abstraction is very less honestly and we can see the register data's etc . 
-
-
-
-
-From the SSA graph, it becomes clear that the input key is read from the VM ROM buffer in four 32-bit chunks. These correspond to the 16-byte input split as input[0:4], input[4:8], input[8:12], and input[12:16]. Each chunk is processed independently through a sequence of arithmetic checks. The first and third chunks are multiplied by fixed constants and reduced modulo 0x7fffffff, with the result compared against the value 1. This directly translates into modular inverse equations. The second and fourth chunks are validated using two different modulo comparisons each, forming classic Chinese Remainder Theorem (CRT) constraints. 
+From the SSA graph, it becomes clear that the input key is read from the VM ROM buffer in four 32-bit chunks. These correspond to the 16-byte input split as input[0:4], input[4:8], input[8:12], and input[12:16]. Each chunk is processed independently through a sequence of arithmetic checks. The first and third chunks are multiplied by fixed constants and reduced modulo 0x7fffffff, with the result compared against the value 1. This directly translates into modular inverse equations. The second and fourth chunks are validated using two different modulo comparisons each, forming classic Chinese Remainder Theorem (CRT) constraints.
 
 Only if all constraints succeed does execution reach the final block, which consists of a series of putchar calls that print the flag one character at a time.
 
 ![image](/images/posts/vmware/image-41.png)
 
-
-So i made a smol keygen 
-
+So i made a smol keygen
 
 ![image](/images/posts/vmware/image-42.png)
 
-
 ![image](/images/posts/vmware/image-43.png)
-
-
 
 ### References
 
-* Miasm official blog and documentation
+- Miasm official blog and documentation
   [https://miasm.re/blog/](https://miasm.re/blog/)
 
-* Miasm v0.1.0 release notes (IRCFG, SSA, symbolic execution improvements)
+- Miasm v0.1.0 release notes (IRCFG, SSA, symbolic execution improvements)
   [https://miasm.re/blog/2018/12/20/release_v0_1_0.html](https://miasm.re/blog/2018/12/20/release_v0_1_0.html)
 
-* Tigress-based protection and virtualization examples
+- Tigress-based protection and virtualization examples
   [https://github.com/JonathanSalwan/Tigress_protection](https://github.com/JonathanSalwan/Tigress_protection)
 
-* Dynamic Symbolic Execution with Miasm (crash course + crackme coverage)
+- Dynamic Symbolic Execution with Miasm (crash course + crackme coverage)
   [https://miasm.re/blog/2017/10/05/playing_with_dynamic_symbolic_execution.html](https://miasm.re/blog/2017/10/05/playing_with_dynamic_symbolic_execution.html)
 
-* Data flow analysis and dependency graphs in Miasm
+- Data flow analysis and dependency graphs in Miasm
   [https://miasm.re/blog/2017/02/03/data_flow_analysis_depgraph.html](https://miasm.re/blog/2017/02/03/data_flow_analysis_depgraph.html)
 
-* Nanomite-protected binary analysis using Miasm symbolic execution
+- Nanomite-protected binary analysis using Miasm symbolic execution
   [https://doar-e.github.io/blog/2014/10/11/taiming-a-wild-nanomite-protected-mips-binary-with-symbolic-execution-no-such-crackme/](https://doar-e.github.io/blog/2014/10/11/taiming-a-wild-nanomite-protected-mips-binary-with-symbolic-execution-no-such-crackme/)
 
-* Deobfuscation of OLLVM-protected programs (Quarkslab)
+- Deobfuscation of OLLVM-protected programs (Quarkslab)
   [https://blog.quarkslab.com/deobfuscation-recovering-an-ollvm-protected-program.html](https://blog.quarkslab.com/deobfuscation-recovering-an-ollvm-protected-program.html)
-

@@ -3,7 +3,7 @@ title: "Strings Don't Lie, Packers Do"
 date: "2025-12-29"
 ---
 
-*Note - always check for UPX, wasted half an hour because i didnt unpack the binary*
+_Note - always check for UPX, wasted half an hour because i didnt unpack the binary_
 
 ## Binary Analysis
 
@@ -15,6 +15,7 @@ BuildID[sha1]=77c06ef6af332d2e5def19f42f2b60fcf2c5d2e6, not stripped
 ```
 
 Key observations:
+
 - 32-bit ELF binary
 - Dynamically linked (requires 32-bit libraries)
 - Not stripped (symbols intact - easier to analyze)
@@ -74,6 +75,7 @@ map_keys
 ```
 
 Important strings:
+
 1. `"You don't have the first part of key yet"`
 2. `"You dont have the entire key yet.... :("`
 
@@ -86,6 +88,7 @@ $ objdump -d -M intel './flag{key1+key2}' | grep -A 50 "<main>:"
 ```
 
 Output:
+
 ```assembly
 08068f89 <main>:
  8068f89:	8d 4c 24 04          	lea    ecx,[esp+0x4]
@@ -113,13 +116,14 @@ Output:
 - Then calls `main__main` at address `0x8061f7c`
 - Returns 0
 
-### Analyzing main__main
+### Analyzing main\_\_main
 
 ```bash
 $ objdump -d -M intel './flag{key1+key2}' | grep -A 50 "8061f7c <main__main>:"
 ```
 
 Key sections:
+
 ```assembly
 08061f7c <main__main>:
  8061f82:	c7 45 d8 17 00 00 00 	mov    DWORD PTR [ebp-0x28],0x17
@@ -131,6 +135,7 @@ Key sections:
 ```
 
 Summary:
+
 - Line `8061f82`: Stores value `0x17` (decimal 23) in local variable
 - Line `8061f89`: Stores value `0x98c` (decimal 2444) in local variable
 - Line `8061f90`: Compares first value with `0x2d` (decimal 45)
@@ -139,13 +144,14 @@ Summary:
 
 The binary intentionally prevents the key functions from being called by using incorrect comparison values.
 
-## KEY 1: Analyzing main__one
+## KEY 1: Analyzing main\_\_one
 
 ```bash
 $ objdump -d -M intel './flag{key1+key2}' | grep -A 150 "8061fff <main__one>:"
 ```
 
 Key sections:
+
 ```assembly
 08061fff <main__one>:
  8062030:	c7 45 a8 2d 00 00 00 	mov    DWORD PTR [ebp-0x58],0x2d
@@ -154,6 +160,7 @@ Key sections:
 ```
 
 Loop analysis:
+
 ```assembly
  8062058:	c7 45 a4 02 00 00 00 	mov    DWORD PTR [ebp-0x5c],0x2
  806207e:	83 7d a4 0b          	cmp    DWORD PTR [ebp-0x5c],0xb
@@ -169,6 +176,7 @@ Loop analysis:
 Result: Creates array `[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]`
 
 Then:
+
 ```assembly
  806208a:	6a 08                	push   0x8
  806208c:	6a 02                	push   0x2
@@ -181,13 +189,14 @@ Result: Slices array from index 2 to 8 → `[4, 5, 6, 7, 8, 9]`
 
 **KEY1 = "456789"**
 
-## KEY 2: Analyzing main__two
+## KEY 2: Analyzing main\_\_two
 
 ```bash
 $ objdump -d -M intel './flag{key1+key2}' | grep -A 250 "8062131 <main__two>:"
 ```
 
 Memory addresses loaded:
+
 - `0x806a03d`
 - `0x806a03f`
 - `0x806a041`
@@ -201,6 +210,7 @@ $ objdump -s --start-address=0x806a014 --stop-address=0x806a050 './flag{key1+key
 ```
 
 Output:
+
 ```
 ./flag{key1+key2}:     file format elf32-i386
 
@@ -212,6 +222,7 @@ Contents of section .rodata:
 ```
 
 Character mapping:
+
 ```
 Offset   Hex     ASCII   Character
 ------   -----   -----   ---------
@@ -229,10 +240,12 @@ The code references only the first 5 addresses, so:
 ## Solution
 
 ### Final Keys
+
 - KEY1: `456789`
 - KEY2: `JKLq5`
 
 ### Flag Format
+
 The challenge filename is `flag{key1+key2}`, which means:
 
 ```

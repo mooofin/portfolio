@@ -11,11 +11,12 @@ Fuzzing is a loop: **Instrument -> Fuzz -> Crash -> Triage**. Here is a breakdow
 We compile the target using AFL's compiler wrappers (like `afl-gcc` or `afl-clang-lto`). This injects "trampolines" or coverage counters into every basic block of the code.
 
 ![Build Output](/images/posts/fuzz-report/build-output.png)
-*(Note: Ensure you include debug symbols `-g` for easier analysis later.)*
+_(Note: Ensure you include debug symbols `-g` for easier analysis later.)_
 
 ## 2. Invocation
 
 We launch `afl-fuzz` with a seed corpus. The fuzzer:
+
 1.  Binds to a free CPU core.
 2.  Performs a "dry run" to verify the corpus works.
 3.  Starts the "havoc" stage, mutating bits and bytes.
@@ -23,9 +24,10 @@ We launch `afl-fuzz` with a seed corpus. The fuzzer:
 ## 3. The Dashboard
 
 The UI shows us:
-*   **Process Timing**: Speed (execs/sec).
-*   **Stage Progress**: Current mutation strategy.
-*   **Findings**: Number of unique crashes and hangs.
+
+- **Process Timing**: Speed (execs/sec).
+- **Stage Progress**: Current mutation strategy.
+- **Findings**: Number of unique crashes and hangs.
 
 ## 4. Crash Detection
 

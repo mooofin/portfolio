@@ -25,3 +25,9 @@ npm-debug.log*
 
 # GitHub Copilot instructions (keep local only)
 .github/copilot-instructions.md
+
+# build files shouldn't be committed ideally 
+*.txt
+
+# astro cache
+.astro/

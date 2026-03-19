@@ -11,24 +11,37 @@ The site is pretty simple under the hood. I keep my blog posts as markdown files
 ## Development
 
 Spin up the dev server:
+
 ```bash
 bun run dev
 ```
 
 Build it:
+
 ```bash
 bun run build
 ```
 
 Check the build locally:
+
 ```bash
 bun run preview
 ```
 
-## The Stack
+## Tech Stack
 
-- **Framework**: Astro 5
-- **UI**: React 19
-- **Graphics**: Three.js / React Three Fiber
-- **Styling**: Vanilla CSS
-- **Content**: Markdown/MDX with Remark-GFM
+![Astro 5](https://img.shields.io/badge/Astro%205-0C0E14?style=for-the-badge&logo=astro&logoColor=white)
+![React 19](https://img.shields.io/badge/React%2019-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Radix UI](https://img.shields.io/badge/Radix%20UI-161618?style=for-the-badge&logo=radix-ui&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide-F87171?style=for-the-badge&logo=lucide&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
+![React Three Fiber](https://img.shields.io/badge/React%20Three%20Fiber-000000?style=for-the-badge&logo=react&logoColor=61DAFB)
+![MDX](https://img.shields.io/badge/MDX-1B1F24?style=for-the-badge&logo=mdx&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
+![KaTeX](https://img.shields.io/badge/KaTeX-31B7B7?style=for-the-badge)
+![Pagefind](https://img.shields.io/badge/Pagefind-3949AB?style=for-the-badge)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)

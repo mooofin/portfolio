@@ -9,10 +9,10 @@ date: "2025-12-17"
 
 In this challenge, we are tasked with exploiting a binary named **format-string-3**. We are provided with the following artifacts:
 
-*   **format-string-3**: The target ELF binary.
-*   **libc.so.6**: The standard C library used by the binary.
-*   **ld-linux-x86-64.so.2**: The dynamic linker.
-*   **format-string-3.c**: The source code.
+- **format-string-3**: The target ELF binary.
+- **libc.so.6**: The standard C library used by the binary.
+- **ld-linux-x86-64.so.2**: The dynamic linker.
+- **format-string-3.c**: The source code.
 
 Our goal is to analyze the binary's behavior, identify a vulnerability, and exploit it to spawn a shell.
 
@@ -26,9 +26,9 @@ int main() {
     char buf[1024] = {'\0'};
 
     setup();
-    hello();    
+    hello();
 
-    fgets(buf, 1024, stdin);    
+    fgets(buf, 1024, stdin);
     printf(buf);
 
     puts(normal_string);
@@ -67,8 +67,8 @@ By knowing the runtime address of `setvbuf` and its static offset in the provide
 
 1.  **Capture the Leak**: Read the address of `setvbuf` from the program's initial output.
 2.  **Calculate Addresses**:
-    *   Compute libc base: `libc_base = setvbuf_leak - setvbuf_offset`
-    *   Compute `system` address: `system_addr = libc_base + system_offset`
+    - Compute libc base: `libc_base = setvbuf_leak - setvbuf_offset`
+    - Compute `system` address: `system_addr = libc_base + system_offset`
 3.  **Overwrite GOT**: Use the format string vulnerability in `printf(buf)` to overwrite the **Global Offset Table (GOT)** entry for `puts` with the address of `system`.
 
 ### Understanding the GOT/PLT
@@ -76,7 +76,7 @@ By knowing the runtime address of `setvbuf` and its static offset in the provide
 The **Global Offset Table (GOT)** is used by dynamically linked programs to resolve function addresses at runtime. When `puts` is called, the program looks up its address in the GOT. If we overwrite that entry with the address of `system`, the program will jump to `system` instead.
 
 ![Program Segfaults on Bad Input](/images/posts/format-string-3/fmt-str-3.png)
-*Figure: We can verify control over execution flow by crashing the program.*
+_Figure: We can verify control over execution flow by crashing the program._
 
 ## Debugging & Exploitation
 
@@ -132,7 +132,7 @@ puts_got = elf.got['puts']
 # FmtStr helper to find the offset automatically (optional, usually 6 or 8 on 64-bit)
 # For this challenge, we can likely assume standard offsets or find it manually.
 # Let's assume we found the format string offset is 38 (based on challenge context).
-format_string_offset = 38 
+format_string_offset = 38
 
 payload = fmtstr_payload(format_string_offset, {puts_got: system_addr})
 
@@ -143,6 +143,7 @@ s.interactive()
 ### Running the Exploit
 
 When we run the script:
+
 1.  It catches the `setvbuf` leak.
 2.  Calculates the address of `system`.
 3.  Sends a payload that writes the `system` address into the `puts` GOT entry.
@@ -155,7 +156,5 @@ And just like that, we have a shell!
 ![Success Meme](/images/posts/format-string-3/fmt-str-10.png)
 
 **References:**
-*   [Hack Using Global Offset Table](https://nuc13us.wordpress.com/2015/12/25/hack-using-global-offset-table/)
 
-
-
+- [Hack Using Global Offset Table](https://nuc13us.wordpress.com/2015/12/25/hack-using-global-offset-table/)

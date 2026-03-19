@@ -30,11 +30,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .cursor-trail {
     display: none !important;
   }
-  
+
   .particle-container {
     display: none !important;
   }
@@ -79,7 +79,7 @@ img {
   .stat-card {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
-  
+
   .glitch-title {
     text-shadow: 0 0 20px rgba(255, 105, 180, 0.6) !important;
   }
