@@ -13,11 +13,10 @@ File Password : vOCorthoAGESeNsivEli
 
 ## Initial Analysis
 
-Let's first see the profile of the dump 
-
+Let's first see the profile of the dump
 
 ```
-PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f .\Damian.mem imageinfo 
+PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f .\Damian.mem imageinfo
 Volatility Foundation Volatility Framework 2.6
 INFO    : volatility.debug    : Determining profile based on KDBG search...
           Suggested Profile(s) : Win7SP1x64, Win7SP0x64, Win2008R2SP0x64, Win2008R2SP1x64_23418, Win2008R2SP1x64, Win7SP1x64_23418
@@ -103,16 +102,15 @@ Volatility Foundation Volatility Framework 2.6
 
 ```
 
-Okie so The process name is scvhost.exe which is a typo/misspelling of the legitimate Windows process svchost.exe 
+Okie so The process name is scvhost.exe which is a typo/misspelling of the legitimate Windows process svchost.exe
 
-This could be a malware and we'll use malfind next for more investigation later  . 
+This could be a malware and we'll use malfind next for more investigation later .
 
-
-coming back to see what the commands were 
+coming back to see what the commands were
 
 ```
 
-PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f .\Damian.mem --profile=Win7SP1x64 cmdline -p 1924              
+PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f .\Damian.mem --profile=Win7SP1x64 cmdline -p 1924
 Volatility Foundation Volatility Framework 2.6
 ************************************************************************
 scvhost.exe pid:   1924
@@ -120,13 +118,12 @@ Command line : "C:\Users\EdwardNygma7\Downloads\windows-patch-update\scvhost.exe
 
 ```
 
-Also edward nygma is riddler which might be a clue ? 
-
+Also edward nygma is riddler which might be a clue ?
 
 Now that we;ve made sure that this was a malware pretending to be a legitimate process lets run malfind .
 
 ```
-PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f .\Damian.mem --profile=Win7SP1x64 malfind        
+PS D:\DFIR-LABS\bi0sctfchall1> vol2 -f .\Damian.mem --profile=Win7SP1x64 malfind
 Volatility Foundation Volatility Framework 2.6
 Process: explorer.exe Pid: 1532 Address: 0x3dc0000
 Vad Tag: VadS Protection: PAGE_EXECUTE_READWRITE
@@ -501,9 +498,10 @@ Flags: CommitCharge: 16, MemCommit: 1, PrivateMemory: 1, Protection: 6
 
 PS D:\DFIR-LABS\bi0sctfchall1>
 ```
+
 Onto some explanation here - What malfind does is to look for memory pages marked for execution AND that don't have an associated file mapped to disk (signs of code injection). You still need to look at each result to find the malicios code (look for the portable executable signature or shell code)
 
-Some notes which are helpful are  - 
+Some notes which are helpful are -
 
 PAGE_EXECUTE_READWRITE is suspicious because normal code pages are usually PAGE_EXECUTE_READ, meaning they can run but not be modified. When a page is both executable and writable it often indicates injected or self-modifying shellcode.
 
@@ -511,36 +509,23 @@ VadS with PrivateMemory means the memory region is not mapped from a file. Legit
 
 In the explorer.exe example, the instructions `MOV EDX, 0x80; MOV EAX, 0xfdeea138; JMP [EAX]` look like a hook redirecting execution, and the changing values (0x80, 0x81, 0x82) resemble a syscall or function pointer table hook. In the iexplore.exe processes, repeated patterns like `MOV AL, 0x0 / JMP 0xf60074` and `MOV AL, 0x1 / JMP 0xf60074` across multiple instances point to process injection. Identical injected code in multiple processes strongly suggests malicious activity.
 
+Onto the malware binary , lemme try to dump it and try to reverse it using ghidra .
 
-Onto the malware binary , lemme try to dump it and try to reverse it using ghidra . 
-
-
-Before that lemme check what dll's were being used - 
-
+Before that lemme check what dll's were being used -
 
 ![image](/images/posts/like-father-like-son/batman-1.png)
 
-
-
 ADVAPI32.dll provides access to the Windows registry, security functions, and service management - this allows the malware to establish persistence by creating registry keys or installing itself as a service. The sechost.dll library enables security-related operations and privilege manipulation. RPCRT4.dll provides Remote Procedure Call functionality, allowing the malware to communicate with other processes on the system.
-
 
 USER32.dll manages windows and user input, while GDI32.dll handles graphics rendering. SHELL32.dll is particularly significant as it provides shell and file operation functions, including the ability to execute other programs. This explains how scvhost.exe was able to spawn the notepad.exe process. SHLWAPI.dll provides additional shell utility functions for path and file operations.
 
-
 Running strings on the binary revealed a lot , Privilege escalation capabilities are evident through the AdjustTokenPrivileges, OpenProcessToken, and LookupPrivilegeValueA imports. These functions allow the malware to manipulate security tokens and potentially elevate its privileges . The malware imports RegOpenKeyExA, RegDeleteKeyA, RegDeleteKeyW, RegDeleteTreeA, RegDeleteTreeW, RegDeleteValueA, and RegDeleteValueW. While these functions can delete registry entries, they are typically paired with registry writing functions to establish autorun keys that would cause the malware to execute on system startup.
 
-
-
-
-Enough bs lets run it on ghidra . 
-
+Enough bs lets run it on ghidra .
 
 ![image](/images/posts/like-father-like-son/batman-2.png)
 
-
-The dissasembly seems to be a mess , then on the program trees , it showed that the exe has been packed with UPX , so lets unpack and load it again 
-
+The dissasembly seems to be a mess , then on the program trees , it showed that the exe has been packed with UPX , so lets unpack and load it again
 
 ![image](/images/posts/like-father-like-son/batman-3.png)
 
@@ -550,64 +535,49 @@ Malware sometimes alters its UPX headers in memory to block unpacking, so using 
 
 ![image](/images/posts/like-father-like-son/batman-4.png)
 
-Now that the procdump version is working let's move onto reversing this . 
+Now that the procdump version is working let's move onto reversing this .
 
-
-I am using ghidra because idk ida 
+I am using ghidra because idk ida
 
 ![image](/images/posts/like-father-like-son/batman-5.png)
 
-
-We see some sus strings 
-
+We see some sus strings
 
 Also i spotted a starnge env called AZRAEL
 ![image](/images/posts/like-father-like-son/batman-6.png)
 
-Let's try to understand what this malware is doing  .
+Let's try to understand what this malware is doing .
 
-
-
-This is a lot , ill try to explain the important parts 
-
+This is a lot , ill try to explain the important parts
 
 ![image](/images/posts/like-father-like-son/batman-7.png)
 
-
 Checks if running with admin privileges, If not elevated, uses ShellExecuteExA() with "runas" to relaunch "scvhost.exe" with admin rights , Exits if user cancels UAC prompt (error 0x4c7)
 
-
-
-I spotted the malware using  a function  for privilage escalation  . 
+I spotted the malware using a function for privilage escalation .
 
 ![image](/images/posts/like-father-like-son/batman-8.png)
-
 
 This function enables SeDebugPrivilege for the current process by opening the process token, looking up the SeDebugPrivilege LUID, and calling AdjustTokenPrivileges to turn it on. Enabling that privilege lets the program open and manipulate other processes, including system-owned ones, which malware commonly uses to inject code, read memory (for credential theft), or tamper with protected processes. The sequence is a classic first step in process injection and privilege escalation.
 
 ![image](/images/posts/like-father-like-son/batman-9.png)
 
 In short this does - K32EnumProcesses() → K32EnumProcessModules() → K32GetModuleFileNameExA()
-MultiByteToWideChar() → FUN_140031c70(L"Notepad.exe") , im guessing this is to store , its process ID for later injection . 
-
+MultiByteToWideChar() → FUN_140031c70(L"Notepad.exe") , im guessing this is to store , its process ID for later injection .
 
 ![image](/images/posts/like-father-like-son/batman-10.png)
-
 
 Retrieves encryption key from environment variable "AZRAEL" , XORs the key with 0x33
 
 ![image](/images/posts/like-father-like-son/batman-11.png)
 
-
 Opens C:\confidential.bin for reading -> Creates C:\Windows\windowsupdate.bin for output
 
-Im not sure right now about whats being done next but an XOR is happening tho and it's doing twice ? 
-
+Im not sure right now about whats being done next but an XOR is happening tho and it's doing twice ?
 
 ![image](/images/posts/like-father-like-son/batman-12.png)
 
 Classic DLL injection ah . Opens Notepad process with full access ->Allocates memory in Notepad's address space->Writes path to malicious DLL: Msrct.dll->Creates remote thread to load the DLL
-
 
 Then the malware tries to hide itself by deleating everything
 
@@ -965,36 +935,30 @@ Then the malware tries to hide itself by deleating everything
                               "C:\\Windows\\System32\\config\\systemprofile\\AppData\\Local\\Temp\\* "
                              );
 ```
+
 ![image](/images/posts/like-father-like-son/batman-13.png)
 
-Also this is how the malware enumerates the list : ) 
+Also this is how the malware enumerates the list : )
 
-
-Azrael was very sus , lets try running envars plugin to see the stuff which the variable uses . 
-
+Azrael was very sus , lets try running envars plugin to see the stuff which the variable uses .
 
 ![image](/images/posts/like-father-like-son/batman-14.png)
 
+Im guessting that this is the key ?
 
-Im guessting that this is the key ? 
+Now xoring it with 0x33 the value which we found earlier
 
-Now xoring it with 0x33 the value which we found earlier 
-
-
-
-Since the malware deleated some stuff , i looked at MFT-table which on memlabs expereicne  has some flag parts or clues related to it ? 
-
+Since the malware deleated some stuff , i looked at MFT-table which on memlabs expereicne has some flag parts or clues related to it ?
 
 ![image](/images/posts/like-father-like-son/batman-15.png)
 
-
-Onto the next part , i need some explanations - 
+Onto the next part , i need some explanations -
 
 The Virtual Address Descriptor (VAD) node is a data structure used by the Windows operating system to manage virtual memory. Each VAD node contains information about a specific virtual memory region, including the starting and ending addresses, the memory protection constants, and other attributes.
 
 To determine the memory protection constants for a specific VAD node, use the “vadinfo” plugin in the Volatility framework.
 
-VAD is a tree structure and like any tree structure it has a root (which is called Vadroot) and nodes/leafs (Vadnodes) that contains all the information related to memory ranges reserved for a specific process by the memory manager. For each chunk of a continuous virtual memory address allocations, memory manager creates a corresponding VAD node that contains the information about this continuous allocations 
+VAD is a tree structure and like any tree structure it has a root (which is called Vadroot) and nodes/leafs (Vadnodes) that contains all the information related to memory ranges reserved for a specific process by the memory manager. For each chunk of a continuous virtual memory address allocations, memory manager creates a corresponding VAD node that contains the information about this continuous allocations
 
 ![image](/images/posts/like-father-like-son/batman-16.png)
 
@@ -1055,16 +1019,14 @@ Pid        Process              Start              End                Result
       1924 scvhost.exe          0x000007fffffdf000 0x000007fffffdffff vads/scvhost.exe.11ff67b30.0x000007fffffdf000-0x000007fffffdffff.dmp
 ```
 
-Since we now the flag format -biosCTF{} we can try to encrypt it with the arlogrithm used by AZRAEL keyword earlier and check if that's in the vads/heap data . 
+Since we now the flag format -biosCTF{} we can try to encrypt it with the arlogrithm used by AZRAEL keyword earlier and check if that's in the vads/heap data .
 
-Encryption algorithm: Double pass of (add digit → XOR → add digit → XOR) 
-
+Encryption algorithm: Double pass of (add digit → XOR → add digit → XOR)
 
 ![image](/images/posts/like-father-like-son/batman-18.png)
 
-
 ```
-[muffin@muffinn bi0sctfchall1]$ python3 solve.py 
+[muffin@muffinn bi0sctfchall1]$ python3 solve.py
 plaintext[0] = 'b' -> '`'
 plaintext[1] = 'i' -> 'q'
 plaintext[2] = '0' -> '2'
@@ -1077,13 +1039,10 @@ plaintext[7] = '{' -> ''
 Result: `q2sWRN`
 ```
 
-
 ![image](/images/posts/like-father-like-son/batman-19.png)
 
-
-
-
 ```
-`q2sWRN\u009d-\x04ne\x02~5a:v"L}7\tuc4tVaT@7Xo#wg2w5w0w!q4Lfi\x04rLz5{3\x08D1Vaxj2Jc\x7f0EaK\x0etF5faD15 
+`q2sWRN\u009d-\x04ne\x02~5a:v"L}7\tuc4tVaT@7Xo#wg2w5w0w!q4Lfi\x04rLz5{3\x08D1Vaxj2Jc\x7f0EaK\x0etF5faD15
 ```
+
 Now just reversing the ecp is the flag :)

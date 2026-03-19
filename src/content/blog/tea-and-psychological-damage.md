@@ -60,6 +60,7 @@ After that, another instruction was identified which performs comparisons betwee
 ![Push Operation](/images/posts/tea-and-psychological-damage/vm2-8.png)
 
 Two instructions handle stack management:
+
 - **Push**: Pushes values onto the VM stack
 
 ![Pop Operation](/images/posts/tea-and-psychological-damage/vm2-9.png)
@@ -197,10 +198,11 @@ fn main() {
 ```
 
 The keygen generates valid serials by:
+
 1. Starting with the target values (`0xba01aafe` and `0xbbff31a3`)
 2. Generating random values for the other four registers
 3. Running the TEA algorithm forward for 32 rounds
-![Output](/images/posts/tea-and-psychological-damage/vm2-21.png)
+   ![Output](/images/posts/tea-and-psychological-damage/vm2-21.png)
 
 4. The resulting values become valid input keys
 

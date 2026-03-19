@@ -11,24 +11,30 @@ The site is pretty simple under the hood. I keep my blog posts as markdown files
 ## Development
 
 Spin up the dev server:
+
 ```bash
 bun run dev
 ```
 
 Build it:
+
 ```bash
 bun run build
 ```
 
 Check the build locally:
+
 ```bash
 bun run preview
 ```
 
-## The Stack
+## Tech Stack
 
-- **Framework**: Astro 5
-- **UI**: React 19
-- **Graphics**: Three.js / React Three Fiber
-- **Styling**: Vanilla CSS
-- **Content**: Markdown/MDX with Remark-GFM
+![Astro 5](https://img.shields.io/badge/Astro%205-0C0E14?style=for-the-badge&logo=astro&logoColor=white)
+![React 19](https://img.shields.io/badge/React%2019-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
+![React Three Fiber](https://img.shields.io/badge/React%20Three%20Fiber-000000?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vanilla CSS](https://img.shields.io/badge/Vanilla%20CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
+![MDX](https://img.shields.io/badge/MDX-1B1F24?style=for-the-badge&logo=mdx&logoColor=white)
+![Remark GFM](https://img.shields.io/badge/Remark--GFM-333333?style=for-the-badge)

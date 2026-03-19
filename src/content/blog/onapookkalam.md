@@ -10,6 +10,7 @@ date: "2025-01-04"
 While preparing for Onapookkalam, notes were recorded on a mobile device. The phone was suspected to be tampered with, potentially having data modified or deleted.
 
 **Objectives:**
+
 - **Note Retrieval**: Extract specific information from saved notes (flagPart1)
 - **Database Analysis**: Identify a specific string that was modified and deleted from Realm DB (flagPart2)
 
@@ -44,9 +45,10 @@ Further exploration revealed this was about recovering data from a Flutter app:
 ![Flutter App Evidence 2](/images/posts/onapookkalam/onam-5.png)
 
 ### Source Code Discovery
+
 ![Source Code](/images/posts/onapookkalam/onam-6.png)
 
-Since Flutter uses Python (via Flet framework), i  searched for Python files containing the APK logic. The main application file was found:
+Since Flutter uses Python (via Flet framework), i searched for Python files containing the APK logic. The main application file was found:
 
 ![Python File Location](/images/posts/onapookkalam/onam-7.png)
 
@@ -111,7 +113,7 @@ def main(page: ft.Page):
             storeData(page, data)
         else:
             page.open(ft.SnackBar(ft.Text("Empty content!")))
-    
+
     appBar = ft.AppBar(title=ft.Text("Notes App"))
     inputBox = ft.TextField(hint_text="Enter some text...", multiline=True, min_lines=3)
     page.appbar = appBar
@@ -123,12 +125,11 @@ def main(page: ft.Page):
 ft.app(main)
 ```
 
-
 The application allows users to create and save encrypted notes with the following workflow:
 When a user enters text and clicks "Save Note", the application generates a unique filename based on the current timestamp (format: DDMMYYYYHHMMSSμs). It then creates a random 16-character encryption key consisting of letters and digits. The note content is encrypted using a custom implementation of the RC4 stream cipher algorithm, which involves two main phases: key scheduling (which initializes a 256-byte state array based on the encryption key) and stream generation (which produces a pseudo-random keystream). The encryption process XORs each character of the plaintext with the corresponding keystream byte and converts the result to hexadecimal format. The encrypted text is stored in a file within the app's data directory, while the encryption key is separately stored in the client storage using the filename as the identifier. This design means that to decrypt any saved note, you need both the encrypted file and its corresponding encryption key from the client storage, making the encryption key essential for data recovery.
 
-
 so I wrote a Python script that:
+
 1. Implemented the RC4 decryption algorithm (mirroring the encryption code)
 2. Parsed the hex-encoded ciphertext
 3. XORed each byte with the keystream to recover plaintext
@@ -164,7 +165,7 @@ def decrypt(ciphertext, key):
     key = [ord(char) for char in key]
     sched = key_scheduling(key)
     key_stream = stream_generation(sched)
-    
+
     # Parse hex values from format: 0xXX0xYY0xZZ...
     hex_values = []
     i = 0
@@ -178,12 +179,12 @@ def decrypt(ciphertext, key):
             i = j
         else:
             i += 1
-    
+
     plaintext = ""
     for encrypted_byte in hex_values:
         decrypted_byte = encrypted_byte ^ next(key_stream)
         plaintext += chr(decrypted_byte)
-    
+
     return plaintext
 
 # Keys from client storage
@@ -207,22 +208,23 @@ for filename, key in KEYS.items():
         print(f"File: {filename}")
         print(f"Key: {key}")
         print(f"{'='*70}")
-        
+
         with open(filename, 'r') as f:
             ciphertext = f.read()
-        
+
         try:
             plaintext = decrypt(ciphertext, key)
             print(f"Decrypted content:\n{plaintext}")
         except Exception as e:
             print(f"Error decrypting: {e}")
-        
+
         print(f"{'='*70}\n")
     else:
         print(f"File not found: {filename}")
 
 print("\n✓ Decryption complete!\n")
 ```
+
 ```bash
 15052025175732777833: "well this was easy"
 15052025175747121993: "i'll give you the first part of the flag :)"
@@ -233,24 +235,27 @@ print("\n✓ Decryption complete!\n")
 15052025175944264611: "hehehe"
 ```
 
-After an hour of going through all the files i found this snapshots folder  ( i tried organising the files by images , txt , png etc and came across this title 0 
+After an hour of going through all the files i found this snapshots folder ( i tried organising the files by images , txt , png etc and came across this title 0
 
 ![Snapshots Folder](/images/posts/onapookkalam/onam-8.png)
 
 ![App Screenshot](/images/posts/onapookkalam/onam-9.png)
 
 After analyzing the Android filesystem dump, we identified two key applications in the `/data/app/` directory:
+
 1. `com.sp3p3x.notesapp` - A notes application (already analyzed for flagPart1)
 2. `com.example.accessmydata` - The target application for flagPart2
 
 The challenge description hinted at finding deleted data from a "realm db", and a screenshot found in `/data/system_ce/0/snapshots/` confirmed the existence of an app that downloads and decrypts a realm file
 
 The Access My Data APK was found at:
+
 ```
 /data/app/~~hvxKjg-YJ69UXXtnoCmWcw==/com.example.accessmydata-rkCVbU6Yb-jHyAaRmU8b0Q==/base.apk
 ```
 
 Terminal output:
+
 ```bash
 $ find /data/app -name "*accessmydata*" -name "*.apk"
 /data/app/~~hvxKjg-YJ69UXXtnoCmWcw==/com.example.accessmydata-rkCVbU6Yb-jHyAaRmU8b0Q==/base.apk
@@ -259,22 +264,19 @@ $ ls -lh base.apk
 -rw-r--r-- 1 muffin muffin 21M May 15  2025 base.apk
 ```
 
-
-
 Flutter applications are unique in the Android ecosystem because they don't use traditional Java/Kotlin code. Instead, they compile Dart code to native machine code using Ahead-Of-Time (AOT) compilation. This results in two important native libraries:
 
 1. **libflutter.so** - The Flutter engine (shared across all Flutter apps)
 2. **libapp.so** - The application-specific code compiled from Dart
 
 The Dart code is embedded within `libapp.so` as a snapshot, which contains:
+
 - Compiled Dart VM bytecode
 - AOT-compiled native code
 - An Object Pool with string literals and constants
 - Type information and metadata
 
-This compilation method makes traditional APK analysis tools (like jadx or dex2jar) useless, as there's no DEX bytecode to decompile:( 
-
-
+This compilation method makes traditional APK analysis tools (like jadx or dex2jar) useless, as there's no DEX bytecode to decompile:(
 
 We extracted the APK to access the native libraries:
 
@@ -289,8 +291,7 @@ total 16M
 
 The `libapp.so` file (4.7 MB) contains all the application logic we need to reverse engineer.
 
-Blutter, a portmanteau of "B(l)utter" that plays on both *buttering* and *Flutter*, is a reverse engineering tool built specifically with Flutter applications in mind. Unlike traditional disassemblers that treat Flutter binaries as opaque native code, Blutter understands the internal structure of the Dart VM snapshot embedded inside `libapp.so`. It is able to parse this snapshot, extract the object pool that contains constants, strings, and type information, and use that data to reconstruct readable pseudo-Dart code complete with symbols and function names. In addition to this higher-level reconstruction, Blutter can also generate annotated assembly listings that bridge the gap between low-level instructions and Dart-level logic, and even produce Frida scripts to assist with dynamic analysis and runtime instrumentation.
-
+Blutter, a portmanteau of "B(l)utter" that plays on both _buttering_ and _Flutter_, is a reverse engineering tool built specifically with Flutter applications in mind. Unlike traditional disassemblers that treat Flutter binaries as opaque native code, Blutter understands the internal structure of the Dart VM snapshot embedded inside `libapp.so`. It is able to parse this snapshot, extract the object pool that contains constants, strings, and type information, and use that data to reconstruct readable pseudo-Dart code complete with symbols and function names. In addition to this higher-level reconstruction, Blutter can also generate annotated assembly listings that bridge the gap between low-level instructions and Dart-level logic, and even produce Frida scripts to assist with dynamic analysis and runtime instrumentation.
 
 When we run Blutter, it performs several automated steps:
 
@@ -303,7 +304,6 @@ During execution, Blutter follows a fairly involved but systematic process to ad
 If a matching analysis backend for that Dart version is not already available, Blutter automatically prepares one. It fetches the Dart SDK source from the official repository, checks out the exact version tag, and compiles the Dart VM runtime into a static library tailored to the target architecture. Blutter then rebuilds its own analysis components against this library, a process that can take several minutes and produces verbose build output as each part of the VM is compiled and linked.
 
 Once the environment is ready, Blutter moves on to snapshot analysis. It parses `libapp.so` to locate the embedded Dart VM snapshot, extracts the object pool containing constants and string literals, reconstructs the application's class hierarchy, and identifies function entry points to recover the overall code structure. Using this information, Blutter generates its final artifacts, producing annotated assembly listings, reconstructed function and class definitions, inline constants, and a mapped control flow for each Dart library. At the end of the process, it also generates a Frida script, enabling dynamic instrumentation of the recovered logic during runtime analysis.
-
 
 ### Examining the Output Structure
 
@@ -332,10 +332,6 @@ flutter/
 
 The `asm/` directory contains subdirectories for each Dart package used in the app. Our target is `accessmydata/main.dart`.
 
-
-
-
-
 ### Locating the Main Application Code
 
 ```bash
@@ -345,8 +341,6 @@ total 52
 ```
 
 The `main.dart` file contains 51 KB of annotated assembly code representing the application's core logic.
-
-
 
 Blutter generates assembly listings that interleave ARM64 assembly with Dart-level semantic comments. Here's an example of the format:
 
@@ -361,6 +355,7 @@ _ _decryptData(/* No info */) {
 ```
 
 Explanation:
+
 - **Function signature**: `_ _decryptData(/* No info */)` - Dart function name
 - **Address and size**: addr: 0x2db4c0, size: 0x174 (372 bytes)
 - **Comments**: `// 0x2db4c0: EnterFrame` - high-level operation
@@ -369,8 +364,8 @@ Explanation:
 
 ### Extracting the Encryption Keys
 
-
 the download URL:
+
 ```assembly
     // 0x304ed8: r16 = "https://github.com/chicken-jockeyy/confidentialdb/raw/refs/heads/main/enc.bin"
     //     0x304ed8: add             x16, PP, #0xd, lsl #12  ; [pp+0xd348] "https://github..."
@@ -378,9 +373,6 @@ the download URL:
 ```
 
 These literal strings are stored in the Object Pool (PP) and loaded into registers for use.
-
-
-
 
 ```assembly
     // Load key part 1 into x16
@@ -401,6 +393,7 @@ These literal strings are stored in the Object Pool (PP) and loaded into registe
 ```
 
 Then the code creates a reversed iterable:
+
 ```assembly
     // 0x2db540: r0 = ReversedListIterable()
     //     0x2db540: bl              #0x2bee38  ; AllocateReversedListIterableStub
@@ -409,10 +402,9 @@ Then the code creates a reversed iterable:
 ```
 
 This reverses the concatenated key string character by character:
+
 - Original: `04e0d32be85f3b427173047a9d6574e5`
 - Reversed: `5e4756d9a740371724b3f58eb23d0e40`
-
-
 
 ```assembly
     // 0x2db564: r0 = Key()
@@ -425,8 +417,6 @@ This reverses the concatenated key string character by character:
     //     0x2db588: bl              #0x2db870  ; [package:encrypt/encrypt.dart] AES::AES
     //     Initialize AES cipher with the reversed key
 ```
-
-
 
 To find which AES mode is used, we examined the Object Pool dump:
 
@@ -447,6 +437,7 @@ $ grep -i "ecb\|AESMode" blutter_output/pp.txt
 ```
 
 Cross-referencing with the assembly:
+
 ```assembly
     // 0x2db880: r4 = Instance_AESMode
     //     0x2db880: add             x4, PP, #0xb, lsl #12  ; [pp+0xb5d8] Obj!AESMode@5032b1
@@ -467,9 +458,8 @@ The constant at `pp+0xb5d8` is `Obj!AESMode@5032b1`, which corresponds to **"ECB
     //     Decode the decrypted Base64 string to binary
 ```
 
-
-
 1. **Key Preparation**:
+
    ```
    key_part1 = "04e0d32be85f3b42"
    key_part2 = "7173047a9d6574e5"
@@ -478,12 +468,14 @@ The constant at `pp+0xb5d8` is `Obj!AESMode@5032b1`, which corresponds to **"ECB
    ```
 
 2. **Download encrypted file**:
+
    ```
    URL: https://github.com/chicken-jockeyy/confidentialdb/raw/refs/heads/main/enc.bin
    Size: 12,582,928 bytes
    ```
 
 3. **AES-ECB Decryption**:
+
    ```
    Cipher: AES-128 (128-bit key = 16 bytes)
    Mode: ECB (Electronic Codebook)
@@ -533,6 +525,7 @@ base64 = "0.21"
 ```
 
 Required crates:
+
 - **aes**: Provides AES block cipher implementation
 - **base64**: Handles Base64 encoding/decoding
 
@@ -579,10 +572,10 @@ $ hexdump -C decrypted.realm | head -20
 00000030  65 72 73 69 6f 6e 00 00  14 00 00 00 01 00 00 00  |ersion..........|
 ```
 
-
 ### Why the Key is Reversed
 
 Looking at the Dart code pattern:
+
 ```dart
 String keyPart1 = "04e0d32be85f3b42";
 String keyPart2 = "7173047a9d6574e5";
@@ -591,14 +584,12 @@ String reversed = combined.split('').reversed.join('');
 ```
 
 This reversal serves multiple purposes:
+
 1. **Obfuscation**: Makes static analysis slightly harder
 2. **Key Derivation**: Creates a "derived" key from hardcoded parts
 3. **String Manipulation**: Common pattern in Dart for simple transformations
 
 The reversed key `5e4756d9a740371724b3f58eb23d0e40` is exactly 32 ASCII characters, which when encoded as UTF-8 bytes gives us the required 16-byte (128-bit) AES key.
-
-
-
 
 With our Python decryption script complete, we can now decrypt the realm database:
 
@@ -631,13 +622,12 @@ $ hexdump -C decrypted.realm | head -10
 ```
 
 Key observations from the hex dump:
+
 - **Bytes 0x10-0x13**: `54 2d 44 42` = "T-DB" - Realm database magic header
 - **Bytes 0x14-0x17**: `41 41 41 41` = "AAAA" - Region marker for unused/free space
 - **Offset 0x40**: "metadata" string - Database metadata section
 - **Offset 0x60**: "class_RealmTestClass0" - First database schema class
 - **Offset 0x80**: "class_RealmTestClass1" - Second database schema class
-
-
 
 Before we can recover deleted data, we need to understand how Realm databases work:
 
@@ -661,26 +651,18 @@ Realm uses MVCC, which means when you "delete" data, it doesn't immediately eras
 
 This creates a forensic opportunity: deleted records often remain in unused regions of the database file.
 
-
-
-
-
 To recover deleted data from the Realm database, we use `realm_recover`, a specialized forensics tool designed specifically for analyzing Realm files. While exploring this approach, I came across prior research that discusses how deleted records in mobile application databases are often not immediately erased from disk. Instead, remnants of these records can persist within the database structure, making recovery possible through careful analysis. This idea is reinforced by both academic work and practical discussions from the developer and forensics communities, which describe how Realm's internal storage format can retain deleted objects long enough for them to be reconstructed. These techniques are commonly applied in Android forensics, where understanding the database layout allows investigators to extract historical or deleted application data that would otherwise appear lost.
-
-
 
 ### References
 
-* Smart Techniques to Extract the Deleted Data From the Android Application
+- Smart Techniques to Extract the Deleted Data From the Android Application
   [https://www.sciencedirect.com/science/article/abs/pii/S2666281722000221](https://www.sciencedirect.com/science/article/abs/pii/S2666281722000221)
 
-* Stack Overflow discussion on restoring deleted Realm objects
+- Stack Overflow discussion on restoring deleted Realm objects
   [https://stackoverflow.com/questions/52384845/how-to-restore-an-item-deleted-from-realm](https://stackoverflow.com/questions/52384845/how-to-restore-an-item-deleted-from-realm)
 
-* Smart Techniques to Extract the Deleted Data From the Android Application (Academia.edu)
+- Smart Techniques to Extract the Deleted Data From the Android Application (Academia.edu)
   [https://www.academia.edu/77798036/Smart_Techniques_to_Extract_the_Deleted_Data_Form_the_Android_Application](https://www.academia.edu/77798036/Smart_Techniques_to_Extract_the_Deleted_Data_Form_the_Android_Application)
-
-
 
 ```bash
 $ cd /tmp
@@ -696,11 +678,11 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
 ```
 
 The tool consists of several components:
+
 - **realm_recover.py**: Main recovery script
 - **objects.py**: Realm object parsing logic
 - **util.py**: Utility functions for binary analysis
 - **sample/**: Sample realm database for testing
-
 
 ### Running the Realm Recovery Tool
 
@@ -741,10 +723,6 @@ $ ls -lh *.txt
    - Comparison of TreeRootOffset01 vs TreeRootOffset02
    - Shows what changed between versions
 
-
-
-
-
 The challenge description states the flag is in a "string which was modified and then deleted from the realm db". This means we need to search `scan_unused_objects.txt`.
 
 Search for UUID-pattern strings (the typical format for test data in Realm databases):
@@ -754,6 +732,7 @@ $ grep -E "[0-9A-F]{8}-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{12}" scan_un
 ```
 
 This grep pattern searches for:
+
 - `[0-9A-F]{8}`: 8 hex digits
 - `-`: Literal hyphen
 - `[0-9A-Z]{4}`: 4 alphanumeric characters (allowing non-hex)
@@ -774,31 +753,23 @@ Offset: 0x800000, Type: 0x11, Count: 534043, Object: [
 
 ![Deleted Data](/images/posts/onapookkalam/onam-10.png)
 
-
-
-
 Among hundreds of valid UUIDs, one stands out:
 
 ```
 5P0BF5BC-5AA1-4790-A05F-A2RDCBALDB49
 ```
 
-
 This is **flagPart2**.
-
-
 
 The `realm_recover` tool is able to successfully retrieve deleted data because of how Realm manages its internal storage and object lifecycle. Realm relies on a Multi-Version Concurrency Control (MVCC) model, which means older versions of objects are preserved for consistency and concurrency purposes instead of being immediately removed. As a result, when an object is deleted, its previous version can still remain in memory or on disk for some time.
 
 In addition to this, `realm_recover` scans regions of the database file that are no longer actively allocated, allowing it to identify data that is not referenced by the current database state but has not yet been overwritten. Because the tool understands Realm's binary object layout, it can correctly parse these leftover structures and reconstruct meaningful records from raw bytes. In this case, the deleted UUID was found at offset `0x800000` within a region marked as unused. Although the object was no longer linked from the active database tree, its binary representation was still fully intact in the file, and the absence of garbage collection or overwrite made recovery possible.
 
-
 **Complete Flag:**
+
 ```
 bi0sctf{w311_7h47_p4r7_w45_345y_5P0BF5BC-5AA1-4790-A05F-A2RDCBALDB49}
 ```
-
-
 
 ## References and Further Reading
 

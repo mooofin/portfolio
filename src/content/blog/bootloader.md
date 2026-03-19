@@ -9,18 +9,16 @@ tags: ["bootloader", "x86", "assembly", "osdev"]
 
 ![Bootloader Introduction](/images/posts/bootloader/intro.png)
 
-So you want to understand how computers actually boot? Not the handwavy "BIOS loads the OS" explanation, but the real, low-level mechanics of what happens when you hit the power button? Good 
+So you want to understand how computers actually boot? Not the handwavy "BIOS loads the OS" explanation, but the real, low-level mechanics of what happens when you hit the power button? Good
 
-This project is a minimal but complete bootloader that takes you from the moment the CPU starts executing at power-on, through loading code from disk, setting up memory segmentation, switching processor modes, and finally running C code. It's about 100 lines of assembly and 5 lines of C . 
-
-
-
+This project is a minimal but complete bootloader that takes you from the moment the CPU starts executing at power-on, through loading code from disk, setting up memory segmentation, switching processor modes, and finally running C code. It's about 100 lines of assembly and 5 lines of C .
 
 ## The Problem We're Solving
 
 Modern operating systems are complicated beasts. Linux is millions of lines of code. Windows is even more. But they all start the same way: with 512 bytes of code loaded by the BIOS at a specific memory address. That's it
 
 Those 512 bytes need to:
+
 - Set up a working environment
 - Load more code from disk (because 512 bytes isn't enough for anything useful)
 - Switch the CPU from 1981 compatibility mode into something resembling modern computing
@@ -28,7 +26,7 @@ Those 512 bytes need to:
 
 The bootloader presented here is the smallest practical path from power-on to executing C code. It relies solely on handwritten x86 assembly interacting directly with the CPU and BIOS, deliberately avoiding any external boot infrastructure.
 
-# WHY 
+# WHY
 
 ![Why Learn This](/images/posts/bootloader/2.gif)
 
@@ -70,7 +68,7 @@ Because that's how big a disk sector is. Or rather, that's how big disk sectors 
 
 That `0xAA55` magic number in the last two bytes is how the BIOS knows you're actually a boot sector and not just random data that happened to be on the disk.
 
-##  The Master Boot Record
+## The Master Boot Record
 
 Let's look at `master_boot_record.asm` line by line:
 
@@ -112,7 +110,7 @@ call load_kernel
 call switch_2_32bit
 ```
 
-Here's where we do the actual work. First, load more code from disk. Second, switch to 32-bit mode. 
+Here's where we do the actual work. First, load more code from disk. Second, switch to 32-bit mode.
 
 ```asm
 jmp $
@@ -235,7 +233,7 @@ ret
 
 Restore registers and return. If u made it here, the kernel is loaded into memory.
 
-##  The Global Descriptor Table
+## The Global Descriptor Table
 
 Before we can switch to protected mode, we need to set up the GDT..
 
@@ -252,6 +250,7 @@ In real mode, memory addresses work like this: `segment:offset`. You have a 16-b
 In protected mode, segments work differently. Instead of shifting and adding, the segment register contains an index into the GDT. Each GDT entry describes a segment: base address, limit, access rights, privilege level.
 
 This gives you:
+
 - **Memory protection** - Segments can be marked as read-only, executable, etc.
 - **Privilege levels** - Ring 0 (kernel) vs Ring 3 (user programs)
 - **More address space** - Base can be 32-bit, limit can be up to 4GB
@@ -322,11 +321,11 @@ DATA_SEG equ gdt_data - gdt_start
 
 These calculate offsets to our segments. `CODE_SEG` is 8 (first entry after null), `DATA_SEG` is 16. These are segment selectors - when we load `CODE_SEG` into a segment register, the CPU looks at GDT entry 8.
 
-##  Switching to Protected Mode
+## Switching to Protected Mode
 
 ![Switching to Protected Mode](/images/posts/bootloader/5.gif)
 
-This is the climax ehe .  We're going to flip one bit in a control register, and the CPU will completely change how it operates.
+This is the climax ehe . We're going to flip one bit in a control register, and the CPU will completely change how it operates.
 
 ```asm
 [bits 16]
@@ -389,7 +388,7 @@ call BEGIN_32BIT
 
 Jump back to the MBR, which has a `BEGIN_32BIT` label that calls our kernel. We've made it. We're running 32-bit code.
 
-## The Kernel 
+## The Kernel
 
 ![The Kernel](/images/posts/bootloader/kernel.png)
 
@@ -400,7 +399,7 @@ void main() {
 }
 ```
 
-This is possibly the simplest kernel in existence. 
+This is possibly the simplest kernel in existence.
 
 `0xb8000` is the start of VGA text mode video memory. In text mode (which is what the BIOS sets up), the screen is 80x25 characters. Each character takes 2 bytes: one for the ASCII code, one for the attribute (color).
 
@@ -430,8 +429,6 @@ while (message[i] != 0) {
 ```
 
 No `printf`. No standard library. Just raw memory writes. That's what "freestanding" means - no hosted environment, no runtime support. Just you and the hardware.
-
-
 
 ## The Memory Map: Where Everything Lives
 
@@ -492,7 +489,6 @@ This fires up QEMU with your image. You should see a black screen with a single 
 
 ## A Note on Modern Systems
 
-
 Everything in this document assumes legacy BIOS boot. Modern systems use UEFI, which is completely different:
 
 - No 16-bit real mode
@@ -507,11 +503,9 @@ Most computers still support "Legacy Boot" or "CSM" (Compatibility Support Modul
 
 For learning, start with BIOS. Understand the fundamentals. Then tackle UEFI when you know what problems it's solving.
 
-
-
 ## Final Thoughts
 
- You've written code that runs on bare metal, with no OS underneath. You've talked directly to the CPU, set up memory segmentation, switched processor modes. This is as low-level as programming gets (well, except for writing microcode or designing CPUs, but that's a different kind of low-level).
+You've written code that runs on bare metal, with no OS underneath. You've talked directly to the CPU, set up memory segmentation, switched processor modes. This is as low-level as programming gets (well, except for writing microcode or designing CPUs, but that's a different kind of low-level).
 
 ## Appendix: Quick Reference
 
@@ -576,7 +570,7 @@ int 0x10            ; Video services
   ah=0x0e           ; Teletype output (print char)
 
 int 0x13            ; Disk services
-  ah=0x00           ; Reset disk controller  
+  ah=0x00           ; Reset disk controller
   ah=0x02           ; Read sectors
   ah=0x03           ; Write sectors
 
@@ -605,7 +599,6 @@ Bit 2: Direction/Conforming
 Bit 1: Readable (code) / Writable (data)
 Bit 0: Accessed (set by CPU)
 ```
-
 
 That's everything. Now go build something.
 

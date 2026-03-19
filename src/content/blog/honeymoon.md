@@ -14,7 +14,7 @@ It is fast.
 
 ## Features
 
-* **Visual Mode**
+- **Visual Mode**
   `Ctrl-Space` to mark. Move. `Ctrl-W` to cut.
   Just like Emacs, but without the pinky pain.
   (Okay, maybe some pinky pain.)
@@ -23,16 +23,17 @@ It is fast.
 
 The code is split into three namespaces:
 
-* `honeymoon::kernel`
+- `honeymoon::kernel`
   Core editor logic.
 
-* `honeymoon::driver`
-   Raw mode, TTY I/O, screen rendering.
+- `honeymoon::driver`
+  Raw mode, TTY I/O, screen rendering.
 
-* `honeymoon::mem`
+- `honeymoon::mem`
   A templated gap buffer implementation.
 
 ### The Gap Buffer
+
 Instead of a simple string or a rope (which can be complex), Honeymoon uses a **Gap Buffer**. This is a dynamic array with a "gap" (a sequence of unused entries) that moves with the cursor. This makes insertions and deletions at the cursor position extremely efficient—O(1) in most cases—without the overhead of shifting the entire document.
 
 ```cpp
@@ -45,8 +46,8 @@ Instead of a simple string or a rope (which can be complex), Honeymoon uses a **
 
 You need a C++20 compiler and `make`.
 
-* Linux: you’re fine.
-* Windows: WSL or sm.
+- Linux: you’re fine.
+- Windows: WSL or sm.
 
 ```bash
 make
