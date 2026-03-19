@@ -1,53 +1,53 @@
+import React from "react";
+import Folder from "./Folder";
+
 export default function DesktopIcons() {
-  const goTo =
-    (path?: string, hash?: string) =>
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (path) {
-        e.preventDefault();
-        window.location.href = path;
-      }
-      if (hash) {
-        const el = document.getElementById(hash);
-        if (el) {
-          e.preventDefault();
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
-    };
+  const iconStyle: React.CSSProperties = {
+    width: "60%",
+    height: "60%",
+    objectFit: "contain",
+  };
 
   return (
-    <>
-      <div
-        className="desktop-icons-grid right-desktop-icons"
-        aria-label="desktop shortcuts right"
-      >
+    <div
+      className="desktop-icons-grid right-desktop-icons"
+      aria-label="desktop shortcuts right"
+    >
+      <div className="github-card">
         <a
           href="/about"
-          className="desktop-shortcut"
-          onClick={goTo("/about")}
+          className="github-link desktop-shortcut"
           title="About Me"
         >
-          <img src="/stuff/234.png" alt="About Me folder" />
+          <Folder
+            color="#ff69b4"
+            size={1}
+            items={[<img src="/stuff/234.png" alt="" style={iconStyle} />]}
+          />
           <span className="uncenter">About Me</span>
         </a>
-        <a
-          href="/music"
-          className="desktop-shortcut"
-          onClick={goTo("/music")}
-          title="Music"
-        >
-          <img src="/stuff/234.png" alt="Music folder" />
+      </div>
+      <div className="github-card">
+        <a href="/music" className="github-link desktop-shortcut" title="Music">
+          <Folder
+            color="#ff69b4"
+            size={1}
+            items={[<img src="/stuff/234.png" alt="" style={iconStyle} />]}
+          />
           <span className="uncenter">Music</span>
         </a>
-        <a
-          href="/blog"
-          className="desktop-shortcut"
-          onClick={goTo("/blog")}
-          title="Blog"
-        >
-          <img src="/stuff/234.png" alt="Blog folder" />
+      </div>
+      <div className="github-card">
+        <a href="/blog" className="github-link desktop-shortcut" title="Blog">
+          <Folder
+            color="#ff69b4"
+            size={1}
+            items={[<img src="/stuff/234.png" alt="" style={iconStyle} />]}
+          />
           <span className="uncenter">Blog</span>
         </a>
+      </div>
+      <div className="github-card">
         <a
           href="https://hymnals.bearblog.dev/blog/"
           className="desktop-shortcut"
@@ -59,6 +59,6 @@ export default function DesktopIcons() {
           <span className="uncenter">Poetry</span>
         </a>
       </div>
-    </>
+    </div>
   );
 }

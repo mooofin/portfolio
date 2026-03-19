@@ -1,5 +1,6 @@
 import NowPlaying from "./NowPlaying";
 import DesktopIcons from "./DesktopIcons";
+import Folder from "./Folder";
 
 function Hero() {
   return (
@@ -25,10 +26,20 @@ function Hero() {
             href="https://github.com/mooofin"
             target="_blank"
             rel="noopener noreferrer"
-            className="github-link"
+            className="github-link desktop-shortcut"
           >
-            <img src="/stuff/234.png" alt="GitHub" />
-            <span>GitHub</span>
+            <Folder
+              color="#ff69b4"
+              size={1}
+              items={[
+                <img
+                  src="/stuff/234.png"
+                  alt=""
+                  style={{ width: "60%", height: "60%", objectFit: "contain" }}
+                />,
+              ]}
+            />
+            <span className="uncenter">GitHub</span>
           </a>
         </div>
       </div>

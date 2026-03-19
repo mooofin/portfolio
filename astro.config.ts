@@ -62,20 +62,17 @@ export default defineConfig({
             codeFontSize: "0.75rem",
             borderColor: "var(--border)",
             codeFontFamily: "var(--font-mono)",
-            codeBackground:
-              "color-mix(in oklab, var(--muted) 25%, transparent)",
+            codeBackground: "rgba(20, 20, 20, 0.85)",
             frames: {
               editorActiveTabForeground: "var(--muted-foreground)",
-              editorActiveTabBackground:
-                "color-mix(in oklab, var(--muted) 25%, transparent)",
+              editorActiveTabBackground: "rgba(20, 20, 20, 0.85)",
               editorActiveTabIndicatorBottomColor: "transparent",
               editorActiveTabIndicatorTopColor: "transparent",
               editorTabBorderRadius: "0",
               editorTabBarBackground: "transparent",
               editorTabBarBorderBottomColor: "transparent",
               frameBoxShadowCssValue: "none",
-              terminalBackground:
-                "color-mix(in oklab, var(--muted) 25%, transparent)",
+              terminalBackground: "rgba(20, 20, 20, 0.85)",
               terminalTitlebarBackground: "transparent",
               terminalTitlebarBorderBottomColor: "transparent",
               terminalTitlebarForeground: "var(--muted-foreground)",

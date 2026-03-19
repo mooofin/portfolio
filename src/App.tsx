@@ -7,6 +7,7 @@ import Hero from "./components/Hero";
 import Contact from "./components/Contact";
 import VideoBackground from "./components/VideoBackground";
 import PinkCursor from "./components/PinkCursor";
+import Footer from "./components/Footer";
 
 // Lazy load non-critical components
 const MusicPage = lazy(() => import("./components/MusicPage"));
@@ -51,6 +52,7 @@ function AppContent() {
             </Routes>
           </Suspense>
         </main>
+        <Footer />
       </div>
     </div>
   );
