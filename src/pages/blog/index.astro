@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content'; 
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
@@ -7,8 +8,9 @@ import BlogSearch from '../../components/BlogSearch';
 import pfpImage from '../../assets/images/about-me/pfp.jpg';
 
 const posts = await getCollection('blog');
-const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const postData = sortedPosts.map(p => ({
+
+const sortedPosts = posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.date.getTime() - a.data.date.getTime());
+const postData = sortedPosts.map((p: CollectionEntry<'blog'>) => ({
   title: p.data.title,
   url: `/blog/${p.id}`,
 }));
@@ -18,7 +20,7 @@ const postData = sortedPosts.map(p => ({
   <main class="hymnals-blog">
     <div class="hymnals-container">
       <Breadcrumbs items={[
-        { label: "Blog", href: "/blog" }
+        { label: "Blog", href: "/blog", icon: "lucide:library" }
       ]} />
 
       <Image
@@ -35,7 +37,7 @@ const postData = sortedPosts.map(p => ({
       <BlogSearch client:idle posts={postData} />
 
       <ul class="hymnals-post-list">
-        {sortedPosts.map((post) => (
+        {sortedPosts.map((post: CollectionEntry<'blog'>) => (
           <li>
             <span class="hymnals-date">{post.data.date.toISOString().split('T')[0]}</span>{' '}
             <a href={`/blog/${post.id}`} class="hymnals-post-link">

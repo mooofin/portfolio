@@ -10,7 +10,7 @@ type Props = { entry: CollectionEntry<'blog'> };
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
-  return blogEntries.map(entry => ({
+  return blogEntries.map((entry: CollectionEntry<'blog'>) => ({
     params: { slug: entry.id }, props: { entry },
   }));
 }
@@ -19,9 +19,9 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 
 const blogEntries = await getCollection('blog');
-const sortedPosts = blogEntries.sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
-const currentIndex = sortedPosts.findIndex(post => post.id === entry.id);
 
+const sortedPosts = blogEntries.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => a.data.date.getTime() - b.data.date.getTime());
+const currentIndex = sortedPosts.findIndex((post: CollectionEntry<'blog'>) => post.id === entry.id);
 const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
 ---
@@ -30,9 +30,9 @@ const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentInde
   <div class="hymnals-blog">
     <div class="hymnals-blog-post-container">
       <Breadcrumbs items={[
-        { label: "Blog", href: "/blog" },
-        { label: entry.data.title }
-      ]} />
+  { label: "Blog", href: "/blog", icon: "lucide:library" },
+  { label: entry.data.title, icon: "lucide:book-open" }
+  ]} />
 
       <Image
         src={melodyPfp}

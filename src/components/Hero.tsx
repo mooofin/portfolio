@@ -1,13 +1,26 @@
 import NowPlaying from "./NowPlaying";
 import DesktopIcons from "./DesktopIcons";
 import Folder from "./Folder";
+import GlowCard from "./ui/GlowCard";
 
 function Hero() {
   return (
     <section id="home" className="hero">
       <div className="hero-left-side">
-        <div className="pink-sticky hero-sticky">
-          <div className="hero-pfp-row">
+        <GlowCard
+          glowColor="#a855f7"
+          glowOpacity={0.3}
+          className="pink-sticky hero-sticky"
+        >
+          <div
+            className="hero-pfp-row"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <img src="/images/pfp.jpg" alt="Profile" className="hero-pfp" />
           </div>
           <div className="hero-sticky-text">
@@ -19,7 +32,7 @@ function Hero() {
               programming using Nix
             </div>
           </div>
-        </div>
+        </GlowCard>
 
         <div className="github-card">
           <a
@@ -45,9 +58,15 @@ function Hero() {
       </div>
 
       <div className="hero-right-side">
-        <div className="pink-sticky spotify-sticky">
+        <GlowCard
+          glowColor="#ff69b4"
+          glowOpacity={0.3}
+          borderRadius="0.75rem"
+          className="pink-sticky spotify-sticky"
+        >
           <NowPlaying />
-        </div>
+        </GlowCard>
+
         <DesktopIcons />
       </div>
     </section>
