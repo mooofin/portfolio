@@ -7,208 +7,334 @@
       name="description"
       content="Blog posts by Siddharth - reverse engineering, systems programming, CTFs"
     />
-    <title>Blog - ~siddharth~</title>
+    <title>Blog - mooofin</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="../public/favicon.ico" />
   </head>
   <body>
-    <div class="top-banner">
-      <marquee behavior="scroll" direction="left" scrollamount="3">
-        *** Welcome to Siddharth's Personal Homepage *** Last updated:
-        2026-02-20 *** Best viewed at 1024x768 ***
-      </marquee>
-    </div>
-
-    <table class="main-table" cellpadding="0" cellspacing="0">
-      <tr>
-        <td class="sidebar" valign="top">
-          <div class="sidebar-box">
-            <div class="sidebar-title">Navigation</div>
-            <ul class="nav-list">
-              <li><a href="index.html">[ Home / Start ]</a></li>
-              <li><a href="about.html">[ About / Bio ]</a></li>
-              <li><a href="projects.html">[ Projects / Code ]</a></li>
-              <li><a href="blog.html">[ Blog / Writeups ]</a></li>
+    <div class="desktop flex gap-16" style="flex-direction: row">
+      <div class="sidebar-95">
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
+              class="icon-16"
+              alt=""
+            />
+            Navigation
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="index.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Home
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="about.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/users-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  About Me
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="projects.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Projects
+                </a>
+              </li>
+              <li
+                class="list-group-item"
+                style="background: #08216b; color: white"
+              >
+                <a href="blog.html" style="color: white">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Blog
+                </a>
+              </li>
             </ul>
           </div>
-
-          <div class="sidebar-box">
-            <div class="sidebar-title">Categories</div>
-            <ul class="nav-list">
-              <li><a href="#">Reverse Engineering</a></li>
-              <li><a href="#">NixOS</a></li>
-              <li><a href="#">CTF Writeups</a></li>
-              <li><a href="#">OS Development</a></li>
-              <li><a href="#">Projects</a></li>
+        </div>
+        <div class="window">
+          <div class="window-title header-inactive">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
+              class="icon-16"
+              alt=""
+            />
+            Categories
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="#"
+                  ><img
+                    src="https://win98icons.alexmeub.com/icons/png/tree-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Reverse Engineering</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a href="#"
+                  ><img
+                    src="https://win98icons.alexmeub.com/icons/png/tree-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  NixOS</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a href="#"
+                  ><img
+                    src="https://win98icons.alexmeub.com/icons/png/tree-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  CTF Writeups</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a href="#"
+                  ><img
+                    src="https://win98icons.alexmeub.com/icons/png/tree-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  OS Development</a
+                >
+              </li>
             </ul>
           </div>
-        </td>
-
-        <td class="content" valign="top">
-          <div class="page-header">
-            <h1>Blog</h1>
-            <p class="subtitle">
-              Writeups &#183; Reverse Engineering &#183; Systems
-            </p>
-            <p class="page-meta">
-              Last updated: 2026-02-20 | Best viewed at 1024x768
-            </p>
-            <hr class="fancy-hr" />
+        </div>
+      </div>
+      <div class="content-95">
+        <div class="window" style="margin-bottom: 8px">
+          <div class="window-body" style="padding: 4px 8px; font-size: 11px">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+              class="icon-16"
+              alt=""
+            />
+            <a href="index.html">Home</a> &gt; Blog
           </div>
-
-          <p class="breadcrumb"><a href="index.html">Home</a> &gt; Blog</p>
-
-          <div class="content-box">
-            <h2>:: All Posts (14)</h2>
-            <table class="blog-index-table" cellpadding="0" cellspacing="0">
-              <tr class="table-header">
-                <th width="120">Date</th>
-                <th>Title</th>
-              </tr>
-
-              <tr>
-                <td>2026-02-09</td>
-                <td>
-                  <a href="blog/bootloader.html"
-                    >A minimal x86 bootloader from scratch</a
-                  >
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2026-01-26</td>
-                <td>
-                  <a href="blog/honeymoon.html">I Use a Gap Buffer, Bitch.</a>
-                </td>
-              </tr>
-
-              <tr>
-                <td>2025-12-29</td>
-                <td>
-                  <a href="blog/ropfu.html">Oops, Your Control Flow Is Mine</a>
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2025-12-29</td>
-                <td>
-                  <a href="blog/strings-dont-lie-packers-do.html"
-                    >Strings Don't Lie, Packers Do</a
-                  >
-                </td>
-              </tr>
-
-              <tr>
-                <td>2025-12-29</td>
-                <td>
-                  <a href="blog/tea-and-psychological-damage.html"
-                    >32 Rounds of TEA and Psychological Damage, Surviving a
-                    Stripped 32-bit Binary</a
-                  >
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2025-12-17</td>
-                <td>
-                  <a href="blog/format-string-3.html"
-                    >how to make your program spill tea</a
-                  >
-                </td>
-              </tr>
-
-              <tr>
-                <td>2025-12-17</td>
-                <td>
-                  <a href="blog/like-father-like-son.html"
-                    >Like Father Like Son - DFIR report</a
-                  >
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2025-12-12</td>
-                <td>
-                  <a href="blog/vmware.html"
-                    >Slay the JIT: From Hotpatches to Symbolic Couture in
-                    Miasm</a
-                  >
-                </td>
-              </tr>
-
-              <tr>
-                <td>2025-10-02</td>
-                <td>
-                  <a href="blog/nixos-flakes.html"
-                    >Provenance and Purity: Nix programming language &
-                    Fixed-Output Flakes</a
-                  >
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2025-08-27</td>
-                <td>
-                  <a href="blog/nix.html"
-                    >The Deployment Gap: From Your Machine to Theirs</a
-                  >
-                </td>
-              </tr>
-
-              <tr>
-                <td>2025-01-04</td>
-                <td>
-                  <a href="blog/an-apple-a-day.html"
-                    >An Apple a Day Keeps ASLR Away</a
-                  >
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2025-01-04</td>
-                <td>
-                  <a href="blog/gotham-hustle.html"
-                    >Gotham Hustle, DFIR report</a
-                  >
-                </td>
-              </tr>
-
-              <tr>
-                <td>2025-01-04</td>
-                <td>
-                  <a href="blog/onapookkalam.html"
-                    >Onapookkalam / ഓണപ്പൂക്കളം - DFIR report</a
-                  >
-                </td>
-              </tr>
-
-              <tr class="alt-row">
-                <td>2024-12-29</td>
-                <td>
-                  <a href="blog/havok-engine-reverse-engineering.html"
-                    >Reverse Engineering Proprietary Havoc Engine File
-                    Formats</a
-                  >
-                </td>
-              </tr>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+              class="icon-16"
+              alt=""
+            />
+            All Posts (14)
+          </div>
+          <div class="window-body" style="padding: 0">
+            <table class="table-95">
+              <thead>
+                <tr>
+                  <th width="120">Date</th>
+                  <th>Title</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2026-02-09</td>
+                  <td>
+                    <a href="blog/bootloader.html"
+                      >A minimal x86 bootloader from scratch</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026-01-26</td>
+                  <td>
+                    <a href="blog/honeymoon.html">I Use a Gap Buffer, Bitch.</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-12-29</td>
+                  <td>
+                    <a href="blog/ropfu.html"
+                      >Oops, Your Control Flow Is Mine</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-12-29</td>
+                  <td>
+                    <a href="blog/strings-dont-lie-packers-do.html"
+                      >Strings Don't Lie, Packers Do</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-12-29</td>
+                  <td>
+                    <a href="blog/tea-and-psychological-damage.html"
+                      >32 Rounds of TEA and Psychological Damage</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-12-17</td>
+                  <td>
+                    <a href="blog/format-string-3.html"
+                      >how to make your program spill tea</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-12-17</td>
+                  <td>
+                    <a href="blog/like-father-like-son.html"
+                      >Like Father Like Son - DFIR report</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-12-12</td>
+                  <td>
+                    <a href="blog/vmware.html"
+                      >Slay the JIT: From Hotpatches to Symbolic Couture in
+                      Miasm</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-10-02</td>
+                  <td>
+                    <a href="blog/nixos-flakes.html"
+                      >Provenance and Purity: Nix programming language &
+                      Fixed-Output Flakes</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-08-27</td>
+                  <td>
+                    <a href="blog/nix.html"
+                      >The Deployment Gap: From Your Machine to Theirs</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-01-04</td>
+                  <td>
+                    <a href="blog/an-apple-a-day.html"
+                      >An Apple a Day Keeps ASLR Away</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-01-04</td>
+                  <td>
+                    <a href="blog/gotham-hustle.html"
+                      >Gotham Hustle, DFIR report</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2025-01-04</td>
+                  <td>
+                    <a href="blog/onapookkalam.html"
+                      >Onapookkalam / ഓണപ്പൂക്കളം - DFIR report</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>2024-12-29</td>
+                  <td>
+                    <a href="blog/havok-engine-reverse-engineering.html"
+                      >Reverse Engineering Proprietary Havoc Engine File
+                      Formats</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
             </table>
+            <div class="status-bar">
+              :: Total posts: 14 | Topics: Reverse Engineering, NixOS, CTFs, OS
+              Dev
+            </div>
           </div>
-
-          <div class="status-bar">
-            :: Total posts: 14 | Topics: Reverse Engineering, NixOS, CTFs, OS
-            Dev
-          </div>
-        </td>
-      </tr>
-    </table>
-
-    <div class="footer">
-      <hr class="fancy-hr" />
-      <p class="footer-nav">
-        <a href="index.html">Home</a> | <a href="about.html">About</a> |
-        <a href="projects.html">Projects</a> |
-        <a href="blog.html">Blog</a>
-      </p>
-      <p>&#169; 2026 Siddharth | <a href="index.html">Back to Home</a></p>
+        </div>
+        <div style="margin-bottom: 60px"></div>
+      </div>
     </div>
+    <div class="taskbar">
+      <div style="display: flex; gap: 8px">
+        <a href="index.html" class="start-button">
+          <img
+            src="https://win98icons.alexmeub.com/icons/png/windows-0.png"
+            class="icon-16"
+            alt=""
+          />
+          Start
+        </a>
+        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px"></div>
+        <a
+          href="index.html"
+          class="btn"
+          style="display: inline-flex; align-items: center; gap: 4px"
+        >
+          <img
+            src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+            class="icon-16"
+            alt=""
+          />
+          Home
+        </a>
+        <a
+          href="blog.html"
+          class="btn"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 2px inset #fff;
+          "
+        >
+          <img
+            src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+            class="icon-16"
+            alt=""
+          />
+          Blog
+        </a>
+      </div>
+      <div class="time" id="clock">12:00 PM</div>
+    </div>
+    <script>
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        document.getElementById("clock").textContent =
+          hours + ":" + minutes + " " + ampm;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
   </body>
 </html>
