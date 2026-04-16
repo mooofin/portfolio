@@ -313,17 +313,6 @@ LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
                 merge, mostly just waiting between review cycles.
               </p>
 
-              <h2>Takeaways</h2>
-              <p>
-                The actual code change is trivial. What matters is understanding
-                the project's conventions — where things live, how CMake targets
-                are structured, what the Bazel overlay needs to mirror. You
-                learn that by reading merged PRs, not the docs. bassiounix's
-                first comment was literally just
-                <em>"have you checked merged PRs?"</em> — that was the entire
-                review.
-              </p>
-
               <blockquote>
                 Also: don't touch unrelated tests. Just don't.
               </blockquote>
