@@ -226,7 +226,7 @@
                 class="icon-16"
                 alt=""
               />
-              Author: Siddharth |
+              Author: sid |
               <img
                 src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
                 class="icon-16"
@@ -236,55 +236,20 @@
             </div>
             <div class="blog-content">
               <p>
-                A few weeks ago I got my first pull request merged into the LLVM
-                project. The change is small. <strong>PR #181400</strong> moves
-                <code>bf16div</code> into a header-only implementation inside the
-                shared math support layer. The diff is not impressive, but the
-                process was.
+                a few weeks ago i had my first pull request merged into the llvm project. it's a small refactor — #181400, refactoring bf16div to be header-only and part of the shared math library. nothing glamorous, but the process taught me more than the change itself.
               </p>
 
-              <h2>Context</h2>
+              <h2>the context</h2>
               <p>
-                LLVM libc is gradually moving higher math functions toward
-                header-only implementations. This is tied to C++23
-                <code>constexpr</code> math. If the implementation is available
-                in headers, the compiler can evaluate it at compile time instead
-                of emitting runtime calls.
+                llvm libc has an ongoing effort (#147386) to make higher math functions header-only. the motivation is C++23 constexpr math support — if the implementation lives in a header, the compiler can evaluate it at compile time. bf16div, the bfloat16 division function, was still a standalone .cpp file with its logic inlined directly. it needed to be extracted into src/__support/math/.
               </p>
 
+              <h2>what the change actually does</h2>
               <p>
-                There is an ongoing effort tracking this direction.
-                <code>bf16div</code>, which implements division for
-                <code>bfloat16</code>, was still defined in a <code>.cpp</code>
-                file. Its logic directly invoked
-                <code>fputil::generic::div&lt;bfloat16&gt;</code> and pulled in
-                dependencies locally. This made it inconsistent with newer
-                patterns.
+                before the patch, bf16div.cpp directly called fputil::generic::div&lt;bfloat16&gt;(x, y) and dragged in a handful of includes itself. the entrypoint's CMake target listed all the individual dependencies.
               </p>
 
-              <p>
-                The goal was to lift the implementation into
-                <code>src/__support/math/</code> and make the public entrypoint a
-                thin wrapper.
-              </p>
-
-              <h2>What Changed</h2>
-              <p>Before:</p>
-              <ul>
-                <li>
-                  <code>bf16div.cpp</code> contained the full implementation
-                </li>
-                <li>
-                  It directly called
-                  <code>fputil::generic::div&lt;bfloat16&gt;(x, y)</code>
-                </li>
-                <li>
-                  Dependencies were listed manually in the entrypoint CMake
-                  target
-                </li>
-              </ul>
-
-              <p>After:</p>
+              <p>after:</p>
 
               <pre>
 // libc/src/__support/math/bf16div.h
@@ -298,100 +263,34 @@ LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
 }</pre>
 
               <p>
-                The structure now matches other math functions: the actual
-                computation lives in a header under <code>__support</code>; the
-                exported symbol is a wrapper that forwards into the support
-                layer; the entrypoint becomes trivial and easier to reason about.
+                the entrypoint becomes a thin wrapper. the logic lives in the header. the cmake entrypoint now depends on libc.src.__support.math.bf16div instead of enumerating the underlying headers. bazel gets a matching libc_support_library + libc_math_function pair.
+              </p>
+
+              <h2>the review process</h2>
+              <p>
+                my first submission had the constexpr qualifier added to fputil::generic::div itself. the reviewer, bassiounix, asked me to look at recently merged PRs and spot the pattern. turns out they weren't adding constexpr to the underlying generic template — that's a much bigger change with wider impact. just the wrapper stays non-constexpr for now. i reverted that, cleaned up redundant includes in the cpp file, fixed an alphabetical ordering issue in a test cmake file, and accidentally deleted a log2 test case i had to restore. not my finest hour.
               </p>
 
               <p>
-                Build system changes followed the same pattern: CMake now depends
-                on <code>libc.src.__support.math.bf16div</code> instead of listing
-                internal headers; Bazel adds a corresponding
-                <code>libc_support_library</code> and
-                <code>libc_math_function</code>. This reduces duplication and
-                keeps dependency graphs aligned across build systems.
-              </p>
-
-              <h2>Review Notes</h2>
-              <p>
-                My first version tried to push <code>constexpr</code> into
-                <code>fputil::generic::div</code>. That was wrong.
+                second round: "LGTM overall. please format the bazel build file." formatted it. third round: approved and merged.
               </p>
 
               <p>
-                The reviewer pointed out that recent changes do not mark the
-                generic template itself as <code>constexpr</code>. Doing so
-                would affect a wide surface area and requires more careful
-                auditing. The intended pattern is to move structure first, then
-                enable <code>constexpr</code> in a controlled way.
+                four commits total across two force-pushes and a merge-from-main. the whole thing took about a month from open to merge, mostly just waiting between review cycles.
               </p>
 
-              <p>I reverted that change and kept the wrapper simple.</p>
-
-              <p>Other fixes during review:</p>
-              <ul>
-                <li>Removed redundant includes from the <code>.cpp</code></li>
-                <li>Fixed alphabetical ordering in a CMake test file</li>
-                <li>Restored a test I accidentally deleted</li>
-              </ul>
+              <h2>takeaways</h2>
+              <p>
+                the actual code change is trivial. what matters is understanding the project's conventions — where things live, how cmake targets are structured, what the bazel overlay needs to mirror. you learn that by reading merged PRs, not the docs. bassiounix's first comment was literally just "have you checked merged PRs?" — that was the entire review.
+              </p>
 
               <p>
-                Second round feedback was minor. Formatting in the Bazel file.
-                After that, the patch was approved and merged.
+                also: don't touch unrelated tests. just don't.
               </p>
 
-              <h2>Tools Used</h2>
               <p>
-                Contributing to LLVM requires a robust toolchain. Here's what I
-                used:
+                the github-actions bot sent a first-PR congratulations message. kind of surreal seeing that on a 28-line header file, but the llvm contribution bar is what it is and it's a start.
               </p>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/google/sanitizers/wiki/AddressSanitizer"
-                    target="_blank"
-                    >AddressSanitizer</a
-                  >
-                  — Memory error detector for catching buffer overflows and
-                  use-after-free bugs
-                </li>
-                <li>
-                  <a
-                    href="https://valgrind.org/docs/manual/quick-start.html"
-                    target="_blank"
-                    >Valgrind</a
-                  >
-                  — For deep memory debugging and leak detection when ASan
-                  wasn't enough
-                </li>
-                <li>
-                  <a href="https://github.com/google/googletest" target="_blank"
-                    >GoogleTest</a
-                  >
-                  — LLVM's testing framework for writing unit tests
-                </li>
-                <li>
-                  <a href="https://bazel.build/rules/language" target="_blank"
-                    >Bazel / Starlark</a
-                  >
-                  — Google's build system. Starlark is the Python-like language
-                  for BUILD rules
-                </li>
-                <li>
-                  <a href="https://github.com/bazelbuild/tulsi" target="_blank"
-                    >Tulsi</a
-                  >
-                  — Generates Xcode projects from Bazel build files
-                </li>
-                <li>
-                  <a href="https://github.com/tmandry/lavender" target="_blank"
-                    >Lavender</a
-                  >
-                  — Generate Visual Studio projects from Bazel — essential for
-                  navigating LLVM on Windows
-                </li>
-              </ul>
 
               <p>
                 <strong>PR:</strong>
