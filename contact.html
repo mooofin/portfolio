@@ -3,11 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="About Siddharth - NixOS, Gentoo, systems programming"
-    />
-    <title>About Me - mooofin</title>
+    <meta name="description" content="Contact sid - mooofin" />
+    <title>Contact - mooofin</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="../public/favicon.ico" />
   </head>
@@ -23,7 +20,7 @@
             />
             Navigation
           </div>
-          <div class="window-body" style="padding: 0">
+          <div class="window-body p-0">
             <ul class="list-group" style="border: none">
               <li class="list-group-item">
                 <a href="index.html">
@@ -35,11 +32,8 @@
                   Home
                 </a>
               </li>
-              <li
-                class="list-group-item"
-                style="background: #08216b; color: white"
-              >
-                <a href="about.html" style="color: white">
+              <li class="list-group-item">
+                <a href="about.html">
                   <img
                     src="https://win98icons.alexmeub.com/icons/png/users-1.png"
                     class="icon-16"
@@ -68,16 +62,6 @@
                   Blog
                 </a>
               </li>
-              <li class="list-group-item">
-                <a href="contact.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Contact
-                </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -88,7 +72,7 @@
               class="icon-16"
               alt=""
             />
-            Links
+            Contact
           </div>
           <div class="window-body p-0">
             <ul class="list-group" style="border: none">
@@ -112,6 +96,16 @@
                   GitHub
                 </a>
               </li>
+              <li class="list-group-item" style="background: #08216b; color: white">
+                <a href="contact.html" style="color: white">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Contact Form
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -124,93 +118,106 @@
               class="icon-16"
               alt=""
             />
-            <a href="index.html">Home</a> &gt; About Me
+            <a href="index.html">Home</a> &gt; Contact
           </div>
         </div>
         <div class="window">
           <div class="window-title">
             <img
-              src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png"
+              src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
               class="icon-16"
               alt=""
             />
-            Technologies
+            Send Message
           </div>
           <div class="window-body">
-            <div style="font-size: 12px; columns: 2; margin-bottom: 8px">
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Valgrind
+            <form action="mailto:siddharthqln@gmail.com" method="post" enctype="text/plain">
+              <div class="mb-8">
+                <label for="name" style="font-size: 12px; display: block; margin-bottom: 4px;">
+                  <strong>Name:</strong>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-95"
+                  placeholder="Enter your name..."
+                  required
+                />
               </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Syzkaller
+              <div class="mb-8">
+                <label for="email" style="font-size: 12px; display: block; margin-bottom: 4px;">
+                  <strong>Email:</strong>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-95"
+                  placeholder="your@email.com"
+                  required
+                />
               </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Julia (Programming Language)
+              <div class="mb-8">
+                <label for="subject" style="font-size: 12px; display: block; margin-bottom: 4px;">
+                  <strong>Subject:</strong>
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  class="form-95"
+                  placeholder="Message subject..."
+                />
               </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Gentoo Linux
+              <div class="mb-16">
+                <label for="message" style="font-size: 12px; display: block; margin-bottom: 4px;">
+                  <strong>Message:</strong>
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  class="form-95"
+                  rows="6"
+                  placeholder="Type your message here..."
+                  required
+                  style="resize: vertical;"
+                ></textarea>
               </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Havok Engine
+              <div class="flex gap-8">
+                <button type="submit" class="btn btn-primary">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Send
+                </button>
+                <button type="reset" class="btn">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Reset
+                </button>
               </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Nix/NixOS
-              </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">• Rust</div>
-              <div style="break-inside: avoid; margin-bottom: 4px">• C/C++</div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • Reverse Engineering
-              </div>
-              <div style="break-inside: avoid; margin-bottom: 4px">
-                • AFL++ Fuzzing
-              </div>
-            </div>
+            </form>
           </div>
         </div>
-        <div class="window">
-          <div class="window-title">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png"
-              class="icon-16"
-              alt=""
-            />
-            Dark Souls Restoration Project
-          </div>
-          <div class="window-body" style="font-size: 12px">
-            <p style="margin-top: 0">
-              For the past few years, I've been working on an entirely new Dark
-              Souls DLC featuring new areas (using unused assets from Bloodborne
-              and Dark Souls 2 cut content), original NPC questlines, weapons,
-              spells, and a vision focused on restoring the spark lost during
-              the rushed second half of the original game. I've also implemented
-              a custom lighting documentation system for the PTDE edition.
-            </p>
-            <div class="status-bar mt-16">
-              <img
-                src="https://win98icons.alexmeub.com/icons/png/chart1-2.png"
-                class="icon-16"
-                alt=""
-              />
-              Status: Active Development
-            </div>
-          </div>
-        </div>
-        <div class="window">
+        <div class="window mt-16">
           <div class="window-title header-inactive">
             <img
-              src="https://win98icons.alexmeub.com/icons/png/chart1-2.png"
+              src="https://win98icons.alexmeub.com/icons/png/help_book-0.png"
               class="icon-16"
               alt=""
             />
-            System Info
+            Note
           </div>
-          <div class="window-body p-8" style="font-size: 11px">
+          <div class="window-body" style="font-size: 12px">
             <p style="margin: 0">
-              <strong>Pages:</strong> 6<br />
-              <strong>Blog Posts:</strong> 15<br />
-              <strong>Projects:</strong> 14<br /><br />
-              <strong>Status:</strong> JavaScript-free<br />
-              <strong>Theme:</strong> Windows 95
+              This form uses your default email client. Alternatively, email directly at
+              <strong>siddharthqln@gmail.com</strong>
             </p>
           </div>
         </div>
@@ -241,7 +248,7 @@
           Home
         </a>
         <a
-          href="about.html"
+          href="contact.html"
           class="btn"
           style="
             display: inline-flex;
@@ -249,18 +256,6 @@
             gap: 4px;
             border: 2px inset #fff;
           "
-        >
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/users-1.png"
-            class="icon-16"
-            alt=""
-          />
-          About
-        </a>
-        <a
-          href="contact.html"
-          class="btn"
-          style="display: inline-flex; align-items: center; gap: 4px"
         >
           <img
             src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"

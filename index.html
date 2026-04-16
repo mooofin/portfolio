@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Siddharth's Personal Homepage - NixOS, Gentoo, Systems Programming, Reverse Engineering"
+      content="sid's Personal Homepage - NoVMP, LLVM, NixOS, Gentoo, Systems Programming, Reverse Engineering"
     />
     <meta
       name="keywords"
-      content="Siddharth, NixOS, Gentoo, Rust, C++, programming, reverse engineering, mooofin"
+      content="sid, NoVMP, LLVM, NixOS, Gentoo, Rust, C++, programming, reverse engineering, mooofin"
     />
-    <meta name="author" content="Siddharth" />
+    <meta name="author" content="sid" />
     <title>mooofin's Homepage</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="../public/favicon.ico" />
@@ -70,6 +70,16 @@
                   Blog
                 </a>
               </li>
+              <li class="list-group-item">
+                <a href="contact.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -80,9 +90,9 @@
               class="icon-16"
               alt=""
             />
-            Contact
+            Links
           </div>
-          <div class="window-body" style="padding: 0">
+          <div class="window-body p-0">
             <ul class="list-group" style="border: none">
               <li class="list-group-item">
                 <a href="mailto:siddharthqln@gmail.com" target="_blank">
@@ -106,19 +116,6 @@
               </li>
               <li class="list-group-item">
                 <a
-                  href="https://www.linkedin.com/in/siddharthu5799/"
-                  target="_blank"
-                >
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/user_world-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  LinkedIn
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a
                   href="https://open.spotify.com/user/314ikabu7m4lwg6rljojtmhf74uq"
                   target="_blank"
                 >
@@ -131,25 +128,6 @@
                 </a>
               </li>
             </ul>
-          </div>
-        </div>
-        <div class="window">
-          <div class="window-title header-inactive">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/chart1-2.png"
-              class="icon-16"
-              alt=""
-            />
-            System Info
-          </div>
-          <div class="window-body" style="font-size: 11px">
-            <p style="margin: 0">
-              <strong>Pages:</strong> 5<br />
-              <strong>Blog Posts:</strong> 15<br />
-              <strong>Projects:</strong> 13<br /><br />
-              <strong>Status:</strong> JavaScript-free<br />
-              <strong>Theme:</strong> Windows 95
-            </p>
           </div>
         </div>
       </div>
@@ -176,8 +154,8 @@
                     "
                   >
                     <img
-                      src="images/icon.jpg"
-                      alt="Siddharth"
+                      src="channels4_profile.jpg"
+                      alt="sid"
                       width="100"
                       height="100"
                       style="display: block"
@@ -186,15 +164,10 @@
                 </td>
                 <td valign="top">
                   <p style="margin-top: 0">
-                    <strong>Hi, I'm Siddharth.</strong>
+                    <strong>Hi, I'm sid.</strong>
                   </p>
                   <p>
-                    I build systems tools, reverse engineering writeups, and
-                    low-level projects.
-                  </p>
-                  <p>
-                    I enjoy <strong>NixOS</strong>, <strong>Gentoo</strong>, and
-                    declarative workflows with Nix.
+                    Currently working on <strong>NoVMP</strong>, a fork of can1357's static devirtualizer for VMProtect x64 3.x. The original backend targets VTIL-Core, which is abandoned and never had a working compiler. I'm ripping it out and replacing it with an LLVM IR backend: VMP handler emulation and IL lifting from the original frontend stay intact, the optimization and recompilation pipeline gets rebuilt on top of llvm::Module and standard IR passes. WIP, not yet functional.
                   </p>
                   <p style="margin-bottom: 0">
                     This site is a tribute to the classic web - simple, fast,
@@ -216,6 +189,22 @@
           </div>
           <div class="window-body">
             <div style="font-size: 12px">
+              <div
+                style="
+                  margin-bottom: 12px;
+                  padding-bottom: 12px;
+                  border-bottom: 1px dotted #808080;
+                "
+              >
+                <strong style="display: block; margin-bottom: 4px">
+                  <a href="https://github.com/mooofin/IRAnatomy" target="_blank"
+                    >IRAnatomy</a
+                  >
+                </strong>
+                <span style="color: #555"
+                  >Instruments the LLVM optimization pipeline by snapshotting intermediate LLVM IR after every pass using opt -print-after-all.</span
+                >
+              </div>
               <div
                 style="
                   margin-bottom: 12px;
@@ -268,7 +257,7 @@
                   class="icon-16"
                   alt=""
                 />
-                See all 13 projects
+                See all 14 projects
               </a>
             </div>
           </div>
@@ -296,36 +285,36 @@
                 </a>
               </li>
               <li class="list-group-item">
-                <a href="blog/bootloader.html">
+                <a href="blog/vmware.html">
                   <img
                     src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
                     class="icon-16"
                     alt=""
                   />
-                  A minimal x86 bootloader from scratch
-                  <span style="float: right; color: #666">[2026-02-09]</span>
+                  Slay the JIT: From Hotpatches to Symbolic Couture in Miasm
+                  <span style="float: right; color: #666">[2025-12-12]</span>
                 </a>
               </li>
               <li class="list-group-item">
-                <a href="blog/honeymoon.html">
+                <a href="blog/like-father-like-son.html">
                   <img
                     src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
                     class="icon-16"
                     alt=""
                   />
-                  I Use a Gap Buffer, Bitch.
-                  <span style="float: right; color: #666">[2026-01-26]</span>
+                  Like Father Like Son - DFIR report
+                  <span style="float: right; color: #666">[2025-12-17]</span>
                 </a>
               </li>
               <li class="list-group-item">
-                <a href="blog/ropfu.html">
+                <a href="blog/havok-engine-reverse-engineering.html">
                   <img
                     src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
                     class="icon-16"
                     alt=""
                   />
-                  Oops, Your Control Flow Is Mine
-                  <span style="float: right; color: #666">[2025-12-29]</span>
+                  Reverse Engineering Proprietary Havoc Engine File Formats
+                  <span style="float: right; color: #666">[2024-12-29]</span>
                 </a>
               </li>
             </ul>
@@ -349,10 +338,10 @@
             </div>
           </div>
         </div>
-        <div class="marquee-banner mt-16" style="margin-bottom: 60px">
+        <div class="marquee-banner mt-16 mb-16" style="margin-bottom: 60px">
           <marquee behavior="scroll" direction="left" scrollamount="3">
-            *** Welcome to Siddharth's Personal Homepage *** Last updated:
-            2026-02-20 *** Best viewed at 1024x768 *** NixOS | Gentoo | Systems
+            *** Welcome to sid's Personal Homepage *** Last updated:
+            2026-04-16 *** Best viewed at 1024x768 *** NoVMP | LLVM | NixOS | Gentoo | Systems
             Programming | Reverse Engineering ***
           </marquee>
         </div>
@@ -383,7 +372,7 @@
           GitHub
         </a>
         <a
-          href="mailto:siddharthqln@gmail.com"
+          href="contact.html"
           class="btn"
           style="display: inline-flex; align-items: center; gap: 4px"
         >
@@ -392,7 +381,7 @@
             class="icon-16"
             alt=""
           />
-          Email
+          Contact
         </a>
       </div>
       <div class="time" id="clock">12:00 PM</div>

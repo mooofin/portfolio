@@ -236,32 +236,53 @@
             </div>
             <div class="blog-content">
               <p>
-                A few weeks ago I had my first pull request merged into the LLVM
-                project. It's a small refactor — <strong>#181400</strong>,
-                refactoring <code>bf16div</code> to be header-only and part of
-                the shared math library. Nothing glamorous, but the process
-                taught me more than the change itself.
+                A few weeks ago I got my first pull request merged into the LLVM
+                project. The change is small. <strong>PR #181400</strong> moves
+                <code>bf16div</code> into a header-only implementation inside the
+                shared math support layer. The diff is not impressive, but the
+                process was.
               </p>
 
-              <h2>The Context</h2>
+              <h2>Context</h2>
               <p>
-                LLVM libc has an ongoing effort (#147386) to make higher math
-                functions header-only. The motivation is
-                <strong>C++23 constexpr math support</strong> — if the
-                implementation lives in a header, the compiler can evaluate it
-                at compile time. <code>bf16div</code>, the bfloat16 division
-                function, was still a standalone .cpp file with its logic
-                inlined directly. It needed to be extracted into
-                <code>src/__support/math/</code>.
+                LLVM libc is gradually moving higher math functions toward
+                header-only implementations. This is tied to C++23
+                <code>constexpr</code> math. If the implementation is available
+                in headers, the compiler can evaluate it at compile time instead
+                of emitting runtime calls.
               </p>
 
-              <h2>What The Change Actually Does</h2>
               <p>
-                Before the patch, <code>bf16div.cpp</code> directly called
-                <code>fputil::generic::div&lt;bfloat16&gt;(x, y)</code> and
-                dragged in a handful of includes itself. The entrypoint's CMake
-                target listed all the individual dependencies.
+                There is an ongoing effort tracking this direction.
+                <code>bf16div</code>, which implements division for
+                <code>bfloat16</code>, was still defined in a <code>.cpp</code>
+                file. Its logic directly invoked
+                <code>fputil::generic::div&lt;bfloat16&gt;</code> and pulled in
+                dependencies locally. This made it inconsistent with newer
+                patterns.
               </p>
+
+              <p>
+                The goal was to lift the implementation into
+                <code>src/__support/math/</code> and make the public entrypoint a
+                thin wrapper.
+              </p>
+
+              <h2>What Changed</h2>
+              <p>Before:</p>
+              <ul>
+                <li>
+                  <code>bf16div.cpp</code> contained the full implementation
+                </li>
+                <li>
+                  It directly called
+                  <code>fputil::generic::div&lt;bfloat16&gt;(x, y)</code>
+                </li>
+                <li>
+                  Dependencies were listed manually in the entrypoint CMake
+                  target
+                </li>
+              </ul>
 
               <p>After:</p>
 
@@ -274,50 +295,53 @@ LIBC_INLINE bfloat16 bf16div(double x, double y) {
 // libc/src/math/generic/bf16div.cpp
 LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
   return math::bf16div(x, y);
-}</pre
-              >
+}</pre>
 
               <p>
-                The entrypoint becomes a thin wrapper. The logic lives in the
-                header. The CMake entrypoint now depends on
-                <code>libc.src.__support.math.bf16div</code> instead of
-                enumerating the underlying headers. Bazel gets a matching
-                <code>libc_support_library</code> +
-                <code>libc_math_function</code> pair.
-              </p>
-
-              <h2>The Review Process</h2>
-              <p>
-                My first submission had the <code>constexpr</code> qualifier
-                added to <code>fputil::generic::div</code> itself. The reviewer,
-                <strong>bassiounix</strong>, asked me to look at recently merged
-                PRs and spot the pattern. Turns out they weren't adding
-                <code>constexpr</code> to the underlying generic template —
-                that's a much bigger change with wider impact. Just the wrapper
-                stays non-<code>constexpr</code> for now. I reverted that,
-                cleaned up redundant includes in the cpp file, fixed an
-                alphabetical ordering issue in a test CMake file, and
-                accidentally deleted a log2 test case I had to restore. Not my
-                finest hour.
+                The structure now matches other math functions: the actual
+                computation lives in a header under <code>__support</code>; the
+                exported symbol is a wrapper that forwards into the support
+                layer; the entrypoint becomes trivial and easier to reason about.
               </p>
 
               <p>
-                Second round:
-                <em>"LGTM overall. Please format the Bazel build file."</em>
-                Formatted it. Third round: approved and merged.
+                Build system changes followed the same pattern: CMake now depends
+                on <code>libc.src.__support.math.bf16div</code> instead of listing
+                internal headers; Bazel adds a corresponding
+                <code>libc_support_library</code> and
+                <code>libc_math_function</code>. This reduces duplication and
+                keeps dependency graphs aligned across build systems.
+              </p>
+
+              <h2>Review Notes</h2>
+              <p>
+                My first version tried to push <code>constexpr</code> into
+                <code>fputil::generic::div</code>. That was wrong.
               </p>
 
               <p>
-                Four commits total across two force-pushes and a
-                merge-from-main. The whole thing took about a month from open to
-                merge, mostly just waiting between review cycles.
+                The reviewer pointed out that recent changes do not mark the
+                generic template itself as <code>constexpr</code>. Doing so
+                would affect a wide surface area and requires more careful
+                auditing. The intended pattern is to move structure first, then
+                enable <code>constexpr</code> in a controlled way.
               </p>
 
-              <blockquote>
-                Also: don't touch unrelated tests. Just don't.
-              </blockquote>
+              <p>I reverted that change and kept the wrapper simple.</p>
 
-              <h2>Tools I Learned Along The Way</h2>
+              <p>Other fixes during review:</p>
+              <ul>
+                <li>Removed redundant includes from the <code>.cpp</code></li>
+                <li>Fixed alphabetical ordering in a CMake test file</li>
+                <li>Restored a test I accidentally deleted</li>
+              </ul>
+
+              <p>
+                Second round feedback was minor. Formatting in the Bazel file.
+                After that, the patch was approved and merged.
+              </p>
+
+              <h2>Tools Used</h2>
               <p>
                 Contributing to LLVM requires a robust toolchain. Here's what I
                 used:
@@ -368,6 +392,16 @@ LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
                   navigating LLVM on Windows
                 </li>
               </ul>
+
+              <p>
+                <strong>PR:</strong>
+                <a
+                  href="https://github.com/llvm/llvm-project/pull/181400"
+                  target="_blank"
+                  >llvm/llvm-project#181400</a
+                ><br />
+                <strong>Merged:</strong> March 13, 2026
+              </p>
             </div>
             <div class="status-bar mt-16">
               <a href="../blog.html" class="btn">
