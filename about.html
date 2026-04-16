@@ -224,112 +224,33 @@
         <div class="window">
           <div class="window-title">
             <img
-              src="https://win98icons.alexmeub.com/icons/png/gears-0.png"
+              src="https://win98icons.alexmeub.com/icons/png/computer_two-0.png"
               class="icon-16"
               alt=""
             />
-            Security & Testing Tools
+            NoVMP — LLVM IR Backend
           </div>
           <div class="window-body" style="font-size: 12px">
-            <div
-              style="
-                margin-bottom: 12px;
-                padding-bottom: 12px;
-                border-bottom: 1px dotted #808080;
-              "
-            >
-              <strong style="display: block; margin-bottom: 4px">
-                <a
-                  href="https://github.com/google/sanitizers/wiki/AddressSanitizer"
-                  target="_blank"
-                  >AddressSanitizer</a
-                >
-              </strong>
-              <span style="color: #555"
-                >Memory error detector for C/C++. Detects buffer overflows,
-                use-after-free, and memory leaks.</span
-              >
-            </div>
-            <div
-              style="
-                margin-bottom: 12px;
-                padding-bottom: 12px;
-                border-bottom: 1px dotted #808080;
-              "
-            >
-              <strong style="display: block; margin-bottom: 4px">
-                <a
-                  href="https://valgrind.org/docs/manual/quick-start.html"
-                  target="_blank"
-                  >Valgrind</a
-                >
-              </strong>
-              <span style="color: #555"
-                >Instrumentation framework for memory debugging, profiling, and
-                leak detection.</span
-              >
-            </div>
-            <div
-              style="
-                margin-bottom: 12px;
-                padding-bottom: 12px;
-                border-bottom: 1px dotted #808080;
-              "
-            >
-              <strong style="display: block; margin-bottom: 4px">
-                <a href="https://github.com/google/googletest" target="_blank"
-                  >GoogleTest</a
-                >
-              </strong>
-              <span style="color: #555"
-                >C++ unit testing framework from Google. Used for writing and
-                organizing tests.</span
-              >
-            </div>
-            <div
-              style="
-                margin-bottom: 12px;
-                padding-bottom: 12px;
-                border-bottom: 1px dotted #808080;
-              "
-            >
-              <strong style="display: block; margin-bottom: 4px">
-                <a href="https://bazel.build/rules/language" target="_blank"
-                  >Bazel / Starlark</a
-                >
-              </strong>
-              <span style="color: #555"
-                >Fast, reproducible builds. Starlark is the Python-like language
-                for writing BUILD rules.</span
-              >
-            </div>
-            <div
-              style="
-                margin-bottom: 12px;
-                padding-bottom: 12px;
-                border-bottom: 1px dotted #808080;
-              "
-            >
-              <strong style="display: block; margin-bottom: 4px">
-                <a href="https://github.com/bazelbuild/tulsi" target="_blank"
-                  >Tulsi</a
-                >
-              </strong>
-              <span style="color: #555"
-                >Project builder that generates Xcode projects from Bazel build
-                files.</span
-              >
-            </div>
-            <div style="margin-bottom: 8px">
-              <strong style="display: block; margin-bottom: 4px">
-                <a href="https://github.com/tmandry/lavender" target="_blank"
-                  >Lavender</a
-                >
-              </strong>
-              <span style="color: #555"
-                >Generate Visual Studio projects from Bazel build files. VS Code
-                integration.</span
-              >
+            <p style="margin-top: 0">
+              Currently working on <strong>NoVMP</strong> — a fork of can1357's
+              static devirtualizer for VMProtect x64 3.x. The original backend
+              targets VTIL-Core, which is abandoned and never had a working
+              compiler.
+            </p>
+            <p>
+              I'm ripping it out and replacing it with an
+              <strong>LLVM IR backend</strong>: VMP handler emulation and IL
+              lifting from the original frontend stay intact, the optimization
+              and recompilation pipeline gets rebuilt on top of
+              <code>llvm::Module</code> and standard IR passes.
+            </p>
+            <div class="status-bar" style="margin-top: 12px">
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/chart1-2.png"
+                class="icon-16"
+                alt=""
+              />
+              Status: WIP, not yet functional
             </div>
           </div>
         </div>
