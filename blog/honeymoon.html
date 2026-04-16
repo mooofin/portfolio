@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="I Use a Gap Buffer, Bitch.">
+  <title>I Use a Gap Buffer, Bitch. - ~siddharth~</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Blog specific styles */
+    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+    .blog-content p { margin-bottom: 15px; }
+    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
+    .blog-content .img-container { text-align: center; margin: 20px 0; }
+    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
+    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
+    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
+    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="top-banner">
+  <marquee behavior="scroll" direction="left" scrollamount="3">
+    *** Reading: I Use a Gap Buffer, Bitch. *** Post Date: 2026-01-26 ***
+  </marquee>
+</div>
+
+<table class="main-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="sidebar" valign="top">
+      <div class="sidebar-box">
+        <div class="sidebar-title">Navigation</div>
+        <ul class="nav-list">
+          <li><a href="../index.html">[ Home ]</a></li>
+          <li><a href="../about.html">[ About Me ]</a></li>
+          <li><a href="../projects.html">[ Projects ]</a></li>
+          <li><a href="../blog.html">[ Blog ]</a></li>
+
+        </ul>
+      </div>
+      
+      <div class="sidebar-box">
+        <div class="sidebar-title">Actions</div>
+        <ul class="nav-list">
+          <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
+          <li><a href="#">Top of Page</a></li>
+        </ul>
+      </div>
+    </td>
+
+    <td class="content" valign="top">
+      <div class="page-header">
+        <h1>I Use a Gap Buffer, Bitch.</h1>
+        <hr class="fancy-hr">
+      </div>
+
+      <p class="breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../blog.html">Blog</a> &gt; I Use a Gap Buffer, Bitch.</p>
+
+      <div class="content-box">
+        <div class="blog-meta">
+           <strong>Date:</strong> 2026-01-26 | <strong>Tags:</strong> 
+        </div>
+        
+        <div class="blog-content">
+          <p>
+I got tired of waiting for my editor to load, and I got tired of remembering which mode I was in. So I wrote my own.
+</p>
+<p>
+<strong>FUCK VIM.</strong>
+</p>
+<p>
+And Honeymoon doesn’t run a Lisp interpreter that eats 4GB of RAM on startup. It is a minimal, Emacs-inspired terminal text editor written in <strong>C++20</strong>.
+</p>
+<p>
+It is fast.
+</p>
+<h2>Features</h2>
+<ul><li><strong>Visual Mode</strong></li></ul>
+<p>
+<code>Ctrl-Space</code> to mark. Move. <code>Ctrl-W</code> to cut.
+Just like Emacs, but without the pinky pain.
+(Okay, maybe some pinky pain.)
+</p>
+<h2>Architecture</h2>
+<p>
+The code is split into three namespaces:
+</p>
+<ul><li><code>honeymoon::kernel</code></li></ul>
+<p>
+Core editor logic.
+</p>
+<ul><li><code>honeymoon::driver</code></li></ul>
+<p>
+Raw mode, TTY I/O, screen rendering.
+</p>
+<ul><li><code>honeymoon::mem</code></li></ul>
+<p>
+A templated gap buffer implementation.
+</p>
+<h3>The Gap Buffer</h3>
+<p>
+Instead of a simple string or a rope (which can be complex), Honeymoon uses a <strong>Gap Buffer</strong>. This is a dynamic array with a "gap" (a sequence of unused entries) that moves with the cursor. This makes insertions and deletions at the cursor position extremely efficient—O(1) in most cases—without the overhead of shifting the entire document.
+</p>
+<pre class="code-block"><code>// Simplified concept
+['H', 'e', 'l', 'l', 'o', _, _, _, _, 'W', 'o', 'r', 'l', 'd']
+                          ^ Gap starts here
+</code></pre>
+<h2>Build</h2>
+<p>
+You need a C++20 compiler and <code>make</code>.
+</p>
+<ul><li>Linux: you’re fine.</li><li>Windows: WSL or sm.</li></ul>
+<pre class="code-block"><code>make
+./honeymoon filename.txt
+</code></pre>
+<h2>Controls</h2>
+<p>
+If you know Vim, I’m sorry.
+</p>
+<p>
+<p align="center">
+<img src="/images/posts/honeymoon/honeymoon-blog.gif" alt="gif">
+</p>
+</p>
+<h2>Internals</h2>
+<p>
+For a deeper dive into the technical details (ANSI, custom drivers, etc.), check out the full internals documentation:
+<a href="https://mooofin.github.io/honeymoon/index.html">mooofin.github.io/honeymoon/index.html</a>
+</p>
+        </div>
+      </div>
+
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  <hr class="fancy-hr">
+  <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
+</div>
+
+</body>
+</html>

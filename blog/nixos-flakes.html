@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Provenance and Purity: Nix programming language & Fixed-Output Flakes">
+  <title>Provenance and Purity: Nix programming language & Fixed-Output Flakes - ~siddharth~</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Blog specific styles */
+    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+    .blog-content p { margin-bottom: 15px; }
+    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
+    .blog-content .img-container { text-align: center; margin: 20px 0; }
+    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
+    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
+    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
+    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="top-banner">
+  <marquee behavior="scroll" direction="left" scrollamount="3">
+    *** Reading: Provenance and Purity: Nix programming language & Fixed-Output Flakes *** Post Date: 2025-10-02 ***
+  </marquee>
+</div>
+
+<table class="main-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="sidebar" valign="top">
+      <div class="sidebar-box">
+        <div class="sidebar-title">Navigation</div>
+        <ul class="nav-list">
+          <li><a href="../index.html">[ Home ]</a></li>
+          <li><a href="../about.html">[ About Me ]</a></li>
+          <li><a href="../projects.html">[ Projects ]</a></li>
+          <li><a href="../blog.html">[ Blog ]</a></li>
+
+        </ul>
+      </div>
+      
+      <div class="sidebar-box">
+        <div class="sidebar-title">Actions</div>
+        <ul class="nav-list">
+          <li><a href="javascript:history.back()">&lt;&lt; Go Back</a></li>
+          <li><a href="#">Top of Page</a></li>
+        </ul>
+      </div>
+    </td>
+
+    <td class="content" valign="top">
+      <div class="page-header">
+        <h1>Provenance and Purity: Nix programming language & Fixed-Output Flakes</h1>
+        <hr class="fancy-hr">
+      </div>
+
+      <p class="breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../blog.html">Blog</a> &gt; Provenance and Purity: Nix programming language & Fixed-Output Flakes</p>
+
+      <div class="content-box">
+        <div class="blog-meta">
+           <strong>Date:</strong> 2025-10-02 | <strong>Tags:</strong> 
+        </div>
+        
+        <div class="blog-content">
+          <h1>Provenance and Purity: Nix programming language & Fixed-Output Flakes</h1>
+<p>
+Before getting into this , let me explain what functional programming languages are :)
+</p>
+<p>
+The wikepedia quotes  - <strong>functional programming</strong> is a <a href="https://en.wikipedia.org/wiki/Programming_paradigm "Programming paradigm"">programming paradigm</a> where programs are constructed by <a href="https://en.wikipedia.org/wiki/Function_application "Function application"">applying</a> and <a href="https://en.wikipedia.org/wiki/Function_composition_\(computer_science\">composing</a> "Function composition (computer science)") <a href="https://en.wikipedia.org/wiki/Function_\(computer_science\">functions</a> "Function (computer science)"). It is a <a href="https://en.wikipedia.org/wiki/Declarative_programming "Declarative programming"">declarative programming</a> paradigm in which function definitions are <a href="https://en.wikipedia.org/wiki/Tree_\(data_structure\">trees</a> "Tree (data structure)") of <a href="https://en.wikipedia.org/wiki/Expression_\(computer_science\">expressions</a> "Expression (computer science)") that map <a href="https://en.wikipedia.org/wiki/Value_\(computer_science\">values</a> "Value (computer science)") to other values, rather than a sequence of <a href="https://en.wikipedia.org/wiki/Imperative_programming "Imperative programming"">imperative</a> <a href="https://en.wikipedia.org/wiki/Statement_\(computer_science\">statements</a> "Statement (computer science)") which update the <a href="https://en.wikipedia.org/wiki/State_\(computer_science\">running state</a> "State (computer science)") of the program.
+</p>
+<p>
+Let's see that visually , ive written some examples to help understand this better
+</p>
+<p>
+Let me  establish an important notion: <strong>defining components through functions that accept values for their variation points</strong> provides far greater flexibility than approaches where these variation points are bound using <strong>global variables</strong>.
+</p>
+<p>
+Imagine we have a library called muffin (YES) , it has several options built it , and one option called " confict checker" is enabled . now imagine that this setting is important and it can change semantics . The point is that trying to make is a build with "conflict-checker" cannot be substituted by
+a build without "confict-checker" , and vice versa.
+</p>
+<p>
+Now further adding to this lets say i have a component , consisting of two programs, foo and bar, that require the muffin library with and without "conflict-checker" respectively .
+</p>
+<p>
+It's very cutesey to model this in a purely functional langauge
+</p>
+<p>
+I could just make a function for muffin which does so
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/1.png" alt=""></div>
+<p>
+We can now call this function twice with different values, in the derivations of foo and bar
+respectively:
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/2.png" alt=""></div>
+<p>
+Mhmm so how do we adress this issue moving forward  ?
+</p>
+<p>
+If the language were a Makefile-like declarative formalism, then
+it would be quite hard to implement this example. Makefiles  are a formalism to
+describe the construction of (small-grained) components. Variability in a component is
+typically expressed by setting variables  globally before invoking <code>make</code>. For example, one might write:
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/3.png" alt=""></div>
+<p>
+A significant challenge with Make is building a component in multiple configurations at the same time. For example, it's not obvious how to build both <code>foo</code> and <code>bar</code> with their different library variants in a single, clean process
+</p>
+<p>
+When developers need to do this, they often resort to special workarounds. A common technique is to call <code>make</code> multiple times (recursively), passing different flags on each call and manually renaming the output files to avoid conflicts.
+</p>
+<p>
+An imperative scripting language, however, would make this task more straightforward. A script written in that style might look like this
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/4.png" alt=""></div>
+<p>
+However, this imperative approach introduces the same classic problems found in general-purpose scripting. The biggest issue is that the <strong>order of execution is critical</strong>, which makes it difficult to know the exact configuration being passed to a build function like <code>muffin()</code> at any given moment.
+</p>
+<p>
+While you can trace the logic in a trivial example, the complexity quickly becomes unmanageable as the build script grows with more functions, variables, and <code>if/else</code> branches. It's important to note that this isn't just a problem with global variables. Even if <code>conflictChecker</code> were a property of a <code>muffin</code> object, you would still need to track the program's execution step-by-step to understand the object's state when <code>muffin()</code> is called, which makes the whole build process hard to reason about :(
+</p>
+<h2>Laziness (JIT compilation)</h2>
+<p>
+Ok so a way to solve this would be to use a lazy language
+A key feature of a <strong>lazy language</strong> is that it only computes a value at the exact moment it's needed. This property is incredibly powerful for a language used to describe software packages and systems.
+</p>
+<p>
+Consider a typical <code>flake.nix</code> (ill explain this on the way but for now think of it as a substitute for a make file ) for a project. You can define a large and varied collection of outputs in that single file, such as:
+</p>
+<p>
+- <code>packages</code> for a web server and a command-line tool.
+</p>
+<p>
+- <code>devShells</code> for your frontend and backend teams.
+</p>
+<p>
+- <code>nixosConfigurations</code> for a production server and a local virtual machine.
+</p>
+<p>
+Because the language is <strong>lazy</strong>, if you run a command like <code>nix build .#server</code>, Nix will <strong>only</strong> evaluate and build that specific server package and its dependencies. It completely ignores the definitions for the command-line tool, the development shells, and the other system configurations, saving a huge amount of time and resources. You can define an entire universe of components without paying the price for anything you don't immediately use
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/5.png" alt=""></div>
+<p>
+Since the language is <strong>lazy</strong>, the right-hand sides of the attributes will not be evaluated until they are actually needed, if at all.
+</p>
+<p>
+For instance, if we install any specific component from this set, say,
+</p>
+<pre class="code-block"><code>nix-env -i hello
+</code></pre>
+<p>
+then only the <strong>hello</strong> value will be evaluated (although it may in turn require other values to be evaluated, such as <strong>stdenv</strong>).
+</p>
+<p>
+Laziness also allows greater efficiency if only parts of a complex data structure are needed.
+</p>
+<p>
+Take the operation:
+</p>
+<pre class="code-block"><code>nix-env -qa
+</code></pre>
+<p>
+which prints the <strong>name</strong> attribute of all top-level derivations in a Nix expression.
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/6.png" alt=""></div>
+<p>
+Laziness allows arguments to be passed to functions that may not be used is the main idea .
+</p>
+<h2>NIX FLAKES : ) </h2>
+<p>
+A <strong>Nix expression</strong> is code written in the Nix language that describes how to build or configure something, while a <strong>Nix file</strong> is a <code>.nix</code> file that contains one or more of these Nix expressions.
+</p>
+<p>
+For example:
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/8.png" alt=""></div>
+<p>
+The first line, <code>{ pkgs ? import <nixpkgs> {} }:</code>, defines a function that takes an argument named <code>pkgs</code>, which by default is set to the result of importing <code><nixpkgs></code>. This gives the expression access to the standard Nix package set, allowing the use of common utilities and build functions. The next expression, <code>pkgs.stdenv.mkDerivation { ... }</code>, declares a derivation, which is a build recipe describing how to construct a package. Inside this derivation, the attributes <code>pname = "muffin";</code> and <code>version = "1.0.0";</code> specify the package name and version. The <code>src = ./.;</code> line indicates that the source files for the package are located in the current directory, i.e., the same directory as the <code>.nix</code> file itself. The <code>buildPhase</code> section is a shell script that runs during the build process; in this case, it simply creates a file named <code>muffin.txt</code> containing the message “Baking a delicious muffin…”.
+</p>
+<p>
+Hopefully this muffin example gave an idea about how nix expressions work , just the syntax tho :3
+</p>
+<h2>So what the fuck are flakes now ? </h2>
+<p>
+The basic idea of flakes isn't that complicated, but it does require a little bit of basic understanding of the nix programming language(try making your own .nix expression adhering to the muffin example the nix error checker is very nice and :) ) . A <code>flake.nix</code> file is an attribute set with two attributes called <code>inputs</code> and <code>outputs</code>. The <code>inputs</code> attribute describes the other flakes that you would like to use; things like nixpkgs or home-manager. You have to give it the url where the code for that other flake is, and usually people use GitHub. The <code>outputs</code> attribute is a _function_, which is where we really start getting into the nix programming language. Nix will go and fetch all the inputs, load up _their_ <code>flake.nix</code> files, and it will call your <code>outputs</code> function with all of _their outputs_ as arguments. The outputs of a flake are just whatever its <code>outputs</code> function returns, which can be basically anything the flake wants it to be. Finally, nix records exactly which revision was fetched from GitHub in <code>flake.lock</code> so that the versions of all your inputs are pinned to the same thing until you manually update the lock file.
+</p>
+<p>
+Now, I said that the outputs of a flake can be basically anything you want, but _by convention_, there's a schema that most flakes adhere to. For instance, flakes often include outputs like <code>packages.x86_64-linux.foo</code> as the derivation for the <code>foo</code> package for <code>x86_64-linux</code>. But it's important to understand that _this is a convention_, which the nix CLI uses by default for a lot of commands. The reason I consider this important to understand is because people often assume flakes are some complicated thing, and that therefore flakes somehow change the fundamentals of how nix works and how we use it. They don't. All the flakes feature does is look at the inputs you need, fetch them, and call your outputs function. It's truly that simple. Pretty much everything else that comes up when using flakes is actually just traditional nix, and not flakes-related at all.
+</p>
+<p>
+Enough yapping , lets see an actual flake now which i use for my hyprland ecosystem
+</p>
+<p>
+This flake defines a <strong>NixOS system configuration</strong> using the experimental <strong>flakes system</strong>. At its core, the flake is a self-contained directory that includes a <code>flake.nix</code> file, specifying inputs, outputs, and the system it builds. The flake begins with a <code>description</code> field, giving a human-readable label for the configuration, in this case <code>"My NixOS configuration"</code>.
+</p>
+<pre class="code-block"><code>{
+  description = "My NixOS configuration";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = { self, nixpkgs, caelestia-shell, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
+
+        modules = [
+          ./configuration.nix
+
+          # Inline module to add Caelestia Shell with CLI
+          {
+            environment.systemPackages = [
+              (caelestia-shell.packages.${system}.with-cli)
+            ];
+          }
+        ];
+
+        specialArgs = { inherit inputs system; };
+      };
+    };
+}
+</code></pre>
+<p>
+The <code>inputs</code> section declares dependencies required by this flake. It includes <code>nixpkgs</code>, referencing the unstable branch of the official NixOS package collection from GitHub. It also includes a custom flake, <code>caelestia-shell</code>, which represents a shell environment maintained externally. To ensure consistency, <code>caelestia-shell</code> is configured to use the same <code>nixpkgs</code> version as the main flake via <code>inputs.nixpkgs.follows = "nixpkgs"</code>. This prevents version mismatches between package sets when building the system.
+</p>
+<p>
+The <code>outputs</code> function defines what this flake produces. It takes all declared inputs and makes them available for use within the flake. Inside <code>outputs</code>, the <code>system</code> variable is set to <code>"x86_64-linux"</code>, and <code>pkgs</code> is assigned the corresponding <code>nixpkgs</code> package set for that system. This allows the flake to reference packages specific to the target architecture during system construction.
+</p>
+<p>
+Within the outputs, a NixOS configuration called <code>nixos</code> is defined using <code>nixpkgs.lib.nixosSystem</code>. This function builds a fully specified NixOS system. The configuration uses two modules: the main <code>configuration.nix</code> file, which contains standard user-defined system settings, and an inline module that adds the Caelestia Shell CLI to <code>environment.systemPackages</code>. This ensures that the shell is globally available on the system. The <code>specialArgs</code> attribute passes <code>inputs</code> and <code>system</code> to all modules, allowing modules to reference flake inputs or architecture-specific values if necessary.
+</p>
+<h2>Should I use flakes in my project?</h2>
+<p>
+I think that Nix flakes have some considerable benefits, such as:
+</p>
+<p>
+- Convenient pinning of evaluation-time dependencies
+- Eliminating pointless rebuilds of code by only including tracked files in builds
+- Making Nix code, on average, much more reproducible by pervasive pinning
+- Allegedly caching evaluation
+- Possibly making Nix easier to learn by reducing the amount of poking at strange attribute sets and general <code>NIX_PATH</code> brokenness
+</p>
+<p>
+The <strong>Nix language</strong>, along with functions and <code>nixpkgs</code> utilities, provides a powerful composition primitive. In my experience, these tools are especially useful in <strong>monorepos</strong>, where different parts of a project need to be assembled modularly and flexibly. Functions allow parametrization and reuse, while <code>nixpkgs</code> provides a rich set of prebuilt packages and build utilities that make composing systems straightforward.
+</p>
+<p>
+While <strong>flakes</strong> are a useful entry point for projects and make dependency management, version control integration, and lockfiles easy, they are not always the most practical tool for composing software. In medium-sized projects, locking subproject dependencies can be undesirable, and for very small utilities, writing a separate <code>flake.nix</code> feels like unnecessary overhead. In very large projects, like <code>nixpkgs</code> itself, managing everything through flakes would make the <code>flake.nix</code> file enormous and unwieldy, containing potentially hundreds of thousands of inputs.
+</p>
+<p>
+Flakes also have limitations when it comes to <strong>flexible builds</strong>. They provide minimal support for runtime configuration, and customizing builds often requires awkward workarounds like <code>--override-input</code>. This means all build variants must either be anticipated ahead of time or implemented using traditional Nix primitives such as functions, overlays, and modules. Flakes are also difficult to use for <strong>cross-compilation</strong>, since there is no straightforward way to specify a target architecture, making constructs like <code>packages.${system}</code> unusable in that context.
+</p>
+<p>
+Because of these constraints, even in a flakes-based setup, it is often more effective to rely on <strong>traditional Nix composition primitives</strong> to assemble software both in the small and in the large. A flake can then serve mainly as an <strong>entry point</strong> and a way to fetch dependencies needed for evaluation, while build-time dependencies can be handled through primitives like <code>pkgs.fetchurl</code> or <code>pkgs.fetchFromGitHub</code>. To expose multiple configurations of a program, it is common to write a lambda that accepts configuration parameters and call it multiple times to produce different outputs. This approach separates configuration capability from specific build definitions, avoiding the need to embed complex logic in the flake itself.
+</p>
+<p>
+One of the most distinctive features of Nix is that it is <strong>Turing complete</strong>. While this can make static analysis difficult, it also provides immense flexibility: packages can be patched programmatically, configurations can be generated dynamically, and arbitrary files can be read and processed at build time. Because Nix is a <strong>functional language</strong>, its fundamental composition primitive is the function. Even constructs like NixOS modules or overlays are functions that can be imported, partially applied, or reused across projects. In practice, modules are usually imported by path rather than generated dynamically, because imports are deduplicated by filename.
+</p>
+<h2><code>flake.nix</code> (<code>default.nix</code>, <code>shell.nix</code>) in project directories</h2>
+<p>
+These are _developer_ packaging of projects: pinned tool versions, not caring as much about unifying dependencies with the system, etc. To this end, they provide dev shells to work on a project, and are versioned _with_ the project. Additionally they may provide packaging to install a tool separately from nixpkgs.
+</p>
+<p>
+There are a couple of things that make these notable compared to the packaging one might see in nixpkgs:
+</p>
+<p>
+- In nixpkgs, more build time is likely tolerated, and there is little desire to do incremental compilation. Import from derivation is also banned from nixpkgs. For these reasons, packaging outside of nixpkgs likely uses different frameworks and other similar tools that reduce the burden of maintaining Nix packaging or speed up rebuilds.
+- It's versioned with the software and so more crimes are generally tolerated: one might pin libraries or other such things, and update nixpkgs infrequently.
+- They include the tools to _work on_ a project, which may be a superset of the tools required to build it, for example in the case of checked-in generated code or other such things.
+- They may include things like checks, post-commit hooks and other project infrastructure.
+</p>
+<p>
+Shells are just made of environment variables and (without building one at least) don't create a single <code>bin</code> folder of all the things in the shell, for instance. Also, since they are made of environment variables, they don't have much ability to perform effects such as managing services or on-disk state.
+</p>
+<p>
+Use this for tools specific to one project, such as compilers and libraries for that project. Depending on taste and circumstances, these may or may not be used for language servers. Generally these are not used for providing tools like <code>git</code> or <code>nix</code> that are expected to be on the system, unless they are required to actually compile the software.
+</p>
+<p>
+(Note that for Bad Reasons, <code>nix-shell -p</code> is not equivalent to <code>nix shell</code>: the latter does not provide a compiler or <code>stdenv</code> as would be necessary to build software. The technical reason here is that <code>nix shell</code> constructs the shell within C++ code in Nix, whereas <code>nix-shell -p</code> is more or less <code>nix develop</code> on a questionable string templated expression involving <code>pkgs.mkShell</code>)
+</p>
+<p>
+To demonstrate this i've written a  Rust + Nix project with <strong>multi-target cross-compilation and Docker support</strong>
+</p>
+<p>
+In this guide, we’ll learn how to build a <strong>Rust project</strong> using <strong>Nix flakes</strong> with full <strong>multi-target cross-compilation</strong> and <strong>Docker image generation</strong>. Instead of relying on local toolchains or ad-hoc scripts, we’ll declare everything Rust versions, dependencies, targets, and environment inside a single <code>flake.nix</code> file. This gives us a fully reproducible, isolated, and declarative setup. By the end, you’ll understand how Nix ensures consistent builds across machines, how it provisions multiple targets like <code>x86_64-unknown-linux-musl</code>, <code>aarch64-unknown-linux-gnu</code>, and <code>x86_64-pc-windows-gnu</code>, and how to package your Rust binary inside a lightweight Docker image all from one flake-based configuration
+</p>
+<h3>Why Use Nix Flakes for ANY Projects?</h3>
+<div class="img-container"><img src="../images/posts/nixos-flakes/Rustflakes.png" alt=""></div>
+<p>
+When building Rust applications, especially for production or cross-platform distribution, you face several common challenges. Different machines often have different Rust versions installed via <code>rustup</code>, leading to toolchain drift. Native libraries like OpenSSL vary wildly across distros, creating system dependency chaos. Setting up Windows or ARM targets requires painful manual linker configuration. Build scripts that work perfectly on your local machine mysteriously break in CI environments, and multi-stage Dockerfiles end up duplicating build logic in confusing ways.
+</p>
+<p>
+<strong>Nix Flakes Solution:</strong>
+</p>
+<p>
+With the <a href="https://github.com/mooofin/Rustflakes">Rustflakes</a> approach, you get a much cleaner solution. One <code>flake.nix</code> file becomes your single source of truth, declaring the Rust version, all system dependencies, and build targets in one place. Builds are hermetic—they don't rely on whatever happens to be installed on your host system. Cross-compilation becomes trivial: just add a target to <code>flake.nix</code> and run <code>nix build .#windows</code> or <code>.#aarch64</code>. You even get Docker images for free, generated directly from Nix derivations. Since dependencies are vendored in <code>vendor/</code>, builds work offline without network access.
+</p>
+<p>
+This makes Rustflakes particularly valuable for teams needing consistent builds across developer machines and CI, projects targeting multiple platforms like Linux, Windows, and ARM, embedded or IoT applications requiring specific toolchain versions, and security-conscious environments requiring reproducible builds.
+</p>
+<p>
+The repository demonstrates this with working examples for <code>x86_64-linux</code>, <code>aarch64-linux</code>, and <code>x86_64-windows</code> targets, all built from the same declarative configuration.
+</p>
+<h3>Building the Project</h3>
+<p>
+Let's walk through using this Nix-based Rust project:
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/10.png" alt=""></div>
+<p>
+Entering the environment gives us
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/11.png" alt=""></div>
+<p>
+- If you want to run a simple stand-alone binary just once, use nix run. E.g. <code>nix run nixpkgs#tree</code> (the command will have to live in <code>$out/bin/<pname></code>) (or <code>meta.mainProgram</code>, if that exists)
+</p>
+<p>
+- To pass it arguments, use <code>--</code> or your flags will be interpreted by <code>nix run</code>, not passed to the command. E.g. <code>nix run nixpkgs#tree -- -a</code>
+</p>
+<p>
+- To put that in the PATH of your current shell, temporarily, so you can run it a bunch of times today: <code>nix shell nixpkgs#ffmpeg</code>. Tip: to enable multiple programs: <code>nix shell nixpkgs#{ffmpeg,tree,imagemagick}</code>.
+</p>
+<p>
+- Maybe your desired binary exists in <code>$out/bin</code>, but has a different name? This is an odd one: <code>nix shell nixpkgs#postgresql --command psql ...</code> (extra odd: you don't need to use <code>--</code> to separate program args from nix args.) (I understand the "why" behind this, but I hate it. The new <code>nix</code> command was supposed to solve the counterintuitive UI problem, but here we are, back to square 1.
+</p>
+<p>
+- Say you want to "build" a derivation, you use <code>nix build</code>, although if it's available in a binary cache it will just fetch it from there: <code>nix build nixpkgs#imagemagick</code>. Now you have it in your <code>/nix/store</code>, and a symlink to that path in <code>./result</code>.
+</p>
+<p>
+- Sometimes I just want to build something and print the path to stdout, without actually creating a link in <code>/nix/store</code>. Combine two flags: <code>nix build nixpkgs#imagemagick --print-out-paths --no-link</code>.
+</p>
+<p>
+- I use that to do stuff like this: <code>$ nix run nixpkgs#tree -- $(nix build nixpkgs#imagemagick --print-out-paths --no-link)/bin</code>.
+</p>
+<p>
+- Or this, on mac: <code>open $(nix build nixpkgs#grandperspective --print-out-paths --no-link)/Applications/*</code>
+</p>
+<p>
+- You can see how <code>nix run</code> really is just syntactic sugar for <code>$(nix build --no-link --print-out-paths <deriv>)/bin/<deriv.meta.mainProgram or deriv.pname></code> (sort of)
+</p>
+<p>
+But my all time favourite is <code>nix develop</code>: it plops you in a _build shell_ for a derivation. This means you can pretend you are the nix builder, locally. Including fetching the source!
+</p>
+<p>
+E.g., to build sbcl (the lisp compiler) locally, without installing anything else nor even downloading the source, just:
+</p>
+<pre class="code-block"><code>$ cd $(mktemp -d)
+$ nix develop nixpkgs#sbcl
+$ unpackPhase
+$ cd *
+$ patchPhase
+$ eval "$buildPhase"
+$ .... debug problems here...
+</code></pre>
+<p>
+I think this is very neat.
+</p>
+<p>
+SO to summarise
+</p>
+<p>
+- nix shell: alters your shell. Use it when you want to _use_ a package.
+</p>
+<p>
+- nix develop: for _developing_ something. Only use it when you are developing a package.
+</p>
+<p>
+- nix run: one-off running of programs.
+</p>
+<p>
+- nix build: ensure a derivation is available in your /nix/store. Either download or build. Optionally: create symlink in ./result, and/or print the output path to stdout, and/or print build noise to stderr (<code>--print-build-logs</code>).
+</p>
+<p>
+Coming back to the project we can see that muhehe
+</p>
+<div class="img-container"><img src="../images/posts/nixos-flakes/12.png" alt=""></div>
+<div class="img-container"><img src="../images/posts/nixos-flakes/13.png" alt=""></div>
+<p>
+Let's break down what the nix approach using flakes solves here , ill adress the main things in packaging
+</p>
+<h3>1. Reproducibility</h3>
+<p>
+Normally, if you just run <code>cargo build</code>, your binary depends on several local factors: the version of Rust installed on your machine, the versions of system libraries like <code>libssl</code> or <code>libsqlite</code>, and the state of your local <code>Cargo.lock</code>. With Nix, the build becomes fully reproducible. It uses a specific Rust toolchain (nightly in our example), relies on vendored dependencies in the <code>vendor/</code> directory, and incorporates all libraries declared in the <code>flake.nix</code> dev shell. The result is that anyone on any machine with Nix installed can build the exact same binary, eliminating the common “works on my machine” problems.
+</p>
+<h3>2. Isolation</h3>
+<p>
+Nix builds everything inside a sandbox located in <code>/nix/store</code>, which prevents accidental dependencies on files outside the project or on system-installed libraries or Rust versions. This isolation ensures that builds are deterministic and safe, making it ideal for continuous integration and deployment pipelines.
+</p>
+<h3>3. Cross-compilation</h3>
+<p>
+Building for multiple targets such as Linux, ARM, or Windows normally requires installing Rust targets manually and configuring toolchains and linker flags. With Nix, you can declare all your targets in <code>flake.nix</code> for example, <code>x86_64-unknown-linux-musl</code>, <code>aarch64-unknown-linux-gnu</code>, and <code>x86_64-pc-windows-gnu</code>. Nix automatically sets up all the required compilers and Rust standard libraries for these targets, making cross-compilation seamless.
+</p>
+<h3>4. Automation and Declarative Builds</h3>
+<p>
+Using Nix eliminates the need for manual scripts like <code>build-all.sh</code>. Everything is declarative in <code>flake.nix</code>: the dev environment is set up automatically with <code>nix develop</code>, binary builds happen with <code>nix build .#default</code>, and cross-compilation targets are handled automatically. This declarative approach makes your Rust project fully CI/CD-ready with zero surprises.
+</p>
+<h3>Wrapping it up </h3>
+<h3>A Language for Builders</h3>
+<p>
+We need to find a better way to write builders. <strong>Shell scripts</strong> are simply not a good language for this purpose. The <strong>Unix shell</strong> is quite good as component glue which is what we use it for but it is not <strong>safe enough</strong>. It is, in fact, virtually impossible to write _“correct”_ shell scripts that do not fail unexpectedly for banal reasons on certain inputs or in certain situations.
+</p>
+<p>
+#### Problems with Shell Scripts
+</p>
+<p>
+Here are some of the main problems in the language:
+</p>
+<p>
+- <strong>Variable interpolation</strong> (e.g., <code>$foo</code>) happens by default.
+This causes most shell scripts to fail on file names that contain spaces or newlines.
+The same applies to automatic _globbing_ (expansion of special characters such as <code>*</code>).
+</p>
+<p>
+- <strong>Undefined variables</strong> do not signal an error.
+</p>
+<p>
+- <strong>Non-zero exit codes</strong> from commands are ignored by default.
+Worse, it is extremely hard to catch errors from the left-hand sides of pipes.
+</p>
+<p>
+---
+</p>
+<p>
+In fact, the whole <strong>Unix toolchain</strong> is not conducive to writing correct code:
+</p>
+<p>
+- <strong>Command-line arguments</strong> in Unix are usually overloaded.
+For example, there is an ambiguity in most Unix tools between options and file names starting with a dash.
+</p>
+<p>
+- The <strong>pipe model</strong> assumes that all tools read and write _flat text files_ without a well-defined structure.
+This makes it hard to extract relevant data in a structured way. Typically, regular expressions in conjunction with tools like <code>grep</code>, <code>sed</code>, <code>awk</code>, and <code>perl</code> are used to extract data but this tends to be brittle. The regular expressions hardly ever cover all possibilities.
+</p>
+<p>
+- Similarly, the fact that <strong>options are flat strings</strong> makes it hard to pass structure, necessitating escaping.
+For instance, the command <code>grep -q "$filename"</code> to see whether a certain file name occurs in a list fails to account for the fact that <code>grep</code> interprets some characters in <code>$filename</code> as <strong>regular expression meta-characters</strong>.
+</p>
+<p>
+---
+</p>
+<h3>The Problem of Eliminating “Bad” Components in a Purely Functional Model</h3>
+<p>
+While the <strong>purely functional model</strong> used by Nix offers strong guarantees of reproducibility and non-interference, it introduces a unique challenge:
+How can we ensure that all uses of a certain <strong>“bad” component</strong> such as one containing a security vulnerability have been fully eliminated?
+</p>
+<p>
+Consider a scenario where a <strong>fundamental dependency</strong>, such as <strong>Zlib</strong>, is discovered to contain a critical security flaw.
+Because Zlib is widely used by many other components and applications, we must guarantee that <strong>every package</strong> depending on the vulnerable version is replaced with one built against a <strong>patched version</strong>.
+</p>
+<p>
+In principle, we might attempt to update everything using a command like:
+</p>
+<pre class="code-block"><code>nix-env -u "*"
+</code></pre>
+<p>
+However, this approach is <strong>not guaranteed</strong> to remove all vulnerable components especially if some were installed from <strong>arbitrary third-party sources</strong> outside of <strong>Nixpkgs</strong>.
+</p>
+<p>
+This limitation arises from the very <strong>non-interference property</strong> that makes Nix functional and reproducible: each component is built in isolation, without being globally overwritten or modified in place. While this ensures determinism, it also means that <strong>outdated or insecure builds can persist</strong> if not explicitly replaced.
+</p>
+<p>
+---
+</p>
+<h3>Toward a Solution</h3>
+<p>
+To address this, the system needs a <strong>generic detection mechanism</strong> that can identify the presence or usage of “bad” components.
+Such a mechanism would rely on a <strong>blacklist</strong> describing known-vulnerable packages or derivations. The build system could then trace dependency graphs and flag (or prevent) any components that still depend on blacklisted items.
+</p>
+<p>
+This approach ensures that security updates are <strong>systematic and verifiable</strong>, preserving the advantages of the functional model while adding <strong>safety guarantees</strong> against vulnerable dependencies.
+</p>
+<p>
+In essence, while Nix’s functional model prevents uncontrolled interference, it also prevents automatic global replacement of insecure components. The solution lies in <strong>explicit detection and tracing mechanisms</strong>, guided by a <strong>blacklist</strong>, that can systematically ensure the removal and replacement of all affected packages combining <strong>deterministic builds</strong> with <strong>reliable security assurance</strong>.
+</p>
+<h3>Some honest thoughts </h3>
+<p>
+Contrary to popular believe, you don't need to learn the nix language to use nix. From your perspective, nix can be glorified json for configuring your system. There is much more to the programming language that you probably won't ever have to care about.
+</p>
+<p>
+I don't think NixOS is intrinsically more work or more complicated than Debian. It can be if you are coming from a traditional distro or if your specific use case is not supported well. E. g. setting up a web server, a firewall or other system components is much easier in NixOS. Getting some random python package working however can be a big pain. If you use popular software you should be good.
+</p>
+<p>
+I'd argue using NixOS is more involved at the beginning but gets much less involved after you set things up as generally things don't break. Once in a while you get a deprecation message and may need to adjust your configuration - that's it.
+</p>
+<p>
+I find myself however stumbling upon better ways of configuring my system and steadily improving my set up. I believe I wouldn't be doing that on a traditional distro so much because it would be much harder to do these things while keeping state. So if you are a perfectionist or an enthusiast you will probably spend more time just because it's much more fun :3
+</p>
+        </div>
+      </div>
+
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  <hr class="fancy-hr">
+  <p>&#169; 2026 Siddharth | <a href="../index.html">Back to Home</a></p>
+</div>
+
+</body>
+</html>
