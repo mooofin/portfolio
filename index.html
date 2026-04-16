@@ -197,8 +197,15 @@
                     declarative workflows with Nix.
                   </p>
                   <p style="margin-bottom: 0">
-                    This site is a tribute to the classic web - simple, fast,
-                    and nostalgic.
+                    Currently working on <strong>NoVMP</strong> — a fork of
+                    can1357's static devirtualizer for VMProtect x64 3.x. The
+                    original backend targets VTIL-Core, which is abandoned and
+                    never had a working compiler. I'm ripping it out and
+                    replacing it with an <strong>LLVM IR backend</strong>: VMP
+                    handler emulation and IL lifting from the original frontend
+                    stay intact, the optimization and recompilation pipeline
+                    gets rebuilt on top of <code>llvm::Module</code> and
+                    standard IR passes. WIP, not yet functional.
                   </p>
                 </td>
               </tr>
