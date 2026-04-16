@@ -36,6 +36,7 @@ tags: ["fuzzing", "security", "afl++", "binary-analysis"]
 </style>
 
 # AFL++ Internals
+
 ## Coverage-Guided Fuzzing from First Principles
 
 ---
@@ -54,7 +55,7 @@ The short version of how to use it well: build with `afl-clang-fast`, use ASan, 
 2. [Instrumentation](#2-instrumentation): how LLVM hooks get injected, edge XOR, CMPLOG
 3. [The 64KB Coverage Bitmap](#3-the-64kb-coverage-bitmap): shared memory, virgin_bits, the bucket system
 4. [Mutation Stages](#4-mutation-stages): bit flips, arithmetics, havoc, splice, stagnation ratchet, custom mutators
-5. [Forkserver and Persistent Mode](#5-forkserver-and-persistent-mode): COW, deferred fork, __AFL_LOOP, state reset problems
+5. [Forkserver and Persistent Mode](#5-forkserver-and-persistent-mode): COW, deferred fork, \_\_AFL_LOOP, state reset problems
 6. [Corpus Scoring and Energy](#6-corpus-scoring-and-energy): favoured set, power schedules, afl-cmin, afl-tmin
 7. [AddressSanitizer](#7-addresssanitizer): shadow memory, red zones, quarantine, reading reports
 8. [Crash Triage Pipeline](#8-crash-triage-pipeline): minimise, symbolise, verify, root-cause
@@ -77,8 +78,6 @@ Michal Zalewski built the original AFL at Google and released it in 2013. Covera
 Why does it find bugs that human testing misses? Two reasons: scale and relentlessness. A human writes maybe 100 test cases. AFL++ generates 4,000 per second, every single one steered toward code that hasn't been touched yet. That's 345 million executions in 24 hours. The bugs it finds are the real kind too, heap overflows, use-after-frees, integer overflows, all exploitable in production.
 
 ### The core feedback loop
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="220" viewBox="0 0 720 220">
@@ -136,27 +135,30 @@ Why does it find bugs that human testing misses? Two reasons: scale and relentle
 
   <!-- ── feedback arc: ABOVE the boxes ── -->
   <!-- Goes from top of Bitmap (y=80) up to y=28, sweeps left, comes down to top of Corpus (y=80) -->
-  <path d="M 599,80 C 599,32 75,32 75,80"
+
+<path d="M 599,80 C 599,32 75,32 75,80"
         fill="none" stroke="#5a8a5a" stroke-width="1.5"
         stroke-dasharray="7,4"
         marker-end="url(#ah-green)"/>
+
   <!-- label sits in the middle of the arc, above the boxes -->
-  <text x="337" y="22" text-anchor="middle"
+
+<text x="337" y="22" text-anchor="middle"
         font-family="'EB Garamond',Georgia,serif" font-size="10"
         font-style="italic" fill="#5a8a5a">new edges found — save &amp; mutate further</text>
 </svg>
+
 <div class="afl-fig-caption">Figure 1. Coverage-guided fuzzing feedback loop.</div>
 </div>
 
-
 ### Fuzzer taxonomy
 
-| Type | How it works | What it finds |
-|---|---|---|
-| Blackbox / dumb | Random bytes, no feedback | Surface bugs only |
-| Coverage-guided (AFL++) | Instruments binary, tracks edges, steers mutations | Deep logic bugs |
-| Structure-aware | Knows the input grammar (protobuf, TLS) | Format-specific deep paths |
-| Symbolic execution (KLEE) | Mathematically solves path constraints | Precise but extremely slow |
+| Type                      | How it works                                       | What it finds              |
+| ------------------------- | -------------------------------------------------- | -------------------------- |
+| Blackbox / dumb           | Random bytes, no feedback                          | Surface bugs only          |
+| Coverage-guided (AFL++)   | Instruments binary, tracks edges, steers mutations | Deep logic bugs            |
+| Structure-aware           | Knows the input grammar (protobuf, TLS)            | Format-specific deep paths |
+| Symbolic execution (KLEE) | Mathematically solves path constraints             | Precise but extremely slow |
 
 ---
 
@@ -186,8 +188,6 @@ The right-shift of `prev_location` by 1 bit is there to fix a subtle symmetry pr
 
 **Block recording, loses direction** (A→B→D and A→C→D look identical):
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -205,8 +205,6 @@ The right-shift of `prev_location` by 1 bit is there to fix a subtle symmetry pr
 </div>
 
 **Edge recording, AFL++ approach** (A→B→D and A→C→D are distinct paths):
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="340" height="240" viewBox="0 0 340 240" ><defs>
@@ -277,8 +275,6 @@ The 64KB size is a deliberate choice. It's large enough to hold coverage maps fo
 
 ### Bitmap comparison logic
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="180" viewBox="0 0 640 180" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -302,16 +298,16 @@ The 64KB size is a deliberate choice. It's large enough to hold coverage maps fo
 
 AFL doesn't compare raw hit counts in `virgin_bits`. Instead it normalizes each counter into logarithmic buckets first:
 
-| Counter | Bucket | Meaning |
-|---|---|---|
-| 1 | 1 | Hit exactly once |
-| 2 | 2 | Hit exactly twice |
-| 3 | 3 | Hit three times |
-| 4-7 | 4 | Small loop |
-| 8-15 | 5 | Medium loop |
-| 16-31 | 6 | Larger loop |
-| 32-127 | 7 | Large loop, potential overflow territory |
-| 128+ | 8 | Very high iteration, highest priority |
+| Counter | Bucket | Meaning                                  |
+| ------- | ------ | ---------------------------------------- |
+| 1       | 1      | Hit exactly once                         |
+| 2       | 2      | Hit exactly twice                        |
+| 3       | 3      | Hit three times                          |
+| 4-7     | 4      | Small loop                               |
+| 8-15    | 5      | Medium loop                              |
+| 16-31   | 6      | Larger loop                              |
+| 32-127  | 7      | Large loop, potential overflow territory |
+| 128+    | 8      | Very high iteration, highest priority    |
 
 An input that drives a loop to 128 iterations lands in a completely different bucket from one that only drives it to 3, even though both paths hit the same edges. AFL treats the higher-iteration input as genuinely new coverage. This is the mechanism behind AFL finding loop-bound overflows: it keeps pushing loop counters into larger and larger buckets until eventually something breaks.
 
@@ -324,8 +320,6 @@ AFL++ never generates inputs from nothing. It starts from your seed corpus and w
 This ordering has real implications for how you set up your campaign. A good seed corpus lets deterministic stages get to meaningful byte positions quickly. Seeds should be small, valid, and semantically diverse. A good dictionary, meanwhile, makes havoc vastly more effective by giving it real tokens to work with instead of random garbage.
 
 ### Stage overview
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="700" height="142" viewBox="0 0 700 142" ><defs>
@@ -350,8 +344,6 @@ The ordering isn't arbitrary. Bit flips are the cheapest probe AFL has. They map
 ### Input selection, which corpus entry gets mutated next
 
 Before a single byte gets mutated, AFL has to decide which corpus entry to fuzz next. This is not a random draw. AFL++ maintains a **performance score** per entry and allocates fuzzing time accordingly.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="340" viewBox="0 0 680 340">
@@ -463,8 +455,6 @@ The 2-bit and 4-bit passes aren't redundant. A 2-bit flip on a flag byte with tw
 **What bit flips find:** checksum fields that reject any single-bit deviation, flag bytes with multi-bit semantics, length fields where adjacent bits each control something different, version fields that gate entire feature sets.
 
 **What they miss:** anything gated on a specific multi-byte value. A 4-byte magic like `GGUF` requires all 32 bits to land correctly at once. Bit flips can't get there from a wrong starting point. That's exactly why CMPLOG and the dictionary exist.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="660" height="260" viewBox="0 0 660 260">
@@ -584,8 +574,6 @@ The endianness doubling matters because real parsers almost always use explicit 
 
 **What arithmetics find:** size fields where `count + 1` wraps, index fields where `i - 1` underflows to a huge positive number, length fields that trigger off-by-one errors in allocation math.
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="430" viewBox="0 0 500 430">
   <defs>
@@ -683,8 +671,6 @@ splice in a random chunk from another corpus entry
 ```
 
 The stacking is the whole point. One mutation changes one feature. Stack 16 or 32 mutations and you can produce structurally complex inputs that no single-stage deterministic pass could ever generate. A block deletion, two byte flips, an integer boundary value, and a dictionary token, all in one execution. Four interacting changes navigating past four different parser guards simultaneously.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="620" height="480" viewBox="0 0 620 480">
@@ -784,8 +770,6 @@ overwrite:     [AAABBBCCC] → [AAAXXX CCC]  (BBB replaced with copy from elsewh
 
 Length-changing mutations are what catch parsers that blindly trust a length field in the header. If a file declares a 100-byte section and AFL clones a block to push it to 120 bytes, a parser that calls `malloc(header->section_len)` and then reads the full body will overflow by exactly 20 bytes. The header still says 100. The actual payload is 120. That's the bug.
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="222" viewBox="0 0 680 222" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -818,8 +802,6 @@ The genetic analogy isn't accidental. Two inputs that each unlocked a different 
 
 Splice only runs with at least two corpus entries available, and it enforces constraints to avoid producing clones. The two parents must differ by at least one byte in the spliced region. Pointless crossings are skipped.
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="560" height="180" viewBox="0 0 560 180" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -839,8 +821,6 @@ Splice only runs with at least two corpus entries available, and it enforces con
 ### Mutation feedback and the coverage ratchet
 
 Every mutation that reveals new coverage gets saved to the corpus immediately and becomes a starting point for future mutations. This is the ratchet: coverage only moves in one direction, and every new entry unlocks mutations that couldn't have been generated from the seeds alone.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="460" height="470" viewBox="0 0 460 470">
@@ -964,8 +944,6 @@ def fuzz(buf, add_buf, max_size):
     return bytes(data)
 ```
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="150" viewBox="0 0 680 150" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -998,8 +976,6 @@ On Linux, `fork()` uses copy-on-write. The child inherits all of the parent's me
 
 **Without forkserver**, full init cost every execution:
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="80" viewBox="0 0 680 80" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -1017,8 +993,6 @@ On Linux, `fork()` uses copy-on-write. The child inherits all of the parent's me
 </div>
 
 **With deferred forkserver**, init once, fork per input:
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="160" viewBox="0 0 680 160" ><defs>
@@ -1071,8 +1045,6 @@ Persistent mode eliminates `fork()` from the inner loop entirely. The same proce
 
 The `N` parameter is a safety valve. After `N` iterations the process exits gracefully and AFL forks a fresh one. Persistent mode processes accumulate garbage: leaked allocations, heap fragmentation, stale file descriptors. Restarting every 10,000 iterations keeps the process clean enough that accumulated drift doesn't poison your coverage signal. Targets with known leaks should use a lower `N`, around 1,000. Clean targets can run 10,000 to 100,000.
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="420" height="516" viewBox="0 0 420 516" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -1098,8 +1070,6 @@ These are two independent orthogonal features that are often confused:
 `AFL_PERSISTENT` eliminates fork entirely from the inner loop. The same process handles many inputs back to back. The cost is discipline: you must reset all state between iterations manually. The benefit is a 5 to 20x throughput improvement over even a deferred forkserver. That's the deal.
 
 The two features stack. Use both together and you get expensive init amortized across the whole campaign (deferred forkserver) plus no fork overhead per input (persistent). That's the `__AFL_INIT()` + `__AFL_LOOP()` pattern above, and it's how you get serious throughput numbers.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280" ><defs>
@@ -1192,8 +1162,6 @@ void fuzz_target(uint8_t *buf, size_t len) {
 
 The diagnostic: if `stability` in the stats panel drops below 95%, open the `fuzzer_stats` file and look at `stability` directly. Then add `ASAN_OPTIONS=detect_leaks=1` and run the target manually in a loop, the first leak or UAF that shows up is usually the stability culprit.
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="300" viewBox="0 0 680 300" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -1212,13 +1180,13 @@ The diagnostic: if `stability` in the stats panel drops below 95%, open the `fuz
 
 ### Throughput comparison
 
-| Mode | Typical exec/sec | Notes |
-|---|---|---|
-| Naive exec per input | 50-200 | Full init cost every time |
-| Forkserver only | 500-2000 | Init once, fork per input |
-| Deferred forkserver | 1000-4000 | Fork after expensive init |
-| Persistent mode | 4000-20000 | No fork in inner loop |
-| Persistent + deferred | 8000-50000 | Best of both, model loaded once, no fork in loop |
+| Mode                  | Typical exec/sec | Notes                                            |
+| --------------------- | ---------------- | ------------------------------------------------ |
+| Naive exec per input  | 50-200           | Full init cost every time                        |
+| Forkserver only       | 500-2000         | Init once, fork per input                        |
+| Deferred forkserver   | 1000-4000        | Fork after expensive init                        |
+| Persistent mode       | 4000-20000       | No fork in inner loop                            |
+| Persistent + deferred | 8000-50000       | Best of both, model loaded once, no fork in loop |
 
 ---
 
@@ -1244,8 +1212,6 @@ AFL++ continuously maintains a **favoured set**: the smallest subset of the corp
 5. Everything not selected → non-favoured (fuzzed at lower rate)
 ```
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="232" viewBox="0 0 600 232" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -1267,14 +1233,14 @@ This is exactly what `afl-cmin` does when you run it manually. We'll get to that
 
 ### Power schedules
 
-| Schedule | Behaviour | Best for |
-|---|---|---|
-| `explore` | Balanced, default | General purpose |
-| `fast` | Less time per entry, faster cycles | Large corpora |
-| `exploit` | More time on recently-productive entries | Doubling down on hot paths |
-| `rare` | Prioritises entries covering rarely-hit edges | Finding bugs in cold paths |
-| `mmopt` | Time-weighted moving average of recent finds | Balance between exploit/explore |
-| `coe` | High energy on non-havoc-generated entries | When havoc dominates |
+| Schedule  | Behaviour                                     | Best for                        |
+| --------- | --------------------------------------------- | ------------------------------- |
+| `explore` | Balanced, default                             | General purpose                 |
+| `fast`    | Less time per entry, faster cycles            | Large corpora                   |
+| `exploit` | More time on recently-productive entries      | Doubling down on hot paths      |
+| `rare`    | Prioritises entries covering rarely-hit edges | Finding bugs in cold paths      |
+| `mmopt`   | Time-weighted moving average of recent finds  | Balance between exploit/explore |
+| `coe`     | High energy on non-havoc-generated entries    | When havoc dominates            |
 
 For parallel campaigns, assign different schedules to different instances. The main instance uses `explore`, secondaries cycle through `fast`, `rare`, and `exploit`. They'll each push on different parts of the corpus and sync their findings.
 
@@ -1287,8 +1253,6 @@ The result is a corpus that covers 100% of the edges the original covered, in a 
 #### How afl-cmin works internally
 
 afl-cmin doesn't guess. For each input in the corpus it actually executes the target binary and captures its full 64KB coverage bitmap. It runs every file. Then it applies the greedy set-cover:
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="460" viewBox="0 0 500 460">
@@ -1367,6 +1331,7 @@ input_992  covers edges {A,B,C,D,E,F,G,H}  size: 1KB   exec: 5ms    score:  5120
 Sorted by score: `891 (50)` → `047 (200)` → `203 (800)` → `992 (5120)` → `001 (98304)`
 
 Greedy walk:
+
 - Pick `input_891`: covers {F,G}. Covered so far: {F,G}
 - Pick `input_047`: covers {A,B,C}, all new. Covered: {A,B,C,F,G}
 - Pick `input_203`: covers {D,E,F,G}. D,E are new. Covered: {A,B,C,D,E,F,G}
@@ -1374,8 +1339,6 @@ Greedy walk:
 - `input_001` covers nothing new, dropped.
 
 Final corpus: 4 inputs instead of 5, total size dropped from ~10KB to ~1.7KB, and `input_001` (the biggest, slowest one) is gone even though it had the broadest raw coverage.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="620" height="258" viewBox="0 0 620 258" ><defs>
@@ -1428,8 +1391,6 @@ Don't run it during an active campaign. `afl-cmin` is a preprocessing and postpr
 
 The two tools complement each other:
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="100" viewBox="0 0 760 100">
   <defs>
@@ -1477,8 +1438,6 @@ Running both tools in sequence gives you a corpus that's minimal in count (court
 `afl-tmin` takes a single input file and binary-searches it down to the smallest possible byte sequence that still triggers the exact same behavior: same coverage bitmap for a queue entry, same crash signal for a crash file.
 
 #### The algorithm
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="620" height="390" viewBox="0 0 620 390">
@@ -1633,8 +1592,6 @@ v = *ptr;
 
 **Without ASan**, overflow silently corrupts adjacent memory:
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="138" viewBox="0 0 500 138" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -1652,8 +1609,6 @@ v = *ptr;
 </div>
 
 **With ASan red zones**, overflow hits poisoned memory, crash at the exact instruction:
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="560" height="138" viewBox="0 0 560 138" ><defs>
@@ -1703,15 +1658,15 @@ One report and you have everything: the bug class, the exact line to fix, how bi
 
 ### Crash type severity
 
-| ASan error | Severity | Typical root cause |
-|---|---|---|
+| ASan error                   | Severity                | Typical root cause                             |
+| ---------------------------- | ----------------------- | ---------------------------------------------- |
 | `heap-buffer-overflow WRITE` | Critical, potential RCE | Missing bounds check on user-controlled length |
-| `heap-buffer-overflow READ` | High, info disclosure | Off-by-one in parser loop |
-| `heap-use-after-free` | Critical, potential RCE | Dangling pointer after free |
-| `stack-buffer-overflow` | Critical | Fixed-size stack buffer + variable input |
-| `global-buffer-overflow` | High | Static array with variable index |
-| `SEGV on null (0x0)` | Low, DoS only | Missing null check |
-| `memory leak` | Low | Ownership confusion, may co-locate with UAF |
+| `heap-buffer-overflow READ`  | High, info disclosure   | Off-by-one in parser loop                      |
+| `heap-use-after-free`        | Critical, potential RCE | Dangling pointer after free                    |
+| `stack-buffer-overflow`      | Critical                | Fixed-size stack buffer + variable input       |
+| `global-buffer-overflow`     | High                    | Static array with variable index               |
+| `SEGV on null (0x0)`         | Low, DoS only           | Missing null check                             |
+| `memory leak`                | Low                     | Ownership confusion, may co-locate with UAF    |
 
 ---
 
@@ -1722,8 +1677,6 @@ Seeing that `saved crashes` counter tick above zero is exciting, but it's the be
 AFL names crash files like `id:000000,sig:06,src:000003,op:havoc,rep:4`, encoding the crash number, the signal, the source corpus entry, the mutation stage, and how many times it reproduced. AFL deduplicates by signal and the top two stack frames, but that's a coarse filter. Multiple crash files often represent the same underlying bug triggered via different paths.
 
 ### Full triage pipeline
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="520" height="460" viewBox="0 0 520 460">
@@ -1871,16 +1824,16 @@ AFL ++4.40c {main} (...bin/afl-tokenizer) [explore]
 └───────────────────────────────────────┴──────────────────────────────┘
 ```
 
-| Metric | What it means | Good value |
-|---|---|---|
-| `exec speed` | Executions per second | >2000 with ASan persistent mode |
-| `cycles done` | Full passes through corpus | Higher = more mature campaign |
-| `map density` | % of 64KB bitmap populated | Low (< 1%) is normal for targeted harnesses |
-| `stability` | Same input → same coverage % | > 95%, below this = non-determinism problem |
-| `dictionary` | tries/interesting for dict mutations | Non-zero interesting = dict is contributing |
-| `favored items` | Minimal set covering all edges | Smaller = more efficient campaign |
-| `total tmouts` | Inputs exceeding timeout | Small number ok; large number = investigate |
-| `pending` | Favoured items not yet fully fuzzed | 0 = all frontier inputs explored once |
+| Metric          | What it means                        | Good value                                  |
+| --------------- | ------------------------------------ | ------------------------------------------- |
+| `exec speed`    | Executions per second                | >2000 with ASan persistent mode             |
+| `cycles done`   | Full passes through corpus           | Higher = more mature campaign               |
+| `map density`   | % of 64KB bitmap populated           | Low (< 1%) is normal for targeted harnesses |
+| `stability`     | Same input → same coverage %         | > 95%, below this = non-determinism problem |
+| `dictionary`    | tries/interesting for dict mutations | Non-zero interesting = dict is contributing |
+| `favored items` | Minimal set covering all edges       | Smaller = more efficient campaign           |
+| `total tmouts`  | Inputs exceeding timeout             | Small number ok; large number = investigate |
+| `pending`       | Favoured items not yet fully fuzzed  | 0 = all frontier inputs explored once       |
 
 ---
 
@@ -1904,8 +1857,6 @@ afl-fuzz -S fuzzer04 -i corpus/ -o findings/ -- ./target @@
 
 The distinction between master and secondary matters. The master runs all the deterministic stages (bit flips, arithmetics, known integers) on each corpus entry before moving to havoc. Secondaries skip straight to havoc with randomized seeds. You only ever want **one master**. Running deterministic stages on two instances simultaneously is pure duplication, byte-for-byte. All other instances should be `-S`.
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="700" height="302" viewBox="0 0 700 302" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -1927,8 +1878,6 @@ The distinction between master and secondary matters. The master runs all the de
 AFL++ has no shared memory queue and no central coordinator. Each instance writes its findings to its own subdirectory under `findings/`. Every `AFL_SYNC_TIME` seconds (30 seconds by default), each instance scans the other subdirectories for entries it hasn't yet imported, pulls them into its own queue, and keeps running.
 
 The sync state is tracked per-instance in a `.synced/` subdirectory that records the last-imported entry ID from each peer. This prevents double-importing the same entry across sync cycles.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300">
@@ -2007,8 +1956,6 @@ afl-fuzz -S fuzzer08 -p rare     -i corpus/ -o findings/ -- ./target @@
 
 ### Core count recommendations
 
-
-
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="200" viewBox="0 0 680 200" ><defs>
   <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -2064,13 +2011,13 @@ ASan is the right first choice, but it's not the only sanitizer worth running. E
 
 ### The sanitizer matrix
 
-| Sanitizer | Flag | What it catches | What it misses |
-|---|---|---|---|
-| ASan | `-fsanitize=address` | heap/stack/global overflow, UAF, use-after-return | signed integer overflow, uninitialized reads |
-| UBSan | `-fsanitize=undefined` | signed overflow, null deref, misaligned access, OOB array | memory safety, UAF |
-| MSan | `-fsanitize=memory` | reads from uninitialized memory | overflows, UAF |
-| LSan | `-fsanitize=leak` | memory leaks | everything else |
-| TSan | `-fsanitize=thread` | data races, lock order violations | single-threaded bugs |
+| Sanitizer | Flag                   | What it catches                                           | What it misses                               |
+| --------- | ---------------------- | --------------------------------------------------------- | -------------------------------------------- |
+| ASan      | `-fsanitize=address`   | heap/stack/global overflow, UAF, use-after-return         | signed integer overflow, uninitialized reads |
+| UBSan     | `-fsanitize=undefined` | signed overflow, null deref, misaligned access, OOB array | memory safety, UAF                           |
+| MSan      | `-fsanitize=memory`    | reads from uninitialized memory                           | overflows, UAF                               |
+| LSan      | `-fsanitize=leak`      | memory leaks                                              | everything else                              |
+| TSan      | `-fsanitize=thread`    | data races, lock order violations                         | single-threaded bugs                         |
 
 The most commonly missed bug class is **signed integer overflow**. ASan ignores it completely. Signed overflow is undefined behavior in C but doesn't corrupt memory on its own, so ASan has nothing to instrument. UBSan catches it. The pattern looks like this:
 
@@ -2116,6 +2063,7 @@ AFL_USE_ASAN=1 AFL_USE_UBSAN=1 afl-clang-fast \
 ### What each sanitizer catches that the others miss
 
 **ASan-unique catches:**
+
 - Heap buffer overflow (read and write)
 - Use-after-free
 - Stack buffer overflow
@@ -2124,6 +2072,7 @@ AFL_USE_ASAN=1 AFL_USE_UBSAN=1 afl-clang-fast \
 - Double free
 
 **UBSan-unique catches:**
+
 - Signed integer overflow: `INT_MAX + 1`
 - Signed integer underflow: `INT_MIN - 1`
 - Shift exponent overflow: `1 << 32` on a 32-bit int
@@ -2134,6 +2083,7 @@ AFL_USE_ASAN=1 AFL_USE_UBSAN=1 afl-clang-fast \
 - Type punning violation (strict aliasing)
 
 **MSan-unique catches:**
+
 - Reading uninitialized stack variables
 - Reading uninitialized heap allocations before writing them
 - Propagating uninit taint through arithmetic into branch conditions
@@ -2155,8 +2105,6 @@ if (hdr.flags & FLAG_EXTENDED) {
 ```
 
 ### Sanitizer interaction with AFL instrumentation
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="260" viewBox="0 0 680 260" ><defs>
@@ -2224,8 +2172,6 @@ Three properties define a good seed corpus: **validity**, **minimality**, and **
 **Minimality** means each seed is as small as it can be while still being valid. A 200-byte seed and a 50KB seed covering the same initial code paths are not equally good. The 200-byte seed produces 250 times fewer variants per deterministic pass, so AFL cycles through it dramatically faster. Small seeds are also easier to structurally corrupt without accidentally invalidating the entire format. A 200-byte GGUF with one tensor is easy to usefully break. A 50KB GGUF with 500 tensors has so much valid structure that random mutations hit irrelevant bytes most of the time.
 
 **Diversity** means the seeds collectively cover different code paths. Three seeds that all exercise the same parser branch are worse than one. They give AFL three redundant starting points into the same territory. The ideal corpus maps the format's feature space: one seed per major feature, one per optional section type, one per supported version.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="262" viewBox="0 0 640 262" ><defs>
@@ -2314,8 +2260,6 @@ echo '<r><c/></r>' > corpus/nested.xml
 ### One big seed vs many small seeds, the tradeoff
 
 When you have a real-world example file sitting there, the temptation is to drop it straight into the corpus. Resist that for anything over a few KB.
-
-
 
 <div class="afl-fig">
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="262" viewBox="0 0 680 262" ><defs>

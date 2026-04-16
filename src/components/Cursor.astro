@@ -1,0 +1,89 @@
+<div id="figma-cursor" aria-hidden="true">
+  <svg id="cursor-default" xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
+    <g transform="scale(1.4)">
+      <path d="M4.5,2.5 L18.5,16.5 C19.2,17.2 18.5,18.5 17.5,18.5 L13.5,18.5 L15.5,24.5 C15.7,25.1 15.3,25.8 14.7,26.0 L13.1,26.6 C12.5,26.8 11.9,26.5 11.7,25.9 L9.5,19.5 L5.5,23.5 C4.5,24.5 3.0,23.8 3.0,22.5 L3.0,4.0 C3.0,2.8 4.0,2.0 4.5,2.5 Z" 
+        fill="pink" stroke="black" stroke-width="1.5" stroke-linejoin="round"/>
+    </g>
+  </svg>
+
+  <svg id="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" style="display:none">
+    <g transform="scale(1.4)">
+      <path d="M12.5,1.5 c-1.65,0-3,1.35-3,3 v9.81 c-0.61-0.45-1.35-0.72-2.15-0.72 c-2.01,0-3.64,1.63-3.64,3.64 c0,0.59,0.14,1.15,0.39,1.66 l2.67,5.55 C7.9,26.83,10.25,28.5,13,28.5 h5.5 c4.14,0,7.5-3.36,7.5-7.5 v-5.5 c0-1.65-1.35-3-3-3 c-0.12,0-0.24,0.01-0.35,0.02 c-0.34-1.42-1.62-2.48-3.15-2.48 c-0.37,0-0.72,0.06-1.05,0.18 c-0.51-1.27-1.78-2.18-3.26-2.18 c-0.15,0-0.3,0.01-0.44,0.03 V4.5 C15.5,2.85,14.15,1.5,12.5,1.5 z" 
+        fill="pink" stroke="black" stroke-width="1.5" stroke-linejoin="round"/>
+    </g>
+  </svg>
+</div>
+
+<style is:global>
+  * { 
+    cursor: none !important; 
+  }
+
+  #figma-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99999;
+    will-change: transform;
+    opacity: 0;
+  }
+
+  #cursor-default {
+    transform: translate(-5px, -3px);
+  }
+
+  #cursor-pointer {
+    transform: translate(-17px, -3px);
+  }
+</style>
+
+<script>
+  const cursor = document.getElementById('figma-cursor')!;
+  const defaultSvg = document.getElementById('cursor-default')!;
+  const pointerSvg = document.getElementById('cursor-pointer')!;
+
+  let lastX = 0;
+  let lastY = 0;
+
+  const storedX = sessionStorage.getItem('cursorX');
+  const storedY = sessionStorage.getItem('cursorY');
+
+  if (storedX !== null && storedY !== null) {
+    lastX = parseFloat(storedX);
+    lastY = parseFloat(storedY);
+    cursor.style.transform = `translate(${lastX}px, ${lastY}px)`;
+    cursor.style.opacity = '1';
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    lastX = e.clientX;
+    lastY = e.clientY;
+    cursor.style.transform = `translate(${lastX}px, ${lastY}px)`;
+    
+    if (cursor.style.opacity !== '1') {
+      cursor.style.opacity = '1';
+    }
+  }, { passive: true });
+
+  window.addEventListener('pagehide', () => {
+    sessionStorage.setItem('cursorX', lastX.toString());
+    sessionStorage.setItem('cursorY', lastY.toString());
+  });
+
+  const POINTER_SELECTORS = 'a, button, [role="button"], input, textarea, select, label, [tabindex]';
+  
+  document.addEventListener('mouseover', (e) => {
+    const target = e.target as Element;
+    const isPointer = target.closest(POINTER_SELECTORS) !== null;
+    defaultSvg.style.display = isPointer ? 'none' : '';
+    pointerSvg.style.display = isPointer ? '' : 'none';
+  });
+
+  document.addEventListener('selectionchange', () => {
+    const sel = window.getSelection();
+    const hasSelection = sel && sel.toString().length > 0;
+    defaultSvg.style.display = hasSelection ? 'none' : '';
+    pointerSvg.style.display = hasSelection ? '' : 'none';
+  });
+</script>

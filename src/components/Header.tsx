@@ -48,6 +48,9 @@ function Header() {
             <a href="/blog">Blog</a>
           </li>
           <li>
+            <a href="/terminal">Terminal</a>
+          </li>
+          <li>
             <a
               href="https://open.spotify.com/user/314ikabu7m4lwg6rljojtmhf74uq"
               target="_blank"

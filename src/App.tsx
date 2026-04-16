@@ -6,7 +6,6 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Contact from "./components/Contact";
 import VideoBackground from "./components/VideoBackground";
-import PinkCursor from "./components/PinkCursor";
 import Footer from "./components/Footer";
 
 // Lazy load non-critical components
@@ -30,7 +29,6 @@ const PageLoader = () => (
 function AppContent() {
   return (
     <div className="app-container">
-      <PinkCursor />
       <VideoBackground />
       <div className="content-container">
         <Header />
