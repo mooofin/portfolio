@@ -236,7 +236,7 @@
             </div>
             <div class="blog-content">
               <p>
-                a few weeks ago i had my first pull request merged into the llvm project. it's a small refactor, #181400, refactoring bf16div to be header-only and part of the shared math library. nothing glamorous, but the process taught me more than the change itself.
+                a few weeks ago i had my first pull request merged into the llvm project. refactoring bf16div to be header-only and part of the shared math library. nothing glamorous, but the process taught me more than the change itself.
               </p>
 
               <h2>the context</h2>
@@ -268,7 +268,7 @@ LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
 
               <h2>the review process</h2>
               <p>
-                my first submission had the constexpr qualifier added to fputil::generic::div itself. the reviewer, bassiounix, asked me to look at recently merged PRs and spot the pattern. turns out they weren't adding constexpr to the underlying generic template — that's a much bigger change with wider impact. just the wrapper stays non-constexpr for now. i reverted that, cleaned up redundant includes in the cpp file, fixed an alphabetical ordering issue in a test cmake file, and accidentally deleted a log2 test case i had to restore. not my finest hour.
+                my first submission had the constexpr qualifier added to fputil::generic::div itself. the reviewer, bassiounix, asked me to look at recently merged PRs and spot the pattern. turns out they weren't adding constexpr to the underlying generic template, that's a much bigger change with wider impact. just the wrapper stays non-constexpr for now. i reverted that, cleaned up redundant includes in the cpp file, fixed an alphabetical ordering issue in a test cmake file, and accidentally deleted a log2 test case i had to restore. not my finest hour.
               </p>
 
               <p>
@@ -278,58 +278,6 @@ LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
               <p>
                 four commits total across two force-pushes and a merge-from-main. the whole thing took about a month from open to merge, mostly just waiting between review cycles.
               </p>
-
-              <h2>some cool stuff i learnt along the way ehe</h2>
-              <h3>Tools Used</h3>
-              <p>
-                Contributing to LLVM requires a robust toolchain. Here's what I used:
-              </p>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/google/sanitizers/wiki/AddressSanitizer"
-                    target="_blank"
-                    >AddressSanitizer</a
-                  >
-                  - Memory error detector for catching buffer overflows and
-                  use-after-free bugs
-                </li>
-                <li>
-                  <a
-                    href="https://valgrind.org/docs/manual/quick-start.html"
-                    target="_blank"
-                    >Valgrind</a
-                  >
-                  - For deep memory debugging and leak detection when ASan
-                  wasn't enough
-                </li>
-                <li>
-                  <a href="https://github.com/google/googletest" target="_blank"
-                    >GoogleTest</a
-                  >
-                  - LLVM's testing framework for writing unit tests
-                </li>
-                <li>
-                  <a href="https://bazel.build/rules/language" target="_blank"
-                    >Bazel / Starlark</a
-                  >
-                  - Google's build system. Starlark is the Python-like language
-                  for BUILD rules
-                </li>
-                <li>
-                  <a href="https://github.com/bazelbuild/tulsi" target="_blank"
-                    >Tulsi</a
-                  >
-                  - Generates Xcode projects from Bazel build files
-                </li>
-                <li>
-                  <a href="https://github.com/tmandry/lavender" target="_blank"
-                    >Lavender</a
-                  >
-                  - Generate Visual Studio projects from Bazel - essential for
-                  navigating LLVM on Windows
-                </li>
-              </ul>
 
               <p>
                 <strong>PR:</strong>
