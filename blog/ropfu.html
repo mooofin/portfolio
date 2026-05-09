@@ -308,6 +308,25 @@ p.interactive()
                   alt="Successful exploitation"
                 />
               </div>
+
+              <h2>Quick note: NOP sled, gadget, and control flow</h2>
+              <p>
+                The NOP sled is just a safety runway. Instead of needing one
+                perfect jump target, you can land anywhere inside the sled and
+                slide forward into shellcode.
+              </p>
+              <p>
+                In this challenge, the gadget is <code>jmp eax</code>. We set
+                EIP to that gadget address, so execution first goes to
+                <code>jmp eax</code>, then immediately to whatever address is in
+                EAX (which points into our payload).
+              </p>
+              <p>
+                So the execution flow is:
+                <code>vulnerable input -&gt; EIP overwrite -&gt; jmp eax gadget -&gt; NOP sled -&gt; shellcode -&gt; shell</code>.
+                Not full ROP chaining here, but the same idea: use existing code
+                in the binary to redirect control where you want.
+              </p>
             </div>
             <div class="status-bar mt-16">
               <a href="../blog.html" class="btn">
