@@ -855,20 +855,6 @@ X             -             fault</pre
                                 deliver it to the target vCPU. Miss any step and
                                 the interrupt vanishes into a black hole.
                             </p>
-
-                            <h2>Actually Building One</h2>
-
-                            <p>
-                                If you want to see all this in action, I wrote a
-                                minimal RISC-V 64 hypervisor called
-                                <a href="https://github.com/mooofin/hypv64" target="_blank"
-                                    >hypv64</a
-                                >
-                                in Rust, targeting QEMU <code>virt</code>. It
-                                boots, sets up two-stage paging, and launches a
-                                guest. The whole thing is a few hundred lines.
-                                The spec really is that short.
-                            </p>
                         </div>
                         <div class="status-bar mt-16">
                             <a href="../blog.html" class="btn">
