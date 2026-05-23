@@ -6,6 +6,7 @@
     <meta name="description" content="Gotham Hustle, DFIR report" />
     <title>Gotham Hustle, DFIR report - mooofin</title>
     <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
     <link rel="icon" href="../../public/favicon.ico" />
     <style>
       /* Blog specific styles */
@@ -61,6 +62,26 @@
         border-bottom: 1px solid #ccc;
         padding-bottom: 10px;
       }
+      .blog-content pre code { background: none; padding: 0; border: none; }
+      .hljs { background: #fafaf8; }
+      .hljs-keyword { color: #b0306a; }
+      .hljs-string { color: #2d6a2d; }
+      .hljs-comment { color: #808080; font-style: italic; }
+      .hljs-number { color: #7a2d8a; }
+      .hljs-type { color: #c06030; }
+      .hljs-literal { color: #d49080; }
+      .hljs-built_in { color: #7a2d8a; }
+      .hljs-title.class_ { color: #212529; }
+      .hljs-title.function_ { color: #212529; }
+      .hljs-attr { color: #b0306a; }
+      .hljs-params { color: #424242; }
+      .hljs-meta { color: #c06030; }
+      .hljs-meta .hljs-keyword { color: #c06030; }
+      .hljs-symbol { color: #2d6a2d; }
+      .hljs-section { color: #b0306a; }
+      .hljs-selector-tag { color: #b0306a; }
+      .hljs-addition { color: #2d6a2d; }
+      .hljs-deletion { color: #a04040; }
     </style>
   </head>
   <body>
@@ -460,5 +481,7 @@ Cmd #7: did you find flag1?
       updateClock();
       setInterval(updateClock, 1000);
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
   </body>
 </html>

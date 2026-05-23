@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="The H-extension is twenty CSRs. Read the spec at lunch. Here is how it works."
+        />
+        <title>
+            RISC-V H-Extension: The Only Hypervisor Spec You Can Read at Lunch -
+            mooofin
+        </title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+        <link rel="icon" href="../../public/favicon.ico" />
+        <style>
+            .blog-content {
+                font-family: "Verdana", sans-serif;
+                line-height: 1.6;
+                font-size: 14px;
+            }
+            .blog-content h1,
+            .blog-content h2,
+            .blog-content h3 {
+                color: #000080;
+                margin-top: 20px;
+                border-bottom: 1px dotted #ccc;
+                padding-bottom: 5px;
+            }
+            .blog-content p {
+                margin-bottom: 15px;
+            }
+            .blog-content img {
+                max-width: 100%;
+                border: 1px solid #999;
+                padding: 4px;
+                background: #fff;
+            }
+            .blog-content .img-container {
+                text-align: center;
+                margin: 20px 0;
+            }
+            .blog-content pre {
+                background: #eee;
+                border: 1px inset #ccc;
+                padding: 10px;
+                overflow-x: auto;
+                font-family: "Courier New", monospace;
+            }
+            .blog-content code {
+                background: #f0f0f0;
+                padding: 2px 4px;
+                font-family: "Courier New", monospace;
+            }
+            .blog-content blockquote {
+                border-left: 4px solid #000080;
+                padding-left: 10px;
+                color: #555;
+                font-style: italic;
+                margin: 15px 0;
+            }
+            .blog-meta {
+                color: #666;
+                font-size: 11px;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 10px;
+            }
+
+            .blog-content pre code { background: none; padding: 0; border: none; }
+            .hljs { background: #fafaf8; }
+            .hljs-keyword { color: #b0306a; }
+            .hljs-string { color: #2d6a2d; }
+            .hljs-comment { color: #808080; font-style: italic; }
+            .hljs-number { color: #7a2d8a; }
+            .hljs-type { color: #c06030; }
+            .hljs-literal { color: #d49080; }
+            .hljs-built_in { color: #7a2d8a; }
+            .hljs-title.class_ { color: #212529; }
+            .hljs-title.function_ { color: #212529; }
+            .hljs-attr { color: #b0306a; }
+            .hljs-params { color: #424242; }
+            .hljs-meta { color: #c06030; }
+            .hljs-meta .hljs-keyword { color: #c06030; }
+            .hljs-symbol { color: #2d6a2d; }
+            .hljs-section { color: #b0306a; }
+            .hljs-selector-tag { color: #b0306a; }
+            .hljs-addition { color: #2d6a2d; }
+            .hljs-deletion { color: #a04040; }
+        </style>
+    </head>
+    <body>
+        <div class="desktop flex gap-16" style="flex-direction: row">
+            <div class="sidebar-95">
+                <div class="window">
+                    <div class="window-title">
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        Navigation
+                    </div>
+                    <div class="window-body" style="padding: 0">
+                        <ul class="list-group" style="border: none">
+                            <li class="list-group-item">
+                                <a href="../index.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Home
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../about.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/users-1.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    About Me
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../projects.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Projects
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../blog.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Blog
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="window">
+                    <div class="window-title">
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/gear-0.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        Actions
+                    </div>
+                    <div class="window-body" style="padding: 0">
+                        <ul class="list-group" style="border: none">
+                            <li class="list-group-item">
+                                <a href="javascript:history.back()">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Go Back
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a
+                                    href="#"
+                                    onclick="
+                                        window.scrollTo(0, 0);
+                                        return false;
+                                    "
+                                >
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Top of Page
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../blog.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    All Posts
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="content-95">
+                <div class="window" style="margin-bottom: 8px">
+                    <div
+                        class="window-body"
+                        style="padding: 4px 8px; font-size: 11px"
+                    >
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        <a href="../index.html">Home</a> &gt;
+                        <a href="../blog.html">Blog</a> &gt; RISC-V H-Extension:
+                        The Only Hypervisor Spec You Can Read at Lunch
+                    </div>
+                </div>
+                <div class="window">
+                    <div class="window-title">
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        RISC-V H-Extension: The Only Hypervisor Spec You Can
+                        Read at Lunch
+                    </div>
+                    <div class="window-body">
+                        <div class="blog-content">
+                            <p>
+                                Here is a thing about RISC-V hypervisors that
+                                nobody tells you. The hypervisor extension is
+                                twenty CSRs. Not twenty new instructions. Not a
+                                separate root privilege level. Not a microcode
+                                blob you have to reverse. Twenty configuration
+                                registers. You read the spec in an afternoon and
+                                then you know the whole thing. Try that with
+                                VMX.
+                            </p>
+
+                            <p>
+                                Every time I tell someone the H-extension is
+                                simple, they assume I mean "simple compared to
+                                x86" which is like saying your apartment is
+                                clean compared to a landfill. No. I mean it is
+                                genuinely, architecturally simple. The spec
+                                chapter is forty pages and half of that is
+                                register diagrams.
+                            </p>
+
+                            <p>
+                                Let's walk through it from the bottom up. If you
+                                know RISC-V page tables already, skip the first
+                                section. If you don't, I am going to explain
+                                them in a way that makes the two-stage stuff
+                                obvious.
+                            </p>
+
+                            <h2>What You Need To Know First</h2>
+
+                            <p>
+                                RISC-V has three privilege levels. M-mode is the
+                                firmware, the thing that runs before anything
+                                else. S-mode is your kernel. U-mode is your
+                                userspace. When U-mode needs to do something it
+                                cannot, it traps to S-mode. When S-mode needs to
+                                do something it cannot, it traps to M-mode. This
+                                is a stack, not a free-for-all.
+                            </p>
+
+                            <p>
+                                A hypervisor lets you run an entire OS inside
+                                another OS. The outer OS (or a thin shim)
+                                becomes the hypervisor. The inner OS is the
+                                "guest." The guest thinks it owns the hardware.
+                                It does not. The hypervisor decides what the
+                                guest actually gets.
+                            </p>
+
+                            <p>
+                                The H-extension adds two virtual privilege
+                                levels: VS-mode (where the guest kernel runs)
+                                and VU-mode (where the guest's user processes
+                                run). To the guest, VS-mode looks exactly like
+                                S-mode. Same CSRs, same trap mechanism, same
+                                page tables. The hypervisor lives in HS-mode,
+                                which is S-mode with access to the H CSRs. No
+                                new ring. No root mode. You are already in
+                                S-mode, you just get more toys.
+                            </p>
+
+                            <p>
+                                A CSR is how you talk to the CPU. Page table
+                                pointer goes in
+                                <code>satp</code>. Interrupt handler address
+                                goes in <code>stvec</code>. Trap cause goes in
+                                <code>scause</code>. The H-extension adds new
+                                CSRs for the hypervisor's page table pointer,
+                                fault information, and the bits that control
+                                what traps to you and what runs directly.
+                            </p>
+
+                            <p>
+                                A trap is the CPU saving state and jumping to a
+                                handler.
+                                <code>sret</code> goes back. One bit in
+                                <code>hstatus</code> changes whether
+                                <code>sret</code> returns to a guest or returns
+                                to a normal S-mode process. That bit is
+                                literally all that separates "return to kernel"
+                                from "return to guest kernel."
+                            </p>
+
+                            <h2>The Page Table You Already Know (Sv39)</h2>
+
+                            <p>
+                                Before we get to two-stage, you need to
+                                understand what one-stage looks like. RISC-V
+                                uses a radix-tree page table called Sv39. The
+                                virtual address is 39 bits, broken into four
+                                pieces:
+                            </p>
+
+                            <pre>
+  38      30 29      21 20      12 11      0
++----------+----------+----------+----------+
+|  VPN[2]  |  VPN[1]  |  VPN[0]  |  offset  |
++----------+----------+----------+----------+
+  9 bits     9 bits     9 bits     12 bits</pre
+                            >
+
+                            <p>
+                                The MMU starts at the page table root, pointed
+                                to by
+                                <code>satp.ppn</code> shifted left 12 bits
+                                (because page tables are page-aligned). It
+                                indexes into level 2 using VPN[2], reads a PTE
+                                (Page Table Entry, 8 bytes). If the PTE has the
+                                V bit set and the R, W, or X bits set, it is a
+                                leaf, stop here, you found your physical page.
+                                If not, the PPN field points to the next level
+                                and you repeat with VPN[1], then VPN[0].
+                            </p>
+
+                            <p>A PTE on RV64 looks like this:</p>
+
+                            <pre>
+bit    63  62 61 60 . 10 9 8 7 6 5 4 3 2 1 0
+field  [RSV] [PBMT] [ PPN[2..0]  ] RSW D A G U X W R V</pre
+                            >
+
+                            <p>
+                                V is the valid bit. R, W, X are permission bits
+                                (read, write, execute). U means user-accessible.
+                                G means global (all address spaces). A and D are
+                                the accessed and dirty flags, set by the
+                                hardware on first access and first write
+                                respectively. PPN is the physical page number.
+                                If you write a PTE without setting A and the
+                                hardware has A-bit updates enabled, the MMU will
+                                fault on first access so software can set it.
+                            </p>
+
+                            <p>
+                                That is Sv39. Standard issue. Your kernel
+                                already implements this. Good. Now here is where
+                                it gets interesting.
+                            </p>
+
+                            <h2>Two-Stage Translation: The Actual Algorithm</h2>
+
+                            <p>
+                                In a virtualized system, there are two levels of
+                                page table. Stage one maps guest virtual
+                                addresses to guest physical addresses, using
+                                <code>vsatp</code> instead of <code>satp</code>.
+                                Stage two maps guest physical addresses to
+                                machine physical addresses, using
+                                <code>hgatp</code>. The guest manages stage one.
+                                The hypervisor manages stage two.
+                            </p>
+
+                            <p>
+                                The MMU does not stop after stage one. It walks
+                                stage one, gets a GPA, then immediately walks
+                                stage two to get the final machine address. The
+                                entire operation is a single hardware walk. The
+                                hypervisor never gets involved during
+                                translation. It only hears about it if something
+                                faults.
+                            </p>
+
+                            <p>
+                                Here is what the hardware actually does, step by
+                                step:
+                            </p>
+
+                            <ol>
+                                <li>
+                                    Read <code>vsatp</code> to get the stage-one
+                                    root. The guest set this up the same way it
+                                    would set <code>satp</code> on bare metal.
+                                </li>
+                                <li>
+                                    Walk the stage-one page table using the
+                                    guest virtual address, exactly as Sv39
+                                    specifies. The result is a PTE that contains
+                                    a PPN. This PPN is a guest physical address
+                                    (GPA). The guest thinks this is real memory.
+                                </li>
+                                <li>
+                                    Read <code>hgatp</code> to get the stage-two
+                                    root. The hypervisor set this up. The guest
+                                    does not know <code>hgatp</code> exists.
+                                </li>
+                                <li>
+                                    Walk the stage-two page table using the GPA
+                                    from step 2 as the input address. The result
+                                    is a machine physical address. This is where
+                                    the data actually lives in RAM.
+                                </li>
+                                <li>
+                                    Merge the permissions from both PTEs. If
+                                    either PTE says "not readable," the access
+                                    fails. Stage two is a ceiling.
+                                </li>
+                            </ol>
+
+                            <p>
+                                The stage-two page table has a slightly
+                                different format. Sv39x4 uses 4 KiB PTEs like
+                                Sv39, but the intermediate PTE format is
+                                different because the GPA space can be up to 48
+                                bits wide rather than 39. The PPN field is
+                                wider. But the walking algorithm is the same:
+                                radix tree, three levels, index by VPN[2..0] of
+                                the GPA.
+                            </p>
+
+                            <p>The permission merge works like this:</p>
+
+                            <pre>
+Stage-1 PTE   Stage-2 PTE   Result
+R             R             R
+R             -             fault
+W             W             W
+W             -             fault
+X             X             X
+X             -             fault</pre
+                            >
+
+                            <p>
+                                Stage two never adds permissions. It can only
+                                remove them. If stage one says read-write and
+                                stage two says read-only, the guest gets a page
+                                fault on write. That is not negotiable. The CPU
+                                does not ask the hypervisor. It just faults the
+                                guest. The guest trap handler runs, the guest
+                                handles the fault internally (or panics), and
+                                the hypervisor never even knows.
+                            </p>
+
+                            <p>
+                                But what if the guest cannot handle it? What if
+                                the guest faults, tries to fix it, and fails?
+                                Then the guest traps to the hypervisor with a
+                                stage-two fault code. Now the hypervisor can
+                                inspect the GPA, figure out what went wrong, and
+                                fix the stage-two mapping or inject a fault back
+                                into the guest.
+                            </p>
+
+                            <p>
+                                That brings us to the fault codes. When a
+                                translation fails,
+                                <code>scause</code> tells you why:
+                            </p>
+
+                            <ul>
+                                <li>
+                                    12 or 13 &rarr; stage-one fault. The guest's
+                                    page table is wrong. The guest needs to
+                                    handle this.
+                                </li>
+                                <li>
+                                    20 or 21 &rarr; guest-page fault (stage
+                                    two). Your
+                                    <code>hgatp</code> mapping is wrong. You fix
+                                    it.
+                                </li>
+                            </ul>
+
+                            <p>
+                                If you have ever debugged a hypervisor without
+                                these codes, you know why they matter. On x86, a
+                                VM exit for an EPT violation tells you
+                                "something went wrong with the nested page
+                                tables," but the correlation between the guest
+                                address and the fault is not always
+                                straightforward. Here,
+                                <code>htval</code> gets written with the GPA
+                                that caused the fault. That GPA is the most
+                                useful piece of information you will get at 3am
+                                when your pet hypervisor panics.
+                            </p>
+
+                            <h2>The Merged PTE and the TLB</h2>
+
+                            <p>
+                                Walking two page tables on every memory access
+                                would be expensive. The TLB caches the result of
+                                the combined walk. A two-stage TLB entry
+                                contains the guest virtual address, the final
+                                machine physical address, and the merged
+                                permissions. Next access to the same GVA hits
+                                the TLB and never touches either page table.
+                            </p>
+
+                            <p>
+                                This means TLB invalidation is more complex. If
+                                you change a stage-two mapping, you need to
+                                flush entries that might have cached the old
+                                translation for any guest. The hardware provides
+                                <code>hfence.gvma</code> for this. It takes an
+                                optional GPA and optional VM ID (from
+                                <code>hgatp</code>) to narrow the flush. If you
+                                call it without arguments, it flushes every
+                                two-stage TLB entry in the entire system.
+                            </p>
+
+                            <p>
+                                If a guest calls <code>sfence.vma</code> inside
+                                itself, the hardware flushes only the stage-one
+                                entries for that specific guest. The hypervisor
+                                does not get involved. The hardware knows which
+                                guest is running because the virtualization mode
+                                is baked into the pipeline.
+                            </p>
+
+                            <p>
+                                You would think this is obvious. It is not. On
+                                some older virtualization architectures, every
+                                guest TLB flush had to trap to the hypervisor so
+                                the hypervisor could emulate the flush. Here, it
+                                is automatic. The guest flushes, the TLB drains,
+                                nobody traps. This is the difference between
+                                "virtualization support" and "virtualization
+                                support that someone actually thought about."
+                            </p>
+
+                            <h2>hvip and Interrupt Injection</h2>
+
+                            <p>
+                                The hypervisor can inject interrupts into a
+                                guest by writing to
+                                <code>hvip</code> (Hypervisor Virtual Interrupt
+                                Pending). This is a CSR that mirrors the guest's
+                                <code>sip</code> register. Set a bit in
+                                <code>hvip</code> and the guest sees the
+                                corresponding interrupt pending when it reads
+                                <code>sip</code>. No actual interrupt line
+                                toggling, no wire-level signaling.
+                            </p>
+
+                            <p>
+                                The <code>hgeip</code> CSR handles the reverse
+                                direction. External interrupts from devices
+                                configured as guest-directed show up here, and
+                                the hypervisor can forward them by setting the
+                                appropriate <code>hvip</code> bit. For timer
+                                interrupts, <code>hgeie</code> (guest external
+                                interrupt enable) controls which guest interrupt
+                                IDs are routed to the hypervisor's external
+                                interrupt line.
+                            </p>
+
+                            <p>
+                                The guest's <code>stimecmp</code> (if Sstc is
+                                implemented) or the hypervisor's timer
+                                management via <code>htimedelta</code> handles
+                                scheduling. <code>htimedelta</code> adds a
+                                64-bit offset to the <code>time</code> CSR. Each
+                                guest gets its own time base without a single
+                                trap. You write the offset once in
+                                <code>htimedelta</code> and every
+                                <code>rdtime</code> the guest issues returns
+                                (time + offset) transparently.
+                            </p>
+
+                            <h2>DMA and the IOMMU</h2>
+
+                            <p>
+                                If you pass a physical device through to a
+                                guest, the device does DMA using guest physical
+                                addresses. The IOMMU translates these using the
+                                same <code>hgatp</code> page tables the MMU uses
+                                for CPU accesses. The guest tells the device
+                                "write to GPA 0x1000," the device fires off a
+                                DMA write, the IOMMU translates 0x1000 through
+                                <code>hgatp</code>, and the data lands at the
+                                correct machine address. No bounce buffers.
+                            </p>
+
+                            <p>
+                                This is not new. IOMMUs have existed for
+                                decades. What is nice is that the IOMMU uses the
+                                exact same page table format as the CPU MMU. One
+                                set of <code>hgatp</code> tables serves both CPU
+                                and device accesses. You do not maintain
+                                separate translation structures for DMA.
+                            </p>
+
+                            <h2>hlv, hsv, and Touching Guest Memory</h2>
+
+                            <p>
+                                When the hypervisor needs to read or write guest
+                                memory, it has two options. Option one: switch
+                                <code>satp</code> to the guest's
+                                <code>vsatp</code>, do the access, switch back.
+                                This is a context switch, it pollutes the TLB,
+                                and it is ugly.
+                            </p>
+
+                            <p>
+                                Option two: use <code>hlv</code> (hypervisor
+                                load virtual) and <code>hsv</code> (hypervisor
+                                store virtual). These instructions take a guest
+                                virtual address and do the full two-stage walk
+                                in hardware. No context switch. No TLB pollution
+                                on the hypervisor's own page tables. You hand it
+                                a GVA, it returns the value. That is it.
+                            </p>
+
+                            <p>
+                                If you are implementing a para-virtualized
+                                device or need to patch guest memory for any
+                                reason, <code>hlv</code>/<code>hsv</code>
+                                are the difference between a clean
+                                implementation and a fragile mess of temporary
+                                page table swaps.
+                            </p>
+
+                            <h2>henvcfg and Hiding Hardware</h2>
+
+                            <p>
+                                <code>henvcfg</code> controls which ISA
+                                extensions are visible to a guest. Want to hide
+                                the FPU from a specific VM? Clear
+                                <code>henvcfg.FP</code>. The guest will fault on
+                                any floating-point instruction, and the
+                                hypervisor can either emulate it or tell the
+                                guest the feature does not exist.
+                            </p>
+
+                            <p>
+                                The same mechanism controls individual
+                                hypervisor extensions. If you do not want a
+                                guest to use the AIA (advanced interrupt
+                                architecture) or the hypervisor extension itself
+                                for nested virtualization, you clear the
+                                corresponding bit. The guest never sees the
+                                feature.
+                            </p>
+
+                            <h2>What Traps When</h2>
+
+                            <p>
+                                The <code>hstatus</code> register has control
+                                bits that determine what guest operations trap
+                                to the hypervisor:
+                            </p>
+
+                            <ul>
+                                <li>
+                                    <code>hstatus.vtvm</code> &rarr; guest
+                                    writes to <code>satp</code> trap. If you are
+                                    doing shadow page tables (unusual on RISC-V
+                                    but possible), you need this.
+                                </li>
+                                <li>
+                                    <code>hstatus.vtw</code> &rarr; guest
+                                    <code>wfi</code>
+                                    traps. Useful if you want to implement a
+                                    different idle policy.
+                                </li>
+                                <li>
+                                    <code>hstatus.vtsr</code> &rarr; guest
+                                    <code>sret</code>
+                                    traps. Lets you intercept guest returns for
+                                    accounting or emulation.
+                                </li>
+                                <li>
+                                    <code>hstatus.vgein</code> &rarr; selects
+                                    which guest interface is active for
+                                    interrupt delivery.
+                                </li>
+                            </ul>
+
+                            <p>
+                                When a guest tries to access a CSR it should
+                                not,
+                                <code>scause</code> says "virtual instruction"
+                                (fault code 22) and <code>mtval</code> contains
+                                the CSR number. <code>htinst</code> often
+                                contains the actual instruction encoding that
+                                caused the trap. You do not need to decode
+                                anything or fetch from guest memory. The
+                                hardware tells you exactly what instruction the
+                                guest was executing and which CSR it was trying
+                                to touch.
+                            </p>
+
+                            <h2>The One About Performance</h2>
+
+                            <p>
+                                People ask about trap latency constantly. Guest
+                                to hypervisor to guest is two CSR reads, some
+                                decoding, maybe an
+                                <code>hgatp</code> switch, and
+                                <code>sret</code>. Same cost as a normal S-mode
+                                trap. The slow hypervisors are slow because of
+                                what they do <em>during</em> the trap. Device
+                                emulation in software is expensive. Scheduling
+                                decisions add latency. But the raw trap cost?
+                                Negligible.
+                            </p>
+
+                            <p>
+                                The hard parts are still hard. Device emulation,
+                                memory ballooning, dirty page tracking for live
+                                migration, scheduling policy, all yours. But the
+                                CPU virtualization path is clean, auditable, and
+                                does not require understanding a microcode blob
+                                to debug. That is valuable in a way you only
+                                appreciate after you have stared at a VMX crash
+                                dump at 2am.
+                            </p>
+
+                            <h2>What You Should Actually Remember</h2>
+
+                            <p>
+                                Two-stage translation is the core of everything.
+                                Stage one is the guest's page table, pointed to
+                                by <code>vsatp</code>. Stage two is the
+                                hypervisor's page table, pointed to by
+                                <code>hgatp</code>. The MMU walks both in a
+                                single operation. Stage-two permissions are a
+                                ceiling on stage one. Fault codes 12/13 are
+                                stage one, 20/21 are stage two.
+                            </p>
+
+                            <p>
+                                The rest is quality-of-life.
+                                <code>htimedelta</code> saves timer traps.
+                                <code>hlv</code>/<code>hsv</code> saves context
+                                switches. <code>henvcfg</code> saves emulating
+                                missing hardware. <code>hfence.gvma</code> and
+                                <code>hfence.vvma</code> keep the TLB coherent
+                                without hypervisor intervention.
+                            </p>
+
+                            <p>
+                                Go read the spec. The H-extension chapter in the
+                                privileged architecture manual is about forty
+                                pages. Most of it is register layout diagrams.
+                                You can read it in a single afternoon.
+                            </p>
+
+                            <h2>
+                                Still Curious?
+                            </h2>
+                            <p>For the curious readers, here's a short trivia as a takeaway.</p>
+
+                            <p>
+                                <strong>1. Can you nest hypervisors?</strong>
+                                The H-extension has
+                                <code>henvcfg.HEN</code> which allows a guest to
+                                use the H-extension itself. That means you can
+                                have a hypervisor running inside a VM. What
+                                happens to two-stage translation when there are
+                                three stages? The hardware handles one level of
+                                nesting natively. Beyond that, every H-extension
+                                CSR access traps and has to be emulated. Nobody
+                                has shipped a three-level nested hypervisor in
+                                production. The question is whether the
+                                performance is even remotely acceptable.
+                            </p>
+
+                            <p>
+                                <strong
+                                    >2. How does the TLB actually merge two
+                                    PTEs?</strong
+                                >
+                                The spec says the merged permissions are the AND
+                                of both stages. But what about the A and D bits?
+                                If stage one sets A but stage two does not have
+                                it set yet, does the hardware walk stage two
+                                just to set the A bit? Or does it cache the
+                                merged entry with A=0 and fault on the next
+                                access to get stage two updated? Different
+                                implementations do different things. The spec is
+                                intentionally vague here.
+                            </p>
+
+                            <p>
+                                <strong
+                                    >3. What happens when GPA space exceeds VA
+                                    space?</strong
+                                >
+                                Sv39 has 39-bit virtual addresses. Sv39x4 (the
+                                stage-two format) can map up to 48 bits of GPA.
+                                If the guest has a 48-bit address space and the
+                                hypervisor maps it through a 39-bit page table
+                                format, the top 9 bits of the GPA are consumed
+                                by an extra level or through superpages. How
+                                does the hardware handle a GPA that has more
+                                bits than the page table format was designed
+                                for?
+                            </p>
+
+                            <p>
+                                <strong
+                                    >4. How expensive is a full world
+                                    switch?</strong
+                                >
+                                The article says individual traps are cheap.
+                                True. But scheduling between guests requires
+                                saving and restoring <code>hgatp</code>,
+                                <code>htimedelta</code>, <code>henvcfg</code>,
+                                <code>hcounteren</code>, <code>hvip</code>, and
+                                the entire guest register state. A full world
+                                switch is easily 10x the cost of a normal
+                                process context switch. The question is whether
+                                you can amortize that cost over longer
+                                scheduling quanta, or whether your workload
+                                demands frequent switching.
+                            </p>
+
+                            <p>
+                                <strong
+                                    >5. How do MSI interrupts reach the right
+                                    vCPU?</strong
+                                >
+                                When a passthrough device fires a Message
+                                Signaled Interrupt, the PCIe write lands
+                                somewhere in physical address space. The AIA
+                                (Advanced Interrupt Architecture) maps that
+                                write to an interrupt file, which delivers the
+                                interrupt to a specific vCPU. But who sets up
+                                that mapping? The hypervisor. For each
+                                passthrough device, the hypervisor must allocate
+                                an interrupt file, configure the IOMMU to route
+                                the MSI to the right GPA, and program the AIA to
+                                deliver it to the target vCPU. Miss any step and
+                                the interrupt vanishes into a black hole.
+                            </p>
+                        </div>
+                        <div class="status-bar mt-16">
+                            <a href="../blog.html" class="btn">
+                                <img
+                                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                                    class="icon-16"
+                                    alt=""
+                                />
+                                Back to All Posts
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 60px"></div>
+            </div>
+        </div>
+        <div class="taskbar">
+            <div style="display: flex; gap: 8px">
+                <a href="../index.html" class="start-button">
+                    <img
+                        src="https://win98icons.alexmeub.com/icons/png/windows-0.png"
+                        class="icon-16"
+                        alt=""
+                    />
+                    Start
+                </a>
+                <div
+                    style="border-left: 2px groove #c0c0c0; margin: 2px 4px"
+                ></div>
+                <a
+                    href="../blog.html"
+                    class="btn"
+                    style="display: inline-flex; align-items: center; gap: 4px"
+                >
+                    <img
+                        src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                        class="icon-16"
+                        alt=""
+                    />
+                    Blog
+                </a>
+                <a
+                    href="#"
+                    class="btn"
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 4px;
+                        border: 2px inset #fff;
+                    "
+                >
+                    <img
+                        src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+                        class="icon-16"
+                        alt=""
+                    />
+                    Reading
+                </a>
+            </div>
+            <div class="time" id="clock">12:00 PM</div>
+        </div>
+        <script>
+            function updateClock() {
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, "0");
+                const ampm = hours >= 12 ? "PM" : "AM";
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                document.getElementById("clock").textContent =
+                    hours + ":" + minutes + " " + ampm;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+    </body>
+</html>
