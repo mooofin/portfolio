@@ -130,13 +130,13 @@
                 </a>
               </li>
               <li class="list-group-item">
-                <a href="https://open.spotify.com/user/314ikabu7m4lwg6rljojtmhf74uq" target="_blank">
+                <a href="https://www.last.fm/user/kxllswxch" target="_blank">
                   <img
                     src="https://win98icons.alexmeub.com/icons/png/cd_audio_cd_a-0.png"
                     class="icon-16"
                     alt=""
                   />
-                  Spotify
+                  Last.fm
                 </a>
               </li>
             </ul>
@@ -154,6 +154,15 @@
             <a href="index.html">Home</a> &gt; Projects
           </div>
         </div>
+
+        <!-- Retro marquee banner -->
+        <div class="marquee-banner" style="margin-bottom: 8px">
+          <marquee behavior="scroll" direction="left" scrollamount="2">
+            *** Welcome to the Project Repository *** 15 repositories indexed *** Last sync: 2026-05-27 *** All systems operational ***
+          </marquee>
+        </div>
+
+        <!-- Main projects table -->
         <div class="window">
           <div class="window-title">
             <img
@@ -164,7 +173,7 @@
             All Repositories (15)
           </div>
           <div class="window-body" style="padding: 0">
-            <table class="table-95">
+            <table class="table-95" id="project-table">
               <thead>
                 <tr>
                   <th width="22%">Project</th>
@@ -172,10 +181,12 @@
                   <th width="15%">Link</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Honeymoon</strong></td>
+              <tbody>                <tr class="project-row" onmouseenter="showStatus('Honeymoon')" onmouseleave="clearStatus()">
                   <td>
+                    <strong>Honeymoon</strong>
+
+                  </td>
+                  <td class="project-desc">
                     An Emacs-inspired C++20 terminal editor. No Lisp. No bloat.
                   </td>
                   <td>
@@ -192,9 +203,12 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>IRAnatomy</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('IRAnatomy')" onmouseleave="clearStatus()">
                   <td>
+                    <strong>IRAnatomy</strong>
+
+                  </td>
+                  <td class="project-desc">
                     Instruments the LLVM optimization pipeline by snapshotting intermediate LLVM IR after every pass using opt -print-after-all, enabling fine-grained inspection of SSA graph rewrites across canonical mid-end transformations (mem2reg, SCCP, DCE, CFG canonicalization) and emitting pass-level CFG artifacts via dot-cfg.
                   </td>
                   <td>
@@ -211,14 +225,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td colspan="3"><hr class="separator"></td>
-                </tr>
-                <tr>
-                  <td><strong>nix-dotfiles</strong></td>
+                <tr><td colspan="3"><hr class="separator"></td></tr>
+                <tr class="project-row" onmouseenter="showStatus('nix-dotfiles')" onmouseleave="clearStatus()">
                   <td>
-                    NixOS setup with Niri + Hyprland, Quickshell and
-                    Home-manager.
+                    <strong>nix-dotfiles</strong>
+                  </td>
+                  <td class="project-desc">
+                    NixOS setup with Niri + Hyprland, Quickshell and Home-manager.
                   </td>
                   <td>
                     <a
@@ -234,9 +247,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>Portfolio</strong></td>
-                  <td>Personal portfolio & blogs.</td>
+                <tr class="project-row" onmouseenter="showStatus('Portfolio')" onmouseleave="clearStatus()">
+                  <td>
+                    <strong>Portfolio</strong>
+                  </td>
+                  <td class="project-desc">
+                    Personal portfolio & blogs.
+                  </td>
                   <td>
                     <a
                       href="https://github.com/mooofin/portfolio"
@@ -251,9 +268,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>AETHERION</strong></td>
-                  <td>A raycaster engine inspired by DOOM.</td>
+                <tr class="project-row" onmouseenter="showStatus('AETHERION')" onmouseleave="clearStatus()">
+                  <td>
+                    <strong>AETHERION</strong>
+                  </td>
+                  <td class="project-desc">
+                    A raycaster engine inspired by DOOM.
+                  </td>
                   <td>
                     <a
                       href="https://github.com/mooofin/Aetherion"
@@ -268,9 +289,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>AFL-exercises</strong></td>
-                  <td>Coverage-guided fuzzing experiments using AFL++.</td>
+                <tr class="project-row" onmouseenter="showStatus('AFL-exercises')" onmouseleave="clearStatus()">
+                  <td>
+                    <strong>AFL-exercises</strong>
+                  </td>
+                  <td class="project-desc">
+                    Coverage-guided fuzzing experiments using AFL++.
+                  </td>
                   <td>
                     <a
                       href="https://github.com/mooofin/AFL-exercises"
@@ -285,9 +310,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>JuliaScope</strong></td>
-                  <td>Multithreaded subdomain enumerator written in Julia.</td>
+                <tr class="project-row" onmouseenter="showStatus('JuliaScope')" onmouseleave="clearStatus()">
+                  <td>
+                    <strong>JuliaScope</strong>
+                  </td>
+                  <td class="project-desc">
+                    Multithreaded subdomain enumerator written in Julia.
+                  </td>
                   <td>
                     <a
                       href="https://github.com/mooofin/JuliaScope"
@@ -302,9 +331,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>Clair-Obscur</strong></td>
-                  <td>Featuring Lune :3</td>
+                <tr class="project-row" onmouseenter="showStatus('Clair-Obscur')" onmouseleave="clearStatus()">
+                  <td>
+                    <strong>Clair-Obscur</strong>
+                  </td>
+                  <td class="project-desc">
+                    Featuring Lune :3
+                  </td>
                   <td>
                     <a
                       href="https://github.com/mooofin/Clair-Obscur"
@@ -319,9 +352,11 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>DS_AnorLondoLightFix</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('DS_AnorLondoLightFix')" onmouseleave="clearStatus()">
                   <td>
+                    <strong>DS_AnorLondoLightFix</strong>
+                  </td>
+                  <td class="project-desc">
                     A mod to restore and enhance the lighting in Anor Londo.
                   </td>
                   <td>
@@ -338,11 +373,12 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>Thalix</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('Thalix')" onmouseleave="clearStatus()">
                   <td>
-                    A high-performance process management and memory editing
-                    toolkit.
+                    <strong>Thalix</strong>
+                  </td>
+                  <td class="project-desc">
+                    A high-performance process management and memory editing toolkit.
                   </td>
                   <td>
                     <a
@@ -358,11 +394,12 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>God-of-War-Ragnarok</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('God-of-War-Ragnarok')" onmouseleave="clearStatus()">
                   <td>
-                    Cheat Engine Scripts & Tools for modifying the single-player
-                    experience.
+                    <strong>God-of-War-Ragnarok</strong>
+                  </td>
+                  <td class="project-desc">
+                    Cheat Engine Scripts & Tools for modifying the single-player experience.
                   </td>
                   <td>
                     <a
@@ -378,11 +415,12 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>Theia-BC</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('Theia-BC')" onmouseleave="clearStatus()">
                   <td>
-                    A K-Nearest Neighbors (KNN) classifier for breast cancer
-                    diagnosis.
+                    <strong>Theia-BC</strong>
+                  </td>
+                  <td class="project-desc">
+                    A K-Nearest Neighbors (KNN) classifier for breast cancer diagnosis.
                   </td>
                   <td>
                     <a
@@ -398,11 +436,12 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>Rustflakes</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('Rustflakes')" onmouseleave="clearStatus()">
                   <td>
-                    Rust project with Nix flakes for multi-target
-                    cross-compilation & Docker.
+                    <strong>Rustflakes</strong>
+                  </td>
+                  <td class="project-desc">
+                    Rust project with Nix flakes for multi-target cross-compilation & Docker.
                   </td>
                   <td>
                     <a
@@ -418,9 +457,13 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>CTFs</strong></td>
-                  <td>CTF writeups :3</td>
+                <tr class="project-row" onmouseenter="showStatus('CTFs')" onmouseleave="clearStatus()">
+                  <td>
+                    <strong>CTFs</strong>
+                  </td>
+                  <td class="project-desc">
+                    CTF writeups :3
+                  </td>
                   <td>
                     <a
                       href="https://github.com/mooofin/CTFs"
@@ -435,11 +478,12 @@
                     >
                   </td>
                 </tr>
-                <tr>
-                  <td><strong>hypv64</strong></td>
+                <tr class="project-row" onmouseenter="showStatus('hypv64')" onmouseleave="clearStatus()">
                   <td>
-                    RISC-V 64 hypervisor written in Rust, built for QEMU
-                    <code>virt</code>.
+                    <strong>hypv64</strong>
+                  </td>
+                  <td class="project-desc">
+                    RISC-V 64 hypervisor written in Rust, built for QEMU virt.
                   </td>
                   <td>
                     <a
@@ -457,6 +501,17 @@
                 </tr>
               </tbody>
             </table>
+            <!-- Project status bar -->
+            <div class="project-status" id="project-status">
+              Hover over a project to see details
+            </div>
+
+            <!-- Marquee divider -->
+            <div class="retro-divider">
+              <marquee behavior="scroll" direction="left" scrollamount="2">
+                *** Build: v3.2.1 *** OS: Windows 98 SE *** Memory: 640KB Conventional *** Free: 582,847K ***
+              </marquee>
+            </div>
             <div class="status-bar text-center">
               :: Total repositories: 15 |
               <a
@@ -539,6 +594,31 @@
       }
       updateClock();
       setInterval(updateClock, 1000);
+
+      // Project hover status
+      const projectDetails = {
+        "Honeymoon": "Language: C++20 | Type: Editor | Status: Active",
+        "IRAnatomy": "Language: C++ | Type: LLVM Tool | Status: Active",
+        "nix-dotfiles": "Language: Nix | Type: Dotfiles | Status: Active",
+        "Portfolio": "Language: HTML/CSS | Type: Portfolio | Status: Active",
+        "AETHERION": "Language: C | Type: Raycaster | Status: Active",
+        "AFL-exercises": "Language: C | Type: Fuzzing | Status: Active",
+        "JuliaScope": "Language: Julia | Type: Recon Tool | Status: Active",
+        "Clair-Obscur": "Language: ? | Type: Game | Status: Active",
+        "DS_AnorLondoLightFix": "Type: Mod | Platform: Dark Souls | Status: Active",
+        "Thalix": "Language: C++ | Type: Process Mgmt | Status: Active",
+        "God-of-War-Ragnarok": "Type: CE Script | Platform: GoW Ragnarok | Status: Active",
+        "Theia-BC": "Language: Python | Type: ML Classifier | Status: Active",
+        "Rustflakes": "Language: Rust | Type: Build Tool | Status: Active",
+        "CTFs": "Type: Writeups | Status: Active",
+        "hypv64": "Language: Rust | Type: Hypervisor | Status: Active",
+      };
+      function showStatus(name) {
+        document.getElementById("project-status").textContent = projectDetails[name] || "";
+      }
+      function clearStatus() {
+        document.getElementById("project-status").textContent = "Hover over a project to see details";
+      }
     </script>
   </body>
 </html>
