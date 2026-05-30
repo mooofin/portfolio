@@ -389,9 +389,9 @@
                                 the default -O2 pipeline in llvm is about 100
                                 passes long, give or take. it was hand-crafted
                                 by llvm developers over many years. it's pretty
-                                good for most code. but \"pretty good\" isn't
-                                the same as \"optimal for your specific program
-                                on your specific hardware.\"
+                                good for most code. but "pretty good" isn't
+                                the same as "optimal for your specific program
+                                on your specific hardware."
                             </p>
 
                             <h2>
@@ -439,7 +439,7 @@
                                 you could try to reason about it analytically
                                 maybe . researchers have attempted to model pass
                                 interactions as a graph, where edges represent
-                                \"this pass enables that optimization.\" but the
+                                "this pass enables that optimization." but the
                                 interactions are nonlinear ,  pass A enables pass
                                 B which enables pass C, but running C first
                                 disables both A and B. the fitness landscape is
@@ -1042,7 +1042,7 @@
                                 making the fitness landscape essentially random
                                 at small scales. genetic algorithms rely on the
                                 assumption that similar genomes have similar
-                                fitness (the \"building block hypothesis\"). if
+                                fitness (the "building block hypothesis"). if
                                 that assumption is violated ,  and in pass
                                 optimization, it often is ,  the search degrades
                                 to random sampling.
