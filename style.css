@@ -5,6 +5,8 @@
     License: MIT
 */
 
+@import url("https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css");
+
 html {
   position: relative;
   min-height: 100%;
