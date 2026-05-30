@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM"
+        />
+        <title>Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM - mooofin</title>
+    <meta property="og:title" content="Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM" />
+    <meta property="og:image" content="https://mooofin.github.io/portfolio/images/posts/shakelton.png" />
+    <meta property="og:url" content="https://mooofin.github.io/portfolio/blog/shackleton-llvm-gp.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM" />
+    <meta name="twitter:image" content="https://mooofin.github.io/portfolio/images/posts/shakelton.png" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+    <link rel="icon" href="../../public/favicon.ico" />
+        <style>
+            .blog-content {
+                font-family: "MS Sans Serif", Tahoma, Verdana, sans-serif;
+                line-height: 1.6;
+                font-size: 14px;
+                color: #212529;
+            }
+            .blog-content h1 {
+                color: #08216b;
+                margin-top: 0;
+                border-bottom: 2px groove #c0c0c0;
+                padding-bottom: 8px;
+                font-size: 18px;
+            }
+            .blog-content h2 {
+                color: #08216b;
+                margin-top: 20px;
+                border-bottom: 1px dotted #808080;
+                padding-bottom: 4px;
+                font-size: 16px;
+            }
+            .blog-content h3 {
+                color: #08216b;
+                margin-top: 16px;
+                font-size: 14px;
+            }
+            .blog-content p {
+                margin-bottom: 15px;
+            }
+            .blog-content pre {
+                background: #fff;
+                border: 2px inset #d5d5d5;
+                padding: 12px;
+                overflow-x: auto;
+                font-family: "Courier New", monospace;
+                font-size: 12px;
+            }
+            .blog-content code {
+                background: #f0f0f0;
+                padding: 2px 4px;
+                border: 1px inset #d5d5d5;
+                font-family: "Courier New", monospace;
+                font-size: 12px;
+            }
+            .blog-content blockquote {
+                border-left: 4px solid #08216b;
+                padding-left: 12px;
+                color: #555;
+                font-style: italic;
+                margin: 15px 0;
+                background: #f5f5f5;
+                padding: 8px 12px;
+            }
+            .blog-content ul {
+                margin-left: 20px;
+            }
+            .blog-content ol {
+                margin-left: 20px;
+            }
+            .blog-content li {
+                margin-bottom: 4px;
+            }
+            .blog-content a {
+                color: #2d49eb;
+            }
+            .blog-content a:hover {
+                text-decoration: underline;
+            }
+            .blog-meta {
+                color: #666;
+                font-size: 11px;
+                margin-bottom: 16px;
+                border-bottom: 2px groove #c0c0c0;
+                padding-bottom: 8px;
+            }
+
+            .blog-content pre code {
+                background: none;
+                padding: 0;
+                border: none;
+            }
+            .hljs {
+                background: #fafaf8;
+            }
+            .hljs-keyword {
+                color: #b0306a;
+            }
+            .hljs-string {
+                color: #2d6a2d;
+            }
+            .hljs-comment {
+                color: #808080;
+                font-style: italic;
+            }
+            .hljs-number {
+                color: #7a2d8a;
+            }
+            .hljs-type {
+                color: #c06030;
+            }
+            .hljs-literal {
+                color: #d49080;
+            }
+            .hljs-built_in {
+                color: #7a2d8a;
+            }
+            .hljs-title.class_ {
+                color: #212529;
+            }
+            .hljs-title.function_ {
+                color: #212529;
+            }
+            .hljs-attr {
+                color: #b0306a;
+            }
+            .hljs-params {
+                color: #424242;
+            }
+            .hljs-meta {
+                color: #c06030;
+            }
+            .hljs-meta .hljs-keyword {
+                color: #c06030;
+            }
+            .hljs-symbol {
+                color: #2d6a2d;
+            }
+            .hljs-section {
+                color: #b0306a;
+            }
+            .hljs-selector-tag {
+                color: #b0306a;
+            }
+            .hljs-addition {
+                color: #2d6a2d;
+            }
+            .hljs-deletion {
+                color: #a04040;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="desktop flex gap-16" style="flex-direction: row">
+            <div class="sidebar-95">
+                <div class="window">
+                    <div class="window-title">
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        Navigation
+                    </div>
+                    <div class="window-body" style="padding: 0">
+                        <ul class="list-group" style="border: none">
+                            <li class="list-group-item">
+                                <a href="../index.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Home
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../about.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/users-1.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    About Me
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../projects.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Projects
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../blog.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Blog
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="window">
+                    <div class="window-title">
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/gear-0.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        Actions
+                    </div>
+                    <div class="window-body" style="padding: 0">
+                        <ul class="list-group" style="border: none">
+                            <li class="list-group-item">
+                                <a href="javascript:history.back()">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Go Back
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a
+                                    href="#"
+                                    onclick="
+                                        window.scrollTo(0, 0);
+                                        return false;
+                                    "
+                                >
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    Top of Page
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../blog.html">
+                                    <img
+                                        src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                                        class="icon-16"
+                                        alt=""
+                                    />
+                                    All Posts
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="content-95">
+                <div class="window" style="margin-bottom: 8px">
+                    <div
+                        class="window-body"
+                        style="padding: 4px 8px; font-size: 11px"
+                    >
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        <a href="../index.html">Home</a> &gt;
+                        <a href="../blog.html">Blog</a> &gt; Breeding Better Binaries
+                    </div>
+                </div>
+                <div class="window">
+                    <div class="window-title">
+                        <img
+                            src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+                            class="icon-16"
+                            alt=""
+                        />
+                        Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM
+                    </div>
+                    <div class="window-body">
+                        <div class="blog-meta">
+                            <img
+                                src="https://win98icons.alexmeub.com/icons/png/clock-0.png"
+                                class="icon-16"
+                                alt=""
+                            />
+                            Posted: 2026-05-30 |
+                            <img
+                                src="https://win98icons.alexmeub.com/icons/png/user-0.png"
+                                class="icon-16"
+                                alt=""
+                            />
+                            Author: sid |
+                            <img
+                                src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
+                                class="icon-16"
+                                alt=""
+                            />
+                            Category: Compilers, Research
+                        </div>
+                        <div class="blog-content">
+                            <p>
+                                read a paper from Arm and Michigan State about
+                                using linear genetic programming to optimize
+                                LLVM pass sequences, as someone who took bio in
+                                12th grade , the idea kinda stuck with me.
+                            </p>
+
+                            <p>
+                                this post is long. i'm going to explain
+                                everything from the ground up ,  what llvm passes
+                                are, how genetic programming works, how
+                                shackleton puts them together, and whether any
+                                of it matters in practice.
+                            </p>
+
+                            <h2>part 1: what does a compiler actually do</h2>
+
+                            <p>
+                                before we talk about optimization, we need to be
+                                clear on what a compiler does. you write source
+                                code in C or Rust or whatever. the compiler
+                                translates it to machine code. in the old days
+                                (and still in GCC's architecture), this was a
+                                straightforward pipeline: lexing, parsing, code
+                                generation, done.
+                            </p>
+
+                            <p>
+                                llvm is different. it inserts an intermediate
+                                step called <strong>IR</strong> (intermediate
+                                representation). your source code gets compiled
+                                to IR first. then llvm runs a bunch of
+                                transformations on that IR. then the IR gets
+                                compiled to machine code for your specific
+                                target. the reason for this three-stage design
+                                is reuse ,  the same IR transformations work
+                                whether your source is C, Rust, Swift, or Julia,
+                                and they work whether your target is x86, ARM,
+                                or RISC-V. you write the optimization once, it
+                                works everywhere.
+                            </p>
+
+                            <p>
+                                each transformation is called a
+                                <strong>pass</strong>. there are two kinds:
+                            </p>
+
+                            <p>
+                                <strong>analysis passes</strong> read the IR and
+                                compute some property ,  things like which
+                                variables are never used (dead code analysis),
+                                which memory addresses might point to the same
+                                location (alias analysis), or what the loop
+                                structure of a function is (loop analysis). they
+                                don't change anything, they just produce
+                                information that other passes consume.
+                                <strong>transform passes</strong> change the IR
+                                ,  eliminate dead code, inline functions, unroll
+                                loops, simplify expressions. each transform pass
+                                typically needs results from one or more
+                                analysis passes to know what to change.
+                            </p>
+
+                            <p>
+                                this creates dependencies. if you run an
+                                analysis pass, then a transform pass, then
+                                another analysis pass, the second analysis might
+                                produce different results than the first because
+                                the IR changed. passes invalidate each other's
+                                analyses. so the order you run them in directly
+                                affects what the compiler can figure out.
+                            </p>
+
+                            <p>
+                                the default -O2 pipeline in llvm is about 100
+                                passes long, give or take. it was hand-crafted
+                                by llvm developers over many years. it's pretty
+                                good for most code. but \"pretty good\" isn't
+                                the same as \"optimal for your specific program
+                                on your specific hardware.\"
+                            </p>
+
+                            <h2>
+                                part 2: why finding the best pass sequence is
+                                hard
+                            </h2>
+
+                            <p>
+                                formalizing the problem: a pass sequence is an
+                                ordered list of passes:
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$P = \langle p_1, p_2, \dots, p_n \rangle$$
+                            </p>
+
+                            <p>
+                                where each $p_i$ belongs to the set
+                                $\mathcal{P}$ of all available llvm passes
+                                (roughly 200 of them). the length $n$ isn't
+                                fixed ,  for -O2 it's around 100. the search
+                                space is all possible sequences up to some
+                                maximum length $L$:
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$\mathcal{S} = \bigcup_{n=1}^{L}
+                                \mathcal{P}^n$$
+                            </p>
+
+                            <p>
+                                the size of this space is $\sum_{n=1}^{L}
+                                |\mathcal{P}|^n$. for $|\mathcal{P}| = 200$ and
+                                $L = 100$, the first term alone is $200^{100}$.
+                            </p>
+
+                            <p>
+                                to give you a sense of scale: the number of
+                                atoms in the observable universe is about
+                                $10^{80}$. $200^{100}$ is roughly $10^{230}$.
+                                brute force welpsies :((.
+                            </p>
+
+                            <p>
+                                you could try to reason about it analytically
+                                maybe . researchers have attempted to model pass
+                                interactions as a graph, where edges represent
+                                \"this pass enables that optimization.\" but the
+                                interactions are nonlinear ,  pass A enables pass
+                                B which enables pass C, but running C first
+                                disables both A and B. the fitness landscape is
+                                <strong>epistatic</strong>, meaning the effect
+                                of changing one pass depends on the state of all
+                                the other passes around it.
+                            </p>
+
+                            <p>
+                                so we need a search strategy. could try random
+                                search (generate random sequences and keep the
+                                best). orr you could try hill climbing (start
+                                from -O2 and make small changes, keep the
+                                improvements). you could try reinforcement
+                                learning (train a model to predict good
+                                sequences). or you could try what shackleton
+                                does drum roll plsss: evolution.
+                            </p>
+
+                            <h2>
+                                part 3: a crash course in genetic programming
+                            </h2>
+
+                            <p>
+                                genetic programming is a subset of evolutionary
+                                computation. the core idea is older (not as old
+                                as lisp but yea wtv) than most programmers
+                                realize ,  john holland wrote about genetic
+                                algorithms in 1975, and john koza popularized
+                                genetic programming in the 1990s.
+                            </p>
+
+                            <p>
+                                you start with a <strong>population</strong> of
+                                candidate solutions, measure how good each one
+                                is with a <strong>fitness function</strong>,
+                                select the best ones to be
+                                <strong>parents</strong>, create
+                                <strong>offspring</strong> by mixing parents
+                                together (crossover) and randomly tweaking them
+                                (mutation), then replace the worst members of
+                                the population with the new offspring and repeat
+                                for many generations.
+                            </p>
+
+                            <p>
+                                in traditional genetic algorithms, solutions are
+                                fixed-length bit strings. in genetic
+                                programming, solutions are programs ,  usually
+                                represented as tree structures (like abstract
+                                syntax trees) or linear sequences (like assembly
+                                code). shackleton uses the linear
+                                representation, hence
+                                <strong>linear genetic programming (LGP)</strong
+                                >.
+                            </p>
+
+                            <p>
+                                the linear representation has advantages for
+                                compiler problems. compilers process a linear
+                                sequence of instructions. the IR itself is a
+                                linear instruction stream (with control flow
+                                superimposed on it). evolving linear sequences
+                                maps naturally onto the problem. tree-based GP
+                                would represent a pass sequence as a tree, which
+                                is awkward because there's no natural tree
+                                structure to pass ordering.
+                            </p>
+
+                            <p>the two main variation operators in LGP are:</p>
+
+                            <p>
+                                <strong>crossover</strong> takes two parent
+                                sequences, picks a random cut point in each, and
+                                swaps the tails ,  producing two children that
+                                combine segments from both parents.
+                                <strong>mutation</strong> randomly modifies the
+                                offspring: insert a new instruction, delete an
+                                instruction, replace one with another, or swap
+                                two adjacent instructions.
+                            </p>
+
+                            <p>
+                                the interplay between these operators determines
+                                how the search explores the space. crossover
+                                exploits existing good building blocks by
+                                recombining them. mutation explores new
+                                territory by introducing random changes. getting
+                                the balance right depends on the problem ,  too
+                                much mutation and you're doing random search,
+                                too little and you converge prematurely on a
+                                mediocre solution.
+                            </p>
+
+                            <h2>part 4: what's in the shackleton repo</h2>
+
+                            <h3>the osaka list structure (OSL)</h3>
+
+                            <p>
+                                at the core of shackleton's representation is
+                                the <strong>Osaka List Structure</strong>, or
+                                OSL. this is the data structure that holds
+                                sequences of genetic objects ,  whether those are
+                                aarch64 instructions or llvm passes. the name
+                                comes from the city where the initial design
+                                discussions happened.
+                            </p>
+
+                            <p>
+                                an OSL is a doubly linked list where each node
+                                contains:
+                            </p>
+
+                            <p>
+                                each node contains a
+                                <strong>generic genetic object (GGO)</strong>
+                                (the actual instruction or pass), a
+                                <strong>pointer to the next node</strong>
+                                (forward link), a
+                                <strong>pointer to the previous node</strong>
+                                (backward link), and a
+                                <strong>sequence-level metadata block</strong>
+                                with the generation number, unique individual
+                                ID, and parent IDs for ancestry tracking.
+                            </p>
+
+                            <p>
+                                the reason shackleton uses a linked list instead
+                                of an array is that insert and delete mutations
+                                are O(1) ,  you just relink a few pointers. an
+                                array-based representation would require O(n)
+                                shifts for every insert or delete, and since
+                                mutation is applied per-position with
+                                probability $p_m$, those shifts add up fast over
+                                a population of $N$ individuals across $G$
+                                generations.
+                            </p>
+
+                            <p>
+                                but linked lists have a cost: traversal is O(n)
+                                with a pointer-chasing overhead that arrays
+                                don't have. for short sequences (under 100
+                                passes) this doesn't matter much. for longer
+                                sequences, the cache miss penalty of walking a
+                                linked list starts to show. shackleton doesn't
+                                seem to hit this wall because the experiments
+                                cap sequence length at well under 200.
+                            </p>
+
+                            <p>
+                                the metadata per individual includes a
+                                <strong>fitness value</strong> (best measurement
+                                so far, cached to avoid re-evaluation),
+                                <strong>generation of birth</strong>,
+                                <strong>parent IDs</strong> for tracing
+                                lineages, <strong>sequence length</strong>, and
+                                an <strong>eval count</strong> for how many
+                                times this genome has been evaluated for
+                                averaging.
+                            </p>
+
+                            <h3>the generic genetic object (GGO)</h3>
+
+                            <p>
+                                the GGO is shackleton's abstraction for "a thing
+                                that can be evolved" ,  a struct with an
+                                <strong>opcode</strong> (which pass or
+                                instruction), a
+                                <strong>pointer to domain-specific data</strong>
+                                (threshold values, target features), and a
+                                <strong
+                                    >mutation behavior function pointer</strong
+                                >
+                                so different pass types can mutate differently.
+                            </p>
+
+                            <p>
+                                the function pointer for mutation is the key
+                                abstraction. shackleton's core evolutionary loop
+                                doesn't need to know what a GGO represents ,  it
+                                just calls the mutation function and lets the
+                                domain-specific code handle the details. this is
+                                how the same framework supports both aarch64
+                                instruction evolution and llvm pass sequence
+                                optimization. the core loop is generic; the GGO
+                                implementation is domain-specific.
+                            </p>
+
+                            <p>
+                                for the LLVM pass domain, each GGO wraps a
+                                single pass invocation. the opcode maps to a
+                                pass name like <code>instcombine</code> or
+                                <code>gvn</code> or <code>licm</code>. the
+                                mutation function for an LLVM-pass GGO randomly
+                                picks a different pass from $\mathcal{P}$ and
+                                replaces its opcode. insert and delete mutations
+                                operate on the OSL level, not on individual
+                                GGOs.
+                            </p>
+
+                            <h3>population dynamics</h3>
+
+                            <p>
+                                the population is an array of OSL pointers , 
+                                flat for fast random access during tournament
+                                selection. each generation, shackleton evaluates
+                                all individuals that haven't been evaluated yet
+                                (or whose cached fitness is stale), sorts by
+                                fitness descending, copies the top $e\%$
+                                directly into the next generation (elitism),
+                                fills the remaining slots by selecting parents
+                                via tournament and applying crossover with
+                                probability $p_c$ and mutation with probability
+                                $p_m$ per position, then assigns each new
+                                individual a unique ID and records its
+                                generation of birth and parent IDs.
+                            </p>
+
+                            <p>
+                                the selection pressure is controlled by the
+                                tournament size $k$. larger $k$ means the best
+                                individuals are more likely to be selected as
+                                parents, which speeds up convergence but
+                                increases the risk of getting stuck in a local
+                                optimum. smaller $k$ preserves diversity but
+                                slows down progress. shackleton defaults to $k =
+                                3$, which is standard in the GP literature ,  it
+                                provides moderate selection pressure without
+                                collapsing diversity too quickly.
+                            </p>
+
+                            <h3>the fitness landscape</h3>
+
+                            <p>
+                                the fitness function $\Phi: \mathcal{S} \to
+                                \mathbb{R}$ maps from sequence space to
+                                real-valued fitness. the landscape has four
+                                properties that matter:
+                                <strong>ruggedness</strong> ,  small changes in
+                                sequence cause large fitness changes, the
+                                landscape is all sharp peaks and deep valleys.
+                                <strong>neutrality</strong> ,  many sequences
+                                produce identical fitness (especially
+                                compiler-crashing ones, all $\Phi = 0$),
+                                creating flat networks the search drifts across
+                                without improving.
+                                <strong>deceptiveness</strong> ,  combining two
+                                good sequences doesn't give a better one because
+                                pass interactions are nonlinear, violating the
+                                building block hypothesis.
+                                <strong>noise</strong> ,  the same sequence
+                                evaluated twice gives different fitness, so the
+                                search works with an approximation of the true
+                                landscape.
+                            </p>
+
+                            <p>
+                                these properties make pass sequence optimization
+                                hard for any search algorithm, including GP.
+                                they also explain why shackleton works best with
+                                genetic improvement ,  starting from a known-good
+                                sequence keeps you in the smoother part of the
+                                landscape near a working point.
+                            </p>
+
+                            <h3>the llvm optimization mode</h3>
+
+                            <p>
+                                the llvm integration is enabled with the
+                                <code>-llvm_optimize</code> flag. shackleton
+                                prompts you for the source files to optimize
+                                (placed in <code>src/files/llvm/</code>),
+                                creates an initial population of random pass
+                                sequences, compiles each with clang using the
+                                evolved sequence, runs the binary, measures
+                                execution time, and evolves toward faster
+                                sequences.
+                            </p>
+
+                            <p>
+                                the compilation uses llvm's
+                                <strong>opt</strong> and <strong>clang</strong>
+                                under the hood. shackleton generates the pass
+                                sequence as an opt invocation, pipes the IR
+                                through it, then compiles the result with clang
+                                and benchmarks it.
+                            </p>
+
+                            <h3>the parameters</h3>
+
+                            <p>
+                                shackleton exposes a lot of knobs. you can set
+                                them interactively or via a
+                                <code>parameters.txt</code> file:
+                            </p>
+
+                            <p>
+                                <strong>population size</strong> controls how
+                                many individuals per generation ,  larger
+                                populations explore more but cost more per
+                                generation.
+                                <strong>maximum generations</strong> sets when
+                                to stop if we haven't converged.
+                                <strong>crossover rate</strong> is the
+                                probability two selected parents produce
+                                offspring via crossover instead of just cloning.
+                                <strong>mutation rate</strong> is the
+                                probability per position that mutation fires , 
+                                higher values increase exploration but disrupt
+                                good sequences.
+                                <strong>elitism percentage</strong> determines
+                                how many of the best individuals survive
+                                unchanged, preventing loss of the best solution
+                                found so far.
+                                <strong>initial sequence length</strong> and
+                                <strong>maximum sequence length</strong> bound
+                                the search space.
+                                <strong
+                                    >number of evaluations per fitness</strong
+                                >
+                                controls noise handling by averaging multiple
+                                benchmark runs.
+                            </p>
+
+                            <p>
+                                the <code>-cache</code> flag enables caching of
+                                evaluation results. without it, if two different
+                                sequences produce the same binary (possible if
+                                the difference between them gets optimized
+                                away), shackleton re-evaluates from scratch.
+                                with caching, it stores (sequence_hash, fitness)
+                                pairs and skips redundant evaluations. the cache
+                                is just a flat file ,  there's no database or
+                                serialization framework involved.
+                            </p>
+
+                            <h2>
+                                part 5: the evolutionary algorithm in detail;
+                                TW(i really suck at maths , apologies in advance
+                                if there's a mistake)
+                            </h2>
+
+                            <p>
+                                we generate a population of $N$ individuals.
+                                each individual is a sequence of passes. in
+                                genetic improvement mode, one individual is the
+                                default pipeline; the rest are mutated copies of
+                                it. in pure GP mode, each pass is chosen
+                                uniformly at random from $\mathcal{P}$, and
+                                sequence lengths are drawn uniformly from
+                                $[L_{\min}, L_{\max}]$.
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$G_i = [p_1, p_2, \dots, p_{L_i}], \quad L_i
+                                \sim U(L_{\min}, L_{\max}), \quad p_j \sim
+                                U(\mathcal{P})$$
+                            </p>
+
+                            <h3>fitness evaluation</h3>
+
+                            <p>
+                                for each individual $i$, compile the benchmark
+                                $f$ with pass sequence $G_i$:
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$\text{binary}_i = \text{compile}(f, G_i)$$
+                            </p>
+
+                            <p>
+                                run the binary $R$ times and record execution
+                                times:
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$T_i^{(1)}, T_i^{(2)}, \dots, T_i^{(R)}$$
+                            </p>
+
+                            <p>compute the mean:</p>
+
+                            <p style="padding-left: 16px">
+                                $$\hat{T}_i = \frac{1}{R} \sum_{r=1}^{R}
+                                T_i^{(r)}$$
+                            </p>
+
+                            <p>fitness relative to baseline:</p>
+
+                            <p style="padding-left: 16px">
+                                $$\Phi_i =
+                                \frac{\hat{T}_{\text{-O2}}}{\hat{T}_i}$$
+                            </p>
+
+                            <p>
+                                if the binary doesn't compile or crashes at
+                                runtime, $\Phi_i = 0$. this creates strong
+                                selection pressure against broken sequences.
+                            </p>
+
+                            <h3>selection</h3>
+
+                            <p>
+                                shackleton uses tournament selection. pick $k$
+                                individuals at random from the population, and
+                                keep the one with the highest fitness. repeat
+                                until you have enough parents. tournament size
+                                $k$ controls selection pressure ,  larger $k$
+                                means stronger pressure toward the fittest
+                                individuals, which speeds up convergence but
+                                increases the risk of premature convergence on a
+                                local optimum.
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$P(\text{select } i) = \frac{k \cdot
+                                \Phi_i}{\sum_{j=1}^{N} \Phi_j} \quad
+                                \text{(approximately)}$$
+                            </p>
+
+                            <h3>crossover</h3>
+
+                            <p>
+                                with probability $p_c$, two parents produce two
+                                children via single-point crossover. given
+                                parents $A$ and $B$ with lengths $L_A$ and
+                                $L_B$, choose a crossover point $c$ uniformly
+                                from $[1, \min(L_A, L_B) - 1]$:
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$\text{child}_1 = [A_1, \dots, A_c, B_{c+1},
+                                \dots, B_{L_B}]$$
+                            </p>
+                            <p style="padding-left: 16px">
+                                $$\text{child}_2 = [B_1, \dots, B_c, A_{c+1},
+                                \dots, A_{L_A}]$$
+                            </p>
+
+                            <p>
+                                the children have lengths $c + (L_B - c) = L_B$
+                                and $c + (L_A - c) = L_A$ respectively. so
+                                crossover preserves the length of each parent in
+                                the corresponding child. length variation
+                                happens through insert/delete mutations instead.
+                            </p>
+
+                            <h3>mutation</h3>
+
+                            <p>
+                                after crossover, each child is mutated with
+                                probability $p_m$ per position. the mutation
+                                operator is chosen uniformly from the four
+                                options (replace, insert, delete, swap). insert
+                                and delete change the sequence length by $\pm
+                                1$. the framework enforces hard bounds
+                                $[L_{\min}, L_{\max}]$ ,  if a delete would take
+                                it below $L_{\min}$, it's ignored, and if an
+                                insert would take it above $L_{\max}$, it's
+                                ignored.
+                            </p>
+
+                            <h3>replacement</h3>
+
+                            <p>
+                                the new offspring replace the worst individuals
+                                in the population. elitism preserves the top
+                                $e\%$ unchanged. the remaining population slots
+                                are filled with offspring from tournament
+                                selection of the survivors.
+                            </p>
+
+                            <p>
+                                the loop stops when the maximum generation count
+                                $G_{\max}$ is reached, or when fitness hasn't
+                                improved by more than $\epsilon$ for $S$
+                                consecutive generations, or when a target
+                                fitness threshold (like 5% improvement over -O2)
+                                is reached.
+                            </p>
+
+                            <h2>part 6: what the paper actually found</h2>
+
+                            <p>
+                                the paper tests two benchmarks. i wish they had
+                                tested more but it is what it is . sob sob
+                            </p>
+
+                            <p>
+                                <strong>benchmark 1: DSP kernel.</strong> a
+                                simple digital signal processing loop. about 20
+                                lines of C, tight loop with multiply-accumulate
+                                operations. shakleton converged within 20
+                                generations to sequences that matched -O2
+                                performance. the best evolved sequences were
+                                slightly different from the default pipeline , 
+                                they used fewer passes in a different order , 
+                                but produced binaries within 1-2% of the same
+                                runtime. this suggests that for simple kernels,
+                                the default pipeline is already near-optimal and
+                                evolution confirms what the llvm devs already
+                                knew.
+                            </p>
+
+                            <p>
+                                <strong
+                                    >benchmark 2: cryptographic
+                                    workload.</strong
+                                >
+                                a larger program with complex control flow,
+                                multiple functions, and data-dependent
+                                branching. this took 50+ generations and the
+                                results were less consistent. different runs of
+                                the evolutionary algorithm produced different
+                                best sequences, with fitness values varying by
+                                as much as 10% across runs. the best sequences
+                                matched -O2 but never significantly beat it. the
+                                authors note that longer sequences (above 40
+                                passes) become exponentially harder to optimize
+                                because the epistasis problem compounds.
+                            </p>
+
+                            <p>
+                                the paper also reports that mutation rate had a
+                                strong effect on convergence. low mutation rates
+                                ($p_m < 0.01$) caused premature convergence , 
+                                the population collapsed to a few similar
+                                sequences and stopped exploring. high mutation
+                                rates ($p_m > 0.1$) turned the search into
+                                random walk ,  good sequences were disrupted
+                                before they could propagate. the sweet spot was
+                                around $p_m = 0.05$, which is consistent with
+                                the gp literature.
+                            </p>
+
+                            <p>
+                                population size mattered too. smaller
+                                populations ($N < 50$) converged quickly but to
+                                poor solutions. larger populations ($N > 200$)
+                                explored more thoroughly but the per-generation
+                                cost became prohibitive ,  each generation took
+                                hours because every individual had to be
+                                compiled and benchmarked. the sweet spot was $N
+                                = 100$ to $N = 150$.
+                            </p>
+
+                            <h2>part 7: why this is hard in practice</h2>
+
+                            <p>
+                                reading the paper and the code, i see several
+                                practical problems that the framework doesn't
+                                fully solve.
+                            </p>
+
+                            <p>
+                                <strong>measurement noise.</strong> runtime
+                                measurements on a modern cpu are incredibly
+                                noisy. frequency scaling, cache warming,
+                                background processes, thermal throttling ,  all
+                                of these add variance. shackleton runs each
+                                binary $R \geq 3$ times and averages, but the
+                                paper doesn't report confidence intervals or
+                                statistical significance tests. if the variance
+                                is high, a sequence that appears to be 2% faster
+                                than -O2 might just be luck. you'd need $R = 30$
+                                or more to get reliable measurements, which
+                                multiplies the cost.
+                            </p>
+
+                            <p>
+                                <strong>compilation failures.</strong> most
+                                random pass sequences don't produce working
+                                binaries. the paper doesn't report exact
+                                numbers, but in practice, especially without
+                                genetic improvement, 80-90% of random sequences
+                                might fail. each failure still costs the
+                                compilation time. the fitness cache helps once
+                                you've evaluated a sequence, but the first
+                                evaluation of each sequence is wasted if it
+                                crashes.
+                            </p>
+
+                            <p>
+                                <strong>generalization.</strong> the evolved
+                                sequence is specific to one benchmark on one
+                                input. there's no guarantee it will work well on
+                                different inputs to the same program. a sequence
+                                that optimizes a hot loop for input size 1024
+                                might make it slower for input size 512, because
+                                different passes trigger different unrolling
+                                decisions. the paper doesn't test this.
+                            </p>
+
+                            <p>
+                                <strong>epistasis.</strong> i keep coming back
+                                to this because it's the fundamental challenge.
+                                the fitness function is not smooth. small
+                                changes can have large nonlinear effects. two
+                                sequences that differ by one pass can produce
+                                binaries with wildly different performance,
+                                making the fitness landscape essentially random
+                                at small scales. genetic algorithms rely on the
+                                assumption that similar genomes have similar
+                                fitness (the \"building block hypothesis\"). if
+                                that assumption is violated ,  and in pass
+                                optimization, it often is ,  the search degrades
+                                to random sampling.
+                            </p>
+
+                            <p style="padding-left: 16px">
+                                $$\Phi(P) \not\approx \Phi(P') \quad \text{even
+                                when } \text{diff}(P, P') = 1$$
+                            </p>
+
+                            <h2>
+                                part 8: how shackleton compares to other
+                                approaches
+                            </h2>
+
+                            <p>
+                                other cool projects written by really really
+                                smark people to tackle the same problem
+                                differently.
+                            </p>
+
+                            <table class="table-95" style="margin: 12px 0">
+                                <thead>
+                                    <tr>
+                                        <th>Approach</th>
+                                        <th>Method</th>
+                                        <th>Pros</th>
+                                        <th>Cons</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Shackleton</strong></td>
+                                        <td>LGP on pass sequences</td>
+                                        <td>
+                                            no training data needed, works
+                                            per-benchmark, simple setup
+                                        </td>
+                                        <td>
+                                            doesn't generalize, expensive
+                                            evaluation, noisy fitness
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MLGO (Google)</strong></td>
+                                        <td>
+                                            neural network policy for pass
+                                            decisions
+                                        </td>
+                                        <td>
+                                            generalizes across programs, learns
+                                            IR features
+                                        </td>
+                                        <td>
+                                            needs training corpus, GPU time, ML
+                                            expertise
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>AutoTuner (LLVM)</strong>
+                                        </td>
+                                        <td>beam search + cost model</td>
+                                        <td>
+                                            integrated into LLVM, deterministic
+                                        </td>
+                                        <td>
+                                            limited to known pass orderings, no
+                                            novelty
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Opt-Bisect</strong></td>
+                                        <td>
+                                            binary search for crash-causing
+                                            passes
+                                        </td>
+                                        <td>built into LLVM, zero setup</td>
+                                        <td>
+                                            only finds crashes, not performance
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Random search</strong></td>
+                                        <td>
+                                            generate random sequences, keep best
+                                        </td>
+                                        <td>
+                                            trivially parallelizable, baseline
+                                            for comparison
+                                        </td>
+                                        <td>sample-inefficient, no learning</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p>
+                                google's mlgo takes a different angle ,  train a
+                                neural network to look at the IR and decide
+                                which pass to run next. it feeds on features
+                                like instruction counts, loop depths, and memory
+                                access patterns. learning from features means it
+                                can generalize to programs it hasn't seen
+                                before. the catch is you need a large training
+                                corpus of (program, good_sequence) pairs and GPU
+                                time to train the thing.
+                            </p>
+
+                            <p>
+                                shackleton just needs a compiler and a
+                                benchmark, but the pass sequence it finds for
+                                your DSP kernel won't help your crypto workload
+                                at all.
+                            </p>
+
+                            <p>
+                                people tried evolving compiler passes on GCC
+                                back in the early 2000s. shackleton's twist is
+                                targeting LLVM and packaging it as a reusable
+                                framework rather than a one-off script.
+                            </p>
+
+                            <h2>
+                                part 9: how i think you'd use this(could only
+                                think this up while writing this,will surely
+                                come back again )
+                            </h2>
+
+                            <p>
+                                shackleton makes most sense when you've got one
+                                program, one target.a sequence that works for
+                                your firmware on your weird risc-v core is all
+                                that matters.
+                            </p>
+
+                            <p>
+                                it dumps your source through random pass
+                                sequences, compiles each one, benchmarks the
+                                result, and keeps whatever works best. over time
+                                the population drifts toward sequences that
+                                happen to be good for your specific setup. it's
+                                guided by measurement, not guesses.
+                            </p>
+
+                            <p>
+                                whether the result beats -O2 is a crapshoot. the
+                                paper saw modest wins on simple kernels and
+                                nothing on complex ones. the editor tool lets
+                                you hand-tweak whatever evolution finds, which
+                                matters because evolution usually gets close but
+                                not all the way there.
+                            </p>
+
+                            <h2>part 10: what i think</h2>
+
+                            <p>
+                                the niche i see is embedded targets with weird
+                                architectures. if you're writing firmware for a
+                                custom risc-v core, the -O2 pipeline was tuned
+                                for x86 desktop chips, not your particular cache
+                                layout or instruction latencies. mlgo needs a
+                                team and a training pipeline. shackleton just
+                                needs a compiler and an overnight run. you
+                                evolve once and ship that sequence to every
+                                device. the compilation cost is front-loaded.
+                            </p>
+
+                            <p>
+                                the genetic improvement trick is what makes it
+                                practical. starting from -O2 means generation
+                                zero already compiles and runs correctly.
+                                evolution just tries to shave off a few percent
+                                from there. that's a much smaller ask than
+                                discovering a working pipeline out of nowhere.
+                            </p>
+
+                            <p>
+                                what i'd really like to see is someone runs
+                                shackleton against random search with the same
+                                budget of compilations, tests whether the best
+                                sequence works across different inputs to the
+                                same program, and does a case study on an actual
+                                embedded board with a known bottleneck. if it
+                                can beat -O2 by 5% on a Cortex-M4 or a real
+                                risc-v core.
+                            </p>
+
+                            <h2>paper and repo</h2>
+                            <p>
+                              <strong>Paper:</strong>
+                              <a href="https://arxiv.org/abs/2201.13305" target="_blank">arXiv:2201.13305</a>
+                              (Jan 2022)
+                              <br/>
+                              <strong>Repo:</strong>
+                              <a href="https://github.com/ARM-software/Shackleton-Framework" target="_blank">ARM-software/Shackleton-Framework</a>
+                              , 25 stars, C (96.6%), last commit 2022
+                              <br/>
+                              <strong>Authors:</strong> Hannah Peeler (Arm), Shuyue Stella Li (Johns Hopkins), Andrew N. Sloss (Arm), Kenneth N. Reid (Michigan State), Yuan Yuan (MSU), Wolfgang Banzhaf (MSU)
+                            </p>
+                        </div>
+                        <div class="status-bar mt-16">
+                            <a href="../blog.html" class="btn">
+                                <img
+                                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                                    class="icon-16"
+                                    alt=""
+                                />
+                                Back to All Posts
+                            </a>
+                            <span style="float: right">
+                                <img
+                                    src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png"
+                                    class="icon-16"
+                                    alt=""
+                                />
+                                Filed under: Compilers, Genetic Programming,
+                                LLVM
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 60px"></div>
+            </div>
+        </div>
+        <div class="taskbar">
+            <div style="display: flex; gap: 8px">
+                <a href="../index.html" class="start-button">
+                    <img
+                        src="https://win98icons.alexmeub.com/icons/png/windows-0.png"
+                        class="icon-16"
+                        alt=""
+                    />
+                    Start
+                </a>
+                <div
+                    style="border-left: 2px groove #c0c0c0; margin: 2px 4px"
+                ></div>
+                <a
+                    href="../blog.html"
+                    class="btn"
+                    style="display: inline-flex; align-items: center; gap: 4px"
+                >
+                    <img
+                        src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                        class="icon-16"
+                        alt=""
+                    />
+                    Blog
+                </a>
+                <a
+                    href="#"
+                    class="btn"
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 4px;
+                        border: 2px inset #fff;
+                    "
+                >
+                    <img
+                        src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+                        class="icon-16"
+                        alt=""
+                    />
+                    Reading
+                </a>
+            </div>
+            <div class="time" id="clock">12:00 PM</div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+            onload="
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false },
+                    ],
+                })
+            "
+        ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>
+            hljs.highlightAll();
+        </script>
+        <script>
+            function updateClock() {
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, "0");
+                const ampm = hours >= 12 ? "PM" : "AM";
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                document.getElementById("clock").textContent =
+                    hours + ":" + minutes + " " + ampm;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+    </body>
+</html>
