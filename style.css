@@ -484,12 +484,20 @@ hr.separator {
 
 /* Responsive */
 @media (max-width: 768px) {
+  body {
+    padding-bottom: 0;
+    overflow-x: hidden;
+  }
+
   .desktop {
     flex-direction: column !important;
+    padding: 8px;
+    gap: 8px !important;
   }
 
   .sidebar-95 {
     width: 100%;
+    min-width: unset;
   }
 
   .navbar-95 {
@@ -498,10 +506,71 @@ hr.separator {
 
   .taskbar {
     position: relative;
-    margin-top: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
   }
 
-  body {
-    padding-bottom: 0;
+  .taskbar > div:first-child {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .container-95 {
+    padding: 8px;
+  }
+
+  /* Blog list: float:right dates stack below title on narrow screens */
+  .list-group-item a {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .list-group-item a span[style*="float"] {
+    float: none !important;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* Blog table: shrink date column, allow title to wrap */
+  .table-95 {
+    table-layout: fixed;
+    word-break: break-word;
+  }
+
+  .table-95 th:first-child,
+  .table-95 td:first-child {
+    width: 80px;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* Blog post content: prevent wide code/pre from overflowing */
+  .blog-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .blog-content code {
+    word-break: break-all;
+  }
+
+  /* Intro table on homepage: stack photo and text */
+  .window-body table:not(.table-95) {
+    display: block;
+  }
+
+  .window-body table:not(.table-95) tr {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .window-body table:not(.table-95) td {
+    display: block;
+    width: auto !important;
   }
 }
