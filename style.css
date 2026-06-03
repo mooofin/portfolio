@@ -357,6 +357,13 @@ textarea:focus {
   background: #a5cef7;
 }
 
+/* KaTeX display math: scroll horizontally instead of overflowing */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
 /* Marquee banner */
 .marquee-banner {
   background: silver;
