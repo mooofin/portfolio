@@ -20,6 +20,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(DIRECTORY), **kwargs)
 
+    def send_error(self, code, message=None, explain=None):
+        if code == 404:
+            self.send_response(404)
+            self.send_header("Content-Type", "text/html")
+            self.end_headers()
+            p = DIRECTORY / "404.html"
+            self.wfile.write(p.read_bytes())
+        else:
+            super().send_error(code, message, explain)
+
 
 def find_free_port():
     """Find first available port from the list"""

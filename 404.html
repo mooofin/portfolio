@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Fatal Error</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        background: #0000aa;
+        color: #aaaaaa;
+        font-family: "Courier New", "Perfect DOS VGA 437", monospace;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        cursor: default;
+      }
+
+      .bsod {
+        max-width: 640px;
+        width: 100%;
+      }
+
+      .bsod-header {
+        background: #aaaaaa;
+        color: #0000aa;
+        text-align: center;
+        padding: 2px 8px;
+        margin-bottom: 24px;
+        font-weight: bold;
+      }
+
+      .bsod-body {
+        color: #ffffff;
+        line-height: 1.6;
+      }
+
+      .bsod-body p {
+        margin-bottom: 16px;
+      }
+
+      .highlight {
+        background: #aaaaaa;
+        color: #0000aa;
+        padding: 0 4px;
+      }
+
+      .bsod-error {
+        margin: 24px 0;
+        color: #aaaaaa;
+        font-size: 14px;
+      }
+
+      .bsod-error div {
+        margin-bottom: 4px;
+      }
+
+      .blink {
+        animation: blink 1s step-end infinite;
+      }
+
+      @keyframes blink {
+        50% { opacity: 0; }
+      }
+
+      .bsod-footer {
+        margin-top: 32px;
+        color: #aaaaaa;
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      a {
+        color: #ffffff;
+        text-decoration: underline;
+      }
+
+      a:hover {
+        color: #aaaaaa;
+      }
+
+      @media (max-width: 480px) {
+        body { font-size: 13px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bsod">
+      <div class="bsod-header">Windows</div>
+
+      <div class="bsod-body">
+        <p>
+          A fatal exception <span class="highlight">0E</span> has occurred at
+          <span class="highlight">0028:C0034F21</span> in VXD MOOOFIN(04) +
+          00000404. The current application will be terminated.
+        </p>
+
+        <p>
+          &nbsp;&nbsp;* Press any key to terminate the current application.<br />
+          &nbsp;&nbsp;* Press <span class="highlight">CTRL+ALT+DEL</span> again to restart your computer. You will
+          lose any unsaved information in all applications.
+        </p>
+
+        <p>Press any key to continue <span class="blink">_</span></p>
+      </div>
+
+      <div class="bsod-error">
+        <div>EXCEPTION ERROR: 0x00000404 PAGE_NOT_FOUND</div>
+        <div>*** STOP: 0x0000404 (0x00000000, 0xC0000034, 0x00000000, 0x00000000)</div>
+        <div>&nbsp;</div>
+        <div>The page you requested could not be located at this address.</div>
+        <div>The requested URL may have been moved, deleted, or never existed.</div>
+      </div>
+
+      <div class="bsod-footer">
+        <div>You can attempt to recover by navigating to a known location:</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;&nbsp;<a href="index.html">C:\mooofin\index.html</a></div>
+        <div>&nbsp;&nbsp;<a href="blog.html">C:\mooofin\blog.html</a></div>
+        <div>&nbsp;&nbsp;<a href="projects.html">C:\mooofin\projects.html</a></div>
+        <div>&nbsp;</div>
+        <div style="color:#ffffff;">Beginning dump of physical memory</div>
+        <div>Physical memory dump complete.</div>
+        <div>&nbsp;</div>
+        <div>Contact your system administrator or mooofin support group for further assistance.</div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('keydown', function() {
+        window.location.href = 'index.html';
+      });
+    </script>
+  </body>
+</html>

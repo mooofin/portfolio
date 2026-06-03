@@ -147,14 +147,25 @@
         </div>
       </div>
       <div class="content-95">
-        <div class="window mb-8">
-          <div class="window-body p-8" style="font-size: 11px">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
-              class="icon-16"
-              alt=""
-            />
-            <a href="index.html">Home</a> &gt; Blog
+        <!-- Explorer toolbar -->
+        <div class="window mb-8" style="border-bottom: 2px groove #c0c0c0;">
+          <div class="window-body" style="padding: 4px 6px; display: flex; align-items: center; gap: 2px; flex-wrap: wrap;">
+            <a href="index.html" class="btn" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;" title="Back">
+              <img src="https://win98icons.alexmeub.com/icons/png/undo-0.png" class="icon-16" alt="" /> Back
+            </a>
+            <button disabled class="btn" style="font-size:11px;display:inline-flex;align-items:center;gap:3px;" title="Forward">
+              <img src="https://win98icons.alexmeub.com/icons/png/redo-0.png" class="icon-16" alt="" /> Forward
+            </button>
+            <a href="index.html" class="btn" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;" title="Up">
+              <img src="https://win98icons.alexmeub.com/icons/png/directory_up-0.png" class="icon-16" alt="" /> Up
+            </a>
+            <div style="border-left: 2px groove #c0c0c0; height: 20px; margin: 0 4px;"></div>
+            <div style="display:flex;align-items:center;gap:4px;flex:1;min-width:120px;">
+              <span style="font-size:11px;color:#555;">Address</span>
+              <div style="flex:1;border:2px inset #d5d5d5;background:#fff;padding:2px 6px;font-size:11px;color:#212529;font-family:'MS Sans Serif',Tahoma,sans-serif;">
+                C:\mooofin\blog
+              </div>
+            </div>
           </div>
         </div>
         <div class="window">
@@ -397,7 +408,11 @@
           Contact
         </a>
       </div>
-      <div class="time" id="clock">12:00 PM</div>
+      <div class="tray">
+        <img src="https://win98icons.alexmeub.com/icons/png/loudspeaker_rays-0.png" class="icon-16" alt="" title="Volume" style="image-rendering:pixelated" />
+        <img src="https://win98icons.alexmeub.com/icons/png/modem-0.png" class="icon-16" alt="" title="Network" style="image-rendering:pixelated" />
+        <div class="time" id="clock">12:00 PM</div>
+      </div>
     </div>
     <script>
       function updateClock() {

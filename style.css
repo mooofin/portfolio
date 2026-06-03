@@ -19,6 +19,7 @@ body {
   color: white;
   padding-bottom: 40px;
   margin: 0;
+  cursor: url('images/cursor.png') 0 0, auto;
 }
 
 /* Link color */
@@ -268,6 +269,18 @@ button:active {
   font-size: 12px;
   border: 1px inset #fff;
   padding: 2px 8px;
+  background: #c0c0c0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.taskbar .tray {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px inset #fff;
+  padding: 2px 6px;
   background: #c0c0c0;
 }
 
