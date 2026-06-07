@@ -437,7 +437,7 @@ When building Rust applications, especially for production or cross-platform dis
 <strong>Nix Flakes Solution:</strong>
 </p>
 <p>
-With the <a href="https://github.com/mooofin/Rustflakes">Rustflakes</a> approach, you get a much cleaner solution. One <code>flake.nix</code> file becomes your single source of truth, declaring the Rust version, all system dependencies, and build targets in one place. Builds are hermetic—they don't rely on whatever happens to be installed on your host system. Cross-compilation becomes trivial: just add a target to <code>flake.nix</code> and run <code>nix build .#windows</code> or <code>.#aarch64</code>. You even get Docker images for free, generated directly from Nix derivations. Since dependencies are vendored in <code>vendor/</code>, builds work offline without network access.
+With the <a href="https://github.com/mooofin/Rustflakes">Rustflakes</a> approach, you get a much cleaner solution. One <code>flake.nix</code> file becomes your single source of truth, declaring the Rust version, all system dependencies, and build targets in one place. Builds are hermetic-they don't rely on whatever happens to be installed on your host system. Cross-compilation becomes trivial: just add a target to <code>flake.nix</code> and run <code>nix build .#windows</code> or <code>.#aarch64</code>. You even get Docker images for free, generated directly from Nix derivations. Since dependencies are vendored in <code>vendor/</code>, builds work offline without network access.
 </p>
 <p>
 This makes Rustflakes particularly valuable for teams needing consistent builds across developer machines and CI, projects targeting multiple platforms like Linux, Windows, and ARM, embedded or IoT applications requiring specific toolchain versions, and security-conscious environments requiring reproducible builds.
@@ -709,5 +709,6 @@ I find myself however stumbling upon better ways of configuring my system and st
     <script>hljs.highlightAll();</script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <script src="../site.js"></script>
 </body>
 </html>

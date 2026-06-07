@@ -234,7 +234,7 @@ A templated gap buffer implementation.
 </p>
 <h3>The Gap Buffer</h3>
 <p>
-Instead of a simple string or a rope (which can be complex), Honeymoon uses a <strong>Gap Buffer</strong>. This is a dynamic array with a "gap" (a sequence of unused entries) that moves with the cursor. This makes insertions and deletions at the cursor position extremely efficient—O(1) in most cases—without the overhead of shifting the entire document.
+Instead of a simple string or a rope (which can be complex), Honeymoon uses a <strong>Gap Buffer</strong>. This is a dynamic array with a "gap" (a sequence of unused entries) that moves with the cursor. This makes insertions and deletions at the cursor position extremely efficient-O(1) in most cases-without the overhead of shifting the entire document.
 </p>
 <pre class="code-block"><code>// Simplified concept
 ['H', 'e', 'l', 'l', 'o', _, _, _, _, 'W', 'o', 'r', 'l', 'd']
@@ -341,5 +341,6 @@ For a deeper dive into the technical details (ANSI, custom drivers, etc.), check
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
-  </body>
+    <script src="../site.js"></script>
+</body>
 </html>
