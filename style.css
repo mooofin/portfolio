@@ -10,6 +10,7 @@
 html {
   position: relative;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 /* Body styles */
@@ -20,6 +21,7 @@ body {
   padding-bottom: 40px;
   margin: 0;
   cursor: url('images/cursor.png') 0 0, auto;
+  overflow-x: hidden;
 }
 
 /* Link color */
@@ -139,6 +141,8 @@ button:active {
   padding: 3px 6px;
   font-weight: bold;
   font-size: 12px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .card-header.icon {
@@ -370,6 +374,30 @@ textarea:focus {
   background: #a5cef7;
 }
 
+/* Blog content global constraints */
+.blog-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.blog-content pre {
+  overflow-x: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.blog-content table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
 /* KaTeX display math: scroll horizontally instead of overflowing */
 .katex-display {
   overflow-x: auto;
@@ -397,6 +425,8 @@ textarea:focus {
 .desktop {
   min-height: calc(100vh - 100px);
   padding: 16px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 /* Sidebar */
@@ -408,6 +438,8 @@ textarea:focus {
 /* Content area */
 .content-95 {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Fieldset / Group box */
