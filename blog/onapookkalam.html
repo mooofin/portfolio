@@ -393,7 +393,7 @@ def main(page: ft.Page):
 ft.app(main)
 </code></pre>
               <p>
-                The application allows users to create and save encrypted notes
+                the application allows users to create and save encrypted notes
                 with the following workflow: When a user enters text and clicks
                 "Save Note", the application generates a unique filename based
                 on the current timestamp (format: DDMMYYYYHHMMSSμs). It then
@@ -564,7 +564,7 @@ $ ls -lh base.apk
 -rw-r--r-- 1 muffin muffin 21M May 15  2025 base.apk
 </code></pre>
               <p>
-                Flutter applications are unique in the Android ecosystem because
+                flutter applications are unique in the Android ecosystem because
                 they don't use traditional Java/Kotlin code. Instead, they
                 compile Dart code to native machine code using Ahead-Of-Time
                 (AOT) compilation. This results in two important native
@@ -599,7 +599,7 @@ total 16M
                 application logic we need to reverse engineer.
               </p>
               <p>
-                Blutter, a portmanteau of "B(l)utter" that plays on both
+                blutter, a portmanteau of "B(l)utter" that plays on both
                 <em>buttering</em> and <em>Flutter</em>, is a reverse
                 engineering tool built specifically with Flutter applications in
                 mind. Unlike traditional disassemblers that treat Flutter
@@ -610,10 +610,9 @@ total 16M
                 type information, and use that data to reconstruct readable
                 pseudo-Dart code complete with symbols and function names. In
                 addition to this higher-level reconstruction, Blutter can also
-                generate annotated assembly listings that bridge the gap between
-                low-level instructions and Dart-level logic, and even produce
+                generate annotated assembly listings , and even produce
                 Frida scripts to assist with dynamic analysis and runtime
-                instrumentation.
+                instrumentation.(TODO for me to check this out one day ) 
               </p>
               <p>When we run Blutter, it performs several automated steps:</p>
               <pre
@@ -621,41 +620,25 @@ total 16M
               ><code>$ python3 blutter.py /path/to/apk_extracted/lib/arm64-v8a /path/to/blutter_output
 </code></pre>
               <p>
-                During execution, Blutter follows a fairly involved but
-                systematic process to adapt itself to the exact Flutter
-                application being analyzed. It begins by inspecting
-                <code>libflutter.so</code> to determine the precise Dart SDK
-                version used when the app was compiled. This step is essential,
-                as the internal layout of Dart VM snapshots varies between
-                versions, and using the wrong format would make accurate parsing
-                impossible. In this case, Blutter identifies the app as being
-                built with Dart 3.7.2, along with the associated snapshot hash,
-                target architecture, and compilation flags, all of which guide
-                the rest of the analysis.
+                Blutter's first move is reading <code>libflutter.so</code> to figure out
+                exactly which Dart SDK version compiled the app cuz  the
+                Dart VM snapshot format isn't stable across versions and we parse it with the
+                wrong layout and you get garbage. Here it pegs the app at Dart 3.7.2.
               </p>
               <p>
-                If a matching analysis backend for that Dart version is not
-                already available, Blutter automatically prepares one. It
-                fetches the Dart SDK source from the official repository, checks
-                out the exact version tag, and compiles the Dart VM runtime into
-                a static library tailored to the target architecture. Blutter
-                then rebuilds its own analysis components against this library,
-                a process that can take several minutes and produces verbose
-                build output as each part of the VM is compiled and linked.
+                if Blutter doesn't already have an analysis backend for that version, it
+                builds one on the spot ,it pulls the Dart SDK source at that exact tag,
+                compiles the VM runtime into a static library for the target arch, then
+                links its own analysis components against it,expect several minutes of
+                build output,it's compiling a chunk of the Dart VM from scratch
               </p>
               <p>
-                Once the environment is ready, Blutter moves on to snapshot
-                analysis. It parses <code>libapp.so</code> to locate the
-                embedded Dart VM snapshot, extracts the object pool containing
-                constants and string literals, reconstructs the application's
-                class hierarchy, and identifies function entry points to recover
-                the overall code structure. Using this information, Blutter
-                generates its final artifacts, producing annotated assembly
-                listings, reconstructed function and class definitions, inline
-                constants, and a mapped control flow for each Dart library. At
-                the end of the process, it also generates a Frida script,
-                enabling dynamic instrumentation of the recovered logic during
-                runtime analysis.
+                with that done, it digs into <code>libapp.so</code>. It locates the
+                embedded snapshot, pulls the object pool (constants and string literals),
+                reconstructs the class hierarchy, and maps out function entry points.
+                the output is annotated assembly, reconstructed class and function
+                definitions, inline constants, and control flow per Dart library,it
+                also spits out a Frida script if you want to instrument things at runtime.
               </p>
               <h3>Examining the Output Structure</h3>
               <pre class="code-block"><code>$ ls -la blutter_output/
@@ -728,7 +711,7 @@ total 52
     /     0x304edc: ldr             x16, [x16, #0x348]
 </code></pre>
               <p>
-                These literal strings are stored in the Object Pool (PP) and
+                these literal strings are stored in the Object Pool (PP) and
                 loaded into registers for use.
               </p>
               <pre class="code-block"><code>    // Load key part 1 into x16
@@ -917,22 +900,16 @@ String combined = keyPart1 + keyPart2;
 String reversed = combined.split('').reversed.join('');
 </code></pre>
               <p>
-                This reversal serves multiple purposes: 1.
-                <strong>Obfuscation</strong>: Makes static analysis slightly
-                harder 2. <strong>Key Derivation</strong>: Creates a "derived"
-                key from hardcoded parts 3.
-                <strong>String Manipulation</strong>: Common pattern in Dart for
-                simple transformations
+                 obfuscation, mostly. if someone pulls the APK and dumps strings,
+                they won't immediately see an encryption key sitting in plaintext
+                
               </p>
               <p>
-                The reversed key
-                <code>5e4756d9a740371724b3f58eb23d0e40</code> is exactly 32
-                ASCII characters, which when encoded as UTF-8 bytes gives us the
-                required 16-byte (128-bit) AES key.
+                The reversed key <code>5e4756d9a740371724b3f58eb23d0e40</code> is exactly 32 ASCII
+                characters. As UTF-8 bytes, that's lowkey a 128-bit AES key
               </p>
               <p>
-                With our Python decryption script complete, we can now decrypt
-                the realm database:
+                with our Python decryption script complete ,lemme try to decrypt it 
               </p>
               <pre class="code-block"><code>$ python3 decrypt_realm.py
 Realm database saved as 'decrypted.realm'
@@ -957,67 +934,42 @@ $ hexdump -C decrypted.realm | head -10
 00000080  63 6c 61 73 73 5f 52 65  61 6c 6d 54 65 73 74 43  |class_RealmTestC|
 00000090  6c 61 73 73 31 00 00 00  00 00 00 00 00 00 00 0a  |lass1...........|
 </code></pre>
+              <p> few things to note from the hex dump:</p>
+              <ul>
+                <li><strong>Bytes 0x10–0x13</strong>: <code>54 2d 44 42</code> = "T-DB" — the Realm magic header, confirming decryption succeeded</li>
+                <li><strong>Bytes 0x14–0x17</strong>: <code>41 41 41 41</code> = "AAAA" — marks unused/free regions</li>
+                <li><strong>Offset 0x40</strong>: "metadata" — the database metadata block</li>
+                <li><strong>Offset 0x60</strong>: "class_RealmTestClass0" — first schema class</li>
+                <li><strong>Offset 0x80</strong>: "class_RealmTestClass1" — second schema class</li>
+              </ul>
               <p>
-                Key observations from the hex dump: -
-                <strong>Bytes 0x10-0x13</strong>: <code>54 2d 44 42</code> =
-                "T-DB" - Realm database magic header -
-                <strong>Bytes 0x14-0x17</strong>: <code>41 41 41 41</code> =
-                "AAAA" - Region marker for unused/free space -
-                <strong>Offset 0x40</strong>: "metadata" string - Database
-                metadata section - <strong>Offset 0x60</strong>:
-                "class_RealmTestClass0" - First database schema class -
-                <strong>Offset 0x80</strong>: "class_RealmTestClass1" - Second
-                database schema class
+                before going ballsdeep , a little intro to realeam database working internals , that i got to know after reading some chinneese papers on forensics research (never reccomend)
+              </p>
+              <h3>Realm database architecture</h3>
+              <p>
+                Realm is a mobile-first database built for iOS and Android, it stores data as objects directly
+                in a custom binary format. A few properties that matter for forensics 
+              </p>
+              <ul>
+                <li><strong>Object-based model</strong>: records are objects, not table rows</li>
+                <li><strong>Custom binary format</strong>: no SQL layer, parsed with knowledge of the spec</li>
+                <li><strong>MVCC (Multi-Version Concurrency Control)</strong>: multiple versions of data coexist</li>
+                <li><strong>Zero-copy architecture</strong>: the database file is memory-mapped directly from disk</li>
+              </ul>
+              <h3>Muffin why doess  deleted data sticks around :pepe shock ?</h3>
+              <p>
+                When you delete a record in Realm, it doesn't get
+                wiped the database just stops pointing to it. A new version of the state is
+                written, and the old bytes sit in what's now "unused" space, waiting to be
+                overwritten. If garbage collection hasn't run (and it often hasn't), those bytes
+                are still fully intact on disk.Phew and good for us 
               </p>
               <p>
-                Before we can recover deleted data, we need to understand how
-                Realm databases work:
-              </p>
-              <p>#### Realm Database Architecture</p>
-              <p>
-                Realm is a mobile-first database designed for iOS and Android
-                applications. Unlike SQLite which uses SQL and table-based
-                storage, Realm uses:
-              </p>
-              <p>
-                1. <strong>Object-based Model</strong>: Data is stored as
-                objects, not rows and columns 2. <strong>Binary Format</strong>:
-                Uses a custom binary format (not SQL) 3.
-                <strong>MVCC (Multi-Version Concurrency Control)</strong>:
-                Maintains multiple versions of data 4.
-                <strong>Zero-Copy Architecture</strong>: Data is memory-mapped
-                directly from disk
-              </p>
-              <p>#### Why Deleted Data Persists</p>
-              <p>
-                Realm uses MVCC, which means when you "delete" data, it doesn't
-                immediately erase it. Instead:
-              </p>
-              <p>
-                1. The data is marked as deleted/unused 2. A new version of the
-                database state is created 3. The old version's data remains in
-                unused space 4. Garbage collection happens later (if at all)
-              </p>
-              <p>
-                This creates a forensic opportunity: deleted records often
-                remain in unused regions of the database file.
-              </p>
-              <p>
-                To recover deleted data from the Realm database, we use
-                <code>realm_recover</code>, a specialized forensics tool
-                designed specifically for analyzing Realm files. While exploring
-                this approach, I came across prior research that discusses how
-                deleted records in mobile application databases are often not
-                immediately erased from disk. Instead, remnants of these records
-                can persist within the database structure, making recovery
-                possible through careful analysis. This idea is reinforced by
-                both academic work and practical discussions from the developer
-                and forensics communities, which describe how Realm's internal
-                storage format can retain deleted objects long enough for them
-                to be reconstructed. These techniques are commonly applied in
-                Android forensics, where understanding the database layout
-                allows investigators to extract historical or deleted
-                application data that would otherwise appear lost.
+                To pull deleted records out, we use <code>realm_recover</code>. The prior research
+                section below goes deeper, but the short version is: Realm doesn't erase deleted
+                data, it just stops referencing it. <code>realm_recover</code> knows the binary
+                layout well enough to scan those unreferenced regions and reconstruct objects from
+                raw bytes  the same technique used in Android forensics to recover data i think?
               </p>
               <h3>References</h3>
               <ul>
@@ -1066,13 +1018,13 @@ Resolving deltas: 100% (42/42), done.
 $ ls /tmp/realm_recover/
 LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
 </code></pre>
-              <p>
-                The tool consists of several components: -
-                <strong>realm_recover.py</strong>: Main recovery script -
-                <strong>objects.py</strong>: Realm object parsing logic -
-                <strong>util.py</strong>: Utility functions for binary analysis
-                - <strong>sample/</strong>: Sample realm database for testing
-              </p>
+              <p>The repo has four files worth knowing:</p>
+              <ul>
+                <li><strong>realm_recover.py</strong> — the main script you run</li>
+                <li><strong>objects.py</strong> — handles Realm object parsing</li>
+                <li><strong>util.py</strong> — binary analysis helpers</li>
+                <li><strong>sample/</strong> — a test database to try it on before touching your evidence</li>
+              </ul>
               <h3>Running the Realm Recovery Tool</h3>
               <p>Execute the recovery tool on our decrypted realm database:</p>
               <pre
@@ -1090,27 +1042,14 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
 -rw-r--r-- 1 muffin muffin 1798075 Dec 30 19:23 scan_all_objects.txt
 -rw-r--r-- 1 muffin muffin 1117764 Dec 30 19:23 scan_unused_objects.txt
 </code></pre>
-              <p>#### Understanding the Output Files</p>
-              <p>
-                1. <strong>scan_all_objects.txt</strong> (1.8 MB): - Every
-                object found in the database - Includes both active and deleted
-                objects - Organized by offset and type
-              </p>
-              <p>
-                2. <strong>scan_unused_objects.txt</strong> (1.1 MB): - Objects
-                not referenced by active tree roots - These are
-                <strong>deleted/orphaned objects</strong>
-                - Primary target for forensic recovery
-              </p>
-              <p>
-                3. <strong>data_storages.txt</strong> (1.0 MB): - Raw data
-                storage analysis - Binary dumps of storage regions
-              </p>
-              <p>
-                4. <strong>compare_objects.txt</strong> (1.7 KB): - Comparison
-                of TreeRootOffset01 vs TreeRootOffset02 - Shows what changed
-                between versions
-              </p>
+              <h3>Understanding the output files</h3>
+              <p>Four files got generated</p>
+              <ul>
+                <li><strong>scan_all_objects.txt</strong> (1.8 MB)  every object in the database, active or deleted, sorted by offset and type</li>
+                <li><strong>scan_unused_objects.txt</strong> (1.1 MB)  objects no longer referenced by any active tree root, i.e. the deleted/orphaned ones. This is what we want gng</li>
+                <li><strong>data_storages.txt</strong> (1.0 MB)  raw binary dumps of storage regions</li>
+                <li><strong>compare_objects.txt</strong> (1.7 KB)  diff between TreeRootOffset01 and TreeRootOffset02, showing what changed between versions</li>
+              </ul>
               <p>
                 The challenge description states the flag is in a "string which
                 was modified and then deleted from the realm db". This means we
@@ -1125,11 +1064,10 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
               ><code>$ grep -E "[0-9A-F]{8}-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{12}" scan_unused_objects.txt
 </code></pre>
               <p>
-                This grep pattern searches for: - <code>[0-9A-F]{8}</code>: 8
-                hex digits - <code>-</code>: Literal hyphen -
-                <code>[0-9A-Z]{4}</code>: 4 alphanumeric characters (allowing
-                non-hex) - Pattern repeats: <code>8-4-4-4-12</code> (UUID
-                format)
+                The pattern matches standard UUID format (<code>8-4-4-4-12</code>). Note that
+                <code>[0-9A-Z]</code> is intentionally broader than pure hex  the flag parts
+                use characters outside the normal hex range, so a strict <code>[0-9A-F]</code>
+                would miss them.
               </p>
               <p><strong>Result</strong> (truncated for clarity):</p>
               <pre
@@ -1154,28 +1092,19 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
 </code></pre>
               <p>This is <strong>flagPart2</strong>.</p>
               <p>
-                The <code>realm_recover</code> tool is able to successfully
-                retrieve deleted data because of how Realm manages its internal
-                storage and object lifecycle. Realm relies on a Multi-Version
-                Concurrency Control (MVCC) model, which means older versions of
-                objects are preserved for consistency and concurrency purposes
-                instead of being immediately removed. As a result, when an
-                object is deleted, its previous version can still remain in
-                memory or on disk for some time.
+                so why did this work? well think about what mvcc actually does actually,instead of
+                overwriting a record in place, realm writes a new version and leaves the
+                old one sitting in what's now "unreferenced" space. The active tree no
+                longer points to it,but the bytes are still there on disk.
+                <code>realm_recover</code> scans those unreferenced regions, and because
+                it knows Realm's binary object layout, it can parse those leftover
+                structures and pull out meaningful records.
               </p>
               <p>
-                In addition to this, <code>realm_recover</code> scans regions of
-                the database file that are no longer actively allocated,
-                allowing it to identify data that is not referenced by the
-                current database state but has not yet been overwritten. Because
-                the tool understands Realm's binary object layout, it can
-                correctly parse these leftover structures and reconstruct
-                meaningful records from raw bytes. In this case, the deleted
-                UUID was found at offset <code>0x800000</code> within a region
-                marked as unused. Although the object was no longer linked from
-                the active database tree, its binary representation was still
-                fully intact in the file, and the absence of garbage collection
-                or overwrite made recovery possible.
+                in this case the deleted UUID was sitting at offset <code>0x800000</code>
+                in a region marked unused. The object had been cut from the active tree,
+                but nothing had overwritten it yet — so its binary representation was
+                completely intact. No garbage collection, no overwrite, clean recovery.
               </p>
               <p>
                 <strong>Complete Flag:</strong>
@@ -1184,38 +1113,16 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
                 class="code-block"
               ><code>bi0sctf{w311_7h47_p4r7_w45_345y_5P0BF5BC-5AA1-4790-A05F-A2RDCBALDB49}
 </code></pre>
-              <h2>References and Further Reading</h2>
-              <p>
-                -
-                <a href="https://github.com/worawit/blutter"
-                  >Blutter - Flutter Reverse Engineering Tool</a
-                >
-                -
-                <a href="https://github.com/hyuunnn/realm_recover"
-                  >realm_recover - Realm Database Forensics</a
-                >
-                -
-                <a href="https://www.mongodb.com/docs/realm/"
-                  >Realm Database Documentation</a
-                >
-                -
-                <a href="https://arxiv.org/abs/2108.12419"
-                  >Flutter Forensics Research</a
-                >
-                -
-                <a href="https://source.android.com/docs/core/storage"
-                  >Android Data Partition Structure</a
-                >
-                -
-                <a href="https://dl.acm.org/doi/10.1145/3183713.3183754"
-                  >MVCC in Mobile Databases</a
-                >
-                -
-                <a
-                  href="https://koreascience.or.kr/article/JAKO201820765436681.page"
-                  >Realm 데이터베이스의 삭제된 레코드 복구 기법</a
-                >
-              </p>
+              <h2>References and further reading</h2>
+              <ul>
+                <li><a href="https://github.com/worawit/blutter">Blutter — Flutter reverse engineering tool</a></li>
+                <li><a href="https://github.com/hyuunnn/realm_recover">realm_recover — Realm database forensics</a></li>
+                <li><a href="https://www.mongodb.com/docs/realm/">Realm database documentation</a></li>
+                <li><a href="https://arxiv.org/abs/2108.12419">Flutter forensics research</a></li>
+                <li><a href="https://source.android.com/docs/core/storage">Android data partition structure</a></li>
+                <li><a href="https://dl.acm.org/doi/10.1145/3183713.3183754">MVCC in mobile databases</a></li>
+                <li><a href="https://koreascience.or.kr/article/JAKO201820765436681.page">Realm 데이터베이스의 삭제된 레코드 복구 기법</a></li>
+              </ul>
             </div>
             <div class="status-bar mt-16">
               <a href="../blog.html" class="btn">
