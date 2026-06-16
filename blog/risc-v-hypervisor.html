@@ -250,11 +250,11 @@
                             </p>
 
                             <p>
-                                Let's walk through it from the bottom up. If you
+                                Let me help u walk through it from the bottom up. If you
                                 know RISC-V page tables already, skip the first
                                 section. If you don't, I am going to explain
                                 them in a way that makes the two-stage stuff
-                                obvious.
+                                easy
                             </p>
 
                             <h2>What You Need To Know First</h2>
@@ -266,7 +266,7 @@
                                 userspace. When U-mode needs to do something it
                                 cannot, it traps to S-mode. When S-mode needs to
                                 do something it cannot, it traps to M-mode. This
-                                is a stack, not a free-for-all.
+                                is a stack btw 
                             </p>
 
                             <p>
@@ -274,7 +274,7 @@
                                 another OS. The outer OS (or a thin shim)
                                 becomes the hypervisor. The inner OS is the
                                 "guest." The guest thinks it owns the hardware.
-                                It does not. The hypervisor decides what the
+                                The hypervisor decides what the
                                 guest actually gets.
                             </p>
 
@@ -285,9 +285,7 @@
                                 run). To the guest, VS-mode looks exactly like
                                 S-mode. Same CSRs, same trap mechanism, same
                                 page tables. The hypervisor lives in HS-mode,
-                                which is S-mode with access to the H CSRs. No
-                                new ring. No root mode. You are already in
-                                S-mode, you just get more toys.
+                                which is S-mode with access to the H CSRs.
                             </p>
 
                             <p>
@@ -298,7 +296,7 @@
                                 <code>scause</code>. The H-extension adds new
                                 CSRs for the hypervisor's page table pointer,
                                 fault information, and the bits that control
-                                what traps to you and what runs directly.
+                                what traps to you 
                             </p>
 
                             <p>
@@ -315,7 +313,7 @@
                             <h2>The Page Table You Already Know (Sv39)</h2>
 
                             <p>
-                                Before we get to two-stage, you need to
+                                Before we get to two-stage, we   need to
                                 understand what one-stage looks like. RISC-V
                                 uses a radix-tree page table called Sv39. The
                                 virtual address is 39 bits, broken into four
@@ -365,7 +363,7 @@ field  [RSV] [PBMT] [ PPN[2..0]  ] RSW D A G U X W R V</pre
                             <p>
                                 That is Sv39. Standard issue. Your kernel
                                 already implements this. Good. Now here is where
-                                it gets interesting.
+                                it gets interesting and pay attention !
                             </p>
 
                             <h2>Two-Stage Translation: The Actual Algorithm</h2>
@@ -387,13 +385,11 @@ field  [RSV] [PBMT] [ PPN[2..0]  ] RSW D A G U X W R V</pre
                                 stage two to get the final machine address. The
                                 entire operation is a single hardware walk. The
                                 hypervisor never gets involved during
-                                translation. It only hears about it if something
-                                faults.
+                                translation. 
                             </p>
 
                             <p>
-                                Here is what the hardware actually does, step by
-                                step:
+                                what the hardware actually does in steps :p
                             </p>
 
                             <ol>
@@ -407,7 +403,7 @@ field  [RSV] [PBMT] [ PPN[2..0]  ] RSW D A G U X W R V</pre
                                     guest virtual address, exactly as Sv39
                                     specifies. The result is a PTE that contains
                                     a PPN. This PPN is a guest physical address
-                                    (GPA). The guest thinks this is real memory.
+                                    (GPA). (The guest thinks this is real memory)
                                 </li>
                                 <li>
                                     Read <code>hgatp</code> to get the stage-two
@@ -539,14 +535,14 @@ X             -             fault</pre
                             </p>
 
                             <p>
-                                You would think this is obvious. It is not. On
+                                You would think this is obvious. but On
                                 some older virtualization architectures, every
                                 guest TLB flush had to trap to the hypervisor so
                                 the hypervisor could emulate the flush. Here, it
                                 is automatic. The guest flushes, the TLB drains,
                                 nobody traps. This is the difference between
                                 "virtualization support" and "virtualization
-                                support that someone actually thought about."
+                                support that someone actually thought about. smirk smirk "
                             </p>
 
                             <h2>hvip and Interrupt Injection</h2>
@@ -599,15 +595,15 @@ X             -             fault</pre
                                 "write to GPA 0x1000," the device fires off a
                                 DMA write, the IOMMU translates 0x1000 through
                                 <code>hgatp</code>, and the data lands at the
-                                correct machine address. No bounce buffers.
+                                correct machine address.
                             </p>
 
                             <p>
-                                This is not new. IOMMUs have existed for
+                                 IOMMUs have existed for
                                 decades. What is nice is that the IOMMU uses the
                                 exact same page table format as the CPU MMU. One
                                 set of <code>hgatp</code> tables serves both CPU
-                                and device accesses. You do not maintain
+                                and device accesses. You dont maintain
                                 separate translation structures for DMA.
                             </p>
 
@@ -629,7 +625,7 @@ X             -             fault</pre
                                 virtual address and do the full two-stage walk
                                 in hardware. No context switch. No TLB pollution
                                 on the hypervisor's own page tables. You hand it
-                                a GVA, it returns the value. That is it.
+                                a GVA, it returns the value. 
                             </p>
 
                             <p>
@@ -659,8 +655,7 @@ X             -             fault</pre
                                 guest to use the AIA (advanced interrupt
                                 architecture) or the hypervisor extension itself
                                 for nested virtualization, you clear the
-                                corresponding bit. The guest never sees the
-                                feature.
+                                corresponding bit. 
                             </p>
 
                             <h2>What Traps When</h2>
@@ -723,7 +718,7 @@ X             -             fault</pre
                                 what they do <em>during</em> the trap. Device
                                 emulation in software is expensive. Scheduling
                                 decisions add latency. But the raw trap cost?
-                                Negligible.
+                                pooofff
                             </p>
 
                             <p>
@@ -734,7 +729,7 @@ X             -             fault</pre
                                 does not require understanding a microcode blob
                                 to debug. That is valuable in a way you only
                                 appreciate after you have stared at a VMX crash
-                                dump at 2am.
+                                dump at 2am. :thumbgs up gng 
                             </p>
 
                             <h2>What You Should Actually Remember</h2>
@@ -783,8 +778,7 @@ X             -             fault</pre
                                 nesting natively. Beyond that, every H-extension
                                 CSR access traps and has to be emulated. Nobody
                                 has shipped a three-level nested hypervisor in
-                                production. The question is whether the
-                                performance is even remotely acceptable.
+                                production. 
                             </p>
 
                             <p>
