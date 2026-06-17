@@ -1024,14 +1024,10 @@ static wint_t _IO_wstrn_overflow (FILE *fp, wint_t c)
         // VULNERABILITY: Writes heap address to controlled location!
         // overflow_buf is at fp + 0xf0
 
-        fp->_wide_data->_IO_write_base = snf->overflow_buf;   // [_wide_data+0x18
-]
-        fp->_wide_data->_IO_read_base = snf->overflow_buf;    // [_wide_data+0x10
-]
-        fp->_wide_data->_IO_read_ptr = snf->overflow_buf;     // [_wide_data+0x00
-]
-        fp->_wide_data->_IO_read_end = snf->overflow_buf + N; // [_wide_data+0x08
-]
+        fp->_wide_data->_IO_write_base = snf->overflow_buf;   // [_wide_data+0x18]
+        fp->_wide_data->_IO_read_base = snf->overflow_buf;    // [_wide_data+0x10]
+        fp->_wide_data->_IO_read_ptr = snf->overflow_buf;     // [_wide_data+0x00]
+        fp->_wide_data->_IO_read_end = snf->overflow_buf + N; // [_wide_data+0x08]
     }
 
     // Additional writes
