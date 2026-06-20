@@ -7,6 +7,104 @@
     <title>Contact - mooofin</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="../public/favicon.ico" />
+    <style>
+      .geocities-body {
+        background-image: url('images/geocities/9390/paper10.gif');
+        background-repeat: repeat;
+        color: #000080;
+        text-align: center;
+        padding: 16px 8px;
+      }
+
+      .geocities-body a {
+        color: #0000cc;
+        text-decoration: underline;
+      }
+
+      .geocities-body a:visited {
+        color: #800080;
+      }
+
+      .icq-outer {
+        border: 2px outset #808080;
+        display: inline-block;
+        margin: 8px auto;
+      }
+
+      .icq-inner {
+        border-collapse: collapse;
+        background: blue;
+      }
+
+      .icq-header {
+        background: #0000a0;
+        text-align: center;
+        padding: 4px 8px;
+      }
+
+      .icq-cell {
+        text-align: center;
+        padding: 4px 8px;
+        color: white;
+        font-family: "MS Sans Serif", arial, sans-serif;
+        font-size: 11px;
+        vertical-align: top;
+      }
+
+      .icq-input {
+        border: 2px inset #808080;
+        background: white;
+        color: black;
+        font-family: "MS Sans Serif", arial, sans-serif;
+        font-size: 11px;
+        padding: 2px;
+        margin-top: 2px;
+      }
+
+      .icq-btn {
+        border: 2px outset #c0c0c0;
+        background: #c0c0c0;
+        color: black;
+        font-family: "MS Sans Serif", arial, sans-serif;
+        font-size: 11px;
+        padding: 2px 8px;
+        cursor: pointer;
+        margin: 2px;
+      }
+
+      .icq-btn:active {
+        border: 2px inset #c0c0c0;
+      }
+
+      .webring-table {
+        width: 100%;
+        border-collapse: collapse;
+        color: white;
+        font-family: arial, helvetica, sans-serif;
+        font-size: 13px;
+        margin-top: 8px;
+      }
+
+      .webring-table a {
+        color: yellow;
+      }
+
+      .webring-nav-links {
+        line-height: 2;
+      }
+
+      .fake-meter {
+        background: #000;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        padding: 3px 8px;
+        border: 2px inset #333;
+        display: inline-block;
+        letter-spacing: 2px;
+        margin: 6px 0;
+      }
+    </style>
   </head>
   <body>
     <div class="desktop flex gap-16" style="flex-direction: row">
@@ -23,13 +121,13 @@
           <div class="window-body p-0">
             <ul class="list-group" style="border: none">
               <li class="list-group-item">
-                <a href="newsletter.html">
+                <a href="index.html">
                   <img
-                    src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png"
+                    src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
                     class="icon-16"
                     alt=""
                   />
-                  Newsletter
+                  Home
                 </a>
               </li>
               <li class="list-group-item">
@@ -65,7 +163,7 @@
               <li class="list-group-item">
                 <a href="newsletter.html">
                   <img
-                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png"
                     class="icon-16"
                     alt=""
                   />
@@ -127,23 +225,13 @@
                 </a>
               </li>
               <li class="list-group-item">
-                <a href="https://open.spotify.com/user/314ikabu7m4lwg6rljojtmhf74uq" target="_blank">
+                <a href="https://www.last.fm/user/kxllswxch" target="_blank">
                   <img
                     src="https://win98icons.alexmeub.com/icons/png/cd_audio_cd_a-0.png"
                     class="icon-16"
                     alt=""
                   />
-                  Spotify
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="newsletter.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Newsletter
+                  Last.fm
                 </a>
               </li>
               <li class="list-group-item" style="background: #08216b; color: white">
@@ -160,6 +248,7 @@
           </div>
         </div>
       </div>
+
       <div class="content-95">
         <div class="window mb-8">
           <div class="window-body p-8" style="font-size: 11px">
@@ -171,6 +260,7 @@
             <a href="index.html">Home</a> &gt; Contact
           </div>
         </div>
+
         <div class="window">
           <div class="window-title">
             <img
@@ -178,86 +268,77 @@
               class="icon-16"
               alt=""
             />
-            Send Message
+            Entrance
           </div>
-          <div class="window-body">
+
+          <!-- Blue GeoCities body inside the Win95 window -->
+          <div class="geocities-body">
+
+            <!-- Enter icon linking to about page -->
+            <a href="about.html">
+              <img src="images/geocities/entericon.gif" border="0" alt="Enter" />
+            </a>
+            <br />
+
+            <!-- ICQ-style Online Message Panel -->
             <form action="https://formspree.io/f/mjgjwvwq" method="POST">
-              <div class="mb-8">
-                <label for="name" style="font-size: 12px; display: block; margin-bottom: 4px;">
-                  <strong>Name:</strong>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  class="form-95"
-                  placeholder="Enter your name..."
-                  required
-                />
-              </div>
-              <div class="mb-8">
-                <label for="email" style="font-size: 12px; display: block; margin-bottom: 4px;">
-                  <strong>Email:</strong>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  class="form-95"
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-              <div class="mb-8">
-                <label for="subject" style="font-size: 12px; display: block; margin-bottom: 4px;">
-                  <strong>Subject:</strong>
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  class="form-95"
-                  placeholder="Message subject..."
-                />
-              </div>
-              <div class="mb-16">
-                <label for="message" style="font-size: 12px; display: block; margin-bottom: 4px;">
-                  <strong>Message:</strong>
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  class="form-95"
-                  rows="6"
-                  placeholder="Type your message here..."
-                  required
-                  style="resize: vertical;"
-                ></textarea>
-              </div>
-              <div class="flex gap-8">
-                <button type="submit" class="btn btn-primary">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Send
-                </button>
-                <button type="reset" class="btn">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Reset
-                </button>
+              <div class="icq-outer">
+                <table class="icq-inner" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icq-header" colspan="2">
+                      <font size="-1" face="arial" color="white"><b>The ICQ Online-Message Panel</b></font>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="icq-cell">
+                      <b>Sender Name</b> (optional):<br />
+                      <input class="icq-input" type="text" name="name" size="15" maxlength="40" />
+                    </td>
+                    <td class="icq-cell">
+                      <b>Sender EMail</b> (optional):<br />
+                      <input class="icq-input" type="text" name="email" size="15" maxlength="40" />
+                      <input type="hidden" name="subject" value="From Your Web Page" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="icq-cell" colspan="2">
+                      Message:<br />
+                      <textarea
+                        class="icq-input"
+                        name="message"
+                        rows="3"
+                        cols="30"
+                        wrap="Virtual"
+                      ></textarea><br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="icq-cell" colspan="2">
+                      <input class="icq-btn" type="submit" value="Send Message" />
+                      <input class="icq-btn" type="reset" value="Clear" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="icq-cell" colspan="2" style="font-size: 10px; padding-top: 6px;">
+                      <a href="mailto:siddharthqln@gmail.com">My Personal Communication Center</a>
+                      &nbsp;&#8226;&nbsp;
+                      <a href="https://github.com/mooofin" target="_blank">What is GitHub, Download</a>
+                      <br />
+                      <a href="https://www.last.fm/user/kxllswxch" target="_blank">See what I'm listening to</a>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </form>
+
+
           </div>
         </div>
+
         <div style="margin-bottom: 60px"></div>
       </div>
     </div>
+
     <div class="taskbar">
       <div style="display: flex; gap: 8px">
         <a href="index.html" class="start-button">
@@ -296,12 +377,7 @@
         <a
           href="contact.html"
           class="btn"
-          style="
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            border: 2px inset #fff;
-          "
+          style="display: inline-flex; align-items: center; gap: 4px; border: 2px inset #fff;"
         >
           <img
             src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
@@ -317,6 +393,7 @@
         <div class="time" id="clock">12:00 PM</div>
       </div>
     </div>
+
     <script>
       function updateClock() {
         const now = new Date();
