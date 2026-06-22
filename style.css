@@ -15,7 +15,7 @@ html {
 
 /* Body styles */
 body {
-  font-family: "MS Sans Serif", Tahoma, Verdana, Segoe, sans-serif;
+  font-family: "Times New Roman", Times, serif;
   background: teal;
   color: white;
   padding-bottom: 40px;
@@ -71,7 +71,7 @@ input[type="submit"] {
   color: black;
   padding: 4px 8px;
   border-radius: 0;
-  font-family: "MS Sans Serif", Tahoma, Verdana, sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 12px;
   cursor: pointer;
   text-decoration: none;
@@ -89,7 +89,7 @@ button:hover {
 .btn:active,
 button:active {
   border: 2px inset #fff !important;
-  color: #424242;
+  color: black;
   box-shadow: -1px -1px #000 !important;
   outline: 0 !important;
 }
@@ -309,7 +309,7 @@ button:active {
   box-shadow: -1px -1px 0 0 #828282;
   margin-top: 4px;
   padding: 4px;
-  font-family: "MS Sans Serif", Tahoma, Verdana, sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 12px;
 }
 
