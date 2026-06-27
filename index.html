@@ -190,7 +190,8 @@
                     "
                   >
                     <img
-                      src="images/icon.jpg"
+                      id="pfp"
+                      src="images/pfp.jpg"
                       alt="sid"
                       width="100"
                       height="100"
@@ -203,11 +204,10 @@
                     <strong>Hi, I'm sid.</strong>
                   </p>
                   <p>
-                    Adjacent interests include MLIR dialects, VAST for C/C++ lifting, SCEV, the compiler/hardware boundary, and the occasional DFIR rabbit hole.
+                    Adjacent interests include MLIR dialects, VAST for C/C++ lifting, SCEV, the compiler/hardware boundary, and memory forensics. Recently joined lil-<a href="https://ctftime.org/team/220336/" target="_blank">l3ak</a> and have been going deep on macOS DFIR. Latest writeup: <a href="blog/s4nct1m0ny.html">s4nct1m0ny</a>.
                   </p>
                   <p style="margin-bottom: 0">
-                    This site is a tribute to the classic web - simple, fast,
-                    and nostalgic.
+                    Sophomore at Manipal Institute of Technology, doing cyber physical systems. This site is a tribute to the classic web - simple, fast, and nostalgic.
                   </p>
                 </td>
               </tr>
@@ -422,6 +422,10 @@
       <a href="https://ring.seggs.lol/" target="_blank">
         <img src="images/webring.png" alt="seggs.lol webring" style="image-rendering: pixelated;" />
       </a>
+      <div style="margin-top: 8px; display: flex; justify-content: center; gap: 8px;">
+        <a href="https://ring.seggs.lol/random" class="btn" target="_blank">&#8592; prev</a>
+        <a href="https://ring.seggs.lol/random" class="btn" target="_blank">next &#8594;</a>
+      </div>
     </div>
     <div class="taskbar">
       <div style="display: flex; gap: 8px">
@@ -491,6 +495,13 @@
       }
       updateClock();
       setInterval(updateClock, 1000);
+
+      const pfpImgs = ["images/pfp.jpg", "https://media.tenor.com/VpW1CY-5rrcAAAAd/peepo-high-high.gif", "https://media.tenor.com/660lQV3gF9IAAAAM/peppe.gif"];
+      let pfpIdx = 0;
+      setInterval(() => {
+        pfpIdx = (pfpIdx + 1) % pfpImgs.length;
+        document.getElementById("pfp").src = pfpImgs[pfpIdx];
+      }, 3000);
     </script>
     <script src="site.js"></script>
 </body>
