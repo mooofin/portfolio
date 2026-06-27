@@ -15,8 +15,8 @@ html {
 
 /* Body styles */
 body {
-  font-family: "Times New Roman", Times, serif;
-  background: teal;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", sans-serif;
+  background: url('images/geo-bg.jpg') repeat;
   color: white;
   padding-bottom: 40px;
   margin: 0;
@@ -71,7 +71,7 @@ input[type="submit"] {
   color: black;
   padding: 4px 8px;
   border-radius: 0;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", sans-serif;
   font-size: 12px;
   cursor: pointer;
   text-decoration: none;
@@ -309,7 +309,7 @@ button:active {
   box-shadow: -1px -1px 0 0 #828282;
   margin-top: 4px;
   padding: 4px;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", sans-serif;
   font-size: 12px;
 }
 
