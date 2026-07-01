@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
     <link rel="icon" href="../public/favicon.ico" />
+    <script>
+      MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] } };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
     <style>
       /* Blog specific styles */
       .blog-content {
@@ -495,6 +499,23 @@ async fn main() -> Result&lt;()&gt; {
                 until the ATM's balance can't cover another payout.
               </p>
               <p>
+                Worth explaining why <code>.call</code> is even allowed to do this.
+                Solidity's older <code>transfer()</code> and <code>send()</code>
+                hard-capped the callee at 2300 gas, just enough to log an event,
+                nowhere near enough to make another external call. That gas ceiling
+                made reentrancy basically impossible in practice. Then
+                <a href="https://eips.ethereum.org/EIPS/eip-1884" target="_blank" rel="noopener">EIP-1884</a>
+                (Istanbul, 2019) repriced <code>SLOAD</code> from 200 to 800 gas,
+                and suddenly 2300 gas wasn't enough for some completely innocent
+                <code>receive()</code> functions. Contracts that only wanted to log
+                a balance update were reverting. The community dropped
+                <code>transfer()</code> and <code>send()</code> and moved to
+                <code>.call{value: x}("")</code>, which forwards all remaining gas
+                and never reverts on the sender's behalf. Safer for delivery, worse
+                for reentrancy. This contract uses <code>.call</code> and doesn't
+                zero the balance first, so it gets both downsides.
+              </p>
+              <p>
                 This bug class has a name as well :
                 <a href="https://swcregistry.io/docs/SWC-107/" target="_blank" rel="noopener">reentrancy (SWC-107)</a>,
                 the same bug class behind
@@ -512,11 +533,9 @@ async fn main() -> Result&lt;()&gt; {
               <p>
                 To exploit it we need a
                 contract that, when it receives ETH, calls
-                <code>withdrawPP()</code> again instead of just accepting the
-                payment quietly. Solidity gives every contract a special function
-                for exactly this moment, <code>receive()</code>, which
-                fires automatically whenever the contract is sent plain ETH with
-                no calldata.Our hook basically
+                <code>withdrawPP()</code> again on every incoming transfer.
+                Solidity's <code>receive()</code> fires automatically when a
+                contract receives plain ETH with no calldata. Our hook:
               </p>
               <pre><code class="language-solidity">contract Exploit {
     IPerformancePointATM public target;
@@ -544,7 +563,33 @@ async fn main() -> Result&lt;()&gt; {
     }
 }</code></pre>
               <p>
-                lets try to understand what happens now 
+                Full call stack for a single <code>attack()</code> transaction:
+              </p>
+              <div style="overflow-x:auto; margin: 16px 0;">
+$$
+\begin{array}{@{}ll}
+\texttt{Exploit.attack()} \\[5pt]
+\hspace{0.7em}\text{├─}\ \texttt{ATM.donatePP}\ (1\ \text{ETH}) \\[5pt]
+\hspace{0.7em}\text{└─}\ \texttt{ATM.withdrawPP()} & \scriptstyle\leftarrow\ \texttt{scores[exploit] = 1\ ETH} \\[5pt]
+\hspace{2.3em}\text{└─}\ \texttt{exploit.receive()} & \scriptstyle\leftarrow\ \text{re-enters; score not zeroed yet} \\[5pt]
+\hspace{3.8em}\text{└─}\ \texttt{ATM.withdrawPP()} & \scriptstyle\leftarrow\ \text{sees 1 ETH again, pays out} \\[5pt]
+\hspace{5.3em}\text{└─}\ \texttt{exploit.receive()} \\[5pt]
+\hspace{6.8em}\text{└─}\ \texttt{ATM.withdrawPP()} \\[5pt]
+\hspace{8.3em}\vdots \\[3pt]
+\hspace{7.8em}\scriptstyle\text{terminates when}\ \texttt{ATM.balance} = 0
+\end{array}
+$$
+              </div>
+              <p>
+                Let $B_i$ be the ATM balance after $i$ re-entrant withdrawals,
+                $d = 1\ \text{ETH}$ the seed:
+                $$B_0 = 10\ \text{ETH}, \quad B_{i+1} = B_i - d$$
+                Zero after $B_0 / d = 10$ frames. The
+                <code>count &lt; 20</code> cap guards against hitting the EVM's
+                call stack depth limit (1024) on a bigger target.
+              </p>
+              <p>
+                lets try to understand what happens now
               </p>
               <ol>
                 <li>
@@ -583,11 +628,9 @@ async fn main() -> Result&lt;()&gt; {
                 </li>
               </ol>
               <p>
-                One <code>attack()</code> call, chained internally into as many
-                withdrawals as it takes to empty the ATM. Now let's actually run
-                it against the live instance. Every command below is something you
-                can copy-paste yourself if you have <code>foundry</code>
-                (<code>forge</code> + <code>cast</code>) installed.
+                One <code>attack()</code> call, 10 internal withdrawals, ATM
+                drained. Below is the live run against the instance, using
+                <code>foundry</code> (<code>forge</code> + <code>cast</code>).
               </p>
               <blockquote>
                 <strong></strong> A "wallet" is
@@ -932,8 +975,7 @@ contract PerformancePointATM {
     }
 }</code></pre>
               <p>
-                Two things I had to actually confirm before any of this made
-                sense, because I hadn't touched either in a while.
+                Two things worth nailing down before the exploit makes sense.
               </p>
               <p>
                 First, <code>delegatecall</code>. I remembered the gist but
@@ -952,6 +994,31 @@ contract PerformancePointATM {
                 <code>performancePointHelper</code>, presumably so the ATM's
                 core logic can call out to a "trusted" payout module without
                 duplicating the transfer code.
+              </p>
+              <p>
+                <code>delegatecall</code> addresses storage by <strong>slot
+                number</strong>, not by variable name.
+                Formally, given two contracts $A$ and $B$ with layouts
+                $$A:\ \text{slot}_0 \to v_0^A,\quad \text{slot}_1 \to v_1^A,\quad \ldots$$
+                $$B:\ \text{slot}_0 \to v_0^B,\quad \text{slot}_1 \to v_1^B,\quad \ldots$$
+                a <code>delegatecall</code> from $A$ into $B$ that emits
+                <code>sstore(k, x)</code> writes $x$ into $\text{slot}_k$ of
+                <em>$A$'s</em> storage, trampling $v_k^A$ regardless of what
+                $v_k^B$ was supposed to be. Solidity's compiler never validates
+                that the two contracts agree on what lives at slot $k$.
+              </p>
+              <p>
+                This has a name: <strong>storage collision</strong>. And it has a
+                body count. The
+                <a href="https://www.gemini.com/cryptopedia/parity-hack-ethereum" target="_blank" rel="noopener">Parity multisig hack in 2017</a>
+                lost around $30M to this exact mechanism. Their wallet library had
+                an <code>initWallet()</code> function that was supposed to be called
+                once during setup. Because the wallet used <code>delegatecall</code>
+                into the library, and because nobody protected <code>initWallet()</code>
+                after the initial deploy, any stranger could call it, overwrite the
+                owner slot in the wallet's storage, and take over. The Parity devs
+                were smart people writing carefully reviewed code. They just didn't
+                track what slot <code>owner</code> landed on in both contracts.
               </p>
               <p>
                 Second, <code>fallback()</code>. This is
@@ -994,6 +1061,27 @@ contract PerformancePointATM {
                 <tr><td>1</td><td><code>address performancePointHelper</code></td><td><code>address atm</code></td></tr>
                 <tr><td>2</td><td><code>bool locked</code></td><td><code>bool helping</code></td></tr>
               </table>
+              <p>
+                The industry answer to this is
+                <a href="https://eips.ethereum.org/EIPS/eip-1967" target="_blank" rel="noopener">EIP-1967</a>,
+                which OpenZeppelin's upgradeable proxy uses. Instead of declaring
+                the implementation address as a normal variable (which would land
+                at some small, predictable slot number), EIP-1967 derives the slot
+                from a hash:
+              </p>
+              <pre><code>bytes32 constant IMPL_SLOT =
+    bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
+    // = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc</code></pre>
+              <p>
+                Nothing in normal Solidity code ever declares a variable at that
+                address. The pointer is written there directly via low-level
+                <code>sstore</code>, invisible to the Solidity layout engine.
+                For an attacker to collide with it they'd need to find a declared
+                variable that hashes to <code>0x360894...</code>, which is a
+                Keccak-256 preimage problem. The ATM just uses
+                <code>address public performancePointHelper</code>, slot 1,
+                first-come-first-served.
+              </p>
               <p>
                 So, the helper's <code>atm</code> variable sits at slot
                 1, and the ATM's own <code>performancePointHelper</code> pointer
@@ -1078,11 +1166,9 @@ false</code></pre>
                 currently open, as expected between transactions.
               </p>
               <p>
-                <strong>Step 1, deploy the malicious helper.</strong> Same
-                <code>forge create</code> as before, just deploying
-                <code>EvilHelper</code> instead. In plain terms:
-                we're publishing our own rigged "payout machine" to the
-                chain, but it isn't connected to anything yet.
+                <strong>Step 1, deploy the malicious helper.</strong>
+                Same <code>forge create</code> as before. The contract lands on
+                chain at its own address but isn't wired into anything yet.
               </p>
               <pre><code class="language-bash">forge create --rpc-url $RPC_URL --private-key $PK --broadcast \
     src/Evil.sol:EvilHelper</code></pre>
@@ -1091,15 +1177,12 @@ Deployed to: 0xb77292E167831C731082e184b83b200F9Fadb21C
 Transaction hash: 0xd0f28086332b9ece789eada02f106ebc973b97b7dc84667271f650e7a0a126ca</code></pre>
               <p>
                 <strong>Step 2, hijack <code>performancePointHelper</code>
-                via the unauthenticated fallback.</strong> We call
-                <code>setATM(address)</code> directly on the ATM's address. The
-                ATM has no function by that name, so this falls through to
-                <code>fallback()</code>, which delegatecalls it into the real
-                helper, and, as established above, that write lands on
-                the ATM's own storage slot 1. In plain terms: this one call is
-                the entire hack. We're tricking the bank into quietly swapping
-                out which "payout machine" it trusts, and it never asks us
-                for permission because nobody bothered to lock that door.
+                via the unauthenticated fallback.</strong> Calling
+                <code>setATM(address)</code> on the ATM hits no known selector,
+                so <code>fallback()</code> picks it up and delegatecalls it into
+                the helper. That write lands on slot 1 of the ATM's own storage,
+                overwriting <code>performancePointHelper</code>. No permission
+                check, no event, no trace except the storage diff.
               </p>
               <pre><code class="language-bash">export EVIL="0xb77292E167831C731082e184b83b200F9Fadb21C"
 cast send $ATM_ADDR "setATM(address)" $EVIL --rpc-url $RPC_URL --private-key $PK

