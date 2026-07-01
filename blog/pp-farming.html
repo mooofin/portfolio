@@ -447,7 +447,7 @@ async fn main() -> Result&lt;()&gt; {
                 <code>checkPP</code>, <code>withdrawPP</code>,
                 <code>isSolved</code>. Only one of those moves ETH
                 <em>out</em>, <code>withdrawPP</code>, so that's the one
-                worth reading closely. Everything else is just bookkeeping.
+                worth reading closely.
                 It's a tiny bank: deposit ETH into a score for some address,
                 withdraw it back out later. Full contract:
               </p>
@@ -606,8 +606,7 @@ async fn main() -> Result&lt;()&gt; {
               </blockquote>
               <p>
                 <strong>Step 1, set up your environment and sanity-check
-                the starting state.</strong> Always confirm you're looking at what
-                you think you're looking at before firing off transactions.
+                the starting state.</strong>
                 <code>cast wallet address</code> derives your public address from
                 the private key the challenge gave you (never share this key
                 outside the challenge), and <code>cast balance</code> just reads
@@ -638,7 +637,7 @@ cast balance $ATM_ADDR --rpc-url $RPC_URL --ether</code></pre>
                 errors before we spend gas. <code>forge create</code> then
                 deploys a specific contract to the chain, here we deploy
                 <code>Exploit</code>, passing the ATM's address as the constructor
-                argument so the exploit contract knows who to attack.
+                argument.
               </p>
               <pre><code class="language-bash">forge build
 forge create --rpc-url $RPC_URL --private-key $PK --broadcast \
@@ -688,7 +687,7 @@ true</code></pre>
                 <code>isSolved()</code> confirms it. It's a read-only
                 <code>view</code> function, so <code>cast call</code> (not
                 <code>cast send</code>) is enough since it costs no gas and
-                changes no state. Challenge solved, flag released:
+                changes no state.
               </p>
               <pre><code>SEKAI{3Z_re3ntr4ncy_atTack5}</code></pre>
               <p>
@@ -1184,8 +1183,7 @@ true</code></pre>
                 and the classic
                 <a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/" target="_blank" rel="noopener">unstructured-proxy storage collision</a>
                 bug class that's bitten real upgradeable-proxy deployments in
-                production, just wearing a "helper contract" costume instead of
-                an official proxy pattern. OpenZeppelin's
+                production. OpenZeppelin's
                 <a href="https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable" target="_blank" rel="noopener">unstructured storage pattern</a>
                 exists specifically to avoid this class of bug in real proxies.
                 Any time <code>delegatecall</code> crosses a contract boundary,
