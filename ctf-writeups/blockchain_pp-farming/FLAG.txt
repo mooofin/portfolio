@@ -1,0 +1,6 @@
+SEKAI{3Z_re3ntr4ncy_atTack5}
+
+Challenge: PerformancePointATM (blockchain / pp-farming)
+Bug: withdrawPP() does external call BEFORE zeroing scores[msg.sender] -> reentrancy
+Exploit: src/Exploit.sol -- donate 1 ether, re-enter withdrawPP via receive() until ATM drained to 0
+isSolved(): address(this).balance == 0
