@@ -1,0 +1,8 @@
+[profile.default]
+src = "src"
+script = "script"
+out = "out"
+cache_path = "cache"
+libs = ["lib"]
+solc_version = "0.8.20"
+

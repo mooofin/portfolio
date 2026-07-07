@@ -1,328 +1,601 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Newsletter - sid, systems programming, reverse engineering" />
-    <title>Newsletter - mooofin</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="public/favicon.ico" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
-      integrity="sha384-zh0CIslj+VrCZQKIv2UQRJVQN3FgmcQBR9OimDKWJXv0KF1mNvzM1S1R0dW0RN3"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
-    <div class="desktop flex gap-16" style="flex-direction: row">
-      <div class="sidebar-95">
-        <div class="window">
-          <div class="window-title">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
-              class="icon-16"
-              alt=""
-            />
-            Navigation
-          </div>
-          <div class="window-body p-0">
-            <ul class="list-group" style="border: none">
-              <li class="list-group-item">
-                <a href="index.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Home
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="about.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/users-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  About Me
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="projects.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Projects
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="blog.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Blog
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="contact.html">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Contact
-                </a>
-              </li>
-              <li
-                class="list-group-item"
-                style="background: #08216b; color: white"
-              >
-                <a href="newsletter.html" style="color: white">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Newsletter
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="window">
-          <div class="window-title">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/network_cool-2.png"
-              class="icon-16"
-              alt=""
-            />
-            Links
-          </div>
-          <div class="window-body p-0">
-            <ul class="list-group" style="border: none">
-              <li class="list-group-item">
-                <a href="mailto:siddharthqln@gmail.com" target="_blank">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Email
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="https://github.com/mooofin" target="_blank">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/application_window-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  GitHub
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="https://www.last.fm/user/kxllswxch" target="_blank">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/cd_audio_cd_a-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Last.fm
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="https://myanimelist.net/profile/kurapika_99" target="_blank">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/network_television-1.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  MyAnimeList
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="https://letterboxd.com/ptolemeaa4u/" target="_blank">
-                  <img
-                    src="https://win98icons.alexmeub.com/icons/png/active_movie-0.png"
-                    class="icon-16"
-                    alt=""
-                  />
-                  Letterboxd
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
-          <img src="images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
-        </div>
-      </div>
-      <div class="content-95">
-        <div class="window mb-8">
-          <div class="window-body p-8" style="font-size: 11px">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
-              class="icon-16"
-              alt=""
-            />
-            <a href="index.html">Home</a> &gt; Newsletter
-          </div>
-        </div>
 
-        <div class="window">
-          <div class="window-title">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
-              class="icon-16"
-              alt=""
-            />
-            What's This?
-          </div>
-          <div class="window-body" style="font-size: 12px">
-            <p style="margin-top: 0">
-              I don't really have a fixed schedule for yapping about stuff but anyways
-            </p>
-            <p>
-              Could be once a month, could be twice, you can bail whenever.
-            </p>
-            <p style="font-size: 11px; color: #888; font-style: italic;">
-              recruiters stop reading this i don't care about your startup
-            </p>
-          </div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Newsletter - sid, systems programming, reverse engineering" />
+  <title>Newsletter - mooofin</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="public/favicon.ico" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
+    integrity="sha384-zh0CIslj+VrCZQKIv2UQRJVQN3FgmcQBR9OimDKWJXv0KF1mNvzM1S1R0dW0RN3" crossorigin="anonymous" />
+  <style>
+    @keyframes blink-icon {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    .unread-icon { animation: blink-icon 1.4s ease-in-out infinite; }
 
-        <div class="window">
-          <div class="window-title">
-            <img
-              src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png"
-              class="icon-16"
-              alt=""
-            />
-            LaTeX Demo
-          </div>
-          <div class="window-body" style="font-size: 12px">
-            <p style="margin-top: 0">
-              Blog posts render math with <strong>KaTeX</strong>. TESTING BOP HELLO!!
-            </p>
-            <div style="background: #fff; border: 2px inset #d5d5d5; padding: 12px; margin: 8px 0;">
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg-fade { animation: fade-in 0.18s ease-out; }
 
-              <p><strong>Navier-Stokes (incompressible):</strong></p>
-              <p style="padding-left: 16px;">
-                $$\rho \left( \frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot \nabla \mathbf{v} \right) = -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}$$
-              </p>
+    /* You've got mail dialog */
+    @keyframes grain {
+      0%, 100% { transform: translate(0, 0); }
+      10%       { transform: translate(-2%, -3%); }
+      20%       { transform: translate(3%, 2%); }
+      30%       { transform: translate(-1%, 4%); }
+      40%       { transform: translate(4%, -1%); }
+      50%       { transform: translate(-3%, 3%); }
+      60%       { transform: translate(2%, -4%); }
+      70%       { transform: translate(-4%, 1%); }
+      80%       { transform: translate(1%, -2%); }
+      90%       { transform: translate(3%, 3%); }
+    }
 
-              <p><strong>Einstein field equations:</strong></p>
-              <p style="padding-left: 16px;">
-                $$R_{\mu\nu} - \frac{1}{2} R g_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}$$
-              </p>
+    #ygm-dialog {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 99999;
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      border-right-color: #424242;
+      border-bottom-color: #424242;
+      width: 320px;
+      box-shadow: 4px 4px 0 #000;
+      font-family: "MS Sans Serif", Tahoma, sans-serif;
+      font-size: 12px;
+      image-rendering: pixelated;
+      overflow: hidden;
+    }
+    /* grain layer */
+    #ygm-dialog::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      width: 200%; height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.08;
+      pointer-events: none;
+      animation: grain 0.4s steps(1) infinite;
+      z-index: 1;
+    }
+    /* scanlines */
+    #ygm-dialog::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+    #ygm-dialog .ygm-title {
+      background: linear-gradient(90deg, #08216b 0%, #1a3a8a 40%, #a5cef7 100%);
+      color: #fff;
+      padding: 3px 6px;
+      font-weight: bold;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: default;
+      user-select: none;
+      position: relative;
+      z-index: 3;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+      letter-spacing: 0.3px;
+    }
+    #ygm-dialog .ygm-title button {
+      background: silver;
+      border: 1px outset #fff;
+      padding: 0 4px;
+      font-size: 11px;
+      line-height: 14px;
+      cursor: pointer;
+      color: black;
+      position: relative;
+      z-index: 3;
+    }
+    #ygm-dialog .ygm-body {
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      position: relative;
+      z-index: 3;
+      /* dithered-ish background tint */
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 1px,
+        rgba(255,255,255,0.03) 1px,
+        rgba(255,255,255,0.03) 2px
+      ), #c0c0c0;
+    }
+    #ygm-dialog .ygm-footer {
+      padding: 8px 16px 12px;
+      text-align: center;
+      position: relative;
+      z-index: 3;
+      border-top: 1px solid #a0a0a0;
+      background: #c0c0c0;
+    }
+    #ygm-overlay {
+      position: fixed; inset: 0;
+      z-index: 99998;
+      background: rgba(0,0,0,0.3);
+    }
 
-              <p><strong>Schrödinger equation (time-dependent):</strong></p>
-              <p style="padding-left: 16px;">
-                $$i\hbar \frac{\partial}{\partial t} | \Psi(\mathbf{r},t) \rangle = \left[ -\frac{\hbar^2}{2m} \nabla^2 + V(\mathbf{r},t) \right] | \Psi(\mathbf{r},t) \rangle$$
-              </p>
+    /* Fake progress bar for message load */
+    #msg-progress {
+      height: 3px;
+      background: #08216b;
+      width: 0%;
+      transition: width 0.25s linear;
+    }
+  </style>
+</head>
 
-              <p><strong>Riemann zeta function:</strong></p>
-              <p style="padding-left: 16px;">
-                $$\zeta(s) = \sum_{n=1}^{\infty} \frac{1}{n^s} = \prod_{p \text{ prime}} \frac{1}{1 - p^{-s}}$$
-              </p>
-
-              <p><strong>Path integral (QFT):</strong></p>
-              <p style="padding-left: 16px;">
-                $$\mathcal{Z} = \int \mathcal{D}[\phi] \, \exp\left( i \int d^4x \, \mathcal{L}(\phi, \partial_\mu\phi) \right)$$
-              </p>
-
-              <p><strong>Fourier transform:</strong></p>
-              <p style="padding-left: 16px;">
-                $$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x) \, e^{-2\pi i x \xi} \, dx \quad \Longleftrightarrow \quad f(x) = \int_{-\infty}^{\infty} \hat{f}(\xi) \, e^{2\pi i x \xi} \, d\xi$$
-              </p>
-            </div>
-            <p style="font-size: 11px; color: #777;">
-              KaTeX renders client-side from CDN - lightweight and tracker-free.
-            </p>
-          </div>
-        <div style="margin-bottom: 60px"></div>
+<body>
+  <!-- You've Got Mail dialog -->
+  <div id="ygm-overlay"></div>
+  <div id="ygm-dialog">
+    <div class="ygm-title">
+      <span><img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" class="icon-16" alt="" style="vertical-align:middle;margin-right:4px;" />Outlook Express</span>
+      <button onclick="dismissYGM()">✕</button>
+    </div>
+    <div class="ygm-body">
+      <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" style="width:32px;height:32px;image-rendering:pixelated;" alt="" />
+      <div>
+        <strong>You have 3 unread messages.</strong><br>
+        <span style="color:#555;">mooofin's Mailing List</span>
       </div>
     </div>
-    <div class="taskbar">
-      <div style="display: flex; gap: 8px">
-        <a href="index.html" class="start-button">
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/windows-0.png"
-            class="icon-16"
-            alt=""
-          />
-          Start
-        </a>
-        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px"></div>
-        <a
-          href="index.html"
-          class="btn"
-          style="display: inline-flex; align-items: center; gap: 4px"
-        >
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
-            class="icon-16"
-            alt=""
-          />
-          Home
-        </a>
-        <a
-          href="newsletter.html"
-          class="btn"
-          style="
+    <div class="ygm-footer">
+      <button class="btn" onclick="dismissYGM()" style="min-width:80px;">OK</button>
+    </div>
+  </div>
+
+  <div class="desktop flex gap-16" style="flex-direction: row">
+    <div class="sidebar-95">
+      <div class="window">
+        <div class="window-title">
+          <img src="https://win98icons.alexmeub.com/icons/png/computer-3.png" class="icon-16" alt="" />
+          Navigation
+        </div>
+        <div class="window-body p-0">
+          <ul class="list-group" style="border: none">
+            <li class="list-group-item">
+              <a href="index.html">
+                <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+                Home
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="about.html">
+                <img src="https://win98icons.alexmeub.com/icons/png/users-1.png" class="icon-16" alt="" />
+                About Me
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="projects.html">
+                <img src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png" class="icon-16"
+                  alt="" />
+                Projects
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="blog.html">
+                <img src="https://win98icons.alexmeub.com/icons/png/notepad-0.png" class="icon-16" alt="" />
+                Blog
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="contact.html">
+                <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" class="icon-16" alt="" />
+                Contact
+              </a>
+            </li>
+            <li class="list-group-item" style="background: #08216b; color: white">
+              <a href="newsletter.html" style="color: white">
+                <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" class="icon-16" alt="" />
+                Newsletter
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="window">
+        <div class="window-title">
+          <img src="https://win98icons.alexmeub.com/icons/png/network_cool-2.png" class="icon-16" alt="" />
+          Links
+        </div>
+        <div class="window-body p-0">
+          <ul class="list-group" style="border: none">
+            <li class="list-group-item">
+              <a href="mailto:siddharthqln@gmail.com" target="_blank">
+                <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" class="icon-16" alt="" />
+                Email
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="https://github.com/mooofin" target="_blank">
+                <img src="https://win98icons.alexmeub.com/icons/png/application_window-0.png" class="icon-16" alt="" />
+                GitHub
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="https://www.last.fm/user/kxllswxch" target="_blank">
+                <img src="https://win98icons.alexmeub.com/icons/png/cd_audio_cd_a-0.png" class="icon-16" alt="" />
+                Last.fm
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="https://myanimelist.net/profile/kurapika_99" target="_blank">
+                <img src="https://win98icons.alexmeub.com/icons/png/network_television-1.png" class="icon-16" alt="" />
+                MyAnimeList
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="https://letterboxd.com/ptolemeaa4u/" target="_blank">
+                <img src="https://win98icons.alexmeub.com/icons/png/active_movie-0.png" class="icon-16" alt="" />
+                Letterboxd
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
+        <img src="images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
+      </div>
+    </div>
+    <div class="content-95">
+      <div class="window mb-8">
+        <div class="window-body p-8" style="font-size: 11px">
+          <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+          <a href="index.html">Home</a> &gt; Newsletter
+        </div>
+      </div>
+
+      <!-- Outlook Express shell -->
+      <div class="window" style="margin-bottom: 60px;">
+        <div class="window-title">
+          <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" class="icon-16" alt="" />
+          mooofin's Mailing List - Outlook Express
+        </div>
+
+        <!-- OE toolbar -->
+        <div
+          style="background: #d4d0c8; border-bottom: 1px solid #808080; padding: 3px 4px; display: flex; gap: 2px; align-items: center;">
+          <a href="mailto:siddharthqln@gmail.com?subject=subscribe%20me%20please&body=hey%20add%20me%20to%20the%20list"
+            class="btn" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;text-decoration:none;">
+            <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" class="icon-16" alt="" /> New
+            Mail
+          </a>
+          <button disabled class="btn" style="font-size:11px;display:inline-flex;align-items:center;gap:3px;">
+            <img src="https://win98icons.alexmeub.com/icons/png/undo-0.png" class="icon-16" alt="" /> Reply
+          </button>
+          <button disabled class="btn" style="font-size:11px;display:inline-flex;align-items:center;gap:3px;">
+            <img src="https://win98icons.alexmeub.com/icons/png/redo-0.png" class="icon-16" alt="" /> Forward
+          </button>
+          <div style="border-left: 2px groove #a0a0a0; height: 22px; margin: 0 3px;"></div>
+          <button disabled class="btn" style="font-size:11px;display:inline-flex;align-items:center;gap:3px;">
+            <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_full-0.png" class="icon-16" alt="" /> Delete
+          </button>
+          <div style="border-left: 2px groove #a0a0a0; height: 22px; margin: 0 3px;"></div>
+          <button disabled class="btn" style="font-size:11px;display:inline-flex;align-items:center;gap:3px;">
+            <img src="https://win98icons.alexmeub.com/icons/png/search-0.png" class="icon-16" alt="" /> Find
+          </button>
+        </div>
+
+        <!-- 3-pane layout -->
+        <div style="display: flex; height: 480px; border-top: 1px solid #808080;">
+
+          <!-- Left: folder tree -->
+          <div
+            style="width: 160px; min-width: 160px; border-right: 2px groove #a0a0a0; background: #fff; overflow-y: auto; padding: 4px 0; font-size: 12px; font-family: 'MS Sans Serif', Tahoma, sans-serif;">
+            <div style="padding: 2px 8px; display:flex; align-items:center; gap:4px; font-weight:bold; color:#000080;">
+              <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" class="icon-16" alt="" />
+              Outlook Express
+            </div>
+            <div id="folder-inbox" onclick="selectFolder('inbox')"
+              style="padding: 2px 8px 2px 20px; display:flex; align-items:center; gap:4px; cursor:pointer; background:#08216b; color:#fff;">
+              <img src="https://win98icons.alexmeub.com/icons/png/inbox-0.png" class="icon-16" alt="" /> Inbox (3)
+            </div>
+            <div id="folder-sent" onclick="selectFolder('sent')"
+              style="padding: 2px 8px 2px 20px; display:flex; align-items:center; gap:4px; cursor:pointer;">
+              <img src="https://win98icons.alexmeub.com/icons/png/envelope_open-0.png" class="icon-16" alt="" /> Sent
+              Items
+            </div>
+            <div id="folder-drafts" onclick="selectFolder('drafts')"
+              style="padding: 2px 8px 2px 20px; display:flex; align-items:center; gap:4px; cursor:pointer;">
+              <img src="https://win98icons.alexmeub.com/icons/png/directory_closed-0.png" class="icon-16" alt="" />
+              Drafts
+            </div>
+            <div
+              style="padding: 2px 8px 2px 20px; display:flex; align-items:center; gap:4px; cursor:pointer; color:#888;">
+              <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-0.png" class="icon-16" alt="" />
+              Deleted Items
+            </div>
+            <hr style="margin: 4px 8px; border: 1px solid #d0d0d0;" />
+            <div style="padding: 2px 8px; font-size:11px; color:#555;">Contacts</div>
+            <div
+              style="padding: 2px 8px 2px 20px; font-size:11px; color:#888; display:flex; align-items:center; gap:4px;">
+              <img src="https://win98icons.alexmeub.com/icons/png/users-1.png" class="icon-16" alt="" /> you (soon)
+            </div>
+          </div>
+
+          <!-- Right pane: split vertically -->
+          <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+
+            <!-- Message list -->
+            <div style="flex:0 0 180px; overflow-y:auto; border-bottom: 2px groove #a0a0a0;">
+              <table
+                style="width:100%; border-collapse:collapse; font-size:11px; font-family:'MS Sans Serif',Tahoma,sans-serif;">
+                <thead>
+                  <tr style="background:#d4d0c8; position:sticky; top:0;">
+                    <th
+                      style="text-align:left; padding:2px 6px; border-right:1px solid #a0a0a0; border-bottom:2px groove #a0a0a0; width:20px;">
+                    </th>
+                    <th
+                      style="text-align:left; padding:2px 6px; border-right:1px solid #a0a0a0; border-bottom:2px groove #a0a0a0;">
+                      From</th>
+                    <th
+                      style="text-align:left; padding:2px 6px; border-right:1px solid #a0a0a0; border-bottom:2px groove #a0a0a0;">
+                      Subject</th>
+                    <th style="text-align:left; padding:2px 6px; border-bottom:2px groove #a0a0a0;">Received</th>
+                  </tr>
+                </thead>
+                <tbody id="msg-list">
+                  <tr class="msg-row" data-id="1" onclick="selectMsg(1)"
+                    style="cursor:pointer; background:#08216b; color:#fff; font-weight:bold;">
+                    <td style="padding:2px 6px; text-align:center;" class="unread-icon">📧</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">mooofin</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">Vol. 3 - macOS DFIR, Swift droppers,
+                      and getting a PR into HPX</td>
+                    <td style="padding:2px 6px;">Jun 26 2026</td>
+                  </tr>
+                  <tr class="msg-row" data-id="2" onclick="selectMsg(2)" style="cursor:pointer; font-weight:bold;">
+                    <td style="padding:2px 6px; text-align:center;" class="unread-icon">📧</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">mooofin</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">Vol. 2 - LLVM patches, evolutionary
+                      optimization, and why RISC-V H-ext slaps</td>
+                    <td style="padding:2px 6px;">May 30 2026</td>
+                  </tr>
+                  <tr class="msg-row" data-id="3" onclick="selectMsg(3)" style="cursor:pointer; font-weight:bold;">
+                    <td style="padding:2px 6px; text-align:center;" class="unread-icon">📧</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">mooofin</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">Vol. 1 - bootloaders, gap buffers, and
+                      32 rounds of TEA</td>
+                    <td style="padding:2px 6px;">Feb 09 2026</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Fake load progress -->
+            <div id="msg-progress"></div>
+
+            <!-- Preview pane -->
+            <div style="flex:1; overflow-y:auto; background:#fff; padding:0;">
+              <!-- Email header strip -->
+              <div id="preview-header"
+                style="background:#d4d0c8; border-bottom:1px solid #a0a0a0; padding:6px 10px; font-size:11px; font-family:'MS Sans Serif',Tahoma,sans-serif;">
+                <div><strong>From:</strong> &nbsp;mooofin &lt;siddharthqln@gmail.com&gt;</div>
+                <div><strong>To:</strong> &nbsp;you</div>
+                <div id="preview-subject"><strong>Subject:</strong> &nbsp;Vol. 3 - macOS DFIR, Swift droppers, and
+                  getting a PR into HPX</div>
+                <div id="preview-date"><strong>Date:</strong> &nbsp;Thu, 26 Jun 2026</div>
+              </div>
+
+              <!-- Email body -->
+              <div id="preview-body"
+                style="padding:14px 16px; font-size:12px; font-family:Verdana,sans-serif; line-height:1.6;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="status-bar" style="font-size:11px;">
+          3 message(s), 3 unread &nbsp;|&nbsp; Working offline
+        </div>
+      </div>
+
+      <div style="margin-bottom: 60px"></div>
+    </div>
+  </div>
+
+  <script>
+    function dismissYGM() {
+      document.getElementById('ygm-dialog').remove();
+      document.getElementById('ygm-overlay').remove();
+    }
+
+    const statusMessages = [
+      '3 message(s), 3 unread  |  Working offline',
+      '3 message(s), 3 unread  |  Connecting to mail.mooofin.net…',
+      '3 message(s), 3 unread  |  Connected',
+      '3 message(s), 3 unread  |  Working offline',
+    ];
+    let statusIdx = 0;
+    function cycleStatus() {
+      statusIdx = (statusIdx + 1) % statusMessages.length;
+      const bar = document.querySelector('.status-bar');
+      if (bar) bar.textContent = statusMessages[statusIdx];
+    }
+    setInterval(cycleStatus, 3500);
+
+    const messages = {
+      1: {
+        subject: "Vol. 3 - macOS DFIR, Swift droppers, and getting a PR into HPX, c++ standard library",
+        date: "Thu, 26 Jun 2026",
+        body: `<p>CTF challenge this month: raw macOS memory forensics .</p>
+<p>no Volatility ISF ships for macOS so step one was building one from KDK DWARF - <code>dwarf2json</code> does the heavy lifting but the output needs manual patching for mismatched kernel struct offsets. </p>
+<p>creds came out of <code>loginwindow</code> heap - PAM session structs sit resident in memory post-auth, username and password in adjacent heap chunks. direct virtual address scan, no symbol resolution needed. apple how could u </p>
+<p>full writeup: <a href="blog/s4nct1m0ny.html">s4nct1m0ny</a></p>
+<hr style="border:none;border-top:1px dotted #ccc;margin:16px 0;" />
+<p>also got <a href="https://github.com/TheHPXProject/hpx/pull/7296" target="_blank">PR #7296</a> merged into <a href="https://hpx.stellar-group.org/" target="_blank">HPX</a> - the C++ standard library for concurrency and parallelism, tracking C++17/20/23 parallel algorithms and <code>std::execution</code>. the PR adds S/R support for <code>shift_left</code> / <code>shift_right</code>, <code>tag_parallel_algorithm</code> CPO, <code>has_scheduler_executor</code> dispatch guard.</p>
+<p>S/R = sender/receiver, the structured concurrency model from <a href="https://wg21.link/p2300" target="_blank">P2300 (<code>std::execution</code>)</a>. the core idea: a <em>sender</em> describes async work without starting it; a <em>receiver</em> handles the three completion channels (value, error, stopped). wiring them together via <code>connect()</code> produces an <em>operation state</em> that you then <code>start()</code>. the scheduler abstraction lets you say <em>where</em> work runs without hardcoding thread pools.</p>
+<p style="font-size:11px; color:#555;">further reading:</p>
+<ul style="font-size:11px; color:#333;">
+  <li><a href="https://wg21.link/p2300" target="_blank">P2300R10: <code>std::execution</code> (Niebler, Dominiak, Shoop, Baker et al.)</a> - the full ISO proposal, adopted for C++26</li>
+  <li><a href="https://wg21.link/p1660" target="_blank">P1660: Structured Concurrency</a> - earlier framing paper that motivated the sender/receiver split</li>
+  <li><a href="https://wg21.link/p2519" target="_blank">P2519: <code>async_scope</code></a> - structured lifetime for dynamic sender graphs</li>
+  <li><a href="https://wg21.link/p2300" target="_blank">P2300R7 design notes</a> - earlier revision with more rationale on the three-channel completion model</li>
+  <li><a href="https://ericniebler.com/2020/11/08/structured-concurrency/" target="_blank">Eric Niebler: Structured Concurrency (2020)</a> - the design rationale in plain prose</li>
+  <li><a href="https://wg21.link/p2006" target="_blank">P2006: Eliminating heap-allocations in sender/receiver with the static thread pool</a> - how S/R enables stack-only async</li>
+  <li><a href="https://wg21.link/p2175" target="_blank">P2175: Composable cancellation for sender-based async operations</a> - stop tokens and the stopped channel</li>
+  <li><a href="https://www.youtube.com/watch?v=h-ExnuD6jms" target="_blank">CppCon 2021: Kirk Shoop, "Structured Concurrency"</a> - 50min walkthrough of the model before P2300 stabilized</li>
+</ul>
+<hr style="border:none;border-top:1px dotted #ccc;margin:16px 0;" />
+<p style="font-size:11px;color:#888;">not subscribed? hit New Mail above. no tracking, no ads, no "thought leadership".</p>
+<p style="font-size:11px;color:#888;">- sid</p>`
+      },
+      2: {
+        subject: "Vol. 2 - LLVM patches, evolutionary optimization, and why RISC-V H-ext slaps",
+        date: "Fri, 30 May 2026",
+        body: `<p>two things happened this month and i'm still not over either of them.</p>
+<p>first: i got a patch merged into LLVM. into the actual compiler.</p>
+<p>second: spent an unreasonable amount of time with Shackleton - a GP framework that evolves LLVM pass pipelines. you give it a fitness function (binary size, runtime perf, whatever) and it runs tournament selection over pass sequences. it finds non-obvious orderings that beat -O2 on specific workloads. which is either exciting or humbling depending on your relationship with compilers.</p>
+<ul>
+  <li><a href="blog/my-first-llvm-patch.html">the LLVM patch</a> - refactors <code>bf16div</code> into a header-only wrapper under <code>src/__support/math/</code> as part of llvm-libc's constexpr math push (#147386). entrypoint becomes a thin <code>LLVM_LIBC_FUNCTION</code> shim delegating to <code>fputil::generic::div&lt;bfloat16&gt;</code>. CMake and Bazel targets updated. three review rounds, one accidental test deletion, and a Bazel format nit before merge.</li>
+  <li><a href="blog/shackleton-llvm-gp.html">Shackleton</a> - genetic programming over <code>opt</code> pass pipelines. crossover on pass sequences, mutation by insertion/deletion/swap, fitness evaluated by compiling and running. it wins. consistently. i have feelings about this.</li>
+  <li><a href="blog/risc-v-hypervisor.html">RISC-V H-extension</a> - VS/VU mode split, <code>hgatp</code> for two-stage address translation, <code>VMGEXIT</code>-equivalent traps via <code>ecall</code> from VS-mode. the spec is 60 pages and actually readable. i will die on this hill.</li>
+</ul>
+<hr style="border:none;border-top:1px dotted #ccc;margin:16px 0;" />
+<p style="font-size:11px;color:#888;">- sid</p>`
+      },
+      3: {
+        subject: "Vol. 1 - bootloaders, gap buffers, and 32 rounds of TEA",
+        date: "Mon, 09 Feb 2026",
+        body: `<p>hi. this goes out when i have something worth saying </p>
+<p>this month i apparently decided to do everything the hard way:</p>
+<ul>
+  <li><a href="blog/bootloader.html">x86 bootloader from scratch</a> - 512-byte MBR, sets up a flat 32-bit GDT, loads the second stage from disk via BIOS int 13h, switches to protected mode, jumps to C. the A20 line will try to ruin your day. i won.</li>
+  <li><a href="blog/honeymoon.html">gap buffer for my text editor</a> - O(1) insert/delete at the cursor, O(n) cursor movement. better cache locality than a rope for typical editing patterns. if you're reaching for a piece table you should think about what you've done.</li>
+  <li><a href="blog/tea-and-psychological-damage.html">32 rounds of TEA</a> - CTF. Tiny Encryption Algorithm, 64-bit block, 128-bit key, delta = 0x9e3779b9. . the CTF author added a weak-key schedule and a custom IV reuse bug.</li>
+</ul>
+<hr style="border:none;border-top:1px dotted #ccc;margin:16px 0;" />
+<p style="font-size:11px;color:#888;">recruiters: you've read this far which means you ignored the warning on my contact page. impressive commitment to a dead end. still not interested.</p>
+<p style="font-size:11px;color:#888;">- sid</p>`
+      }
+    };
+
+    function selectMsg(id) {
+      document.querySelectorAll('.msg-row').forEach(r => {
+        r.style.background = '';
+        r.style.color = '';
+        // restore blink on unread icons
+        const icon = r.querySelector('.unread-icon');
+        if (icon) icon.classList.add('unread-icon');
+      });
+      const row = document.querySelector(`.msg-row[data-id="${id}"]`);
+      row.style.background = '#08216b';
+      row.style.color = '#fff';
+      // stop blinking on selected row's icon
+      const selIcon = row.querySelector('.unread-icon');
+      if (selIcon) selIcon.style.animation = 'none';
+
+      // fake progress bar
+      const bar = document.getElementById('msg-progress');
+      bar.style.width = '0%';
+      bar.style.transition = 'none';
+      requestAnimationFrame(() => {
+        bar.style.transition = 'width 0.3s linear';
+        bar.style.width = '100%';
+        setTimeout(() => { bar.style.width = '0%'; bar.style.transition = 'none'; }, 350);
+      });
+
+      const m = messages[id];
+      const body = document.getElementById('preview-body');
+      body.style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('preview-subject').innerHTML = '<strong>Subject:</strong> &nbsp;' + m.subject;
+        document.getElementById('preview-date').innerHTML = '<strong>Date:</strong> &nbsp;' + m.date;
+        body.innerHTML = m.body;
+        body.classList.remove('msg-fade');
+        void body.offsetWidth;
+        body.classList.add('msg-fade');
+        body.style.opacity = '1';
+      }, 150);
+    }
+
+    function selectFolder(f) {
+      ['inbox', 'sent', 'drafts'].forEach(id => {
+        const el = document.getElementById('folder-' + id);
+        el.style.background = '';
+        el.style.color = '';
+      });
+      const el = document.getElementById('folder-' + f);
+      el.style.background = '#08216b';
+      el.style.color = '#fff';
+    }
+
+    selectMsg(1);
+  </script>
+  <div class="taskbar">
+    <div style="display: flex; gap: 8px">
+      <a href="index.html" class="start-button">
+        <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" class="icon-16" alt="" />
+        Start
+      </a>
+      <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px"></div>
+      <a href="index.html" class="btn" style="display: inline-flex; align-items: center; gap: 4px">
+        <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+        Home
+      </a>
+      <a href="newsletter.html" class="btn" style="
             display: inline-flex;
             align-items: center;
             gap: 4px;
             border: 2px inset #fff;
-          "
-        >
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png"
-            class="icon-16"
-            alt=""
-          />
-          Newsletter
-        </a>
-        <a
-          href="contact.html"
-          class="btn"
-          style="display: inline-flex; align-items: center; gap: 4px"
-        >
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"
-            class="icon-16"
-            alt=""
-          />
-          Contact
-        </a>
-      </div>
-      <div class="tray">
-        <img src="https://win98icons.alexmeub.com/icons/png/loudspeaker_rays-0.png" class="icon-16" alt="" title="Volume" style="image-rendering:pixelated" />
-        <img src="https://win98icons.alexmeub.com/icons/png/modem-0.png" class="icon-16" alt="" title="Network" style="image-rendering:pixelated" />
-        <div class="time" id="clock">12:00 PM</div>
-      </div>
+          ">
+        <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" class="icon-16" alt="" />
+        Newsletter
+      </a>
+      <a href="contact.html" class="btn" style="display: inline-flex; align-items: center; gap: 4px">
+        <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" class="icon-16" alt="" />
+        Contact
+      </a>
     </div>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
-    <script>
-      function updateClock() {
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes().toString().padStart(2, "0");
-        const ampm = hours >= 12 ? "PM" : "AM";
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        document.getElementById("clock").textContent =
-          hours + ":" + minutes + " " + ampm;
-      }
-      updateClock();
-      setInterval(updateClock, 1000);
-    </script>
-    <script src="site.js"></script>
+    <div class="tray">
+      <img src="https://win98icons.alexmeub.com/icons/png/loudspeaker_rays-0.png" class="icon-16" alt="" title="Volume"
+        style="image-rendering:pixelated" />
+      <img src="https://win98icons.alexmeub.com/icons/png/modem-0.png" class="icon-16" alt="" title="Network"
+        style="image-rendering:pixelated" />
+      <div class="time" id="clock">12:00 PM</div>
+    </div>
+  </div>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <script>
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      document.getElementById("clock").textContent =
+        hours + ":" + minutes + " " + ampm;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+  <script src="site.js"></script>
 </body>
+
 </html>

