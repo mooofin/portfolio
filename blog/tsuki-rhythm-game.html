@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="R3CTF CTF writeup: Digital forensics on a compromised rhythm game, uncovering Python malware, steganography, reverse shells, and wallet draining." />
+    <title>R3CTF - Tsuki's Rhythm Game Writeup - mooofin</title>
+    <meta property="og:title" content="Tsuki's Rhythm Game Writeup" />
+    <meta property="og:description" content="R3CTF digital forensics challenge: analyzing a compromised rhythm game, hidden malware, C2 implant, and blockchain wallet compromise." />
+    <meta property="og:url" content="https://mooofin.github.io/portfolio/blog/tsuki-rhythm-game.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://mooofin.github.io/portfolio/ctf-writeups/tsuki-rhythm-game/photos/media.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://mooofin.github.io/portfolio/ctf-writeups/tsuki-rhythm-game/photos/media.png" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <link rel="icon" href="../public/favicon.ico" />
+    <style>
+      /* Blog specific styles */
+      .blog-content {
+        font-family: "Verdana", sans-serif;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        color: #000080;
+        margin-top: 20px;
+        border-bottom: 1px dotted #ccc;
+        padding-bottom: 5px;
+      }
+      .blog-content p {
+        margin-bottom: 15px;
+      }
+      .blog-content img {
+        max-width: 100%;
+        border: 1px solid #999;
+        padding: 4px;
+        background: #fff;
+        margin: 10px 0;
+      }
+      .blog-content .img-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .blog-content pre {
+        background: #eee;
+        border: 1px inset #ccc;
+        padding: 10px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+      }
+      .blog-content code {
+        background: #f0f0f0;
+        padding: 2px 4px;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content blockquote {
+        border-left: 4px solid #000080;
+        padding-left: 10px;
+        color: #555;
+        font-style: italic;
+        margin: 15px 0;
+      }
+      .blog-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 15px 0;
+        font-size: 13px;
+      }
+      .blog-content th,
+      .blog-content td {
+        border: 1px solid #999;
+        padding: 4px 8px;
+        text-align: left;
+      }
+      .blog-content th {
+        background: #d4d0c8;
+      }
+      .blog-content ul, .blog-content ol {
+        margin-bottom: 15px;
+        margin-left: 20px;
+      }
+      .blog-content li {
+        margin-bottom: 5px;
+      }
+      .blog-meta {
+        color: #666;
+        font-size: 11px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      }
+      details {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: bold;
+        color: #000080;
+      }
+      details[open] {
+        background: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="desktop flex gap-16" style="flex-direction: row">
+      <div class="sidebar-95">
+        <div class="window">
+          <div class="window-title">
+            <img src="https://win98icons.alexmeub.com/icons/png/computer-3.png" class="icon-16" alt="" />
+            Navigation
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="../index.html">
+                  <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+                  Home
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../about.html">
+                  <img src="https://win98icons.alexmeub.com/icons/png/users-1.png" class="icon-16" alt="" />
+                  About Me
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img src="https://win98icons.alexmeub.com/icons/png/notepad-0.png" class="icon-16" alt="" />
+                  Blog
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../contact.html">
+                  <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png" class="icon-16" alt="" />
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-95">
+        <div class="window">
+          <div class="window-title">
+            <img src="https://win98icons.alexmeub.com/icons/png/notepad-0.png" class="icon-16" alt="" />
+            Tsuki's Rhythm Game
+          </div>
+          <div class="window-body">
+            <div class="blog-content">
+              <div class="blog-meta"><a href="https://ctftime.org/event/3149/" target="_blank">R3CTF 2026</a> - Digital Forensics - DFIR Challenge - organised by r3kapig</div>
+
+              <h1>R3CTF - Tsuki's Rhythm Game Writeup</h1>
+
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/leaderboard.png" alt="Leaderboard" />
+                <p style="font-size: 13px; color: #333; margin-top: 8px;">we placed <strong>2nd in the human category</strong> and <strong>21st overall</strong> !!</p>
+              </div>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/QSN-image.png" alt="Challenge questions overview" />
+              </div>
+
+              <h2>Challenge Description</h2>
+              <p>Tsuki is a cryptocurrency enthusiast and the lead developer of a community rhythm game. Recently, she was testing mods and new beatmaps created by players for the game. However, a few days later, she was shocked to discover that her wallet had been completely drained.</p>
+              <p>Currently, the security response team has extracted a network traffic capture from Tsuki's work computer, along with the entire game folder of the rhythm game. Please conduct a digital forensic analysis on them.</p>
+
+              <h2>Given Files</h2>
+              <p>The handout contains 3 files:</p>
+              <ul>
+                <li><code>Evidence.zip</code> - password protected</li>
+                <li><code>Game.zip</code> - the rhythm game folder</li>
+                <li><code>traffic.pcapng</code> - network capture from Tsuki's machine</li>
+              </ul>
+              <p>Extracting <code>Game.zip</code> has 3 more files in it mhm</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/1-1.png" alt="Game folder contents" />
+              </div>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 1 - MD5 hash of the main executable</h2>
+              <p><strong>Answer:</strong> <code>1eeb9c6ed21903f22e1b28dbcbc5c01c</code></p>
+
+              <h3>Solution</h3>
+              <p>lets start by opening <code>traffic.pcapng</code> in Wireshark,and  filter it with to see the downloads :</p>
+              <pre><code>http.request.uri contains ".exe"</code></pre>
+              <p>And 2 exe downloads are visible - <code>TsukiRhythmGame.exe</code> (26 MB from <code>192.168.117.1:3000</code>) and <code>Updater.exe</code> (268 KB from <code>192.168.117.1:8000</code>).</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn1-1.png" alt="Wireshark filter showing exe downloads" />
+              </div>
+              <p>Lets export this for reversing ; Go to <strong>File - Export Objects - HTTP</strong>, select <code>TsukiRhythmGame.exe</code> and save it.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn1-2.png" alt="HTTP Export object list" />
+              </div>
+              <p>and Verify the hash:</p>
+              <pre><code>certutil -hashfile TsukiRhythmGame.exe MD5</code></pre>
+              <p>Output confirms: <code>1eeb9c6ed21903f22e1b28dbcbc5c01c</code></p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 2 - AES Key and IV used to encrypt/decrypt beatmaps</h2>
+              <p><strong>Answer:</strong> <code>TsukiRhythmKey!!_TsukiRhythmIV!!!</code></p>
+
+              <h3>Solution</h3>
+              <p>Opening <code>TsukiRhythmGame.exe</code> in IDA shows Python API strings (<code>Py_PreInitialize</code>, <code>PyConfig_Clear</code>, etc.), so the binary is a PyInstaller-packed Python application and we'll need to unpack it using pyextrator.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn2-1.png" alt="IDA strings view showing Python API" />
+              </div>
+              <p>Extract the bundled <code>.pyc</code> files using <a href="https://github.com/pyinstxtractor/pyinstxtractor-ng" target="_blank">pyinstxtractor-ng</a>:</p>
+              <pre><code>python -m pyinstxtractor_ng "C:\Users\ACER\Desktop\R3CTF\Game\TsukiRhythmGame.exe"</code></pre>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn2-2.png" alt="pyinstxtractor_ng extraction output" />
+              </div>
+              <p>there are many ways to decompile but just use the web interface for pylingual , upload <code>main.pyc</code> (Python 3.11) to <a href="https://pylingual.io" target="_blank">pylingual.io</a> to decompile it. Lines 23-24 have the hardcoded AES constants:</p>
+              <pre><code>AES_KEY = b'TsukiRhythmKey!!'
+AES_IV = b'TsukiRhythmIV!!!'</code></pre>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn2-3.png" alt="main.pyc decompiled showing AES_KEY and AES_IV" />
+              </div>
+
+              <details>
+                <summary>Full decompiled main.py</summary>
+                <pre><code># Decompiled with PyLingual (https://pylingual.io)
+# Internal filename: 'main.py'
+# Bytecode version: 3.11a7e (3495)
+# Source timestamp: 1970-01-01 00:00:00 UTC (0)
+
+import pygame
+import os
+import sys
+import json
+import importlib.util
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+import base64
+import io
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODS_DIR = os.path.join(BASE_DIR, 'mods')
+CHARTS_DIR = os.path.join(BASE_DIR, 'charts')
+WIDTH, HEIGHT = (800, 600)
+FPS = 60
+AES_KEY = b'TsukiRhythmKey!!'
+AES_IV = b'TsukiRhythmIV!!!'
+LANE_KEYS = [pygame.K_s, pygame.K_d, pygame.K_j, pygame.K_k]
+LANE_WIDTH = 60
+LANE_SPACING = 10
+TOTAL_LANE_WIDTH = LANE_WIDTH * 4 + LANE_SPACING * 3
+START_X = (WIDTH - TOTAL_LANE_WIDTH) // 2
+HIT_LINE_Y = 500
+SCROLL_TIME = 1500
+JUDGE_WINDOWS = {'Perfect': 50, 'Great': 100, 'Good': 150}
+BASE_DIR = ''
+loaded_mods = []
+local_leaderboard = []
+def load_mods():
+    if not os.path.exists(MODS_DIR):
+        return None
+    else:
+        for f in os.listdir(MODS_DIR):
+            if f.endswith('.tsukimod'):
+                mod_path = os.path.join(MODS_DIR, f)
+                if mod_path not in sys.path:
+                    sys.path.insert(0, mod_path)
+                mod_module_name = f.replace('.tsukimod', '_main')
+                try:
+                    mod = importlib.import_module(mod_module_name)
+                    if hasattr(mod, 'init'):
+                        mod.init()
+                    loaded_mods.append(mod)
+                    print(f'[+] Loaded Mod: {f}')
+                except Exception as e:
+                    print(f'[-] Failed to load {f}: {e}')
+def decrypt_chart(file_path):
+    with open(file_path, 'rb') as f:
+        ciphertext = f.read()
+    cipher = AES.new(AES_KEY, AES.MODE_CBC, AES_IV)
+    plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
+    return json.loads(plaintext.decode('utf-8'))
+def trigger_judgement_hook(judgement, lane):
+    x_center = START_X + lane * (LANE_WIDTH + LANE_SPACING) + LANE_WIDTH // 2
+    y_pos = HIT_LINE_Y - 20
+    for mod in loaded_mods:
+        if hasattr(mod, 'on_judgement'):
+            mod.on_judgement(judgement, lane, x_center, y_pos)
+def main():
+    # irreducible cflow, using cdg fallback
+    # ***&lt;module&gt;.main: Failure: Different control flow
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption('Tsuki\'s Rhythm Game')
+    font_large = pygame.font.Font(None, 48)
+    font_medium = pygame.font.Font(None, 36)
+    font_small = pygame.font.Font(None, 24)
+    clock = pygame.time.Clock()
+    load_mods()
+    charts = [f for f in os.listdir(CHARTS_DIR) if f.endswith('.tsuki')] if os.path.exists(CHARTS_DIR) else []
+    loaded_charts = []
+    print('[System] Loading charts...')
+    if os.path.exists(CHARTS_DIR):
+        for f in os.listdir(CHARTS_DIR):
+            if f.endswith('.tsuki'):
+                try:
+                    c_data = decrypt_chart(os.path.join(CHARTS_DIR, f))
+                    cover_b64 = c_data.get('cover_data', '')
+                    if cover_b64:
+                        img_bytes = base64.b64decode(cover_b64)
+                        img_stream = io.BytesIO(img_bytes)
+                        c_data['cover_surface'] = pygame.transform.scale(pygame.image.load(img_stream), (250, 250))
+                    else:
+                        c_data['cover_surface'] = None
+                    loaded_charts.append(c_data)
+                    print(f"Loaded chart: {c_data.get('title')}")
+                except Exception as e:
+                    print(f'[-] Failed to load {f}: {e}')
+    state, sel_idx = ('MENU', 0)
+    chart_data = None
+    active_notes = []
+    lane_pressed = [False, False, False, False]
+    combo = 0
+    score = 0
+    start_ticks = 0
+    running = True
+    while running:
+        current_time = pygame.time.get_ticks() - start_ticks if state == 'PLAYING' else 0
+        screen.fill((20, 20, 20))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if state == 'MENU':
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        sel_idx = (sel_idx - 1) % len(charts) if charts else 0
+                        if event.key == pygame.K_DOWN:
+                            sel_idx = (sel_idx + 1) % len(charts) if charts else 0
+                            if event.key == pygame.K_RETURN and charts:
+                                selected_file = charts[sel_idx]
+                                chart_path = os.path.join(CHARTS_DIR, selected_file)
+                                try:
+                                    chart_data = decrypt_chart(chart_path)
+                                    active_notes = [n for n in chart_data.get('notes', []) if n.get('type', 1)!= 99]
+                                    active_notes.sort(key=lambda x: x['time'])
+                                    audio_b64 = chart_data.get('audio_data')
+                                    if audio_b64:
+                                        if not pygame.mixer.get_init():
+                                            pygame.mixer.init()
+                                        pygame.mixer.music.unload()
+                                        audio_bytes = base64.b64decode(audio_b64)
+                                        audio_stream = io.BytesIO(audio_bytes)
+                                        pygame.mixer.music.load(audio_stream, 'mp3')
+                                        pygame.mixer.music.play()
+                                    else:
+                                        print(f'[警-] 谱面 {selected_file} 中-----? 据！')
+                                    combo = 0
+                                    score = 0
+                                    start_ticks = pygame.time.get_ticks()
+                                    state = 'PLAYING'
+                                    print(f"[System] Started: {chart_data.get('title', selected_file)}")
+                                except Exception as e:
+                                    print(f'[-误] - ?谱面-载失败: {e}')
+                if state == 'PLAYING':
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            pygame.mixer.music.stop()
+                            pygame.mixer.music.unload()
+                            for mod in loaded_mods:
+                                if hasattr(mod, 'on_game_end'):
+                                    mod.on_game_end(chart_data, local_leaderboard)
+                            state = 'MENU'
+                        else:
+                            if event.key in LANE_KEYS:
+                                lane = LANE_KEYS.index(event.key)
+                                lane_pressed[lane] = True
+                                for mod in loaded_mods:
+                                    if hasattr(mod, 'on_hit'):
+                                        mod.on_hit(lane)
+                                for note in active_notes:
+                                    if note['lane'] == lane and (not note.get('hit', False)):
+                                        time_diff = abs(current_time - note['time'])
+                                        if time_diff &lt;= JUDGE_WINDOWS['Good']:
+                                            note['hit'] = True
+                                            if time_diff &lt;= JUDGE_WINDOWS['Perfect']:
+                                                judgement = 'Perfect'
+                                                score += 1000
+                                            else:
+                                                if time_diff &lt;= JUDGE_WINDOWS['Great']:
+                                                    judgement = 'Great'
+                                                    score += 500
+                                                else:
+                                                    judgement = 'Good'
+                                                    score += 100
+                                            combo += 1
+                                            trigger_judgement_hook(judgement, lane)
+                                            break
+                        if event.type == pygame.KEYUP:
+                            if event.key in LANE_KEYS:
+                                lane_pressed[LANE_KEYS.index(event.key)] = False
+        if state == 'MENU':
+            screen.blit(font_large.render('TSUKI RHYTHM', True, (255, 255, 255)), (50, 50))
+            if not loaded_charts:
+                screen.blit(font_medium.render('No charts found in /charts folder.', True, (150, 150, 150)), (50, 150))
+            else:
+                list_start_y = 150
+                item_height = 45
+                for idx, c in enumerate(loaded_charts):
+                    is_selected = idx == sel_idx
+                    if is_selected:
+                        selection_rect = pygame.Rect(40, list_start_y + idx * item_height - 5, 400, item_height - 5)
+                        pygame.draw.rect(screen, (60, 60, 80), selection_rect)
+                        pygame.draw.rect(screen, (255, 255, 100), selection_rect, 2)
+                        text_color = (255, 255, 100)
+                        prefix = '&gt;&gt; '
+                    else:
+                        text_color = (150, 150, 150)
+                        prefix = '   '
+                    display_text = f"{prefix}{c.get('title', 'Unknown')} - {c.get('artist', 'Unknown')}"
+                    text_surface = font_medium.render(display_text, True, text_color)
+                    screen.blit(text_surface, (50, list_start_y + idx * item_height))
+                current_c = loaded_charts[sel_idx]
+                preview_x = WIDTH - 300
+                preview_y = 150
+                if current_c.get('cover_surface'):
+                    screen.blit(current_c['cover_surface'], (preview_x, preview_y))
+                    pygame.draw.rect(screen, (255, 255, 255), (preview_x, preview_y, 250, 250), 3)
+                else:
+                    pygame.draw.rect(screen, (40, 40, 40), (preview_x, preview_y, 250, 250))
+                    screen.blit(font_small.render('NO PREVIEW', True, (100, 100, 100)), (preview_x + 80, preview_y + 110))
+                detail_y = preview_y + 270
+                title_txt = font_small.render(f"Title: {current_c.get('title')}", True, (255, 255, 255))
+                artist_txt = font_small.render(f"Artist: {current_c.get('artist')}", True, (200, 200, 200))
+                screen.blit(title_txt, (preview_x, detail_y))
+                screen.blit(artist_txt, (preview_x, detail_y + 25))
+        else:
+            if state == 'PLAYING':
+                for i in range(4):
+                    x = START_X + i * (LANE_WIDTH + LANE_SPACING)
+                    color = (50, 50, 50) if not lane_pressed[i] else (120, 120, 120)
+                    pygame.draw.rect(screen, color, (x, 0, LANE_WIDTH, HEIGHT))
+                    key_color = (200, 200, 200) if not lane_pressed[i] else (255, 255, 255)
+                    pygame.draw.rect(screen, key_color, (x, HIT_LINE_Y, LANE_WIDTH, 20))
+                    key_char = font_medium.render(pygame.key.name(LANE_KEYS[i]).upper(), True, (0, 0, 0))
+                    screen.blit(key_char, (x + 20, HIT_LINE_Y - 2))
+                pygame.draw.line(screen, (255, 255, 255), (START_X, HIT_LINE_Y), (START_X + TOTAL_LANE_WIDTH - LANE_SPACING, HIT_LINE_Y), 3)
+                all_processed = True
+                for note in active_notes:
+                    if note.get('hit', False):
+                        continue
+                    all_processed = False
+                    time_diff = current_time - note['time']
+                    if time_diff &gt; JUDGE_WINDOWS['Good']:
+                        note['hit'] = True
+                        combo = 0
+                        trigger_judgement_hook('Miss', note['lane'])
+                        continue
+                    time_to_hit = note['time'] - current_time
+                    y_pos = HIT_LINE_Y - time_to_hit * (HIT_LINE_Y / SCROLL_TIME)
+                    if (-50) &lt; y_pos &lt; HEIGHT:
+                            x_pos = START_X + note['lane'] * (LANE_WIDTH + LANE_SPACING)
+                            pygame.draw.rect(screen, (255, 255, 255), (x_pos, int(y_pos) - 10, LANE_WIDTH, 20))
+                for mod in loaded_mods:
+                    if hasattr(mod, 'on_render'):
+                        mod.on_render(screen)
+                screen.blit(font_medium.render(f'Combo: {combo}', True, (255, 255, 255)), (20, 20))
+                screen.blit(font_medium.render(f'Score: {score}', True, (255, 255, 255)), (20, 60))
+                screen.blit(font_small.render('Press ESC to exit', True, (150, 150, 150)), (20, HEIGHT - 40))
+                if all_processed and len(active_notes) &gt; 0 and (current_time &gt; active_notes[(-1)]['time'] + 2000):
+                            pygame.mixer.music.stop()
+                            pygame.mixer.music.unload()
+                            for mod in loaded_mods:
+                                if hasattr(mod, 'on_game_end'):
+                                    mod.on_game_end(chart_data, local_leaderboard)
+                            state = 'MENU'
+        pygame.display.flip()
+        clock.tick(FPS)
+    pygame.quit()
+if __name__ == '__main__':
+    main()</code></pre>
+              </details>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 3 - MD5 hash of the malicious payload bytecode</h2>
+              <p><strong>Answer:</strong> <code>aed1e4e8b9061e19506848ca579e46ac</code></p>
+
+              <h3>Solution</h3>
+              <p>back to the decompiled <code>main.py</code>, after reading it , this line :</p>
+              <pre><code>active_notes = [n for n in chart_data.get('notes', []) if n.get('type', 1) != 99]</code></pre>
+              <p>Type-99 notes are silently filtered out before the game renders anything. So they never appear on screen and we the player never sees them.SUS?</p>
+              <p>Decrypting <code>Eggdrasil.tsuki</code> and pulling all type-99 notes revealed <strong>3096 of them</strong>, all with <code>time: 0</code>.having  - just <code>lane</code> values (0-3). Two bits each seems so far to be a bitstream.</p>
+              <p>We can try reconstructing the payload by reading lane values as 2-bit chunks in order:</p>
+              <pre><code>from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+import json, hashlib
+
+KEY = b'TsukiRhythmKey!!'
+IV  = b'TsukiRhythmIV!!!'
+
+with open('Eggdrasil.tsuki', 'rb') as f:
+    ct = f.read()
+
+cipher = AES.new(KEY, AES.MODE_CBC, IV)
+pt = unpad(cipher.decrypt(ct), AES.block_size)
+data = json.loads(pt.decode('utf-8'))
+
+notes99 = [n for n in data.get('notes', []) if n.get('type') == 99]
+
+bits = ''.join(format(n['lane'], '02b') for n in notes99)
+payload = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits)//8*8, 8))
+
+print(hashlib.md5(payload).hexdigest())</code></pre>
+              <p>soo the attacker hid an executable Python payload inside fake rhythm game notes.</p>
+              <p>MD5 confirms: <code>aed1e4e8b9061e19506848ca579e46ac</code></p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 4 - C2 server listening port</h2>
+              <p><strong>Answer:</strong> <code>4444</code></p>
+
+              <h3>Solution</h3>
+              <p>The payload bytecode downloads <code>Updater.exe</code> from <code>192.168.117.1:8000</code> and executes it. Looking at <code>traffic.pcapng</code>, there's a TCP conversation from the victim back to <code>192.168.117.1:4444</code>  the  reverse shell port.also that should be the C2 server and we can look more into this with better fildtering .</p>
+              <p>Sorting the TCP conversations by Port B in Wireshark well.. shows  - <code>192.168.117.135</code> connecting back to <code>192.168.117.1:4444</code>, 94 packets, 93 KB, lasting 66 seconds. Starts right after <code>Updater.exe</code> was downloaded.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn4-1.png" alt="Wireshark TCP conversations showing port 4444 C2 session" />
+              </div>
+              <p>Port <code>4444</code> confirmed.</p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 5 - Local file read by Updater.exe for encryption key material</h2>
+              <p><strong>Answer:</strong> <code>C:\Windows\hh.exe</code></p>
+
+              <h3>Solution</h3>
+              <p>I  opened <code>Updater.exe</code> in IDA Pro and let the autoanalysis finish. The binary imports <code>BCryptOpenAlgorithmProvider</code>, <code>BCryptGenerateSymmetricKey</code>, <code>BCryptEncrypt</code>, and <code>BCryptDecrypt</code> from <code>bcrypt.dll</code>, so AES encryption is happening somewhere. It also imports <code>connect</code>, <code>send</code>, and <code>recv</code> from <code>WS2_32</code> * for the reverse shell plumbing.</p>
+              <p>Interestingly, <code>CreateFileW</code> and <code>ReadFile</code> only show up in library helper functions.I xrefd the  checked <code>main()</code> and found the reson, the binary resolves <code>CreateFileA</code> and <code>ReadFile</code> <strong>dynamically</strong> at runtime via <code>GetProcAddress</code>, storing the results in global function pointers.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn5-1.png" alt="main() dynamically resolving CreateFileA and ReadFile via GetProcAddress" />
+              </div>
+              <pre><code>strcpy(ProcName, "CreateFileA");
+strcpy(v78, "ReadFile");
+qword_140040328 = (__int64)GetProcAddress(ModuleHandleA, ProcName);
+qword_140040330 = (__int64)GetProcAddress(v4, v78);</code></pre>
+              <p>This is so that the file  can evade I/O from static import analysis - the imports tab shows nothing, but the binary can still open and read files at runtime.</p>
+              <p>Cross-referencing those two globals (<code>qword_140040328</code>, <code>qword_140040330</code>) led to <code>sub_140006A80</code>, which is called in <code>main()</code> right after the C2 connection is established. Inside, it calls the resolved <code>CreateFileA</code> pointer to open a file, checks the size is for some constraint ig , allocates a buffer, then calls the resolved <code>ReadFile</code> pointer to read the entire contents into memory.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn5-2.png" alt="sub_140006A80 - GetFileSize and ReadFile via dynamic function pointer" />
+              </div>
+              <p>after more reversing file path isn't passed in as a parameter  - <code>sub_140006A80</code> calls another function, <code>sub_1400053B0</code>, to build the path internally. That function constructs a string one character at a time by pushing integer literals onto a <code>std::string</code>. No string constant as well</p>
+              <p>we  can then decoding the byte sequence:</p>
+              <pre><code>67 58 92 87 105 110 100 111 119 115 92 104 104 46 101 120 101
+ C  :  \   W   i   n   d   o   w   s   \   h   h  .   e   x   e</code></pre>
+              <p>The path is <code>C:\Windows\hh.exe</code> - the Windows HTML Help executable that ships with every Windows install.??</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn5-3.png" alt="sub_1400053B0 - path built byte-by-byte, decodes to C:\Windows\hh.exe" />
+              </div>
+              <p>The file contents are then used in <code>main()</code> to build a 256-entry lookup table (<code>v74</code>), which maps each unique byte value found in <code>hh.exe</code> to its first occurrence index. This table is what gets passed into <code>sub_140006300</code> as the key material for AES decryption of C2 commands.</p>
+              <p>tldr : <code>Updater.exe</code> reads <code>C:\Windows\hh.exe</code> and uses its byte distribution as an encryption key - this way it can be like a always-present system file acts as a shared secret between implant and server.</p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 6 - Original MD5 hash of the file when read by Updater.exe</h2>
+              <p><strong>Answer:</strong> <code>2c8fe78d53c8ca27523a71dfd2938241</code></p>
+
+              <h3>Solution</h3>
+              <p>Since the <code>hh.exe</code> file itself isn't in the handout, we need to recover it from the pcap.</p>
+              <p><code>Updater.exe</code>'s exfil loop (in <code>main()</code>) is simple:</p>
+              <ol>
+                <li>Read <code>hh.exe</code> into a heap buffer</li>
+                <li>Prepend a 4-byte big-endian length field</li>
+                <li>XOR every byte of the file content with the repeating key <code>0x1337c0de</code></li>
+                <li>Send the whole thing to <code>192.168.117.1:4444</code></li>
+              </ol>
+              <p>So the PCAP contains the file, just obfuscated.so ezz and extract the victim-C2 TCP stream:</p>
+              <pre><code>tshark -r traffic.pcapng \
+  -Y "tcp.dstport == 4444 && ip.src == 192.168.117.135 && tcp.len > 0" \
+  -T fields -e tcp.payload | tr -d '\n' | xxd -r -p > victim_to_c2.bin</code></pre>
+              <p>Then decode </p>
+              <pre><code>import hashlib, struct
+
+with open('victim_to_c2.bin', 'rb') as f:
+    raw = f.read()
+
+length = struct.unpack_from('>I', raw, 0)[0]   # 0x4800 = 18432 bytes
+key = bytes.fromhex('1337c0de')
+decoded = bytes(b ^ key[i % 4] for i, b in enumerate(raw[4:4+length]))
+
+print(decoded[:2])          # b'MZ' - valid PE header, confirms correct decode
+print(hashlib.md5(decoded).hexdigest())</code></pre>
+              <p>Output:</p>
+              <pre><code>b'MZ'
+2c8fe78d53c8ca27523a71dfd2938241</code></pre>
+              <p>The MZ header at offset 0 confirms we recovered a valid PE file. The 18432-byte blob is the exact <code>hh.exe</code> that was on Tsuki's machine at the time the malware ran.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn6.png" alt="Wireshark TCP stream showing XOR'd hh.exe payload sent to C2" />
+              </div>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 7 - First command issued by the attacker via C2</h2>
+              <p><strong>Answer:</strong> <code>ipconfig /all</code></p>
+
+              <h3>Solution</h3>
+              <p>I could have reversed it fully and booted up a VM and checked the readfile the updater.exe used and see what ars it ran but i didnt think of that approach while writing this  , my plan was to patch the binary to use the tsuki's hhh.exe and connect to our local  C2 server instance set up  and see that the malware operated or requests . My initial attepmpts with patching the path resulted in the malware crashing because of an overflow in the expected path length issue and finally i got it under 18 bytes ,with with that out of the way , after sending the XOR'd <code>hh.exe</code>, <code>Updater.exe</code> enters a receive loop. The C2 server sends back 8 encoded command messages, each length-prefixed with a 4-byte big-endian integer and each message body is an ASCII string of dot-separated signed decimal integers - each integer is the first-occurrence index of a byte value in <code>hh.exe</code>. The malware decodes these by looking up each index in a 256-entry table it built from the file, then executes the resulting command string via <code>sub_140006720</code>.</p>
+              <p>Lets bootup  x64dbg dynamic analysis.</p>
+
+              <p><strong> Loading  and set breakpoints</strong></p>
+              <p><code>Updater.exe</code> was opened in x64dbg. Three breakpoints were placed:, there is ASLR so the adrssses are random each time </p>
+              <table>
+                <tr>
+                  <th>Address</th>
+                  <th>Purpose</th>
+                </tr>
+                <tr>
+                  <td><code>0x7FF6C0FAAADF</code></td>
+                  <td><code>call [connect]</code> - redirect C2 IP</td>
+                </tr>
+                <tr>
+                  <td><code>0x7FF6C0FA6B0B</code></td>
+                  <td><code>call [CreateFileA]</code> - redirect hh.exe path</td>
+                </tr>
+                <tr>
+                  <td><code>0x7FF6C0FA6720</code></td>
+                  <td>command executor - read decoded command</td>
+                </tr>
+              </table>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-1.png" alt="x64dbg loaded with Updater.exe at entry point" />
+              </div>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-2.png" alt="Breakpoints panel showing all 3 BPs set" />
+              </div>
+
+              <p><strong>Now lets deploy our fake  Replay server	</strong></p>
+              <p>i made it to listen on <code>127.0.0.1:4444</code>, receive the XOR'd <code>hh.exe</code> upload, verify its MD5, then replay all 8 original C2 messages from the PCAP.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-3.png" alt="Replay server extracting 8 C2 messages from PCAP, listening on 127.0.0.1:4444" />
+              </div>
+
+              <p><strong>Redirect C2 connection</strong></p>
+              <p>At the connect BP, <code>RDX</code> points to the <code>sockaddr_in</code> struct. The IP field at offset <code>+4</code> contains <code>c0 a8 75 01</code> (192.168.117.1 - the real C2). lets overwrite it with <code>7f 00 00 01</code> (127.0.0.1) so the malware connects to our replay server instead.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-4.png" alt="x64dbg paused at connect BP - call [connect] highlighted, RDX pointing to sockaddr" />
+              </div>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-5.png" alt="Navigate to dump dialog - entering sockaddr address to inspect IP bytes" />
+              </div>
+
+              <p><strong>pivotning the Redirect hh.exe path</strong></p>
+              <p>At the CreateFileA BP, <code>RCX</code> contains the heap pointer to the path string <code>C:\Windows\hh.exe</code>. The system's <code>hh.exe</code> (40960 bytes) differs from Tsuki's (18432 bytes), so the lookup table would be wrong. I  copied Tsuki's recovered <code>hh.exe</code> to <code>C:\Users\ACER\hh.exe</code> and overwrote the path in memory with the new path bytes (<code>43 3A 5C 55 73 65 72 73 5C 41 43 45 52 5C 68 68 2E 65 78 65 00</code>).</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-6.png" alt="x64dbg at CreateFileA BP - RCX and tooltips showing original path C:\Windows\hh.exe" />
+              </div>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-7.png" alt="Memory dump after patch - ASCII column shows C:\Users\ACER\hh at the patched address" />
+              </div>
+
+              <p><strong>Connection established, hh.exe received :)</strong></p>
+              <p>After resuming, the malware connected to <code>127.0.0.1:4444</code>, sent the XOR'd <code>hh.exe</code>, and the replay server confirmed MD5 <code>2c8fe78d53c8ca27523a71dfd2938241</code> - Tsuki's correct <code>hh.exe</code> - then sent all 8 C2 messages back.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-9.png" alt="Replay server output confirming connection, correct MD5, and all 8 messages sent" />
+              </div>
+
+              <p><strong> Command executor hit</strong></p>
+              <p>The malware decoded the first C2 message using the lookup table and called <code>sub_140006720</code>. We hit the BP there. At this point <code>R8</code> in the hints panel already shows a preview of <code>\r\nWindows IP Configuration\r\n</code> - the output of <code>ipconfig /all</code> being prepared to send back. The right-hand stack/reference panel has the full string.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-8.png" alt="x64dbg at command executor BP - R8 preview and stack panel showing Windows IP Configuration output" />
+              </div>
+              <p>Hmm well if the output was IPconfig thenn first command was <code>ipconfig /all</code>. Its output - hostname <code>DESKTOP-HRP7SJJ</code>, all adapter info - was assembled in memory and sent back to the C2 server.</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn7-10.png" alt="ipconfig /all output confirming command execution - hostname DESKTOP-HRP7SJJ" />
+              </div>
+              <p><strong>Answer: <code>ipconfig /all</code></strong></p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 8 - Return result of the whoami command</h2>
+              <p><strong>Answer:</strong> <code>desktop-gb98l3m\tsuki</code></p>
+
+              <h3>Solution</h3>
+
+              <p><strong>At the point we'll need to understand the updater malware in deapth Reversing the C2 encoding scheme</strong></p>
+              <p>After many xrefs and renaming stuff the  C2 traffic is not just indexed lookups into <code>hh.exe</code> - the full encoding scheme will  needed to be reversed to decrypt </p>
+              <p>In IDA , <code>sub_140004D80</code> (the parser called by the C2 decoder) reveals the exact logic. At line 111, it checks whether the first byte of each token equals <code>45</code> - the ASCII code for <code>-</code>:</p>
+              <pre><code>if ( *(_BYTE *)v13 == 45 )   // token starts with '-'
+{
+    // Negative: strip the '-', parse remaining digits, use that integer directly as the byte value
+    v19 = strtol(v17, EndPtr, 10);
+    *v21 = v19;
+}
+else
+{
+    // Positive: parse as unsigned 64-bit index, walk the lookup tree built from hh.exe,
+    // find the node whose key equals this index, and use its stored byte value
+    v25 = sub_140015900(v24, &v34, 10);
+    // ... tree walk ...
+    *v28 = *(_BYTE *)v12;   // byte from hh.exe at that index
+}</code></pre>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn8-1.png" alt="IDA Pro sub_140004D80 - line 111 sign-check branch: negative = raw byte, positive = hh.exe index lookup" />
+              </div>
+              <p>Soooo the encoding scheme is:</p>
+              <ul>
+                <li><strong>Positive integer</strong> - index into <code>hh.exe</code>; the byte at that position is the decoded value</li>
+                <li><strong>Negative integer</strong> - the absolute value <strong>is</strong> the byte directly (e.g. <code>-161</code> - byte <code>0xa1</code>)</li>
+              </ul>
+              <p>This scheme applies to <strong>both</strong> C2-victim (commands) and victim-C2 (responses). All traffic is encoded then AES-CBC encrypted, with the decoded byte stream structured as: <code>key (16 bytes) || ciphertext || iv (16 bytes)</code>.</p>
+
+              <p><strong>Noew we can Decrypt all commands and responses</strong></p>
+              <p>With the correct scheme, lets extracted all 8 commands from the PCAP:</p>
+              <pre><code>with open('tsuki_hh.exe', 'rb') as f:
+    hh = f.read()
+
+def decode(s):
+    out = bytearray()
+    for num in s.strip().split('.'):
+        n = int(num)
+        out.append(-n if n &lt; 0 else hh[n])
+    return AES.new(bytes(out[:16]), AES.MODE_CBC, bytes(out[-16:])).decrypt(bytes(out[16:-16]))</code></pre>
+              <p>Running against the C2-victim messages:</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn8-2.png" alt="Terminal showing all 8 decrypted C2 commands" />
+              </div>
+              <pre><code>[1] ipconfig /all
+[2] whoami
+[3] dir
+[4] tasklist
+[5] REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f
+[6] net user aurahack P@ssw0rd /add
+[7] net localgroup Administrators aurahack /add
+[8] netsh firewall set opmode disable</code></pre>
+              <p>The same decoder applied to victim-C2 response traffic decrypts the <code>whoami</code> output (response #2):</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn8-3.png" alt="Terminal showing decoded whoami response: desktop-gb98l3m\tsuki" />
+              </div>
+              <p>Tsuki's machine hostname is <code>DESKTOP-GB98L3M</code> and the logged-in user is <code>tsuki</code>.</p>
+              <p><strong>Answer: <code>desktop-gb98l3m\tsuki</code></strong></p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 9 - New user created by the attacker</h2>
+              <p><strong>Answer:</strong> Username: <code>aurahack</code> / Password: <code>P@ssw0rd</code></p>
+
+              <h3>Solution</h3>
+              <p>Well from the decrypted command list we have everything ( Q8, command 6 is):</p>
+              <pre><code>net user aurahack P@ssw0rd /add</code></pre>
+              <p>This creates a local Windows user account with username <code>aurahack</code> and password <code>P@ssw0rd</code>. 
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn8-2.png" alt="All 8 decrypted C2 commands - command 6 shows net user aurahack P@ssw0rd /add" />
+              </div>
+              <p><strong>Answer: <code>aurahack</code> / <code>P@ssw0rd</code></strong></p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 10 - 7th word of the MetaMask wallet seed phrase</h2>
+              <p><strong>Answer:</strong> <code>faint</code></p>
+
+              <h3>Solution</h3>
+              <p>After solving Q9, the CTF provided <code>Evidence.zip</code> with password finallyy <code>18ae3a54-1c1a-4f44-adca-9884acb80d9a</code>. Extracting it is a  single file: <code>Cache0000.bin</code> (48 MB).</p>
+              <p>The <code>RDP8bmp</code> magic header means this as a <strong>Windows RDP bitmap cache</strong> file - tiles of screen content cached during the attacker's RDP session (which they enabled via the <code>REG ADD ... fDenyTSConnections</code> command in Q7). The thing is these  tiles contain fragments of whatever was visible on Tsuki's screen during the RDP session.</p>
+              <p>PS read for how it works internally: <a href="https://www.thedfirspot.com/post/rdp-bitmap-cache-piece-s-of-the-puzzle" target="_blank">RDP Bitmap Cache - Pieces of the Puzzle (DFIR Spot)</a>, <a href="https://thedfirjournal.com/posts/rdp-bitmap-cache/" target="_blank">RDP Bitmap Cache (DFIR Journal)</a></p>
+              <p>We used <a href="https://github.com/ANSSI-FR/bmc-tools" target="_blank">bmc-tools</a> (ANSSI-FR) to extract and reassemble the tiles into a collage:</p>
+              <pre><code>python bmc-tools.py -s Cache0000.bin -d bmc_out -b</code></pre>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn10-2.png" alt="Terminal - bmc-tools extracting 2943 tiles and generating collage" />
+              </div>
+              <p>This produced a 4096 -2944 collage BMP from 2943 cached screen tiles:</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn10-3.png" alt="bmc-tools collage showing reconstructed RDP screen fragments including MetaMask" />
+              </div>
+              <p>Examining the collage closely, a MetaMask "Save your Secret Recovery Phrase" dialog is visible in the top strip, showing all 12 seed words in numbered order:</p>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn10-4.png" alt="Cropped seed phrase strip - all 12 words visible" />
+              </div>
+              <pre><code>1. labor    2. trophy   3. emerge   4. material   5. divorce   6. input
+7. faint    8. bench    9. cricket  10. merge     11. sunset   12. cream</code></pre>
+              <p>The 7th word is <strong><code>faint</code></strong>.</p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Question 11 - Victim's Ethereum wallet address</h2>
+              <p><strong>Answer:</strong> <code>0x27A2481a2D840C64c1f6a99842E1A63A1586237e</code></p>
+
+              <h3>Solution</h3>
+              <p>With all 12 seed words recovered from the RDP bitmap cache, the Ethereum wallet address is deterministically derivable using standard BIP-39/BIP-44 derivation (path <code>m/44'/60'/0'/0/0</code>).</p>
+              <pre><code>from eth_account import Account
+
+Account.enable_unaudited_hdwallet_features()
+
+mnemonic = "labor trophy emerge material divorce input faint bench cricket merge sunset cream"
+acct = Account.from_mnemonic(mnemonic)
+print("Ethereum wallet address:", acct.address)</code></pre>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn11.png" alt="Terminal showing seed phrase and derived Ethereum address" />
+              </div>
+              <p>MetaMask generates entropy, maps it to words from a fixed 2048-word list (BIP-39), and derives everything else from that. The imp thing is the same words, same wallet on any decive.</p>
+              
+              <div style="overflow-x: auto; padding: 12px 0;">
+$$\text{12 words} \xrightarrow{\text{PBKDF2-HMAC-SHA512}} \text{512-bit seed} \xrightarrow{\text{BIP-32 HD}} \text{private key}_{\,m/44'/60'/0'/0/0} \xrightarrow{\text{secp256k1}} \text{public key} \xrightarrow{\text{keccak256}} \underbrace{\text{last 20 bytes}}_{\text{Ethereum address}}$$
+              </div>
+              <p><code>eth_account</code> does all of this in one call,thats also why stealing the seed phrase is game over. 
+              <p><strong>Answer: <code>0x27A2481a2D840C64c1f6a99842E1A63A1586237e</code></strong></p>
+
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>Flag</h2>
+              <div class="img-container">
+                <img src="../ctf-writeups/tsuki-rhythm-game/photos/qsn11-1.png" alt="All 11 questions completed - flag revealed" />
+              </div>
+              <hr style="border: none; border-top: 1px dotted #ccc; margin: 30px 0;" />
+
+              <h2>References</h2>
+              <ul>
+                <li><a href="https://ctftime.org/event/3149/" target="_blank">R3CTF 2026 - CTFtime</a></li>
+                <li><a href="https://github.com/pyinstxtractor/pyinstxtractor-ng" target="_blank">pyinstxtractor-ng - PyInstaller extractor</a></li>
+                <li><a href="https://pylingual.io" target="_blank">pylingual.io - Python decompiler</a></li>
+                <li><a href="https://github.com/ANSSI-FR/bmc-tools" target="_blank">bmc-tools (ANSSI-FR) - RDP bitmap cache extractor</a></li>
+                <li><a href="https://www.thedfirspot.com/post/rdp-bitmap-cache-piece-s-of-the-puzzle" target="_blank">RDP Bitmap Cache: Pieces of the Puzzle - DFIR Spot</a></li>
+                <li><a href="https://thedfirjournal.com/posts/rdp-bitmap-cache/" target="_blank">RDP Bitmap Cache - DFIR Journal</a></li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
