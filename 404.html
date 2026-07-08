@@ -116,15 +116,57 @@
         <div>The requested URL may have been moved, deleted, or never existed.</div>
       </div>
 
+      <div class="bsod-error">
+        <div>&nbsp;</div>
+        <div style="color:#ffffff;">Kernel Debugger Output:</div>
+        <div>&nbsp;</div>
+        <div>Microsoft (R) Windows Debugger Version 10.0.22621 AMD64</div>
+        <div>Copyright (c) Microsoft Corporation. All rights reserved.</div>
+        <div>&nbsp;</div>
+        <div>Loading Dump File [C:\Windows\MEMORY.DMP]</div>
+        <div>Kernel Complete Dump File: Full address space is available</div>
+        <div>&nbsp;</div>
+        <div>Symbol search path is: srv*</div>
+        <div>Executable search path is:</div>
+        <div>Windows 10 Kernel Version 19041 MP (8 procs) Free x64</div>
+        <div>Product: WinNt, suite: TerminalServer SingleUserTS</div>
+        <div>Machine Name:</div>
+        <div>Kernel base = 0xfffff800`4a200000 PsLoadedModuleList = 0xfffff800`4ae2a2d0</div>
+        <div>&nbsp;</div>
+        <div>BUGCHECK_CODE: 404</div>
+        <div>BUGCHECK_P1: 0000000000000000</div>
+        <div>BUGCHECK_P2: ffffffffc0000034</div>
+        <div>BUGCHECK_P3: 0000000000000000</div>
+        <div>BUGCHECK_P4: 0000000000000000</div>
+        <div>&nbsp;</div>
+        <div>PAGE_NOT_FOUND (404)</div>
+        <div>The requested page was not mapped in memory at the time of the access.</div>
+        <div>&nbsp;</div>
+        <div>STACK_TEXT:</div>
+        <div>fffff98a`3c40e7b8 fffff800`4a8d1f3c : 00000000`00000404 00000000`00000000 ffffc78a`1b2e4080 00000000`00000065 : nt!KeBugCheckEx</div>
+        <div>fffff98a`3c40e7c0 fffff800`4a8cfe17 : ffffc78a`1b2e4080 ffffc78a`00000001 fffff98a`3c40e9d0 fffff800`4ab3c421 : nt!MmAccessFault+0x79c</div>
+        <div>fffff98a`3c40e960 fffff800`4a6b2255 : ffffc78a`1b2e4080 00007ff6`00404000 00000000`00000001 fffff98a`3c40ea30 : nt!KiPageFault+0x357</div>
+        <div>fffff98a`3c40eaf8 fffff800`4a6b0e9a : ffffc78a`1b2e0000 00000000`00000000 fffff98a`3c40ec80 fffff800`4a6aff10 : nt!NtRequestUrl+0x125</div>
+        <div>fffff98a`3c40eb60 00007ff6`moof1337 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25</div>
+        <div>00000000`0014f798 00000000`00000000 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : mooofin!HandleRequest+0x404</div>
+        <div>&nbsp;</div>
+        <div>SYMBOL_NAME:  mooofin!HandleRequest+404</div>
+        <div>MODULE_NAME:  mooofin</div>
+        <div>IMAGE_NAME:   mooofin.exe</div>
+        <div>FAILURE_BUCKET_ID: AV_mooofin!HandleRequest+404_PAGE_NOT_FOUND</div>
+        <div>&nbsp;</div>
+        <div>Followup: MachineOwner</div>
+      </div>
+
       <div class="bsod-footer">
+        <div style="color:#ffffff;">Beginning dump of physical memory</div>
+        <div>Physical memory dump complete. 8192MB written.</div>
+        <div>&nbsp;</div>
         <div>You can attempt to recover by navigating to a known location:</div>
         <div>&nbsp;</div>
         <div>&nbsp;&nbsp;<a href="index.html">C:\mooofin\index.html</a></div>
         <div>&nbsp;&nbsp;<a href="blog.html">C:\mooofin\blog.html</a></div>
         <div>&nbsp;&nbsp;<a href="projects.html">C:\mooofin\projects.html</a></div>
-        <div>&nbsp;</div>
-        <div style="color:#ffffff;">Beginning dump of physical memory</div>
-        <div>Physical memory dump complete.</div>
         <div>&nbsp;</div>
         <div>Contact your system administrator or mooofin support group for further assistance.</div>
       </div>
