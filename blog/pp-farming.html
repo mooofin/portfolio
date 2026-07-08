@@ -1009,15 +1009,14 @@ contract PerformancePointATM {
               </p>
               <p>
                 This has a name: <strong>storage collision</strong>. And it has a
-                body count. The
+                body count. <img src="../ctf-writeups/lon.gif" alt="pep" style="height:1.4em;vertical-align:middle;image-rendering:pixelated;" /> The
                 <a href="https://www.gemini.com/cryptopedia/parity-hack-ethereum" target="_blank" rel="noopener">Parity multisig hack in 2017</a>
                 lost around $30M to this exact mechanism. Their wallet library had
                 an <code>initWallet()</code> function that was supposed to be called
                 once during setup. Because the wallet used <code>delegatecall</code>
                 into the library, and because nobody protected <code>initWallet()</code>
                 after the initial deploy, any stranger could call it, overwrite the
-                owner slot in the wallet's storage, and take over. The Parity devs
-                were smart people writing carefully reviewed code. They just didn't
+                owner slot in the wallet's storage, and take over. They just didn't
                 track what slot <code>owner</code> landed on in both contracts.
               </p>
               <p>
@@ -1181,8 +1180,7 @@ Transaction hash: 0xd0f28086332b9ece789eada02f106ebc973b97b7dc84667271f650e7a0a1
                 <code>setATM(address)</code> on the ATM hits no known selector,
                 so <code>fallback()</code> picks it up and delegatecalls it into
                 the helper. That write lands on slot 1 of the ATM's own storage,
-                overwriting <code>performancePointHelper</code>. No permission
-                check, no event, no trace except the storage diff.
+                overwriting <code>performancePointHelper</code>.
               </p>
               <pre><code class="language-bash">export EVIL="0xb77292E167831C731082e184b83b200F9Fadb21C"
 cast send $ATM_ADDR "setATM(address)" $EVIL --rpc-url $RPC_URL --private-key $PK
