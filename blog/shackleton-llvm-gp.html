@@ -16,6 +16,7 @@
     <meta name="twitter:image" content="https://mooofin.github.io/portfolio/images/posts/shakelton.png" />
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" />
     <link rel="icon" href="../public/favicon.ico" />
         <style>
             .blog-content {
@@ -358,6 +359,44 @@
                                 works everywhere.
                             </p>
 
+                            <div class="img-container latex-fig" style="text-align:center; margin: 20px 0;">
+                                <svg viewBox="0 0 640 190" xmlns="http://www.w3.org/2000/svg" style="max-width:640px; width:100%; font-family: Georgia, 'Times New Roman', serif;">
+                                  <defs>
+                                    <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                                      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+                                    </marker>
+                                  </defs>
+                                  <g fill="none" stroke="currentColor" stroke-width="1.2">
+                                    <rect x="10" y="20" width="90" height="30" rx="3"/>
+                                    <rect x="10" y="80" width="90" height="30" rx="3"/>
+                                    <rect x="10" y="140" width="90" height="30" rx="3"/>
+                                    <rect x="250" y="80" width="140" height="30" rx="3"/>
+                                    <rect x="540" y="20" width="90" height="30" rx="3"/>
+                                    <rect x="540" y="80" width="90" height="30" rx="3"/>
+                                    <rect x="540" y="140" width="90" height="30" rx="3"/>
+                                    <path d="M 100 35 C 160 35, 190 90, 248 93" marker-end="url(#arr1)"/>
+                                    <path d="M 100 95 L 248 95" marker-end="url(#arr1)"/>
+                                    <path d="M 100 155 C 160 155, 190 100, 248 97" marker-end="url(#arr1)"/>
+                                    <path d="M 390 93 C 450 90, 480 35, 538 35" marker-end="url(#arr1)"/>
+                                    <path d="M 390 95 L 538 95" marker-end="url(#arr1)"/>
+                                    <path d="M 390 97 C 450 100, 480 155, 538 155" marker-end="url(#arr1)"/>
+                                    <path d="M 300 80 C 285 45, 355 45, 340 78" marker-end="url(#arr1)" stroke-dasharray="3 3"/>
+                                  </g>
+                                  <g fill="currentColor" font-size="13" text-anchor="middle">
+                                    <text x="55" y="39">C</text>
+                                    <text x="55" y="99">Rust</text>
+                                    <text x="55" y="159">Swift</text>
+                                    <text x="320" y="99">LLVM IR</text>
+                                    <text x="585" y="39">x86</text>
+                                    <text x="585" y="99">ARM</text>
+                                    <text x="585" y="159">RISC-V</text>
+                                    <text x="320" y="36" font-size="11" font-style="italic">~100 passes</text>
+                                    <text x="172" y="82" font-size="11" font-style="italic">frontends</text>
+                                    <text x="465" y="82" font-size="11" font-style="italic">backends</text>
+                                  </g>
+                                </svg>
+                            </div>
+
                             <p>
                                 each transformation is called a
                                 <strong>pass</strong>. there are two kinds:
@@ -489,6 +528,44 @@
                                 for many generations.
                             </p>
 
+                            <div class="img-container latex-fig" style="text-align:center; margin: 20px 0;">
+                                <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="max-width:560px; width:100%; font-family: Georgia, 'Times New Roman', serif;">
+                                  <defs>
+                                    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                                      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+                                    </marker>
+                                  </defs>
+                                  <g fill="none" stroke="currentColor" stroke-width="1.2">
+                                    <rect x="205" y="15" width="150" height="34" rx="17"/>
+                                    <rect x="410" y="90" width="130" height="34" rx="3"/>
+                                    <rect x="410" y="180" width="130" height="34" rx="3"/>
+                                    <rect x="205" y="250" width="150" height="34" rx="3"/>
+                                    <rect x="20" y="180" width="130" height="34" rx="3"/>
+                                    <rect x="20" y="90" width="130" height="34" rx="3"/>
+                                    <path d="M 355 40 C 430 50, 465 60, 473 88" marker-end="url(#arr2)"/>
+                                    <path d="M 475 124 L 475 178" marker-end="url(#arr2)"/>
+                                    <path d="M 470 214 C 455 240, 400 255, 357 262" marker-end="url(#arr2)"/>
+                                    <path d="M 205 262 C 150 255, 105 240, 88 216" marker-end="url(#arr2)"/>
+                                    <path d="M 85 180 L 85 126" marker-end="url(#arr2)"/>
+                                    <path d="M 88 90 C 100 62, 150 45, 203 37" marker-end="url(#arr2)"/>
+                                  </g>
+                                  <g fill="currentColor" font-size="13" text-anchor="middle">
+                                    <text x="280" y="36">population</text>
+                                    <text x="475" y="111">fitness</text>
+                                    <text x="475" y="122" font-size="10" font-style="italic">compile + run</text>
+                                    <text x="475" y="201">selection</text>
+                                    <text x="475" y="212" font-size="10" font-style="italic">tournament, k=3</text>
+                                    <text x="280" y="271">crossover</text>
+                                    <text x="85" y="201">mutation</text>
+                                    <text x="85" y="212" font-size="10" font-style="italic">p&#8202;=&#8202;0.05</text>
+                                    <text x="85" y="111">replacement</text>
+                                    <text x="85" y="122" font-size="10" font-style="italic">keep top e%</text>
+                                    <text x="280" y="160" font-size="24" font-style="italic">&#8634;</text>
+                                    <text x="280" y="185" font-size="11" font-style="italic">repeat for G generations</text>
+                                  </g>
+                                </svg>
+                            </div>
+
                             <p>
                                 in traditional genetic algorithms, solutions are
                                 fixed-length bit strings. in genetic
@@ -526,6 +603,45 @@
                                 two adjacent instructions.
                             </p>
 
+                            <div class="img-container latex-fig" style="text-align:center; margin: 20px 0;">
+                                <svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" style="max-width:600px; width:100%; font-family: Georgia, 'Times New Roman', serif;">
+                                  <defs>
+                                    <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                                      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+                                    </marker>
+                                    <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+                                      <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+                                    </pattern>
+                                  </defs>
+                                  <g stroke="currentColor" stroke-width="1.2">
+                                    <!-- parent A: plain | plain -->
+                                    <rect x="40" y="20" width="150" height="26" fill="none"/>
+                                    <rect x="190" y="20" width="110" height="26" fill="none"/>
+                                    <!-- parent B: hatched | hatched -->
+                                    <rect x="40" y="70" width="150" height="26" fill="url(#hatch)"/>
+                                    <rect x="190" y="70" width="130" height="26" fill="url(#hatch)"/>
+                                    <!-- cut line -->
+                                    <line x1="190" y1="10" x2="190" y2="106" stroke-dasharray="4 3"/>
+                                    <!-- children -->
+                                    <rect x="40" y="160" width="150" height="26" fill="none"/>
+                                    <rect x="190" y="160" width="130" height="26" fill="url(#hatch)"/>
+                                    <rect x="40" y="205" width="150" height="26" fill="url(#hatch)"/>
+                                    <rect x="190" y="205" width="110" height="26" fill="none"/>
+                                    <!-- arrows -->
+                                    <path d="M 360 60 C 420 60, 420 120, 380 145" fill="none" marker-end="url(#arr3)"/>
+                                  </g>
+                                  <g fill="currentColor" font-size="13">
+                                    <text x="345" y="37">parent A</text>
+                                    <text x="345" y="88">parent B</text>
+                                    <text x="345" y="177">child 1</text>
+                                    <text x="325" y="222">child 2</text>
+                                    <text x="196" y="120" font-size="11" font-style="italic">cut point c</text>
+                                    <text x="430" y="105" font-size="11" font-style="italic">swap the tails</text>
+                                  </g>
+                                </svg>
+                                <p style="font-size: 12px; font-style: italic; margin-top: 4px;">single-point crossover. each child keeps its parent's length , only the tails trade places.</p>
+                            </div>
+
                             <p>
                                 the interplay between these operators determines
                                 how the search explores the space. crossover
@@ -556,6 +672,52 @@
                                 an OSL is a doubly linked list where each node
                                 contains:
                             </p>
+
+                            <div class="img-container latex-fig" style="text-align:center; margin: 20px 0;">
+                                <svg viewBox="0 0 620 130" xmlns="http://www.w3.org/2000/svg" style="max-width:620px; width:100%; font-family: Georgia, 'Times New Roman', serif;">
+                                  <defs>
+                                    <marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+                                    </marker>
+                                  </defs>
+                                  <g fill="none" stroke="currentColor" stroke-width="1.2">
+                                    <!-- three nodes, each split into prev | GGO | next cells -->
+                                    <g>
+                                      <rect x="50" y="40" width="140" height="40"/>
+                                      <line x1="85" y1="40" x2="85" y2="80"/>
+                                      <line x1="155" y1="40" x2="155" y2="80"/>
+                                    </g>
+                                    <g>
+                                      <rect x="240" y="40" width="140" height="40"/>
+                                      <line x1="275" y1="40" x2="275" y2="80"/>
+                                      <line x1="345" y1="40" x2="345" y2="80"/>
+                                    </g>
+                                    <g>
+                                      <rect x="430" y="40" width="140" height="40"/>
+                                      <line x1="465" y1="40" x2="465" y2="80"/>
+                                      <line x1="535" y1="40" x2="535" y2="80"/>
+                                    </g>
+                                    <!-- next pointers (top) -->
+                                    <path d="M 172 52 C 200 45, 215 45, 238 52" marker-end="url(#arr4)"/>
+                                    <path d="M 362 52 C 390 45, 405 45, 428 52" marker-end="url(#arr4)"/>
+                                    <!-- prev pointers (bottom) -->
+                                    <path d="M 258 70 C 230 78, 215 78, 192 70" marker-end="url(#arr4)"/>
+                                    <path d="M 448 70 C 420 78, 405 78, 382 70" marker-end="url(#arr4)"/>
+                                    <!-- null terminators -->
+                                    <line x1="30" y1="52" x2="48 " y2="58" />
+                                    <line x1="590" y1="58" x2="608" y2="52" />
+                                  </g>
+                                  <g fill="currentColor" font-size="12" text-anchor="middle">
+                                    <text x="120" y="64" font-family="'Courier New', monospace">licm</text>
+                                    <text x="310" y="64" font-family="'Courier New', monospace">gvn</text>
+                                    <text x="500" y="64" font-family="'Courier New', monospace">instcomb</text>
+                                    <text x="67" y="30" font-size="10" font-style="italic">prev</text>
+                                    <text x="172" y="30" font-size="10" font-style="italic">next</text>
+                                    <text x="310" y="110" font-size="11" font-style="italic">insert/delete = relink two pointers, O(1)</text>
+                                  </g>
+                                </svg>
+                                <p style="font-size: 12px; font-style: italic; margin-top: 4px;">an OSL with three pass nodes. mutation never shifts memory around, it just rewires.</p>
+                            </div>
 
                             <p>
                                 each node contains a
@@ -699,6 +861,41 @@
                                 search works with an approximation of the true
                                 landscape.
                             </p>
+
+                            <div class="img-container latex-fig" style="text-align:center; margin: 20px 0;">
+                                <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg" style="max-width:600px; width:100%; font-family: Georgia, 'Times New Roman', serif;">
+                                  <defs>
+                                    <marker id="arr5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                                      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+                                    </marker>
+                                  </defs>
+                                  <g fill="none" stroke="currentColor" stroke-width="1.2">
+                                    <!-- axes -->
+                                    <path d="M 50 180 L 560 180" marker-end="url(#arr5)"/>
+                                    <path d="M 50 180 L 50 20" marker-end="url(#arr5)"/>
+                                    <!-- rugged landscape -->
+                                    <path d="M 55 160
+                                             L 75 120 L 90 150 L 105 90 L 118 140 L 132 130
+                                             L 150 155 L 165 152 L 185 154 L 205 153
+                                             L 225 100 L 240 135 L 258 60 L 272 125
+                                             L 290 110 L 310 160 L 330 45 L 345 130
+                                             L 365 120 L 385 150 L 405 65 L 420 140
+                                             L 440 135 L 460 155 L 480 90 L 495 148
+                                             L 515 125 L 535 145" stroke-width="1.4"/>
+                                    <!-- neutral plateau annotation -->
+                                    <path d="M 150 195 L 205 195" stroke-dasharray="3 3"/>
+                                    <!-- global optimum marker -->
+                                    <line x1="330" y1="45" x2="330" y2="32" stroke-dasharray="2 2"/>
+                                  </g>
+                                  <g fill="currentColor" font-size="12">
+                                    <text x="540" y="200">sequence space</text>
+                                    <text x="38" y="18" text-anchor="start">&#934;</text>
+                                    <text x="178" y="212" text-anchor="middle" font-size="11" font-style="italic">neutral network (all &#934; = 0)</text>
+                                    <text x="330" y="24" text-anchor="middle" font-size="11" font-style="italic">the one you want</text>
+                                    <text x="430" y="40" font-size="11" font-style="italic">&#8592; looks promising, isn't</text>
+                                  </g>
+                                </svg>
+                            </div>
 
                             <p>
                                 these properties make pass sequence optimization

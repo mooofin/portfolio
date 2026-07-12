@@ -1,0 +1,684 @@
+/* LaTeX mode - applied when <html class="latex-mode"> */
+/* Loads alongside latex.css (CDN) which handles typography. This file
+   strips the Win95 chrome and hides decorative images. */
+
+html.latex-mode body {
+  background: #fff !important;
+  background-image: none !important;
+  color: #1a1a1a;
+  font-family: "Latin Modern", Georgia, Cambria, "Times New Roman", Times, serif !important;
+  max-width: 80ch;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+  line-height: 1.8;
+  display: block;
+  min-height: auto;
+}
+
+/* kill win95 layout wrappers */
+html.latex-mode .desktop {
+  display: block !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+/* windows become plain sections */
+html.latex-mode .window {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  margin-bottom: 1.5rem;
+}
+html.latex-mode .window-body {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* window titles become small-caps section headings */
+html.latex-mode .window-title {
+  background: transparent !important;
+  color: #1a1a1a !important;
+  font-variant: small-caps;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0 0 0.25rem 0 !important;
+  border-bottom: 1px solid #1a1a1a;
+  margin-bottom: 0.75rem;
+}
+
+/* sidebar becomes plain top nav */
+html.latex-mode .sidebar-95 {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin-bottom: 2rem;
+}
+html.latex-mode .sidebar-95 .window-title {
+  display: none !important;
+}
+html.latex-mode .list-group {
+  background: transparent !important;
+  border: none !important;
+}
+html.latex-mode .sidebar-95 .list-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  justify-content: center;
+  border-bottom: 1px solid #1a1a1a;
+  padding-bottom: 0.75rem;
+}
+html.latex-mode .list-group-item {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+html.latex-mode .list-group-item a {
+  color: #1a1a1a !important;
+  font-variant: small-caps;
+  text-decoration: none;
+}
+html.latex-mode .list-group-item a:hover {
+  text-decoration: underline;
+}
+
+/* neutralize inline win95 backgrounds (blue bars, gray panels, etc) */
+html.latex-mode [style*="background"] {
+  background: transparent !important;
+  background-image: none !important;
+}
+html.latex-mode hr {
+  border: none !important;
+  border-top: 1px solid currentColor !important;
+  background: transparent !important;
+  height: 0 !important;
+}
+
+/* hide all the decorative stuff */
+html.latex-mode img[src$=".gif" i],
+html.latex-mode img[src$=".GIF" i],
+html.latex-mode img[src*="win98icons"],
+html.latex-mode img[src*="webring"],
+html.latex-mode .taskbar,
+html.latex-mode .tray,
+html.latex-mode .status-bar,
+html.latex-mode marquee {
+  display: none !important;
+}
+
+/* content area full width of the column */
+html.latex-mode .content-95 {
+  width: 100% !important;
+  max-width: none !important;
+  flex: none !important;
+}
+
+/* typography */
+html.latex-mode h1,
+html.latex-mode h2,
+html.latex-mode h3,
+html.latex-mode h4 {
+  font-family: inherit !important;
+  color: #1a1a1a !important;
+  border-bottom: none !important;
+  font-weight: bold;
+  line-height: 1.3;
+}
+html.latex-mode h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin: 1rem 0 0.5rem;
+}
+
+/* \author \date block injected by site.js */
+html.latex-mode .latex-author {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+html.latex-mode .latex-author .affil {
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* justified text with hyphenation, like TeX line breaking */
+html.latex-mode .blog-content p,
+html.latex-mode .window-body p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* LaTeX paragraph style: indent every paragraph except the first after a heading */
+html.latex-mode .blog-content p + p {
+  text-indent: 1.5em;
+  margin-top: -0.5rem;
+}
+
+/* numbered sections + subsections, like \section{} \subsection{} */
+html.latex-mode .blog-content {
+  counter-reset: section figure listing;
+}
+html.latex-mode .blog-content h2 {
+  counter-increment: section;
+  counter-reset: subsection;
+  font-size: 1.25rem;
+}
+html.latex-mode .blog-content h2::before {
+  content: counter(section) "\2003";
+}
+html.latex-mode .blog-content h3 {
+  counter-increment: subsection;
+  font-size: 1.05rem;
+}
+html.latex-mode .blog-content h3::before {
+  content: counter(section) "." counter(subsection) "\2003";
+}
+
+/* table of contents (injected by site.js) */
+html.latex-mode .latex-toc {
+  margin: 2rem auto;
+  max-width: 60ch;
+}
+html.latex-mode .latex-toc-title {
+  text-align: center;
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+html.latex-mode .latex-toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: tocsec;
+}
+html.latex-mode .latex-toc li {
+  counter-increment: tocsec;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin-bottom: 0.2rem;
+}
+html.latex-mode .latex-toc li::before {
+  content: counter(tocsec);
+  min-width: 1.5em;
+}
+html.latex-mode .latex-toc li .toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted currentColor;
+  margin: 0 0.25em;
+  transform: translateY(-4px);
+}
+html.latex-mode .latex-toc a {
+  text-decoration: none;
+}
+.latex-toc {
+  display: none;
+}
+html.latex-mode .latex-toc {
+  display: block;
+}
+
+/* page number footer */
+html.latex-mode .latex-pagenum {
+  display: block !important;
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 0.9rem;
+}
+.latex-pagenum {
+  display: none;
+}
+
+/* auto-numbered figure captions */
+html.latex-mode .img-container {
+  counter-increment: figure;
+}
+html.latex-mode .img-container::after {
+  content: "Figure " counter(figure) ": " attr(data-caption);
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+html.latex-mode .img-container:not([data-caption])::after {
+  content: "Figure " counter(figure);
+}
+
+/* blockquotes become theorem-style remarks */
+html.latex-mode blockquote {
+  border: none !important;
+  font-style: italic;
+  margin: 1rem 2rem !important;
+  padding: 0 !important;
+  color: #1a1a1a !important;
+}
+html.latex-mode blockquote::before {
+  content: "Remark. ";
+  font-style: normal;
+  font-weight: bold;
+}
+
+/* hyperref-style links */
+html.latex-mode a {
+  color: #0b0080 !important;
+  text-decoration: none;
+}
+html.latex-mode a:hover {
+  text-decoration: underline;
+}
+
+/* QED tombstone at end of article - clickable, decompiles back to win95 */
+html.latex-mode .latex-qed {
+  display: block !important;
+  text-align: right;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  cursor: pointer;
+  user-select: none;
+}
+.latex-qed {
+  display: none;
+}
+
+/* vim statusline footer */
+html.latex-mode .latex-vimline {
+  display: flex !important;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+  justify-content: space-between;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  padding: 2px 10px;
+  background: #1a1a1a;
+  color: #fff;
+}
+html.latex-mode.latex-dark .latex-vimline {
+  background: #ddd;
+  color: #1c1c1e;
+}
+.latex-vimline {
+  display: none;
+}
+/* lift the floating buttons above the statusline */
+html.latex-mode #latex-toggle {
+  bottom: 34px !important;
+}
+html.latex-mode #latex-dark-toggle {
+  bottom: 34px !important;
+}
+
+/* bibtex hover cards on [n] references */
+html.latex-mode .latex-bib li {
+  position: relative;
+}
+html.latex-mode .latex-bibcard {
+  display: none;
+  position: absolute;
+  left: 2em;
+  bottom: calc(100% + 4px);
+  z-index: 500;
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #1a1a1a;
+  padding: 8px 12px;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre;
+  text-indent: 0;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+  max-width: 90vw;
+  overflow-x: auto;
+}
+html.latex-mode .latex-bib li:hover .latex-bibcard {
+  display: block;
+}
+html.latex-mode.latex-dark .latex-bibcard {
+  background: #1c1c1e;
+  color: #ddd;
+  border-color: #ddd;
+}
+
+/* Ctrl+P in latex mode: clean paper output */
+@media print {
+  html.latex-mode body {
+    background: #fff !important;
+    color: #000 !important;
+    max-width: none;
+    padding: 0;
+  }
+  html.latex-mode #latex-toggle,
+  html.latex-mode #latex-dark-toggle,
+  html.latex-mode .latex-vimline,
+  html.latex-mode .latex-arxiv,
+  html.latex-mode .latex-qed,
+  html.latex-mode .sidebar-95,
+  html.latex-mode #img-zoom-overlay {
+    display: none !important;
+  }
+  html.latex-mode.latex-dark body,
+  html.latex-mode.latex-dark p,
+  html.latex-mode.latex-dark li,
+  html.latex-mode.latex-dark td,
+  html.latex-mode.latex-dark th,
+  html.latex-mode.latex-dark div,
+  html.latex-mode.latex-dark span,
+  html.latex-mode.latex-dark h1,
+  html.latex-mode.latex-dark h2,
+  html.latex-mode.latex-dark h3 {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  html.latex-mode a {
+    color: #000 !important;
+  }
+  html.latex-mode pre {
+    page-break-inside: avoid;
+  }
+  html.latex-mode .img-container {
+    page-break-inside: avoid;
+  }
+}
+
+/* footer colophon injected by site.js */
+html.latex-mode .latex-colophon {
+  display: block !important;
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid #1a1a1a;
+  font-style: italic;
+}
+.latex-colophon {
+  display: none;
+}
+html.latex-mode a {
+  color: #1a1a1a !important;
+}
+html.latex-mode .btn,
+html.latex-mode button {
+  border: 1px solid #1a1a1a !important;
+  background: #fff !important;
+  color: #1a1a1a !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+}
+
+/* content images -> figures */
+html.latex-mode .blog-content img,
+html.latex-mode .img-container img {
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  display: block;
+  margin: 1rem auto;
+}
+
+/* code stays monospace but flat, with Listing N captions */
+html.latex-mode pre {
+  border: 1px solid #1a1a1a !important;
+  background: #fff !important;
+}
+html.latex-mode .blog-content pre {
+  counter-increment: listing;
+}
+html.latex-mode .blog-content pre::after {
+  content: "Listing " counter(listing);
+  display: block;
+  text-align: center;
+  font-family: "Latin Modern", Georgia, serif;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* drop cap on the first paragraph, like lettrine */
+html.latex-mode .blog-content p:first-of-type::first-letter {
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.85;
+  padding-right: 0.08em;
+  font-weight: bold;
+}
+
+/* arXiv-style sideways stamp on the left edge */
+html.latex-mode .latex-arxiv {
+  display: block !important;
+  position: fixed;
+  left: 14px;
+  top: 50%;
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+  translate: 0 -50%;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: inherit;
+  opacity: 0.75;
+  z-index: 50;
+  pointer-events: none;
+}
+.latex-arxiv {
+  display: none;
+}
+@media (max-width: 1100px) {
+  html.latex-mode .latex-arxiv {
+    display: none !important;
+  }
+}
+
+/* \marginpar reviewer notes in the right margin */
+html.latex-mode .latex-marginnote {
+  display: block !important;
+  position: absolute;
+  left: calc(50% + 42ch);
+  width: 11rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+html.latex-mode .latex-marginnote::before {
+  content: "\2190\00a0"; /* left arrow */
+}
+.latex-marginnote {
+  display: none;
+}
+@media (max-width: 1250px) {
+  html.latex-mode .latex-marginnote {
+    display: none !important;
+  }
+}
+
+/* bibliography style [n] for the references list */
+html.latex-mode .latex-bib {
+  list-style: none !important;
+  margin-left: 0 !important;
+  counter-reset: bib;
+}
+html.latex-mode .latex-bib li {
+  counter-increment: bib;
+  text-indent: -2.2em;
+  padding-left: 2.2em;
+}
+html.latex-mode .latex-bib li::before {
+  content: "[" counter(bib) "]\2003";
+}
+
+/* text selection like an xdvi highlight */
+html.latex-mode ::selection {
+  background: #fde68a;
+  color: #1a1a1a;
+}
+html.latex-mode.latex-dark ::selection {
+  background: #92700c;
+  color: #fff;
+}
+html.latex-mode code {
+  background: transparent !important;
+}
+
+/* tables latex style */
+html.latex-mode table,
+html.latex-mode tr,
+html.latex-mode tbody,
+html.latex-mode thead {
+  background: transparent !important;
+}
+html.latex-mode table {
+  border-collapse: collapse;
+  margin: 1rem auto;
+}
+html.latex-mode th,
+html.latex-mode td {
+  border: none !important;
+  border-bottom: 1px solid #1a1a1a !important;
+  padding: 4px 12px !important;
+}
+html.latex-mode th {
+  background: transparent !important;
+  border-top: 2px solid #1a1a1a !important;
+  border-bottom: 1px solid #1a1a1a !important;
+}
+
+/* hide the "you've got mail" popup + progress bars in latex mode */
+html.latex-mode #ygm-dialog,
+html.latex-mode #ygm-overlay,
+html.latex-mode [id^="ygm"],
+html.latex-mode #msg-progress,
+html.latex-mode .progress-95 {
+  display: none !important;
+}
+
+html.latex-mode .ascii-art {
+  background: transparent !important;
+  color: inherit !important;
+  border: 1px solid currentColor !important;
+}
+
+/* details/summary */
+html.latex-mode details {
+  background: transparent !important;
+  border: 1px solid currentColor !important;
+}
+html.latex-mode summary {
+  color: inherit !important;
+}
+
+/* form fields */
+html.latex-mode input,
+html.latex-mode textarea,
+html.latex-mode select {
+  background: transparent !important;
+  border: 1px solid currentColor !important;
+  color: inherit !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+}
+html.latex-mode.latex-dark input,
+html.latex-mode.latex-dark textarea,
+html.latex-mode.latex-dark select {
+  color: #ddd !important;
+  border-color: #ddd !important;
+}
+
+/* ---------- dark mode (html.latex-mode.latex-dark) ---------- */
+html.latex-mode.latex-dark body {
+  background: #1c1c1e !important;
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark p,
+html.latex-mode.latex-dark li,
+html.latex-mode.latex-dark td,
+html.latex-mode.latex-dark th,
+html.latex-mode.latex-dark div,
+html.latex-mode.latex-dark span,
+html.latex-mode.latex-dark strong,
+html.latex-mode.latex-dark em {
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark a,
+html.latex-mode.latex-dark a * {
+  color: #8ab4f8 !important;
+}
+html.latex-mode.latex-dark .window-title,
+html.latex-mode.latex-dark h1,
+html.latex-mode.latex-dark h2,
+html.latex-mode.latex-dark h3,
+html.latex-mode.latex-dark h4,
+html.latex-mode.latex-dark blockquote,
+html.latex-mode.latex-dark .list-group-item a {
+  color: #ddd !important;
+  border-color: #ddd !important;
+}
+html.latex-mode.latex-dark .sidebar-95 .list-group {
+  border-color: #ddd;
+}
+html.latex-mode.latex-dark a {
+  color: #8ab4f8 !important;
+}
+html.latex-mode.latex-dark pre {
+  background: #2a2a2c !important;
+  border-color: #555 !important;
+  color: #ddd;
+}
+html.latex-mode.latex-dark code {
+  color: #ddd;
+}
+html.latex-mode.latex-dark th,
+html.latex-mode.latex-dark td {
+  border-color: #ddd !important;
+}
+html.latex-mode.latex-dark .btn,
+html.latex-mode.latex-dark button,
+html.latex-mode.latex-dark #latex-toggle,
+html.latex-mode.latex-dark #latex-dark-toggle {
+  background: #1c1c1e !important;
+  color: #ddd !important;
+  border-color: #ddd !important;
+}
+html.latex-mode.latex-dark .latex-colophon {
+  border-color: #ddd;
+}
+html.latex-mode.latex-dark .blog-content img,
+html.latex-mode.latex-dark .img-container img {
+  opacity: 0.9;
+}
+
+/* dark toggle button, only visible in latex mode */
+#latex-dark-toggle {
+  display: none;
+}
+html.latex-mode #latex-dark-toggle {
+  display: block;
+  position: fixed;
+  bottom: 16px;
+  right: 130px;
+  z-index: 9999;
+  border: 1px solid #1a1a1a;
+  background: #fff;
+  color: #1a1a1a;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* the toggle button in latex mode floats bottom-right */
+html.latex-mode #latex-toggle {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+  font-family: "Latin Modern", Georgia, serif;
+  border: 1px solid #1a1a1a;
+  background: #fff;
+  color: #1a1a1a;
+  padding: 4px 10px;
+  cursor: pointer;
+}
