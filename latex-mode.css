@@ -35,6 +35,9 @@ html.latex-mode .window-body {
 }
 
 /* window titles become small-caps section headings */
+html.latex-mode #homepage-title { display: none !important; }
+html.latex-mode .latex-hide { display: none !important; }
+
 html.latex-mode .window-title {
   background: transparent !important;
   color: #1a1a1a !important;
@@ -395,6 +398,13 @@ html.latex-mode .latex-colophon {
   border-top: 1px solid #1a1a1a;
   font-style: italic;
 }
+html.latex-mode .latex-social-links {
+  margin-top: 0.5rem !important;
+  border-top: none !important;
+  padding-top: 0 !important;
+  font-style: normal !important;
+  letter-spacing: 0.05em;
+}
 .latex-colophon {
   display: none;
 }
@@ -509,6 +519,64 @@ html.latex-mode .latex-bib li {
 }
 html.latex-mode .latex-bib li::before {
   content: "[" counter(bib) "]\2003";
+}
+
+/* \usepackage{gifs} easter egg - the GIFs come back as figures */
+html.latex-mode.latex-gifs img[src$=".gif" i],
+html.latex-mode.latex-gifs img[src$=".GIF" i] {
+  display: inline-block !important;
+  filter: grayscale(1) contrast(1.2);
+}
+html.latex-mode.latex-gifs .latex-gif-toast {
+  display: block !important;
+}
+.latex-gif-toast {
+  display: none;
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #1a1a1a;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  padding: 6px 14px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* DRAFT watermark, shows on ~10% of page loads */
+html.latex-mode .latex-draft {
+  display: block !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 9rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+}
+.latex-draft {
+  display: none;
+}
+
+/* overfull \hbox black boxes in the right margin */
+html.latex-mode .latex-overfull {
+  display: inline-block !important;
+  position: absolute;
+  right: -1.2em;
+  width: 0.5em;
+  height: 1em;
+  background: currentColor;
+  cursor: help;
+}
+.latex-overfull {
+  display: none;
 }
 
 /* text selection like an xdvi highlight */
