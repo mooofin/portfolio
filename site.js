@@ -250,24 +250,27 @@
       };
       c.appendChild(logLink);
       // social links row under colophon (index only)
-      var socials = [
+      var isIndex = location.pathname === "/" || location.pathname.endsWith("/portfolio/") || location.pathname.endsWith("index.html");
+      var socials = isIndex ? [
         { label: "Email", href: "mailto:siddharthqln@gmail.com" },
         { label: "GitHub", href: "https://github.com/mooofin" },
         { label: "Last.fm", href: "https://www.last.fm/user/kxllswxch" },
         { label: "MyAnimeList", href: "https://myanimelist.net/profile/kurapika_99" },
         { label: "Letterboxd", href: "https://letterboxd.com/ptolemeaa4u/" }
-      ];
+      ] : [];
       var socialDiv = document.createElement("div");
-      socialDiv.className = "latex-colophon latex-social-links";
-      socials.forEach(function (s, i) {
-        var a = document.createElement("a");
-        a.href = s.href;
-        a.textContent = s.label;
-        if (s.href.startsWith("http")) a.target = "_blank";
-        socialDiv.appendChild(a);
-        if (i < socials.length - 1) socialDiv.appendChild(document.createTextNode(" · "));
-      });
-      document.body.appendChild(socialDiv);
+      if (socials.length) {
+        socialDiv.className = "latex-colophon latex-social-links";
+        socials.forEach(function (s, i) {
+          var a = document.createElement("a");
+          a.href = s.href;
+          a.textContent = s.label;
+          if (s.href.startsWith("http")) a.target = "_blank";
+          socialDiv.appendChild(a);
+          if (i < socials.length - 1) socialDiv.appendChild(document.createTextNode(" · "));
+        });
+        document.body.appendChild(socialDiv);
+      }
       document.body.appendChild(c);
     }
 
