@@ -21,7 +21,7 @@
   local.href = base + "latex-mode.css";
 
   function isOn() {
-    return localStorage.getItem(KEY) === "1";
+    return sessionStorage.getItem(KEY) === "1";
   }
 
   function apply(on) {
@@ -46,7 +46,7 @@
     }
     document
       .querySelectorAll(
-        ".latex-author, .latex-colophon, .latex-toc, .latex-pagenum, .latex-arxiv, .latex-marginnote, .latex-qed, .latex-vimline"
+        ".latex-author, .latex-colophon, .latex-toc, .latex-pagenum, .latex-arxiv, .latex-marginnote, .latex-qed, .latex-vimline, .latex-draft, .latex-overfull"
       )
       .forEach(function (el) {
         el.style.display = on ? "" : "none";
@@ -172,7 +172,7 @@
       qed.textContent = "∎";
       qed.title = "q.e.d. (click to decompile)";
       qed.onclick = function () {
-        localStorage.setItem(KEY, "0");
+        sessionStorage.setItem(KEY, "0");
         decompileAnim(function () {
           apply(false);
         });
@@ -234,12 +234,101 @@
       c.className = "latex-colophon";
       var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
       var now = new Date();
-      c.textContent =
-        "Compiled with pdfTeX on " +
-        months[now.getMonth()] + " " + now.getDate() + ", " + now.getFullYear() +
-        " · latex.css";
+      c.appendChild(
+        document.createTextNode(
+          "Compiled with pdfTeX on " +
+            months[now.getMonth()] + " " + now.getDate() + ", " + now.getFullYear() + " · "
+        )
+      );
+      var logName = (location.pathname.split("/").pop() || "index.html").replace(/\.html?$/, ".log");
+      var logLink = document.createElement("a");
+      logLink.href = "#";
+      logLink.textContent = logName;
+      logLink.onclick = function (e) {
+        e.preventDefault();
+        showFakeLog(logName);
+      };
+      c.appendChild(logLink);
       document.body.appendChild(c);
     }
+
+    // DRAFT watermark, 10% of loads
+    if (!document.querySelector(".latex-draft") && Math.random() < 0.1) {
+      var wm = document.createElement("div");
+      wm.className = "latex-draft";
+      wm.textContent = "DRAFT";
+      document.body.appendChild(wm);
+    }
+
+    // overfull \hbox black boxes on 1-2 random paragraphs
+    if (content && !document.querySelector(".latex-overfull")) {
+      var op = Array.prototype.slice.call(content.querySelectorAll("p"));
+      op = op.filter(function (p) { return p.textContent.trim().length > 200; });
+      for (var b = 0; b < Math.min(2, op.length); b++) {
+        var pick = op[Math.floor(Math.random() * op.length)];
+        if (pick.querySelector(".latex-overfull")) continue;
+        var box = document.createElement("span");
+        box.className = "latex-overfull";
+        box.title = "Overfull \\hbox (" + (Math.random() * 20 + 1).toFixed(5) + "pt too wide)";
+        pick.style.position = "relative";
+        pick.appendChild(box);
+      }
+    }
+  }
+
+  // fake pdfTeX .log transcript overlay
+  function showFakeLog(logName) {
+    var page = logName.replace(/\.log$/, "");
+    var log = [
+      "This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex)",
+      " restricted \\write18 enabled.",
+      "entering extended mode",
+      "**" + page + ".tex",
+      "(./" + page + ".tex",
+      "LaTeX2e <2023-11-01>",
+      "L3 programming layer <2024-01-04>",
+      "(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls",
+      "Document Class: article 2023/05/17 v1.4n Standard LaTeX document class",
+      "(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))",
+      "(./mooofin.sty",
+      "Package: mooofin 2026/07/13 v1.0 personal site macros",
+      ")",
+      "(./win95-compat.sty",
+      "Package: win95-compat 1995/08/24 v4.00.950 backwards compatibility layer",
+      "",
+      "Package win95-compat Warning: GIFs are not allowed in this mode.",
+      "(win95-compat)                All 47 butterflies have been suppressed.",
+      "",
+      ")",
+      "No file " + page + ".aux.",
+      "*geometry* driver: auto-detecting",
+      "*geometry* detected driver: pdftex",
+      "LaTeX Font Info:    Trying to load font information for OT1+lmr",
+      "[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]",
+      "",
+      "Overfull \\hbox (3.14159pt too wide) in paragraph at lines 42--69",
+      "\\OT1/lmr/m/n/10 the fit-ness land-scape is es-sen-tially ran-dom at small scales",
+      "",
+      "Underfull \\vbox (badness 10000) has occurred while \\output is active",
+      "",
+      "LaTeX Warning: Reference `fig:win95' on page 1 undefined on input line 404.",
+      "",
+      "[2] [3] (./" + page + ".aux)",
+      "",
+      "LaTeX Warning: There were undefined references. (there always are)",
+      "",
+      " )",
+      "Output written on " + page + ".pdf (3 pages, 133,700 bytes).",
+      "Transcript written on " + page + ".log.",
+    ].join("\n");
+    var ov = document.createElement("div");
+    ov.style.cssText =
+      "position:fixed;inset:0;z-index:10001;background:#1c1c1e;color:#d4d4d4;" +
+      "font-family:'Courier New',monospace;font-size:12px;line-height:1.5;" +
+      "padding:32px;overflow:auto;white-space:pre-wrap;cursor:pointer;";
+    ov.textContent = log + "\n\n(click anywhere to close)";
+    ov.onclick = function () { ov.remove(); };
+    document.body.appendChild(ov);
   }
 
   document.head.appendChild(cdn);
@@ -249,6 +338,27 @@
   var btn = document.createElement("button");
   btn.id = "latex-toggle";
   btn.title = "Toggle LaTeX mode";
+  // \usepackage{gifs} - type it anywhere to smuggle the GIFs back in
+  var keyBuf = "";
+  document.addEventListener("keydown", function (e) {
+    if (e.key.length === 1) keyBuf = (keyBuf + e.key).slice(-20);
+    if (keyBuf.endsWith("\\usepackage{gifs}") && isOn()) {
+      document.documentElement.classList.add("latex-gifs");
+      keyBuf = "";
+      var toast = document.querySelector(".latex-gif-toast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.className = "latex-gif-toast";
+        document.body.appendChild(toast);
+      }
+      toast.textContent = "Package gifs loaded. (this violates the style guide)";
+      toast.style.display = "block";
+      setTimeout(function () {
+        toast.style.display = "none";
+      }, 4000);
+    }
+  });
+
   // fake pdflatex compile animation on toggle-on
   function compileAnim(done) {
     var page = (location.pathname.split("/").pop() || "index.html").replace(
@@ -279,8 +389,32 @@
       "font-family:'Courier New',monospace;font-size:13px;line-height:1.5;" +
       "padding:32px;overflow:hidden;white-space:pre-wrap;";
     document.body.appendChild(ov);
+    // 7% of compiles hit an error and wait for Enter, as is tradition
+    var failAt = Math.random() < 0.07 ? 8 : -1;
     var i = 0;
-    var iv = setInterval(function () {
+    var iv;
+    function tick() {
+      if (i === failAt) {
+        clearInterval(iv);
+        ov.textContent +=
+          "! Undefined control sequence.\n" +
+          "l.404 \\begin{win95}\n" +
+          "?\n" +
+          "(press Enter to continue, like you always do)\n";
+        var onKey = function (e) {
+          if (e.key === "Enter") resume();
+        };
+        var resume = function () {
+          document.removeEventListener("keydown", onKey);
+          ov.removeEventListener("click", resume);
+          ov.textContent += "\n";
+          failAt = -1;
+          iv = setInterval(tick, 90);
+        };
+        document.addEventListener("keydown", onKey);
+        ov.addEventListener("click", resume);
+        return;
+      }
       if (i < lines.length) {
         ov.textContent += lines[i] + "\n";
         i++;
@@ -291,7 +425,8 @@
           done();
         }, 350);
       }
-    }, 90);
+    }
+    iv = setInterval(tick, 90);
   }
 
   // reverse of compileAnim - "decompiles" the pdf back to win95
@@ -338,7 +473,7 @@
 
   btn.onclick = function () {
     var on = !isOn();
-    localStorage.setItem(KEY, on ? "1" : "0");
+    sessionStorage.setItem(KEY, on ? "1" : "0");
     if (on) {
       compileAnim(function () {
         apply(true);

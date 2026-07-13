@@ -511,6 +511,10 @@
       const pfpImgs = ["images/pfp.jpg", "https://media.tenor.com/VpW1CY-5rrcAAAAd/peepo-high-high.gif", "https://media.tenor.com/660lQV3gF9IAAAAM/peppe.gif"];
       let pfpIdx = 0;
       setInterval(() => {
+        if (document.documentElement.classList.contains("latex-mode")) {
+          document.getElementById("pfp").src = "images/pfp.jpg";
+          return;
+        }
         pfpIdx = (pfpIdx + 1) % pfpImgs.length;
         document.getElementById("pfp").src = pfpImgs[pfpIdx];
       }, 3000);
