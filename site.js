@@ -18,7 +18,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css";
+  local.href = base + "latex-mode.css?v=20260717";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";
@@ -272,14 +272,6 @@
         document.body.appendChild(socialDiv);
       }
       document.body.appendChild(c);
-    }
-
-    // DRAFT watermark, 10% of loads
-    if (!document.querySelector(".latex-draft") && Math.random() < 0.1) {
-      var wm = document.createElement("div");
-      wm.className = "latex-draft";
-      wm.textContent = "DRAFT";
-      document.body.appendChild(wm);
     }
 
     // overfull \hbox black boxes on 1-2 random paragraphs

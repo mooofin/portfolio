@@ -178,7 +178,7 @@
           <div class="window-body" style="font-size: 12px;">
             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px; border-bottom: 1px dotted #808080; padding-bottom: 8px;">
               <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png" class="icon-16" alt="" />
-              <strong style="font-size: 13px; color: #08216b;">Dark Souls Restoration Project</strong>
+              <strong class="about-h" style="font-size: 13px; color: #08216b;">Dark Souls Restoration Project</strong>
             </div>
             <p style="margin-top: 0">
               For the past few years, I've been working on an entirely new Dark
@@ -194,8 +194,9 @@
               <img src="images/vercel/image3.webp" alt="Screenshot 3" style="width: 100%; border: 2px inset #d5d5d5;" />
               <img src="images/vercel/image4.webp" alt="Screenshot 4" style="width: 100%; border: 2px inset #d5d5d5;" />
             </div>
-            <div style="border: solid; border-width: 2px; border-bottom-color: #424242; border-right-color: #424242; border-left-color: #fff; border-top-color: #fff; background: silver; padding: 12px; margin: 12px 0;">
-              <div style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 3px 6px; font-weight: bold; font-size: 12px; margin: -12px -12px 12px -12px;">
+            <div class="latex-figcaption"><strong>Figure&nbsp;1.</strong> Restored regions assembled from Dark&nbsp;Souls&nbsp;II cut content, integrated into the PTDE world geometry.</div>
+            <div class="ba-panel" style="border: solid; border-width: 2px; border-bottom-color: #424242; border-right-color: #424242; border-left-color: #fff; border-top-color: #fff; background: silver; padding: 12px; margin: 12px 0;">
+              <div class="ba-title" style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 3px 6px; font-weight: bold; font-size: 12px; margin: -12px -12px 12px -12px;">
                 <img src="https://win98icons.alexmeub.com/icons/png/display_monitor_color-0.png" class="icon-16" alt="" />
                 Before & After
               </div>
@@ -210,6 +211,7 @@
                 </div>
               </div>
             </div>
+            <div class="latex-figcaption"><strong>Figure&nbsp;2.</strong> Custom PTDE lighting-restoration pass (Firelink&nbsp;Shrine), before and after.</div>
             <div class="status-bar mt-16">
               <img src="https://win98icons.alexmeub.com/icons/png/chart1-2.png" class="icon-16" alt="" />
               Status: Active Development
@@ -219,28 +221,29 @@
 
             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px; border-bottom: 1px dotted #808080; padding-bottom: 8px;">
               <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png" class="icon-16" alt="" />
-              <strong style="font-size: 13px; color: #08216b;">Technologies</strong>
+              <strong class="about-h" style="font-size: 13px; color: #08216b;">Technologies</strong>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
-              <div style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
-                <div style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Languages</div>
-                <div style="padding: 6px 8px; background: silver;">C++, Rust, Nim, Julia, Lisp, Nix</div>
+            <div class="latex-tablecaption"><strong>Table&nbsp;1.</strong> Technical apparatus, by category.</div>
+            <div class="tech-list" style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+              <div class="tech-box" style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
+                <div class="tech-label" style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Languages</div>
+                <div class="tech-val" style="padding: 6px 8px; background: silver;">C++, Rust, Nim, Julia, Lisp, Nix, Python</div>
               </div>
-              <div style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
-                <div style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Security &amp; Analysis</div>
-                <div style="padding: 6px 8px; background: silver;">Reverse engineering, coverage-guided fuzzing, symbolic/concolic execution, memory forensics</div>
+              <div class="tech-box" style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
+                <div class="tech-label" style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Security &amp; Analysis</div>
+                <div class="tech-val" style="padding: 6px 8px; background: silver;">Reverse engineering, coverage-guided fuzzing, symbolic/concolic execution, memory forensics</div>
               </div>
-              <div style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
-                <div style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Tools</div>
-                <div style="padding: 6px 8px; background: silver;">IDA Pro, x64dbg, WinDbg, TitanHide, HyperHide, AFL++, syzkaller, Volatility, Autopsy, Wireshark, EZ Tools, memprocFS</div>
+              <div class="tech-box" style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
+                <div class="tech-label" style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Tools</div>
+                <div class="tech-val" style="padding: 6px 8px; background: silver;">IDA Pro, x64dbg, WinDbg, TitanHide, HyperHide, AFL++, syzkaller, Volatility, Autopsy, Wireshark, EZ Tools, memprocFS</div>
               </div>
-              <div style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
-                <div style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Build &amp; Testing</div>
-                <div style="padding: 6px 8px; background: silver;">CMake, make, Ninja, Meson, Bazel, Google Test</div>
+              <div class="tech-box" style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
+                <div class="tech-label" style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Build &amp; Testing</div>
+                <div class="tech-val" style="padding: 6px 8px; background: silver;">CMake, make, Ninja, Meson, Bazel, Google Test</div>
               </div>
-              <div style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
-                <div style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Frameworks</div>
-                <div style="padding: 6px 8px; background: silver;">Frida, Miasm, Triton, Intel Pin</div>
+              <div class="tech-box" style="border: solid; border-width: 2px; border-top-color: #fff; border-left-color: #fff; border-bottom-color: #424242; border-right-color: #424242;">
+                <div class="tech-label" style="background: linear-gradient(90deg, #08216b, #a5cef7); color: #fff; padding: 2px 6px; font-weight: bold; font-size: 12px;">Frameworks</div>
+                <div class="tech-val" style="padding: 6px 8px; background: silver;">Frida, Miasm, Triton, Intel Pin</div>
               </div>
             </div>
           </div>

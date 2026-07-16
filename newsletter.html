@@ -216,7 +216,7 @@
           </ul>
         </div>
       </div>
-      <div class="window">
+      <div class="window latex-hide">
         <div class="window-title">
           <img src="https://win98icons.alexmeub.com/icons/png/network_cool-2.png" class="icon-16" alt="" />
           Links
@@ -269,14 +269,14 @@
       </div>
 
       <!-- Outlook Express shell -->
-      <div class="window" style="margin-bottom: 60px;">
+      <div class="window oe-shell" style="margin-bottom: 60px;">
         <div class="window-title">
           <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" class="icon-16" alt="" />
           mooofin's Mailing List - Outlook Express
         </div>
 
         <!-- OE toolbar -->
-        <div
+        <div class="oe-toolbar"
           style="background: #d4d0c8; border-bottom: 1px solid #808080; padding: 3px 4px; display: flex; gap: 2px; align-items: center;">
           <a href="mailto:siddharthqln@gmail.com?subject=subscribe%20me%20please&body=hey%20add%20me%20to%20the%20list"
             class="btn" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;text-decoration:none;">
@@ -300,10 +300,10 @@
         </div>
 
         <!-- 3-pane layout -->
-        <div style="display: flex; height: 480px; border-top: 1px solid #808080;">
+        <div class="oe-panes" style="display: flex; height: 480px; border-top: 1px solid #808080;">
 
           <!-- Left: folder tree -->
-          <div
+          <div class="oe-folders"
             style="width: 160px; min-width: 160px; border-right: 2px groove #a0a0a0; background: #fff; overflow-y: auto; padding: 4px 0; font-size: 12px; font-family: 'MS Sans Serif', Tahoma, sans-serif;">
             <div style="padding: 2px 8px; display:flex; align-items:center; gap:4px; font-weight:bold; color:#000080;">
               <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" class="icon-16" alt="" />
@@ -337,11 +337,11 @@
           </div>
 
           <!-- Right pane: split vertically -->
-          <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+          <div class="oe-right" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
 
             <!-- Message list -->
-            <div style="flex:0 0 180px; overflow-y:auto; border-bottom: 2px groove #a0a0a0;">
-              <table
+            <div class="oe-msglist" style="flex:0 0 180px; overflow-y:auto; border-bottom: 2px groove #a0a0a0;">
+              <table class="oe-table"
                 style="width:100%; border-collapse:collapse; font-size:11px; font-family:'MS Sans Serif',Tahoma,sans-serif;">
                 <thead>
                   <tr style="background:#d4d0c8; position:sticky; top:0;">
@@ -388,7 +388,7 @@
             <div id="msg-progress"></div>
 
             <!-- Preview pane -->
-            <div style="flex:1; overflow-y:auto; background:#fff; padding:0;">
+            <div class="oe-preview" style="flex:1; overflow-y:auto; background:#fff; padding:0;">
               <!-- Email header strip -->
               <div id="preview-header"
                 style="background:#d4d0c8; border-bottom:1px solid #a0a0a0; padding:6px 10px; font-size:11px; font-family:'MS Sans Serif',Tahoma,sans-serif;">
