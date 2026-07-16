@@ -750,3 +750,428 @@ html.latex-mode #latex-toggle {
   padding: 4px 10px;
   cursor: pointer;
 }
+
+/* ────────────────────────────────────────────────────────────────
+   newsletter: reflow the Outlook Express client into a clean
+   journal-issue document when latex mode is on
+   ──────────────────────────────────────────────────────────────── */
+
+/* drop the win95 email chrome */
+html.latex-mode .oe-toolbar,
+html.latex-mode .oe-folders,
+html.latex-mode #msg-progress,
+html.latex-mode #ygm-dialog,
+html.latex-mode #ygm-overlay {
+  display: none !important;
+}
+
+/* unlock the fixed-height 3-pane; let the content flow as a page */
+html.latex-mode .oe-panes {
+  display: block !important;
+  height: auto !important;
+  border-top: none !important;
+}
+html.latex-mode .oe-right {
+  display: block !important;
+  overflow: visible !important;
+}
+html.latex-mode .oe-msglist {
+  flex: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  border-bottom: 1px solid #1a1a1a !important;
+  margin-bottom: 1.75rem;
+}
+html.latex-mode .oe-preview {
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+/* issue index: the message-list table becomes a table of contents */
+html.latex-mode .oe-table {
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  border-collapse: collapse !important;
+}
+html.latex-mode .oe-table thead th {
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  font-weight: normal;
+  background: transparent !important;
+  color: #1a1a1a !important;
+  border: none !important;
+  border-bottom: 1px solid #1a1a1a !important;
+  padding: 0.3rem 0.6rem !important;
+}
+html.latex-mode .oe-table td {
+  border: none !important;
+  border-bottom: 1px dotted #999 !important;
+  padding: 0.4rem 0.6rem !important;
+  color: #1a1a1a !important;
+}
+/* neutralize the win95 blue selection + white text (also set by JS) */
+html.latex-mode .msg-row,
+html.latex-mode .msg-row td {
+  background: transparent !important;
+  color: #1a1a1a !important;
+  font-weight: normal !important;
+}
+/* drop the blinking-envelope status column */
+html.latex-mode .oe-table thead th:first-child,
+html.latex-mode .oe-table td.unread-icon {
+  display: none !important;
+}
+
+/* preview pane becomes the article, with a masthead-style header */
+html.latex-mode #preview-header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #1a1a1a !important;
+  font-family: inherit !important;
+  font-size: 0.9rem !important;
+  color: #333 !important;
+  padding: 0 0 0.75rem 0 !important;
+  margin-bottom: 1.25rem;
+}
+html.latex-mode #preview-header strong {
+  font-variant: small-caps;
+}
+html.latex-mode #preview-body {
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  padding: 0 !important;
+}
+
+/* dark-mode corrections for the forced light colors above */
+html.latex-mode.latex-dark .oe-table thead th,
+html.latex-mode.latex-dark .oe-table td,
+html.latex-mode.latex-dark .msg-row,
+html.latex-mode.latex-dark .msg-row td,
+html.latex-mode.latex-dark #preview-body {
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark .oe-table thead th,
+html.latex-mode.latex-dark .oe-msglist,
+html.latex-mode.latex-dark #preview-header {
+  border-bottom-color: #ddd !important;
+}
+html.latex-mode.latex-dark .oe-table td {
+  border-bottom-color: #555 !important;
+}
+html.latex-mode.latex-dark #preview-header {
+  color: #bbb !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   about page → typeset as a proper paper in latex mode:
+   numbered sections, a booktabs apparatus table, drop cap,
+   and figure/table captions.
+   ════════════════════════════════════════════════════════════════ */
+
+/* captions: hidden in win98 mode, revealed as academic captions in TeX */
+.latex-figcaption,
+.latex-tablecaption {
+  display: none;
+}
+html.latex-mode .latex-figcaption,
+html.latex-mode .latex-tablecaption {
+  display: block;
+  font-size: 0.85rem;
+  color: #444;
+  text-align: center;
+  margin: 0.5rem auto 1.5rem;
+  max-width: 90%;
+  line-height: 1.45;
+}
+html.latex-mode .latex-tablecaption {
+  text-align: left;
+  margin: 1.5rem 0 0.4rem;
+}
+
+/* numbered \section headings ("1  Dark Souls Restoration Project", …) */
+html.latex-mode .content-95 {
+  counter-reset: aboutsec;
+}
+html.latex-mode .about-h {
+  color: #1a1a1a !important;
+  font-family: "Latin Modern", Georgia, "Times New Roman", serif !important;
+  font-weight: bold;
+  font-size: 1.35rem !important;
+  letter-spacing: 0.01em;
+}
+html.latex-mode .about-h::before {
+  counter-increment: aboutsec;
+  content: counter(aboutsec) "\2002";
+  font-weight: bold;
+}
+
+/* the section header rule (the flex div holding the heading) */
+html.latex-mode .content-95 .window-body > div[style*="dotted #808080"] {
+  border-bottom: none !important;
+  margin-bottom: 0.5rem !important;
+  padding-bottom: 0 !important;
+}
+
+/* drop cap on the opening paragraph */
+html.latex-mode .content-95 .window-body > p:first-of-type::first-letter {
+  float: left;
+  font-family: "Latin Modern", Georgia, "Times New Roman", serif;
+  font-size: 3.4rem;
+  line-height: 0.72;
+  font-weight: bold;
+  padding: 0.2rem 0.55rem 0 0;
+  color: #1a1a1a;
+}
+
+/* ── technology stack → a booktabs \tabular ── */
+html.latex-mode .tech-list {
+  gap: 0 !important;
+  border-top: 2.5px solid #1a1a1a !important;
+  border-bottom: 2.5px solid #1a1a1a !important;
+  padding: 0 !important;
+  margin: 0 0 0.4rem !important;
+}
+html.latex-mode .tech-box {
+  border: none !important;
+  border-bottom: 0.75px solid #cfcfcf !important;
+  display: grid;
+  grid-template-columns: 13rem 1fr;
+  gap: 1.25rem;
+  padding: 0.5rem 0.4rem !important;
+  align-items: baseline;
+  transition: background 0.12s ease;
+}
+html.latex-mode .tech-box:last-child {
+  border-bottom: none !important;
+}
+html.latex-mode .tech-box:hover {
+  background: rgba(0, 0, 0, 0.035) !important;
+}
+html.latex-mode .tech-label {
+  background: transparent !important;
+  color: #1a1a1a !important;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  font-weight: bold;
+  padding: 0 !important;
+}
+html.latex-mode .tech-val {
+  background: transparent !important;
+  color: #2a2a2a !important;
+  padding: 0 !important;
+  font-family: "Latin Modern", Georgia, serif;
+}
+
+/* before/after → a bordered figure */
+html.latex-mode .ba-panel {
+  border: 1px solid #1a1a1a !important;
+  background: transparent !important;
+  padding: 1rem !important;
+}
+html.latex-mode .ba-title {
+  background: transparent !important;
+  color: #1a1a1a !important;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #1a1a1a;
+  margin: 0 0 0.75rem 0 !important;
+  padding: 0 0 0.4rem 0 !important;
+}
+/* the Before / After sub-labels */
+html.latex-mode .ba-panel div[style*="color: #08216b"] {
+  color: #444 !important;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+/* ── dark-mode corrections ── */
+html.latex-mode.latex-dark .about-h,
+html.latex-mode.latex-dark .about-h::before,
+html.latex-mode.latex-dark .tech-label,
+html.latex-mode.latex-dark .ba-title {
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark .content-95 .window-body > p:first-of-type::first-letter {
+  color: #ddd;
+}
+html.latex-mode.latex-dark .tech-val {
+  color: #cfcfcf !important;
+}
+html.latex-mode.latex-dark .tech-list {
+  border-color: #ddd !important;
+}
+html.latex-mode.latex-dark .tech-box {
+  border-bottom-color: #444 !important;
+}
+html.latex-mode.latex-dark .tech-box:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+html.latex-mode.latex-dark .ba-panel,
+html.latex-mode.latex-dark .ba-title {
+  border-color: #ddd !important;
+}
+html.latex-mode.latex-dark .latex-figcaption,
+html.latex-mode.latex-dark .latex-tablecaption {
+  color: #aaa;
+}
+html.latex-mode.latex-dark .ba-panel div[style*="color: #08216b"] {
+  color: #bbb !important;
+}
+
+/* narrow screens: stack the apparatus rows */
+@media (max-width: 600px) {
+  html.latex-mode .tech-box {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   home page → paper front-page, latex mode ONLY.
+   `.latex-only` elements carry inline display:none so win98 (which
+   never loads this stylesheet) keeps them hidden; the rule below
+   reveals them with !important only under html.latex-mode.
+   ════════════════════════════════════════════════════════════════ */
+html.latex-mode .latex-only {
+  display: block !important;
+}
+
+/* --- intro cell reads as the Abstract --- */
+html.latex-mode .content-95 div[style*="#000080"] {
+  display: none !important; /* dead marquee bar */
+}
+html.latex-mode .intro-abstract::before {
+  content: "Abstract";
+  display: block;
+  font-family: "Latin Modern", Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 0.01em;
+  color: #1a1a1a;
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #1a1a1a;
+}
+html.latex-mode .intro-abstract p {
+  text-align: justify;
+  font-size: 0.95rem;
+}
+/* flatten the win95 inset frame around the profile photo */
+html.latex-mode .content-95 td > div[style*="inset"] {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+html.latex-mode #pfp {
+  border: 1px solid #999 !important;
+}
+
+/* --- numbered \section titles for the content windows --- */
+html.latex-mode .content-95 {
+  counter-reset: papersec pub ref;
+}
+html.latex-mode .paper-sec-title {
+  counter-increment: papersec;
+  font-family: "Latin Modern", Georgia, "Times New Roman", serif !important;
+  font-weight: bold !important;
+  font-size: 1.4rem !important;
+  color: #1a1a1a !important;
+  background: transparent !important;
+  letter-spacing: 0.01em;
+  padding: 0 0 0.3rem 0 !important;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #1a1a1a !important;
+}
+html.latex-mode .paper-sec-title::before {
+  content: counter(papersec) "\2002";
+  font-weight: bold;
+}
+
+/* --- Featured Projects → a [n] "Selected Works" reference list --- */
+html.latex-mode .pub-list > div {
+  counter-increment: pub;
+  position: relative;
+  padding: 0 0 0 2.4rem !important;
+  margin-bottom: 0.9rem !important;
+  border-bottom: none !important;
+}
+html.latex-mode .pub-list > div::before {
+  content: "[" counter(pub) "]";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+html.latex-mode .pub-list strong {
+  display: inline !important;
+  margin: 0 !important;
+}
+html.latex-mode .pub-list strong a {
+  font-variant: normal;
+}
+html.latex-mode .pub-list span {
+  color: #333 !important;
+  display: block;
+  margin-top: 0.1rem;
+}
+
+/* --- Latest Blog Posts → a typeset references list --- */
+html.latex-mode .blog-refs .list-group-item {
+  counter-increment: ref;
+  position: relative;
+  border: none !important;
+  border-bottom: 1px dotted #ccc !important;
+  padding: 0.4rem 0 0.4rem 2.4rem !important;
+  background: transparent !important;
+}
+html.latex-mode .blog-refs .list-group-item:last-child {
+  border-bottom: none !important;
+}
+html.latex-mode .blog-refs .list-group-item::before {
+  content: counter(ref) ".";
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+/* flex row so the date never collides with a wrapped title */
+html.latex-mode .blog-refs .list-group-item a {
+  font-variant: normal; /* undo global small-caps for prose titles */
+  color: #1a1a1a !important;
+  display: flex !important;
+  align-items: baseline;
+  gap: 1rem;
+}
+html.latex-mode .blog-refs .list-group-item a span[style*="float"] {
+  float: none !important;
+  margin-left: auto;
+  white-space: nowrap;
+  font-family: "Latin Modern", Georgia, serif;
+  color: #666 !important;
+}
+
+/* --- dark-mode corrections for the home paper --- */
+html.latex-mode.latex-dark .intro-abstract::before,
+html.latex-mode.latex-dark .paper-sec-title,
+html.latex-mode.latex-dark .paper-sec-title::before,
+html.latex-mode.latex-dark .pub-list > div::before,
+html.latex-mode.latex-dark .blog-refs .list-group-item::before,
+html.latex-mode.latex-dark .blog-refs .list-group-item a {
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark .pub-list span {
+  color: #bbb !important;
+}
+html.latex-mode.latex-dark .paper-sec-title,
+html.latex-mode.latex-dark .intro-abstract::before {
+  border-color: #ddd !important;
+}
+html.latex-mode.latex-dark .blog-refs .list-group-item {
+  border-bottom-color: #444 !important;
+}
+html.latex-mode.latex-dark #pfp {
+  border-color: #777 !important;
+}
+
