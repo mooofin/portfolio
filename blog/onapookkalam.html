@@ -695,17 +695,31 @@ total 52
   // 0x2db4c8: AllocStack(0x30)
       0x2db4c8: sub             SP, SP, #0x30
 </code></pre>
-              <p>
-                Explanation: - <strong>Function signature</strong>:
-                <code>_ _decryptData(/<em> No info </em>/)</code> - Dart
-                function name - <strong>Address and size</strong>: addr:
-                0x2db4c0, size: 0x174 (372 bytes) - <strong>Comments</strong>:
-                <code>// 0x2db4c0: EnterFrame</code> - high-level operation -
-                <strong>Assembly</strong>:
-                <code>0x2db4c0: stp fp, lr, [SP, #-0x10]!</code> - actual ARM64
-                instruction - <strong>PP references</strong>:
-                <code>[PP, #0x90]</code> - references to the Object Pool
-              </p>
+              <p>Explanation:</p>
+              <ul>
+                <li>
+                  <strong>Function signature</strong>:
+                  <code>_ _decryptData(/<em> No info </em>/)</code> — Dart
+                  function name
+                </li>
+                <li>
+                  <strong>Address and size</strong>: addr: 0x2db4c0, size:
+                  0x174 (372 bytes)
+                </li>
+                <li>
+                  <strong>Comments</strong>:
+                  <code>// 0x2db4c0: EnterFrame</code> — high-level operation
+                </li>
+                <li>
+                  <strong>Assembly</strong>:
+                  <code>0x2db4c0: stp fp, lr, [SP, #-0x10]!</code> — actual
+                  ARM64 instruction
+                </li>
+                <li>
+                  <strong>PP references</strong>: <code>[PP, #0x90]</code> —
+                  references to the Object Pool
+                </li>
+              </ul>
               <h3>Extracting the Encryption Keys</h3>
               <p>the download URL:</p>
               <pre
