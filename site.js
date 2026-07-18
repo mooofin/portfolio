@@ -24,6 +24,15 @@
     return sessionStorage.getItem(KEY) === "1";
   }
 
+  // shareable link: ?latex / ?latex=1 forces LaTeX mode on load.
+  // ?latex=0 forces it off. persists to sessionStorage so in-site nav keeps it.
+  (function () {
+    var m = /[?&]latex(?:=([^&]*))?/.exec(location.search);
+    if (!m) return;
+    var on = !(m[1] === "0" || m[1] === "false");
+    sessionStorage.setItem(KEY, on ? "1" : "0");
+  })();
+
   function apply(on) {
     document.documentElement.classList.toggle("latex-mode", on);
     cdn.disabled = !on;
@@ -53,6 +62,8 @@
       });
     var btn = document.getElementById("latex-toggle");
     if (btn) btn.textContent = on ? "\\end{document}" : "TeX";
+    var pfp = document.getElementById("pfp");
+    if (pfp) pfp.src = on ? "images/pfp1.jpg" : "images/pfp.jpg";
   }
 
   // \author{} \date{} block under the title + colophon at page end
