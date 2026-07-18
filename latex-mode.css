@@ -448,15 +448,6 @@ html.latex-mode .blog-content pre::after {
   font-style: italic;
 }
 
-/* drop cap on the first paragraph, like lettrine */
-html.latex-mode .blog-content p:first-of-type::first-letter {
-  font-size: 3.2em;
-  float: left;
-  line-height: 0.85;
-  padding-right: 0.08em;
-  font-weight: bold;
-}
-
 /* arXiv-style sideways stamp on the left edge */
 html.latex-mode .latex-arxiv {
   display: block !important;
@@ -912,17 +903,6 @@ html.latex-mode .content-95 .window-body > div[style*="dotted #808080"] {
   padding-bottom: 0 !important;
 }
 
-/* drop cap on the opening paragraph */
-html.latex-mode .content-95 .window-body > p:first-of-type::first-letter {
-  float: left;
-  font-family: "Latin Modern", Georgia, "Times New Roman", serif;
-  font-size: 3.4rem;
-  line-height: 0.72;
-  font-weight: bold;
-  padding: 0.2rem 0.55rem 0 0;
-  color: #1a1a1a;
-}
-
 /* ── technology stack → a booktabs \tabular ── */
 html.latex-mode .tech-list {
   gap: 0 !important;
@@ -990,9 +970,6 @@ html.latex-mode.latex-dark .about-h::before,
 html.latex-mode.latex-dark .tech-label,
 html.latex-mode.latex-dark .ba-title {
   color: #ddd !important;
-}
-html.latex-mode.latex-dark .content-95 .window-body > p:first-of-type::first-letter {
-  color: #ddd;
 }
 html.latex-mode.latex-dark .tech-val {
   color: #cfcfcf !important;
