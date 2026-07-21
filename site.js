@@ -68,6 +68,31 @@
 
   // \author{} \date{} block under the title + colophon at page end
   function decorate() {
+    // reflow table-95 into a vertical dl-style list in latex mode
+    document.querySelectorAll(".table-95 tbody tr").forEach(function (tr) {
+      var cells = tr.querySelectorAll("td");
+      if (cells.length < 2) return;
+      var nameTd = cells[0];
+      var linkTd = cells[cells.length - 1];
+      var a = linkTd.querySelector("a");
+      if (a && a.href && !nameTd.querySelector("a")) {
+        var nameEl = nameTd.querySelector("strong") || nameTd;
+        var nameText = nameEl.textContent.trim();
+        var link = document.createElement("a");
+        link.href = a.href;
+        link.target = "_blank";
+        link.textContent = nameText;
+        nameEl.textContent = "";
+        nameEl.appendChild(link);
+      }
+      // mark link column for hiding
+      if (linkTd !== cells[1]) linkTd.classList.add("latex-hide-cell");
+    });
+    // hide header link column too
+    document.querySelectorAll(".table-95 thead th:last-child").forEach(function(th) {
+      if (document.querySelectorAll(".table-95 thead th").length > 2)
+        th.classList.add("latex-hide-cell");
+    });
     var h1 = document.querySelector(".blog-content h1, .content-95 h1, h1");
     if (h1 && !document.querySelector(".latex-author")) {
       var meta = document.querySelector(".blog-meta");
