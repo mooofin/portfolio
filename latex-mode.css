@@ -676,37 +676,35 @@ html.latex-mode .blog-list-table tbody tr::before {
   padding-right: 0.3rem;
 }
 html.latex-mode .blog-list-table td:first-child {
+  /* title column (date was moved to last by decorate()) */
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+html.latex-mode .blog-list-table td:first-child a {
+  color: #1a1a1a !important;
+  text-decoration: none !important;
+  font-style: normal;
+}
+html.latex-mode .blog-list-table td:first-child a:hover {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+html.latex-mode .blog-list-table td:last-child {
   /* date column — pushed right */
   font-family: "Courier New", monospace;
   font-size: 0.78rem;
   color: #999 !important;
   white-space: nowrap;
   flex-shrink: 0;
-  order: 3;
   margin-left: auto;
   padding-left: 1.5rem;
 }
-html.latex-mode .blog-list-table td:last-child {
-  /* title column */
-  flex: 1;
-  order: 2;
-  font-size: 0.95rem;
-  line-height: 1.35;
-}
-html.latex-mode .blog-list-table td:last-child a {
-  color: #1a1a1a !important;
-  text-decoration: none !important;
-  font-style: normal;
-}
-html.latex-mode .blog-list-table td:last-child a:hover {
-  text-decoration: underline !important;
-  text-underline-offset: 3px;
-}
-html.latex-mode.latex-dark .blog-list-table td:first-child,
+html.latex-mode.latex-dark .blog-list-table td:last-child,
 html.latex-mode.latex-dark .blog-list-table tbody tr::before {
   color: #666 !important;
 }
-html.latex-mode.latex-dark .blog-list-table td:last-child a {
+html.latex-mode.latex-dark .blog-list-table td:first-child a {
   color: #ddd !important;
 }
 
