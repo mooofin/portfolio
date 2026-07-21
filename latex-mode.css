@@ -115,6 +115,7 @@ html.latex-mode .content-95 {
   width: 100% !important;
   max-width: none !important;
   flex: none !important;
+  overflow: visible !important;
 }
 
 /* typography */
@@ -744,6 +745,8 @@ html.latex-mode .projects-list-table td:first-child {
   display: block !important;
   width: 100% !important;
   box-sizing: border-box !important;
+  white-space: normal !important;
+  overflow: visible !important;
   overflow-wrap: break-word !important;
   font-weight: bold;
   font-variant: small-caps;
@@ -775,71 +778,78 @@ html.latex-mode.latex-dark .projects-list-table td:nth-child(2) {
 }
 /* ════════════════════════════════════════════════════════════════
    newsletter oe-table → clean issue index
+   Columns: [1]=icon [2]=From [3]=Subject [4]=Date
    ════════════════════════════════════════════════════════════════ */
-/* fix mobile stacking — .oe-table is not .table-95 so style.css hits it */
 html.latex-mode .oe-table {
-  display: block !important;
+  display: table !important;
   width: 100% !important;
+  border-collapse: collapse !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
   border-top: 2px solid currentColor !important;
   border-bottom: 2px solid currentColor !important;
 }
 html.latex-mode .oe-table thead,
 html.latex-mode .oe-table tbody {
-  display: block !important;
+  display: table-row-group !important;
 }
-/* hide redundant "From" column (always mooofin) and icon column */
+html.latex-mode .oe-table tr {
+  display: table-row !important;
+  background: transparent !important;
+  font-weight: normal !important;
+}
+html.latex-mode .oe-table th,
+html.latex-mode .oe-table td {
+  display: table-cell !important;
+}
+/* hide icon col (1) and From col (2) — explicit .msg-row selector for specificity */
+html.latex-mode .oe-table th:nth-child(1),
 html.latex-mode .oe-table th:nth-child(2),
-html.latex-mode .oe-table td:nth-child(2) {
+html.latex-mode .oe-table td:nth-child(1),
+html.latex-mode .oe-table td:nth-child(2),
+html.latex-mode .oe-table .msg-row td:nth-child(1),
+html.latex-mode .oe-table .msg-row td:nth-child(2) {
   display: none !important;
 }
-html.latex-mode .oe-table thead tr {
-  display: flex !important;
-  justify-content: space-between;
-  padding: 0.2rem 0 0.4rem !important;
-  border-bottom: 1px solid currentColor !important;
-}
+/* header */
 html.latex-mode .oe-table thead th {
-  display: inline !important;
   font-variant: small-caps;
   letter-spacing: 0.04em;
   font-size: 0.8rem;
   font-weight: normal;
   color: #555 !important;
   border: none !important;
-}
-html.latex-mode .oe-table .msg-row {
-  display: flex !important;
-  align-items: baseline;
-  gap: 0.6rem;
-  padding: 0.5rem 0 !important;
-  border-bottom: 1px dotted #ccc !important;
-  cursor: pointer;
+  border-bottom: 1px solid currentColor !important;
+  padding: 0.25rem 0 !important;
   background: transparent !important;
-  color: inherit !important;
-  font-weight: normal !important;
 }
-html.latex-mode .oe-table .msg-row:last-child {
+html.latex-mode .oe-table thead th:nth-child(4) {
+  text-align: right;
+}
+/* body rows */
+html.latex-mode .oe-table .msg-row td {
+  border: none !important;
+  border-bottom: 1px dotted #ccc !important;
+  padding: 0.45rem 0 !important;
+  color: #1a1a1a !important;
+  background: transparent !important;
+}
+html.latex-mode .oe-table .msg-row:last-child td {
   border-bottom: none !important;
 }
-html.latex-mode .oe-table .msg-row td {
-  display: inline !important;
-  border: none !important;
-  padding: 0 !important;
-  color: inherit !important;
-}
-/* Subject column (3rd = index 3 after removing 1+2): title, grows */
+/* subject col */
 html.latex-mode .oe-table .msg-row td:nth-child(3) {
-  flex: 1;
-  font-style: italic;
-  color: #1a1a1a !important;
+  font-style: normal;
+  padding-right: 1rem !important;
 }
-/* Date column (4th): right-aligned monospace */
+/* date col */
 html.latex-mode .oe-table .msg-row td:nth-child(4) {
   font-family: "Courier New", monospace;
   font-size: 0.78rem;
   color: #888 !important;
   white-space: nowrap;
-  margin-left: auto;
+  text-align: right;
+  width: 7rem;
 }
 html.latex-mode.latex-dark .oe-table .msg-row td:nth-child(3) {
   color: #ddd !important;
@@ -1024,38 +1034,12 @@ html.latex-mode .oe-preview {
 }
 
 /* issue index: the message-list table becomes a table of contents */
-html.latex-mode .oe-table {
-  font-family: inherit !important;
-  font-size: 0.95rem !important;
-  border-collapse: collapse !important;
-}
-html.latex-mode .oe-table thead th {
-  font-variant: small-caps;
-  letter-spacing: 0.05em;
-  font-weight: normal;
-  background: transparent !important;
-  color: #1a1a1a !important;
-  border: none !important;
-  border-bottom: 1px solid #1a1a1a !important;
-  padding: 0.3rem 0.6rem !important;
-}
-html.latex-mode .oe-table td {
-  border: none !important;
-  border-bottom: 1px dotted #999 !important;
-  padding: 0.4rem 0.6rem !important;
-  color: #1a1a1a !important;
-}
-/* neutralize the win95 blue selection + white text (also set by JS) */
+/* neutralize win95 blue selection set by JS */
 html.latex-mode .msg-row,
 html.latex-mode .msg-row td {
   background: transparent !important;
   color: #1a1a1a !important;
   font-weight: normal !important;
-}
-/* drop the blinking-envelope status column */
-html.latex-mode .oe-table thead th:first-child,
-html.latex-mode .oe-table td.unread-icon {
-  display: none !important;
 }
 
 /* preview pane becomes the article, with a masthead-style header */
