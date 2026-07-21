@@ -691,7 +691,7 @@ html.latex-mode .blog-list-table td:last-child {
 html.latex-mode .blog-list-table td:last-child a {
   color: #1a1a1a !important;
   text-decoration: none !important;
-  font-style: italic;
+  font-style: normal;
 }
 html.latex-mode .blog-list-table td:last-child a:hover {
   text-decoration: underline !important;
