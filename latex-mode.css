@@ -636,19 +636,19 @@ html.latex-mode .table-95 tr:hover {
   background: transparent !important;
 }
 
-/* ── blog list: numbered bibliography, date right-aligned ── */
+/* ── blog list: numbered bibliography ── */
 html.latex-mode .blog-list-table {
   counter-reset: blogentry;
 }
 html.latex-mode .blog-list-table thead tr {
   display: flex !important;
   justify-content: space-between;
-  padding: 0.2rem 0 0.4rem !important;
-  border-bottom: 1px solid currentColor !important;
+  padding: 0.25rem 0 0.5rem !important;
+  border-bottom: 2px solid currentColor !important;
   font-variant: small-caps;
-  letter-spacing: 0.04em;
-  font-size: 0.8rem;
-  color: #555;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  color: #666;
 }
 html.latex-mode .blog-list-table thead td,
 html.latex-mode .blog-list-table thead th {
@@ -657,9 +657,9 @@ html.latex-mode .blog-list-table thead th {
 html.latex-mode .blog-list-table tbody tr {
   display: flex !important;
   align-items: baseline;
-  gap: 0.6rem;
-  padding: 0.45rem 0 !important;
-  border-bottom: 1px dotted #ccc !important;
+  gap: 0.75rem;
+  padding: 0.6rem 0 !important;
+  border-bottom: 1px dotted #d0d0d0 !important;
   counter-increment: blogentry;
 }
 html.latex-mode .blog-list-table tbody tr:last-child {
@@ -667,27 +667,31 @@ html.latex-mode .blog-list-table tbody tr:last-child {
 }
 html.latex-mode .blog-list-table tbody tr::before {
   content: counter(blogentry) ".";
-  font-size: 0.78rem;
-  color: #888;
-  min-width: 1.6rem;
+  font-size: 0.75rem;
+  color: #aaa;
+  min-width: 1.8rem;
   flex-shrink: 0;
   font-family: "Courier New", monospace;
-  padding-top: 0.05em;
+  text-align: right;
+  padding-right: 0.3rem;
 }
 html.latex-mode .blog-list-table td:first-child {
-  /* date column */
+  /* date column — pushed right */
   font-family: "Courier New", monospace;
   font-size: 0.78rem;
-  color: #888 !important;
+  color: #999 !important;
   white-space: nowrap;
   flex-shrink: 0;
   order: 3;
   margin-left: auto;
+  padding-left: 1.5rem;
 }
 html.latex-mode .blog-list-table td:last-child {
   /* title column */
   flex: 1;
   order: 2;
+  font-size: 0.95rem;
+  line-height: 1.35;
 }
 html.latex-mode .blog-list-table td:last-child a {
   color: #1a1a1a !important;
@@ -696,10 +700,11 @@ html.latex-mode .blog-list-table td:last-child a {
 }
 html.latex-mode .blog-list-table td:last-child a:hover {
   text-decoration: underline !important;
+  text-underline-offset: 3px;
 }
 html.latex-mode.latex-dark .blog-list-table td:first-child,
 html.latex-mode.latex-dark .blog-list-table tbody tr::before {
-  color: #888 !important;
+  color: #666 !important;
 }
 html.latex-mode.latex-dark .blog-list-table td:last-child a {
   color: #ddd !important;
@@ -711,22 +716,24 @@ html.latex-mode .projects-list-table {
 }
 html.latex-mode .projects-list-table thead tr {
   display: flex !important;
-  padding: 0.2rem 0 0.4rem !important;
-  border-bottom: 1px solid currentColor !important;
+  padding: 0.25rem 0 0.5rem !important;
+  border-bottom: 2px solid currentColor !important;
   font-variant: small-caps;
-  letter-spacing: 0.04em;
-  font-size: 0.8rem;
-  color: #555;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  color: #666;
   gap: 0.6rem;
 }
+/* desktop: 2-column grid — name | description */
 html.latex-mode .projects-list-table tbody tr {
-  display: block !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  padding: 0.55rem 0 0.55rem 2.2rem !important;
-  border-bottom: 1px dotted #ccc !important;
+  display: grid !important;
+  grid-template-columns: max-content 1fr !important;
+  gap: 0.2rem 2.5rem !important;
+  padding: 0.65rem 0 0.65rem 2.4rem !important;
+  border-bottom: 1px dotted #d0d0d0 !important;
   position: relative;
   counter-increment: projentry;
+  align-items: start;
 }
 html.latex-mode .projects-list-table tbody tr:last-child {
   border-bottom: none !important;
@@ -735,24 +742,22 @@ html.latex-mode .projects-list-table tbody tr::before {
   content: "[" counter(projentry) "]";
   position: absolute;
   left: 0;
-  top: 0.55rem;
-  font-size: 0.78rem;
-  color: #888;
+  top: 0.7rem;
+  font-size: 0.75rem;
+  color: #aaa;
   font-family: "Courier New", monospace;
   font-weight: normal;
 }
 html.latex-mode .projects-list-table td:first-child {
   display: block !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  white-space: normal !important;
+  white-space: nowrap !important;
   overflow: visible !important;
-  overflow-wrap: break-word !important;
+  overflow-wrap: normal !important;
   font-weight: bold;
   font-variant: small-caps;
-  letter-spacing: 0.02em;
-  font-size: 0.88rem;
-  margin-bottom: 0.15rem;
+  letter-spacing: 0.03em;
+  font-size: 0.9rem;
+  padding-top: 0.05rem;
 }
 html.latex-mode .projects-list-table td:first-child a {
   color: #1a1a1a !important;
@@ -760,21 +765,35 @@ html.latex-mode .projects-list-table td:first-child a {
 }
 html.latex-mode .projects-list-table td:first-child a:hover {
   text-decoration: underline !important;
+  text-underline-offset: 3px;
 }
 html.latex-mode .projects-list-table td:nth-child(2) {
   display: block !important;
-  color: #444 !important;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  color: #555 !important;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+/* mobile: stacked */
+@media (max-width: 768px) {
+  html.latex-mode .projects-list-table tbody tr {
+    grid-template-columns: 1fr !important;
+    gap: 0.1rem !important;
+    padding-left: 2rem !important;
+  }
+  html.latex-mode .projects-list-table td:first-child {
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    margin-bottom: 0.1rem;
+  }
 }
 html.latex-mode.latex-dark .projects-list-table tbody tr::before {
-  color: #888 !important;
+  color: #666 !important;
 }
 html.latex-mode.latex-dark .projects-list-table td:first-child a {
   color: #ddd !important;
 }
 html.latex-mode.latex-dark .projects-list-table td:nth-child(2) {
-  color: #bbb !important;
+  color: #aaa !important;
 }
 /* ════════════════════════════════════════════════════════════════
    newsletter oe-table → clean issue index
