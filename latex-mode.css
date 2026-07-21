@@ -7,9 +7,9 @@ html.latex-mode body {
   background-image: none !important;
   color: #1a1a1a;
   font-family: "Latin Modern", Georgia, Cambria, "Times New Roman", Times, serif !important;
-  max-width: 72ch;
+  max-width: min(96ch, 92vw);
   margin: 0 auto;
-  padding: 2rem 1.25rem 6rem;
+  padding: 2.5rem 2rem 6rem;
   line-height: 1.8;
   display: block;
   min-height: auto;
@@ -614,8 +614,7 @@ html.latex-mode .table-95 {
   display: block !important;
   width: 100% !important;
   font-size: 0.9rem !important;
-  border-top: 2px solid currentColor !important;
-  border-bottom: 2px solid currentColor !important;
+  border: none !important;
   table-layout: auto !important;
 }
 html.latex-mode .table-95 thead,
@@ -643,12 +642,12 @@ html.latex-mode .blog-list-table {
 html.latex-mode .blog-list-table thead tr {
   display: flex !important;
   justify-content: space-between;
-  padding: 0.25rem 0 0.5rem !important;
-  border-bottom: 2px solid currentColor !important;
+  padding: 0.5rem 0 0.6rem !important;
+  border-bottom: 1px solid #999 !important;
   font-variant: small-caps;
-  letter-spacing: 0.06em;
-  font-size: 0.78rem;
-  color: #666;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #888;
 }
 html.latex-mode .blog-list-table thead td,
 html.latex-mode .blog-list-table thead th {
@@ -657,9 +656,9 @@ html.latex-mode .blog-list-table thead th {
 html.latex-mode .blog-list-table tbody tr {
   display: flex !important;
   align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.6rem 0 !important;
-  border-bottom: 1px dotted #d0d0d0 !important;
+  gap: 1rem;
+  padding: 0.85rem 0 !important;
+  border-bottom: 1px solid #e8e8e8 !important;
   counter-increment: blogentry;
 }
 html.latex-mode .blog-list-table tbody tr:last-child {
@@ -667,13 +666,12 @@ html.latex-mode .blog-list-table tbody tr:last-child {
 }
 html.latex-mode .blog-list-table tbody tr::before {
   content: counter(blogentry) ".";
-  font-size: 0.75rem;
-  color: #aaa;
-  min-width: 1.8rem;
+  font-size: 0.8rem;
+  color: #bbb;
+  min-width: 2rem;
   flex-shrink: 0;
   font-family: "Courier New", monospace;
   text-align: right;
-  padding-right: 0.3rem;
 }
 html.latex-mode .blog-list-table td:first-child {
   /* title column (date was moved to last by decorate()) */
@@ -714,21 +712,21 @@ html.latex-mode .projects-list-table {
 }
 html.latex-mode .projects-list-table thead tr {
   display: flex !important;
-  padding: 0.25rem 0 0.5rem !important;
-  border-bottom: 2px solid currentColor !important;
+  padding: 0.5rem 0 0.6rem !important;
+  border-bottom: 1px solid #999 !important;
   font-variant: small-caps;
-  letter-spacing: 0.06em;
-  font-size: 0.78rem;
-  color: #666;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #888;
   gap: 0.6rem;
 }
 /* desktop: 2-column grid — name | description */
 html.latex-mode .projects-list-table tbody tr {
   display: grid !important;
   grid-template-columns: max-content 1fr !important;
-  gap: 0.2rem 2.5rem !important;
-  padding: 0.65rem 0 0.65rem 2.4rem !important;
-  border-bottom: 1px dotted #d0d0d0 !important;
+  gap: 0.15rem 3rem !important;
+  padding: 0.9rem 0 0.9rem 2.4rem !important;
+  border-bottom: 1px solid #e8e8e8 !important;
   position: relative;
   counter-increment: projentry;
   align-items: start;
