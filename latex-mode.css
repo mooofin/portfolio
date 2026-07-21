@@ -7,7 +7,7 @@ html.latex-mode body {
   background-image: none !important;
   color: #1a1a1a;
   font-family: "Latin Modern", Georgia, Cambria, "Times New Roman", Times, serif !important;
-  max-width: 80ch;
+  max-width: 72ch;
   margin: 0 auto;
   padding: 2rem 1.25rem 6rem;
   line-height: 1.8;
@@ -1000,6 +1000,147 @@ html.latex-mode.latex-dark .ba-panel div[style*="color: #08216b"] {
   html.latex-mode .tech-box {
     grid-template-columns: 1fr;
     gap: 0.15rem;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   general viewing improvements (all screen sizes)
+   ════════════════════════════════════════════════════════════════ */
+
+/* images never overflow */
+html.latex-mode img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* inline code: slight tint so it reads as code */
+html.latex-mode code {
+  font-size: 0.9em;
+  background: #f3f3f3 !important;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
+html.latex-mode.latex-dark code {
+  background: #2e2e30 !important;
+  color: #ddd;
+}
+
+/* pre blocks: scroll horizontally on overflow */
+html.latex-mode pre {
+  overflow-x: auto !important;
+  max-width: 100%;
+  white-space: pre;
+}
+
+/* tables: scroll if wider than viewport (exclude layout tables like intro) */
+html.latex-mode .blog-content table,
+html.latex-mode .oe-table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  width: max-content;
+  margin: 1rem auto;
+}
+html.latex-mode th,
+html.latex-mode td {
+  padding: 6px 14px !important;
+}
+
+/* link underline for readability */
+html.latex-mode a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+html.latex-mode .list-group-item a,
+html.latex-mode .sidebar-95 .list-group a {
+  text-decoration: none;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   mobile: phones (≤ 640px)
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  html.latex-mode body {
+    padding: 1rem 0.85rem 5rem;
+  }
+
+  /* nav: tighter gaps, smaller text so it fits in 1-2 rows */
+  html.latex-mode .sidebar-95 .list-group {
+    gap: 0.2rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  /* headings: scale down */
+  html.latex-mode h1 {
+    font-size: 1.35rem;
+  }
+  html.latex-mode .window-title {
+    font-size: 0.95rem;
+  }
+  html.latex-mode .paper-sec-title {
+    font-size: 1.15rem !important;
+  }
+  html.latex-mode .intro-abstract::before {
+    font-size: 1.15rem;
+  }
+
+  /* author block: less vertical space */
+  html.latex-mode .latex-author {
+    margin-bottom: 1rem;
+  }
+
+  /* DRAFT watermark: scale down to avoid horizontal overflow */
+  html.latex-mode .latex-draft {
+    font-size: 4.5rem;
+  }
+
+  /* vim statusline: smaller text, no overflow */
+  html.latex-mode .latex-vimline {
+    font-size: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* buttons: slightly larger tap target */
+  html.latex-mode #latex-toggle,
+  html.latex-mode #latex-dark-toggle {
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+  }
+
+  /* pfp + abstract: stack vertically on small screens */
+  html.latex-mode .content-95 table {
+    display: table;
+    width: 100%;
+    overflow-x: visible;
+  }
+  html.latex-mode .content-95 table td {
+    display: block;
+    width: 100% !important;
+    text-align: center;
+  }
+  html.latex-mode #pfp {
+    margin: 0 auto 0.75rem !important;
+    display: block;
+  }
+
+  /* bibcards: reposition to not clip off screen */
+  html.latex-mode .latex-bibcard {
+    left: 0;
+    right: 0;
+    white-space: pre-wrap;
+    font-size: 10px;
+  }
+
+  /* TOC: tighter */
+  html.latex-mode .latex-toc {
+    margin: 1rem auto;
+  }
+
+  /* blockquote: smaller margin on mobile */
+  html.latex-mode blockquote {
+    margin: 0.75rem 0.5rem !important;
   }
 }
 

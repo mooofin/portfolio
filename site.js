@@ -211,6 +211,8 @@
       vim.appendChild(left);
       vim.appendChild(mid);
       vim.appendChild(right);
+      vim.style.overflow = "hidden";
+      vim.style.whiteSpace = "nowrap";
       document.body.appendChild(vim);
     }
 
@@ -232,7 +234,17 @@
         '  note   = {accessed: while procrastinating}\n' +
         "}";
       li.appendChild(card);
+      // tap support for mobile (hover doesn't fire on touch)
+      li.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var visible = card.style.display === "block";
+        document.querySelectorAll(".latex-bibcard").forEach(function (c) { c.style.display = "none"; });
+        card.style.display = visible ? "none" : "block";
+      });
     });
+    document.addEventListener("click", function () {
+      document.querySelectorAll(".latex-bibcard").forEach(function (c) { c.style.display = "none"; });
+    }, { capture: false });
 
     if (!document.querySelector(".latex-pagenum")) {
       var pn = document.createElement("div");
