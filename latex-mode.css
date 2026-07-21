@@ -720,6 +720,8 @@ html.latex-mode .projects-list-table thead tr {
 }
 html.latex-mode .projects-list-table tbody tr {
   display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
   padding: 0.55rem 0 0.55rem 2.2rem !important;
   border-bottom: 1px dotted #ccc !important;
   position: relative;
@@ -740,6 +742,9 @@ html.latex-mode .projects-list-table tbody tr::before {
 }
 html.latex-mode .projects-list-table td:first-child {
   display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: break-word !important;
   font-weight: bold;
   font-variant: small-caps;
   letter-spacing: 0.02em;
