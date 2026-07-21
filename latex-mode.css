@@ -598,12 +598,60 @@ html.latex-mode th,
 html.latex-mode td {
   border: none !important;
   border-bottom: 1px solid #1a1a1a !important;
-  padding: 4px 12px !important;
+  padding: 6px 14px !important;
 }
 html.latex-mode th {
   background: transparent !important;
   border-top: 2px solid #1a1a1a !important;
   border-bottom: 1px solid #1a1a1a !important;
+}
+
+/* table-95 (projects/blog lists): reflow as vertical reading list */
+html.latex-mode .table-95 {
+  display: block !important;
+  width: 100% !important;
+  font-size: 0.9rem !important;
+  border-top: 2px solid #1a1a1a !important;
+  border-bottom: 2px solid #1a1a1a !important;
+}
+html.latex-mode .table-95 thead,
+html.latex-mode .table-95 tbody {
+  display: block !important;
+}
+html.latex-mode .table-95 tr {
+  display: grid !important;
+  grid-template-columns: 11rem 1fr !important;
+  gap: 0.5rem 1rem !important;
+  padding: 0.5rem 0 !important;
+  border-bottom: 1px solid #d0d0d0 !important;
+  align-items: baseline;
+}
+html.latex-mode .table-95 tr:last-child {
+  border-bottom: none !important;
+}
+html.latex-mode .table-95 th,
+html.latex-mode .table-95 td {
+  display: block !important;
+  border: none !important;
+  padding: 0 !important;
+}
+html.latex-mode .table-95 th:first-child,
+html.latex-mode .table-95 td:first-child {
+  font-weight: bold;
+  font-variant: small-caps;
+}
+html.latex-mode .table-95 .latex-hide-cell {
+  display: none !important;
+}
+html.latex-mode .table-95 tr:nth-child(even),
+html.latex-mode .table-95 tr:hover {
+  background: transparent !important;
+}
+@media (max-width: 640px) {
+  html.latex-mode .table-95 tr {
+    grid-template-columns: 1fr !important;
+    gap: 0.2rem !important;
+  }
 }
 
 /* hide the "you've got mail" popup + progress bars in latex mode */
@@ -1032,14 +1080,11 @@ html.latex-mode pre {
   white-space: pre;
 }
 
-/* tables: scroll if wider than viewport (exclude layout tables like intro) */
-html.latex-mode .blog-content table,
-html.latex-mode .oe-table {
+/* blog/newsletter tables: scroll if wider than viewport */
+html.latex-mode .blog-content table {
   display: block;
   overflow-x: auto;
   max-width: 100%;
-  width: max-content;
-  margin: 1rem auto;
 }
 html.latex-mode th,
 html.latex-mode td {
@@ -1110,12 +1155,13 @@ html.latex-mode .sidebar-95 .list-group a {
   }
 
   /* pfp + abstract: stack vertically on small screens */
-  html.latex-mode .content-95 table {
+  /* stack pfp + bio vertically on mobile (intro table only, not table-95) */
+  html.latex-mode .content-95 table:not(.table-95) {
     display: table;
     width: 100%;
     overflow-x: visible;
   }
-  html.latex-mode .content-95 table td {
+  html.latex-mode .content-95 table:not(.table-95) td {
     display: block;
     width: 100% !important;
     text-align: center;
