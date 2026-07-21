@@ -68,6 +68,22 @@
 
   // \author{} \date{} block under the title + colophon at page end
   function decorate() {
+    // classify table-95: blog-list vs projects-list
+    document.querySelectorAll(".table-95").forEach(function (t) {
+      var headers = t.querySelectorAll("thead th");
+      if (headers.length >= 1) {
+        var first = headers[0].textContent.trim().toLowerCase();
+        if (first === "date") t.classList.add("blog-list-table");
+        else if (first === "project") t.classList.add("projects-list-table");
+      }
+    });
+
+    // blog list: move date td to end so CSS can flex title | date without order tricks
+    document.querySelectorAll(".blog-list-table tbody tr").forEach(function (tr) {
+      var tds = tr.querySelectorAll("td");
+      if (tds.length >= 2) tr.appendChild(tds[0]); // date was first child → move to last
+    });
+
     // reflow table-95 into a vertical dl-style list in latex mode
     document.querySelectorAll(".table-95 tbody tr").forEach(function (tr) {
       var cells = tr.querySelectorAll("td");
