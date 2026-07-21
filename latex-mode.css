@@ -606,39 +606,26 @@ html.latex-mode th {
   border-bottom: 1px solid #1a1a1a !important;
 }
 
-/* table-95 (projects/blog lists): reflow as vertical reading list */
+/* ════════════════════════════════════════════════════════════════
+   table-95 → booktabs reading list (shared base)
+   ════════════════════════════════════════════════════════════════ */
 html.latex-mode .table-95 {
   display: block !important;
   width: 100% !important;
   font-size: 0.9rem !important;
-  border-top: 2px solid #1a1a1a !important;
-  border-bottom: 2px solid #1a1a1a !important;
+  border-top: 2px solid currentColor !important;
+  border-bottom: 2px solid currentColor !important;
+  table-layout: auto !important;
 }
 html.latex-mode .table-95 thead,
 html.latex-mode .table-95 tbody {
   display: block !important;
-}
-html.latex-mode .table-95 tr {
-  display: grid !important;
-  grid-template-columns: 11rem 1fr !important;
-  gap: 0.5rem 1rem !important;
-  padding: 0.5rem 0 !important;
-  border-bottom: 1px solid #d0d0d0 !important;
-  align-items: baseline;
-}
-html.latex-mode .table-95 tr:last-child {
-  border-bottom: none !important;
 }
 html.latex-mode .table-95 th,
 html.latex-mode .table-95 td {
   display: block !important;
   border: none !important;
   padding: 0 !important;
-}
-html.latex-mode .table-95 th:first-child,
-html.latex-mode .table-95 td:first-child {
-  font-weight: bold;
-  font-variant: small-caps;
 }
 html.latex-mode .table-95 .latex-hide-cell {
   display: none !important;
@@ -647,11 +634,216 @@ html.latex-mode .table-95 tr:nth-child(even),
 html.latex-mode .table-95 tr:hover {
   background: transparent !important;
 }
-@media (max-width: 640px) {
-  html.latex-mode .table-95 tr {
-    grid-template-columns: 1fr !important;
-    gap: 0.2rem !important;
-  }
+
+/* ── blog list: numbered bibliography, date right-aligned ── */
+html.latex-mode .blog-list-table {
+  counter-reset: blogentry;
+}
+html.latex-mode .blog-list-table thead tr {
+  display: flex !important;
+  justify-content: space-between;
+  padding: 0.2rem 0 0.4rem !important;
+  border-bottom: 1px solid currentColor !important;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  color: #555;
+}
+html.latex-mode .blog-list-table thead td,
+html.latex-mode .blog-list-table thead th {
+  display: inline !important;
+}
+html.latex-mode .blog-list-table tbody tr {
+  display: flex !important;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.45rem 0 !important;
+  border-bottom: 1px dotted #ccc !important;
+  counter-increment: blogentry;
+}
+html.latex-mode .blog-list-table tbody tr:last-child {
+  border-bottom: none !important;
+}
+html.latex-mode .blog-list-table tbody tr::before {
+  content: counter(blogentry) ".";
+  font-size: 0.78rem;
+  color: #888;
+  min-width: 1.6rem;
+  flex-shrink: 0;
+  font-family: "Courier New", monospace;
+  padding-top: 0.05em;
+}
+html.latex-mode .blog-list-table td:first-child {
+  /* date column */
+  font-family: "Courier New", monospace;
+  font-size: 0.78rem;
+  color: #888 !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+  order: 3;
+  margin-left: auto;
+}
+html.latex-mode .blog-list-table td:last-child {
+  /* title column */
+  flex: 1;
+  order: 2;
+}
+html.latex-mode .blog-list-table td:last-child a {
+  color: #1a1a1a !important;
+  text-decoration: none !important;
+  font-style: italic;
+}
+html.latex-mode .blog-list-table td:last-child a:hover {
+  text-decoration: underline !important;
+}
+html.latex-mode.latex-dark .blog-list-table td:first-child,
+html.latex-mode.latex-dark .blog-list-table tbody tr::before {
+  color: #888 !important;
+}
+html.latex-mode.latex-dark .blog-list-table td:last-child a {
+  color: #ddd !important;
+}
+
+/* ── projects list: selected works with [n] counter ── */
+html.latex-mode .projects-list-table {
+  counter-reset: projentry;
+}
+html.latex-mode .projects-list-table thead tr {
+  display: flex !important;
+  padding: 0.2rem 0 0.4rem !important;
+  border-bottom: 1px solid currentColor !important;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  color: #555;
+  gap: 0.6rem;
+}
+html.latex-mode .projects-list-table tbody tr {
+  display: block !important;
+  padding: 0.55rem 0 0.55rem 2.2rem !important;
+  border-bottom: 1px dotted #ccc !important;
+  position: relative;
+  counter-increment: projentry;
+}
+html.latex-mode .projects-list-table tbody tr:last-child {
+  border-bottom: none !important;
+}
+html.latex-mode .projects-list-table tbody tr::before {
+  content: "[" counter(projentry) "]";
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  font-size: 0.78rem;
+  color: #888;
+  font-family: "Courier New", monospace;
+  font-weight: normal;
+}
+html.latex-mode .projects-list-table td:first-child {
+  display: block !important;
+  font-weight: bold;
+  font-variant: small-caps;
+  letter-spacing: 0.02em;
+  font-size: 0.88rem;
+  margin-bottom: 0.15rem;
+}
+html.latex-mode .projects-list-table td:first-child a {
+  color: #1a1a1a !important;
+  text-decoration: none !important;
+}
+html.latex-mode .projects-list-table td:first-child a:hover {
+  text-decoration: underline !important;
+}
+html.latex-mode .projects-list-table td:nth-child(2) {
+  display: block !important;
+  color: #444 !important;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+html.latex-mode.latex-dark .projects-list-table tbody tr::before {
+  color: #888 !important;
+}
+html.latex-mode.latex-dark .projects-list-table td:first-child a {
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark .projects-list-table td:nth-child(2) {
+  color: #bbb !important;
+}
+/* ════════════════════════════════════════════════════════════════
+   newsletter oe-table → clean issue index
+   ════════════════════════════════════════════════════════════════ */
+/* fix mobile stacking — .oe-table is not .table-95 so style.css hits it */
+html.latex-mode .oe-table {
+  display: block !important;
+  width: 100% !important;
+  border-top: 2px solid currentColor !important;
+  border-bottom: 2px solid currentColor !important;
+}
+html.latex-mode .oe-table thead,
+html.latex-mode .oe-table tbody {
+  display: block !important;
+}
+/* hide redundant "From" column (always mooofin) and icon column */
+html.latex-mode .oe-table th:nth-child(2),
+html.latex-mode .oe-table td:nth-child(2) {
+  display: none !important;
+}
+html.latex-mode .oe-table thead tr {
+  display: flex !important;
+  justify-content: space-between;
+  padding: 0.2rem 0 0.4rem !important;
+  border-bottom: 1px solid currentColor !important;
+}
+html.latex-mode .oe-table thead th {
+  display: inline !important;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #555 !important;
+  border: none !important;
+}
+html.latex-mode .oe-table .msg-row {
+  display: flex !important;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0 !important;
+  border-bottom: 1px dotted #ccc !important;
+  cursor: pointer;
+  background: transparent !important;
+  color: inherit !important;
+  font-weight: normal !important;
+}
+html.latex-mode .oe-table .msg-row:last-child {
+  border-bottom: none !important;
+}
+html.latex-mode .oe-table .msg-row td {
+  display: inline !important;
+  border: none !important;
+  padding: 0 !important;
+  color: inherit !important;
+}
+/* Subject column (3rd = index 3 after removing 1+2): title, grows */
+html.latex-mode .oe-table .msg-row td:nth-child(3) {
+  flex: 1;
+  font-style: italic;
+  color: #1a1a1a !important;
+}
+/* Date column (4th): right-aligned monospace */
+html.latex-mode .oe-table .msg-row td:nth-child(4) {
+  font-family: "Courier New", monospace;
+  font-size: 0.78rem;
+  color: #888 !important;
+  white-space: nowrap;
+  margin-left: auto;
+}
+html.latex-mode.latex-dark .oe-table .msg-row td:nth-child(3) {
+  color: #ddd !important;
+}
+html.latex-mode.latex-dark .oe-table .msg-row td:nth-child(4) {
+  color: #888 !important;
+}
+html.latex-mode.latex-dark .oe-table thead th {
+  color: #888 !important;
 }
 
 /* hide the "you've got mail" popup + progress bars in latex mode */
