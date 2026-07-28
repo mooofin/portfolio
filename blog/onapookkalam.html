@@ -273,8 +273,7 @@
               </div>
               <h3>Notes Recovery</h3>
               <p>
-                The challenge focused on recovering notes. During the search for
-                notes files, one file was found with a base64-encoded name:
+                The challenge focused on recovering notes. Lets start by searching for notes ?
               </p>
               <div class="img-container">
                 <img
@@ -291,7 +290,7 @@
               </div>
               <h3>Flutter App Analysis</h3>
               <p>
-                Further exploration revealed this was about recovering data from
+                So after poking it for some time revealed this was about recovering data from
                 a Flutter app:
               </p>
               <div class="img-container">
@@ -326,7 +325,7 @@
               </div>
               <h3>Encryption Implementation</h3>
               <p>
-                The discovered Python code revealed the notes app's encryption
+                This Python code reveales the notes app's encryption
                 scheme:
               </p>
               <pre class="code-block"><code>import flet as ft
@@ -397,7 +396,7 @@ def main(page: ft.Page):
 ft.app(main)
 </code></pre>
               <p>
-                the application allows users to create and save encrypted notes
+                So ildr - the application allows users to create and save encrypted notes
                 with the following workflow: When a user enters text and clicks
                 "Save Note", the application generates a unique filename based
                 on the current timestamp (format: DDMMYYYYHHMMSSμs). It then
@@ -540,18 +539,17 @@ print("\n✓ Decryption complete!\n")
                 />
               </div>
               <p>
-                After analyzing the Android filesystem dump, we identified two
+                After analyzing the Android filesystem dump, we can see two
                 key applications in the <code>/data/app/</code> directory: 1.
                 <code>com.sp3p3x.notesapp</code> - A notes application (already
                 analyzed for flagPart1) 2.
                 <code>com.example.accessmydata</code> - The target application
-                for flagPart2
+                for flagPart2 maybe 
               </p>
               <p>
-                The challenge description hinted at finding deleted data from a
+                The challenge description also hinted at finding deleted data from a
                 "realm db", and a screenshot found in
-                <code>/data/system_ce/0/snapshots/</code> confirmed the
-                existence of an app that downloads and decrypts a realm file
+                <code>/data/system_ce/0/snapshots/</code> we can prettyy much confirm it's a app which uses realm db for storing data.
               </p>
               <p>The Access My Data APK was found at:</p>
               <pre
@@ -568,9 +566,8 @@ $ ls -lh base.apk
 -rw-r--r-- 1 muffin muffin 21M May 15  2025 base.apk
 </code></pre>
               <p>
-                flutter applications are unique in the Android ecosystem because
-                they don't use traditional Java/Kotlin code. Instead, they
-                compile Dart code to native machine code using Ahead-Of-Time
+                ImP notes - Flutter applications are unique in the Android ecosystem because
+                they compile Dart code to native machine code using Ahead-Of-Time
                 (AOT) compilation. This results in two important native
                 libraries:
               </p>
@@ -587,7 +584,7 @@ $ ls -lh base.apk
               </p>
               <p>
                 This compilation method makes traditional APK analysis tools
-                (like jadx or dex2jar) useless, as there's no DEX bytecode to
+                (like jadx or dex2jar) useless(which i wasted a lot of time on ), as there's no DEX bytecode to
                 decompile:(
               </p>
               <p>We extracted the APK to access the native libraries:</p>
@@ -603,17 +600,15 @@ total 16M
                 application logic we need to reverse engineer.
               </p>
               <p>
-                blutter, a portmanteau of "B(l)utter" that plays on both
+                Blutter , a portmanteau of "B(l)utter" that plays on both
                 <em>buttering</em> and <em>Flutter</em>, is a reverse
-                engineering tool built specifically with Flutter applications in
-                mind. Unlike traditional disassemblers that treat Flutter
-                binaries as opaque native code, Blutter understands the internal
+                engineering tool built specifically for  Flutter applications in
+                mind. Blutter understands the internal
                 structure of the Dart VM snapshot embedded inside
-                <code>libapp.so</code>. It is able to parse this snapshot,
+                <code>libapp.so</code> so it  is able to parse this snapshot,
                 extract the object pool that contains constants, strings, and
                 type information, and use that data to reconstruct readable
-                pseudo-Dart code complete with symbols and function names. In
-                addition to this higher-level reconstruction, Blutter can also
+                pseudo-Dart code complete with symbols and function names. also Blutter can 
                 generate annotated assembly listings , and even produce
                 Frida scripts to assist with dynamic analysis and runtime
                 instrumentation.(TODO for me to check this out one day ) 
@@ -627,10 +622,10 @@ total 16M
                 Blutter's first move is reading <code>libflutter.so</code> to figure out
                 exactly which Dart SDK version compiled the app cuz  the
                 Dart VM snapshot format isn't stable across versions and we parse it with the
-                wrong layout and you get garbage. Here it pegs the app at Dart 3.7.2.
+                wrong layout and you're fucked p  much . Here it pegs/pins the app at Dart 3.7.2.
               </p>
               <p>
-                if Blutter doesn't already have an analysis backend for that version, it
+                Also if Blutter doesn't already have an analysis backend for that version, it
                 builds one on the spot ,it pulls the Dart SDK source at that exact tag,
                 compiles the VM runtime into a static library for the target arch, then
                 links its own analysis components against it,expect several minutes of
@@ -684,7 +679,7 @@ total 52
               </p>
               <p>
                 Blutter generates assembly listings that interleave ARM64
-                assembly with Dart-level semantic comments. Here's an example of
+                assembly with Dart-level semantic comments.  an example of
                 the format:
               </p>
               <pre class="code-block"><code>_ _decryptData(/* No info */) {
@@ -696,11 +691,12 @@ total 52
       0x2db4c8: sub             SP, SP, #0x30
 </code></pre>
               <p>Explanation:</p>
+              <div class="latex-infobox">
+              <strong class="latex-infobox-title">Blutter output fields</strong>
               <ul>
                 <li>
                   <strong>Function signature</strong>:
-                  <code>_ _decryptData(/<em> No info </em>/)</code> — Dart
-                  function name
+                  <code>_ _decryptData(/<em> No info </em>/)</code> (Dart function name)
                 </li>
                 <li>
                   <strong>Address and size</strong>: addr: 0x2db4c0, size:
@@ -708,18 +704,17 @@ total 52
                 </li>
                 <li>
                   <strong>Comments</strong>:
-                  <code>// 0x2db4c0: EnterFrame</code> — high-level operation
+                  <code>// 0x2db4c0: EnterFrame</code> (high-level operation)
                 </li>
                 <li>
                   <strong>Assembly</strong>:
-                  <code>0x2db4c0: stp fp, lr, [SP, #-0x10]!</code> — actual
-                  ARM64 instruction
+                  <code>0x2db4c0: stp fp, lr, [SP, #-0x10]!</code> (actual ARM64 instruction)
                 </li>
                 <li>
-                  <strong>PP references</strong>: <code>[PP, #0x90]</code> —
-                  references to the Object Pool
+                  <strong>PP references</strong>: <code>[PP, #0x90]</code> (references to the Object Pool)
                 </li>
               </ul>
+              </div>
               <h3>Extracting the Encryption Keys</h3>
               <p>the download URL:</p>
               <pre
@@ -804,7 +799,7 @@ total 52
                 <code>Obj!AESMode@5032b1</code>, which corresponds to
                 <strong>"ECB"</strong> mode in the enum map.
               </p>
-              <p>#### Step 4: Decryption and Base64 Decode</p>
+              <h3>Step 4: Decryption and Base64 Decode</h3>
               <pre class="code-block"><code>    // 0x2db5b8: r0 = decrypt()
     //     0x2db5b8: bl              #0x2db6a0  ; [package:encrypt/encrypt.dart] Encrypter::decrypt
     //     Decrypt the encrypted data using AES-ECB
@@ -917,11 +912,7 @@ String keyPart2 = "7173047a9d6574e5";
 String combined = keyPart1 + keyPart2;
 String reversed = combined.split('').reversed.join('');
 </code></pre>
-              <p>
-                 obfuscation, mostly. if someone pulls the APK and dumps strings,
-                they won't immediately see an encryption key sitting in plaintext
-                
-              </p>
+              
               <p>
                 The reversed key <code>5e4756d9a740371724b3f58eb23d0e40</code> is exactly 32 ASCII
                 characters. As UTF-8 bytes, that's lowkey a 128-bit AES key
@@ -954,11 +945,11 @@ $ hexdump -C decrypted.realm | head -10
 </code></pre>
               <p> few things to note from the hex dump:</p>
               <ul>
-                <li><strong>Bytes 0x10–0x13</strong>: <code>54 2d 44 42</code> = "T-DB" — the Realm magic header, confirming decryption succeeded</li>
-                <li><strong>Bytes 0x14–0x17</strong>: <code>41 41 41 41</code> = "AAAA" — marks unused/free regions</li>
-                <li><strong>Offset 0x40</strong>: "metadata" — the database metadata block</li>
-                <li><strong>Offset 0x60</strong>: "class_RealmTestClass0" — first schema class</li>
-                <li><strong>Offset 0x80</strong>: "class_RealmTestClass1" — second schema class</li>
+                <li><strong>Bytes 0x10–0x13</strong>: <code>54 2d 44 42</code> = "T-DB" (Realm magic header, confirming decryption succeeded)</li>
+                <li><strong>Bytes 0x14–0x17</strong>: <code>41 41 41 41</code> = "AAAA" (marks unused/free regions)</li>
+                <li><strong>Offset 0x40</strong>: "metadata" (database metadata block)</li>
+                <li><strong>Offset 0x60</strong>: "class_RealmTestClass0" (first schema class)</li>
+                <li><strong>Offset 0x80</strong>: "class_RealmTestClass1" (second schema class)</li>
               </ul>
               <p>
                 before going ballsdeep , a little intro to realeam database working internals , that i got to know after reading some chinneese papers on forensics research (never reccomend)
@@ -974,7 +965,7 @@ $ hexdump -C decrypted.realm | head -10
                 <li><strong>MVCC (Multi-Version Concurrency Control)</strong>: multiple versions of data coexist</li>
                 <li><strong>Zero-copy architecture</strong>: the database file is memory-mapped directly from disk</li>
               </ul>
-              <h3>Muffin why doess  deleted data sticks around :pepe shock ?</h3>
+              <h3>why doess  deleted data sticks around :pepe shock ?</h3>
               <p>
                 When you delete a record in Realm, it doesn't get
                 wiped the database just stops pointing to it. A new version of the state is
@@ -1038,10 +1029,10 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
 </code></pre>
               <p>The repo has four files worth knowing:</p>
               <ul>
-                <li><strong>realm_recover.py</strong> — the main script you run</li>
-                <li><strong>objects.py</strong> — handles Realm object parsing</li>
-                <li><strong>util.py</strong> — binary analysis helpers</li>
-                <li><strong>sample/</strong> — a test database to try it on before touching your evidence</li>
+                <li><strong>realm_recover.py</strong>: the main script you run</li>
+                <li><strong>objects.py</strong>: handles Realm object parsing</li>
+                <li><strong>util.py</strong>: binary analysis helpers</li>
+                <li><strong>sample/</strong>: a test database to try it on before touching your evidence</li>
               </ul>
               <h3>Running the Realm Recovery Tool</h3>
               <p>Execute the recovery tool on our decrypted realm database:</p>
@@ -1121,7 +1112,7 @@ LICENSE  objects.py  README.md  realm_recover.py  sample  util.py
               <p>
                 in this case the deleted UUID was sitting at offset <code>0x800000</code>
                 in a region marked unused. The object had been cut from the active tree,
-                but nothing had overwritten it yet — so its binary representation was
+                but nothing had overwritten it yet, so its binary representation was
                 completely intact. No garbage collection, no overwrite, clean recovery.
               </p>
               <p>

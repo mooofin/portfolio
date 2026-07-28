@@ -98,9 +98,14 @@ html.latex-mode hr {
   height: 0 !important;
 }
 
+html.latex-mode img.latex-show-gif {
+  display: block !important;
+  max-width: 100%;
+}
+
 /* hide all the decorative stuff */
-html.latex-mode img[src$=".gif" i],
-html.latex-mode img[src$=".GIF" i],
+html.latex-mode img[src$=".gif" i]:not(.latex-show-gif),
+html.latex-mode img[src$=".GIF" i]:not(.latex-show-gif),
 html.latex-mode img[src*="win98icons"],
 html.latex-mode img[src*="webring"],
 html.latex-mode .taskbar,
@@ -271,6 +276,32 @@ html.latex-mode a {
 }
 html.latex-mode a:hover {
   text-decoration: underline;
+}
+
+/* framed annotation box (e.g. Blutter output breakdown) */
+html.latex-mode .latex-infobox {
+  border: 1px solid #1a1a1a;
+  padding: 0.6rem 1rem 0.6rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+html.latex-mode .latex-infobox > strong.latex-infobox-title {
+  display: block;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+html.latex-mode .latex-infobox ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+html.latex-mode.latex-dark .latex-infobox {
+  border-color: #aaa;
+}
+html.latex-mode.latex-dark .latex-infobox > strong.latex-infobox-title {
+  color: #aaa;
 }
 
 /* QED tombstone at end of article - clickable, decompiles back to win95 */
@@ -689,7 +720,7 @@ html.latex-mode .blog-list-table td:first-child a:hover {
   text-underline-offset: 3px;
 }
 html.latex-mode .blog-list-table td:last-child {
-  /* date column — pushed right */
+  /* date column - pushed right */
   font-family: "Courier New", monospace;
   font-size: 0.78rem;
   color: #999 !important;
@@ -720,11 +751,11 @@ html.latex-mode .projects-list-table thead tr {
   color: #888;
   gap: 0.6rem;
 }
-/* desktop: 2-column grid — name | description */
+/* desktop: 2-column grid - name | description */
 html.latex-mode .projects-list-table tbody tr {
   display: grid !important;
-  grid-template-columns: max-content 1fr !important;
-  gap: 0.15rem 3rem !important;
+  grid-template-columns: minmax(auto, 13rem) 1fr !important;
+  gap: 0.15rem 2rem !important;
   padding: 0.9rem 0 0.9rem 2.4rem !important;
   border-bottom: 1px solid #e8e8e8 !important;
   position: relative;
@@ -768,6 +799,10 @@ html.latex-mode .projects-list-table td:nth-child(2) {
   color: #555 !important;
   font-size: 0.875rem;
   line-height: 1.55;
+}
+html.latex-mode .projects-list-table td:nth-child(2)::before {
+  content: "- ";
+  color: #999;
 }
 /* mobile: stacked */
 @media (max-width: 768px) {
@@ -817,7 +852,7 @@ html.latex-mode .oe-table th,
 html.latex-mode .oe-table td {
   display: table-cell !important;
 }
-/* hide icon col (1) and From col (2) — explicit .msg-row selector for specificity */
+/* hide icon col (1) and From col (2) - explicit .msg-row selector for specificity */
 html.latex-mode .oe-table th:nth-child(1),
 html.latex-mode .oe-table th:nth-child(2),
 html.latex-mode .oe-table td:nth-child(1),
