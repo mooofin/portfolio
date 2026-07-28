@@ -35,6 +35,11 @@
 
   function apply(on) {
     document.documentElement.classList.toggle("latex-mode", on);
+    try {
+      var u = new URL(location.href);
+      if (on) { u.searchParams.set("latex", "1"); } else { u.searchParams.delete("latex"); }
+      history.replaceState(null, "", u.toString());
+    } catch (e) {}
     cdn.disabled = !on;
     local.disabled = !on;
     if (on) decorate();
