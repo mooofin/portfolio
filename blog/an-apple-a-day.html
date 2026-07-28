@@ -276,10 +276,10 @@
                 <em>[Abusing glibc Wide-Mode I/O and FILE Structure Corruption for RCE]</em>
               </p>
               <p>
-                we're handed a notes application - create, delete, read, write  Two bugs are there in it: a signed-integer underflow in <code>read_note</code> that lets you walk backwards into the GOT, and an unvalidated offset in <code>write_note</code> that gives you an arbitrary relative write.
+                we're handed a notes application - create, delete, read, write  Two bugs are there in it: a missing negative-index check in <code>read_note</code> (the index is only bounded above, so a negative index walks backwards into the GOT), and an unvalidated offset in <code>write_note</code> that gives you an arbitrary relative write.
               </p>
               <p>
-                I went through a few approaches before landing here. House of Orange felt too fragile on this libc version, and FSOP via <code>_IO_overflow</code> directly hits the vtable check. House of Apple 2 works around that by staying on the validated vtable but pivoting execution through <code>_wide_vtable</code>, which glibc doesn't validates. 
+                I went through a few approaches before landing here. House of Orange felt too fragile on this libc version, and FSOP via <code>_IO_overflow</code> directly hits the vtable check. House of Apple 2 works around that by staying on the validated vtable but pivoting execution through <code>_wide_vtable</code>, which glibc doesn't validate.
               </p>
               <hr>
               <p>
@@ -491,7 +491,7 @@ int64_t read_note(void) {
 }, length=0x80)
 </code></pre>
               <p>
-                Offset <code>0x68</code> is the <code>doallocate</code> slot. glibc calls it without validation. We put <code>system</code> there - when it fires with the FILE pointer as the first argument, which is  <code>system(fake_file->_flags)</code> = <code>system("  sh")</code>.
+                Offset <code>0x68</code> is the <code>doallocate</code> slot. glibc calls it without validation. We put <code>system</code> there - it fires with the FILE pointer as the first argument, and since a FILE starts with <code>_flags</code>, that's <code>system(fake_file->_flags)</code> = <code>system("  sh")</code>.
               </p>
               <hr>
               <h2>How it's in memory</h2>
@@ -543,11 +543,11 @@ create(20000, payload)
               </div>
               <h3>Hijacking <code>_IO_list_all</code></h3>
               <p>
-                 Now we insert our fake FILE into the list glibc actually walks. <code>_IO_list_all</code> is the head of the global FILE chain - glibc follows it on exit to flush every stream. Compute the offset from our heap buffer to <code>_IO_list_all</code>, then use the arbitrary write to overwrite it with the address of our fake FILE. glibc doesn’t validate <code>_IO_list_all</code> contents .(only just flws the pointer)
+                 Now we insert our fake FILE into the list glibc actually walks. <code>_IO_list_all</code> is the head of the global FILE chain - glibc follows it on exit to flush every stream. Compute the offset from our heap buffer to <code>_IO_list_all</code>, then use the arbitrary write to overwrite it with the address of our fake FILE. glibc doesn’t validate <code>_IO_list_all</code> contents - it just follows the pointer.
               </p>
               <pre
                 class="code-block"
-              ><code>io_list_all = libc.sym[‘_IO_list_all’]
+              ><code>io_list_all = libc.sym['_IO_list_all']
 offset = io_list_all - heap_addr
 write_note(0, offset, p64(heap_addr))
 </code></pre>
@@ -815,7 +815,7 @@ def w(i, off, data):
 libc.address = u64(r(-16).ljust(8, b'\x00')) - libc.sym.free
 log.success(f'libc = {libc.address:#x}')
 
-c(0x500, b'A' * 8)
+c(0x500)
 heap = u64(r(0).ljust(8, b'\x00')) - 0x10
 log.success(f'heap = {heap:#x}')
 
