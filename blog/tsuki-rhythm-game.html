@@ -57,17 +57,68 @@
         margin: 20px 0;
       }
       .blog-content pre {
-        background: #eee;
-        border: 1px inset #ccc;
-        padding: 10px;
+        background: #fbfbf8;
+        border: 1px solid #cfcfc7;
+        padding: 12px 14px;
         overflow-x: auto;
         font-family: "Courier New", monospace;
-        font-size: 12px;
+        font-size: 13px;
+        line-height: 1.5;
+        box-shadow: inset 0 0 0 1px #f4f4ef;
       }
-      .blog-content code {
-        background: #f0f0f0;
-        padding: 2px 4px;
+      .blog-content p code,
+      .blog-content li code,
+      .blog-content h1 code,
+      .blog-content h2 code,
+      .blog-content h3 code,
+      .blog-content h4 code {
+        background: #f7f7f3;
+        border: 1px solid #e4e4db;
+        color: #1f4aa8;
+        padding: 1px 5px;
         font-family: "Courier New", monospace;
+        font-size: 0.95em;
+        font-weight: 700;
+      }
+      .blog-content pre code {
+        background: none;
+        border: none;
+        color: inherit;
+        padding: 0;
+        font-size: inherit;
+        font-weight: 400;
+      }
+      .hljs { background: #fbfbf8; color: #111; }
+      .hljs-keyword,
+      .hljs-selector-tag,
+      .hljs-section {
+        color: #1f4aa8;
+        font-weight: 700;
+      }
+      .hljs-string,
+      .hljs-symbol,
+      .hljs-addition {
+        color: #0f6b3c;
+      }
+      .hljs-comment {
+        color: #6e6e6e;
+        font-style: italic;
+      }
+      .hljs-number,
+      .hljs-built_in,
+      .hljs-literal {
+        color: #7b3fb3;
+      }
+      .hljs-type,
+      .hljs-meta,
+      .hljs-meta .hljs-keyword {
+        color: #9a4d00;
+      }
+      .hljs-title.class_,
+      .hljs-title.function_,
+      .hljs-params,
+      .hljs-attr {
+        color: #111;
       }
       .blog-content blockquote {
         border-left: 4px solid #000080;
