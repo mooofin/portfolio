@@ -10,13 +10,13 @@
 html {
   position: relative;
   min-height: 100%;
-  overflow-x: hidden;
 }
 
 /* Body styles */
 body {
   font-family: "MS Sans Serif", "Microsoft Sans Serif", sans-serif;
-  background: url('images/geo-bg.jpg') repeat;
+  background: url('images/geo-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: white;
   padding-bottom: 40px;
   margin: 0;
@@ -557,16 +557,24 @@ hr.separator {
   }
 
   .taskbar {
-    position: relative;
-    margin-top: 8px;
     flex-wrap: wrap;
     gap: 4px;
-    padding: 4px;
+    padding: 3px 4px;
   }
 
   .taskbar > div:first-child {
     flex-wrap: wrap;
     gap: 4px;
+    min-width: 0;
+  }
+
+  #taskbar-active-window {
+    max-width: 140px !important;
+    font-size: 11px;
+  }
+
+  body {
+    padding-bottom: 60px;
   }
 
   .container-95 {

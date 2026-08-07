@@ -1212,49 +1212,24 @@ dump_cfg(ircfg, f"output/vmv_ircfg_simp_ssa{nl + 1}.dot")
       </div>
     </div>
     <div class="taskbar">
-      <div style="display: flex; gap: 8px">
-        <a href="../index.html" class="start-button">
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/windows-0.png"
-            class="icon-16"
-            alt=""
-          />
+      <div style="display: flex; gap: 8px; flex: 1; overflow: hidden; align-items: center;">
+        <a href="/" class="start-button">
+          <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" class="icon-16" alt="" />
           Start
         </a>
-        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px"></div>
-        <a
-          href="../blog.html"
-          class="btn"
-          style="display: inline-flex; align-items: center; gap: 4px"
-        >
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
-            class="icon-16"
-            alt=""
-          />
-          Blog
-        </a>
-        <a
-          href="#"
-          class="btn"
-          style="
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            border: 2px inset #fff;
-          "
-        >
-          <img
-            src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
-            class="icon-16"
-            alt=""
-          />
-          Reading
-        </a>
+        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px; height: 16px;"></div>
+        <button class="btn" style="border: 2px inset #fff; font-weight: bold; display: flex; align-items: center; gap: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default;" id="taskbar-active-window">
+          <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+          <span id="taskbar-title">mooofin.exe</span>
+        </button>
       </div>
-      <div class="tray">
-        <img src="https://win98icons.alexmeub.com/icons/png/loudspeaker_rays-0.png" class="icon-16" alt="" title="Volume" style="image-rendering:pixelated" />
-        <img src="https://win98icons.alexmeub.com/icons/png/modem-0.png" class="icon-16" alt="" title="Network" style="image-rendering:pixelated" />
+      <div class="tray" style="display: flex; align-items: center; gap: 4px;">
+        <div style="border: 1px inset #fff; background: #fff; padding: 2px 4px; font-size: 11px; color: #000; display: flex; align-items: center; width: 140px; overflow: hidden; white-space: nowrap; font-family: 'MS Sans Serif', sans-serif;">
+          <marquee scrollamount="3" id="now-playing-marquee">🎵 now playing: ruby</marquee>
+        </div>
+        <button class="btn" id="music-prev" style="padding: 1px 6px; font-size: 10px;">&#9668;</button>
+        <button class="btn" id="music-toggle" style="padding: 1px 6px; font-size: 10px; font-weight: bold; width: 24px;">||</button>
+        <button class="btn" id="music-next" style="padding: 1px 6px; font-size: 10px;">&#9658;|</button>
         <div class="time" id="clock">12:00 PM</div>
       </div>
     </div>

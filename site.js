@@ -1,3 +1,5 @@
+
+
 // LaTeX mode toggle
 (function () {
   var KEY = "latexMode";
@@ -68,7 +70,7 @@
     var btn = document.getElementById("latex-toggle");
     if (btn) btn.textContent = on ? "\\end{document}" : "TeX";
     var pfp = document.getElementById("pfp");
-    if (pfp) pfp.src = on ? "images/pfp1.jpg" : "images/pfp.jpg";
+    if (pfp) pfp.src = on ? base + "images/pfp1.jpg" : base + "images/pfp.jpg";
   }
 
   // \author{} \date{} block under the title + colophon at page end
@@ -601,29 +603,231 @@
   apply(isOn());
 
   // click-to-zoom for content images (both modes)
-  var overlay = document.createElement("div");
-  overlay.id = "img-zoom-overlay";
-  overlay.style.cssText =
-    "display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.85);cursor:zoom-out;align-items:center;justify-content:center;padding:24px;";
-  var zoomed = document.createElement("img");
-  zoomed.style.cssText =
-    "max-width:100%;max-height:100%;box-shadow:0 0 24px rgba(0,0,0,0.6);";
-  overlay.appendChild(zoomed);
-  overlay.onclick = function () {
-    overlay.style.display = "none";
-  };
-  document.body.appendChild(overlay);
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") overlay.style.display = "none";
+  if (!document.getElementById("img-zoom-overlay")) {
+    var overlay = document.createElement("div");
+    overlay.id = "img-zoom-overlay";
+    overlay.style.cssText =
+      "display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.85);cursor:zoom-out;align-items:center;justify-content:center;padding:24px;";
+    var zoomed = document.createElement("img");
+    zoomed.style.cssText =
+      "max-width:100%;max-height:100%;box-shadow:0 0 24px rgba(0,0,0,0.6);";
+    overlay.appendChild(zoomed);
+    overlay.onclick = function () {
+      overlay.style.display = "none";
+    };
+    document.body.appendChild(overlay);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") overlay.style.display = "none";
+    });
+  }
+
+  // Bind zoom on initial page load
+  document.querySelectorAll(".blog-content img, .img-container img").forEach(function (img) {
+    if (img._zoomBound) return;
+    img._zoomBound = true;
+    var _overlay = document.getElementById("img-zoom-overlay");
+    var _zoomed = _overlay ? _overlay.querySelector("img") : null;
+    if (!_overlay || !_zoomed) return;
+    img.style.cursor = "zoom-in";
+    img.addEventListener("click", function () {
+      _zoomed.src = img.src;
+      _overlay.style.display = "flex";
+    });
   });
 
-  document
-    .querySelectorAll(".blog-content img, .img-container img")
-    .forEach(function (img) {
+  // --- PJAX Navigation & Global Audio ---
+  // Resolve the site root so audio paths work from any sub-page depth
+  var _siteRoot = (function() {
+    var s = document.currentScript;
+    if (s && s.src) {
+      // e.g. http://localhost:8000/site.js  ->  http://localhost:8000/
+      return s.src.replace(/\/site\.js[^/]*$/, '/').replace(/\/[^/]*\.html\//, '/');
+    }
+    return '/';
+  })();
+
+  const playlist = [
+    { title: "ruby", src: _siteRoot + "public/ruby_beat.mp3" },
+    { title: "lemon tea", src: _siteRoot + "public/lemon_tea.mp3" }
+  ];
+  let currentTrackIdx = 0;
+  var _clockInterval = null;
+
+  if (!document.getElementById("bg-music")) {
+    var audio = document.createElement("audio");
+    audio.id = "bg-music";
+    audio.src = playlist[currentTrackIdx].src;
+    audio.loop = true;
+    document.body.appendChild(audio);
+  }
+  
+  function updateMediaUI() {
+    var m = document.getElementById("bg-music");
+    var toggle = document.getElementById("music-toggle");
+    if (toggle) toggle.textContent = m.paused ? "►" : "||";
+    var marquee = document.getElementById("now-playing-marquee");
+    if (marquee) marquee.textContent = "🎵 now playing: " + playlist[currentTrackIdx].title;
+  }
+
+  function setupGlobalAudio() {
+    var m = document.getElementById("bg-music");
+    
+    // Bind toggle button
+    var toggleBtn = document.getElementById("music-toggle");
+    if (toggleBtn) {
+      var newToggleBtn = toggleBtn.cloneNode(true);
+      toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+      newToggleBtn.addEventListener("click", function() {
+        if (m.paused) { m.play(); sessionStorage.setItem("mplay", "1"); }
+        else { m.pause(); sessionStorage.setItem("mplay", "0"); }
+        updateMediaUI();
+      });
+    }
+
+    // Bind prev button
+    var prevBtn = document.getElementById("music-prev");
+    if (prevBtn) {
+      var newPrevBtn = prevBtn.cloneNode(true);
+      prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+      newPrevBtn.addEventListener("click", function() {
+        currentTrackIdx = (currentTrackIdx - 1 + playlist.length) % playlist.length;
+        m.src = playlist[currentTrackIdx].src;
+        m.play();
+        sessionStorage.setItem("mplay", "1");
+        updateMediaUI();
+      });
+    }
+
+    // Bind next button
+    var nextBtn = document.getElementById("music-next");
+    if (nextBtn) {
+      var newNextBtn = nextBtn.cloneNode(true);
+      nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+      newNextBtn.addEventListener("click", function() {
+        currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
+        m.src = playlist[currentTrackIdx].src;
+        m.play();
+        sessionStorage.setItem("mplay", "1");
+        updateMediaUI();
+      });
+    }
+
+    // Also update taskbar active window title on first load
+    var taskbarTitle = document.getElementById("taskbar-title");
+    if (taskbarTitle) {
+      var shortTitle = document.title.split('-')[0].trim();
+      if (!shortTitle.toLowerCase().endsWith('.exe')) shortTitle += '.exe';
+      taskbarTitle.textContent = shortTitle;
+    }
+
+    updateMediaUI();
+  }
+
+  setupGlobalAudio();
+  _startClock();
+  if (sessionStorage.getItem("mplay") === "1") {
+    var m = document.getElementById("bg-music");
+    var p = m.play();
+    if (p !== undefined) p.then(() => updateMediaUI()).catch(function(){});
+  }
+
+  function _updateClock() {
+    var clock = document.getElementById("clock");
+    if (!clock) return;
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes().toString().padStart(2, "0");
+    var ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    clock.textContent = hours + ":" + minutes + " " + ampm;
+  }
+
+  function _startClock() {
+    if (_clockInterval) clearInterval(_clockInterval);
+    _updateClock();
+    _clockInterval = setInterval(_updateClock, 1000);
+  }
+
+  function _bindZoom() {
+    var overlay = document.getElementById("img-zoom-overlay");
+    var zoomed = overlay ? overlay.querySelector("img") : null;
+    if (!overlay || !zoomed) return;
+    document.querySelectorAll(".blog-content img, .img-container img").forEach(function(img) {
+      if (img._zoomBound) return;
+      img._zoomBound = true;
       img.style.cursor = "zoom-in";
-      img.addEventListener("click", function () {
+      img.addEventListener("click", function() {
         zoomed.src = img.src;
         overlay.style.display = "flex";
       });
     });
+  }
+
+  function handlePjax(html) {
+    var dp = new DOMParser();
+    var doc = dp.parseFromString(html, "text/html");
+    
+    var curDesk = document.querySelector(".desktop");
+    var newDesk = doc.querySelector(".desktop");
+    if (curDesk && newDesk) curDesk.innerHTML = newDesk.innerHTML;
+    
+    var curLh = document.querySelector("body > .latex-hide");
+    var newLh = doc.querySelector("body > .latex-hide");
+    if (curLh && newLh) curLh.innerHTML = newLh.innerHTML;
+    
+    // Do NOT replace the taskbar (keeps audio playing & events bound)
+    document.title = doc.title;
+    
+    // Update the active window title in taskbar
+    var taskbarTitle = document.getElementById("taskbar-title");
+    if (taskbarTitle) {
+      var shortTitle = document.title.split('-')[0].trim();
+      if (!shortTitle.toLowerCase().endsWith('.exe')) shortTitle += '.exe';
+      taskbarTitle.textContent = shortTitle;
+    }
+    
+    if (isOn()) decorate();
+    
+    // Clock: update immediately (interval already running from _startClock)
+    _updateClock();
+
+    // Re-bind zoom on newly injected blog images
+    _bindZoom();
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target.closest("a");
+    if (!a || !a.href || a.target === "_blank") return;
+    if (a.hasAttribute("download")) return;
+    try {
+      var u = new URL(a.href);
+      if (u.origin !== location.origin) return;
+      if (!/\.html?$|\/$/.test(u.pathname)) return;
+      if (u.pathname === location.pathname && u.hash) return;
+      
+      e.preventDefault();
+      fetch(u.href).then(function(res) {
+        if (!res.ok) throw new Error("Navigation failed: " + res.status);
+        var type = res.headers.get("content-type") || "";
+        if (!type.includes("text/html")) throw new Error("Not an HTML page");
+        return res.text();
+      }).then(function(html) {
+        history.pushState(null, "", u.href);
+        handlePjax(html);
+        window.scrollTo(0, 0);
+      }).catch(function(err) {
+        location.href = a.href;
+      });
+    } catch(err) {
+      location.href = a.href;
+    }
+  });
+
+  window.addEventListener("popstate", function(e) {
+    fetch(location.href).then(function(res) { return res.text(); }).then(function(html) {
+      handlePjax(html);
+    });
+  });
+
 })();
