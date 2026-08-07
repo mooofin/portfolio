@@ -10,9 +10,9 @@ Currently, the security response team has extracted a network traffic capture fr
 
 The handout contains 3 files:
 
-- `Evidence.zip` — password protected
-- `Game.zip` — the rhythm game folder
-- `traffic.pcapng` — network capture from Tsuki's machine
+- `Evidence.zip` - password protected
+- `Game.zip` - the rhythm game folder
+- `traffic.pcapng` - network capture from Tsuki's machine
 
 Extracting `Game.zip` reveals:
 
@@ -27,7 +27,7 @@ Game/
 
 ---
 
-## Question 1 — MD5 hash of the main executable
+## Question 1 - MD5 hash of the main executable
 
 **Question:** What is the MD5 hash of the main executable of the rhythm game downloaded by the victim?
 
@@ -41,7 +41,7 @@ Opening `traffic.pcapng` in Wireshark, filter:
 http.request.uri contains ".exe"
 ```
 
-Two exe downloads are visible — `TsukiRhythmGame.exe` (26 MB from `192.168.117.1:3000`) and `Updater.exe` (268 KB from `192.168.117.1:8000`).
+Two exe downloads are visible - `TsukiRhythmGame.exe` (26 MB from `192.168.117.1:3000`) and `Updater.exe` (268 KB from `192.168.117.1:8000`).
 
 ![Wireshark filter showing exe downloads](photos/qsn1-1.png)
 
@@ -59,7 +59,7 @@ Output confirms: `1eeb9c6ed21903f22e1b28dbcbc5c01c`
 
 ---
 
-## Question 2 — AES Key and IV used to encrypt/decrypt beatmaps
+## Question 2 - AES Key and IV used to encrypt/decrypt beatmaps
 
 **Question:** What are the Key and IV used by the rhythm game to encrypt and decrypt the beatmaps?
 
@@ -355,7 +355,7 @@ if __name__ == '__main__':
 
 ---
 
-## Question 3 — MD5 hash of the malicious payload bytecode
+## Question 3 - MD5 hash of the malicious payload bytecode
 
 **Question:** What is the MD5 hash of the malicious payload bytecode ultimately decrypted by the rhythm game?
 
@@ -369,9 +369,9 @@ Going back to the decompiled `main.py`, one line stood out:
 active_notes = [n for n in chart_data.get('notes', []) if n.get('type', 1) != 99]
 ```
 
-Type-99 notes are silently filtered out before the game renders anything. They never appear on screen — the player never sees them. That's suspicious.
+Type-99 notes are silently filtered out before the game renders anything. They never appear on screen - the player never sees them. That's suspicious.
 
-Decrypting `Eggdrasil.tsuki` and pulling all type-99 notes revealed **3096 of them**, all with `time: 0`. No extra fields — just `lane` values (0–3). Two bits each. That's a bitstream.
+Decrypting `Eggdrasil.tsuki` and pulling all type-99 notes revealed **3096 of them**, all with `time: 0`. No extra fields - just `lane` values (0–3). Two bits each. That's a bitstream.
 
 Reconstructing the payload by reading lane values as 2-bit chunks in order:
 
@@ -398,13 +398,13 @@ payload = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits)//8*8, 8))
 print(hashlib.md5(payload).hexdigest())
 ```
 
-774 bytes come out. The header is `\xe3` — Python marshal code object. Raw bytecode, no `.pyc` header. Someone hid an executable Python payload inside fake rhythm game notes.
+774 bytes come out. The header is `\xe3` - Python marshal code object. Raw bytecode, no `.pyc` header. Someone hid an executable Python payload inside fake rhythm game notes.
 
 MD5 confirms: `aed1e4e8b9061e19506848ca579e46ac`
 
 ---
 
-## Question 4 — C2 server listening port
+## Question 4 - C2 server listening port
 
 **Question:** The attacker used the rhythm game to implant a C2 client on the victim's computer. What is the listening port of the C2 server it connects back to?
 
@@ -412,9 +412,9 @@ MD5 confirms: `aed1e4e8b9061e19506848ca579e46ac`
 
 ### Solution
 
-The payload bytecode downloads `Updater.exe` from `192.168.117.1:8000` and executes it. Looking at `traffic.pcapng`, there's a TCP conversation from the victim back to `192.168.117.1:4444` — the classic reverse shell port. That's the C2 server.
+The payload bytecode downloads `Updater.exe` from `192.168.117.1:8000` and executes it. Looking at `traffic.pcapng`, there's a TCP conversation from the victim back to `192.168.117.1:4444` - the classic reverse shell port. That's the C2 server.
 
-Sorting the TCP conversations by Port B in Wireshark confirms the session — `192.168.117.135` connecting back to `192.168.117.1:4444`, 94 packets, 93 KB, lasting 66 seconds. Starts right after `Updater.exe` was downloaded.
+Sorting the TCP conversations by Port B in Wireshark confirms the session - `192.168.117.135` connecting back to `192.168.117.1:4444`, 94 packets, 93 KB, lasting 66 seconds. Starts right after `Updater.exe` was downloaded.
 
 ![Wireshark TCP conversations showing port 4444 C2 session](photos/qsn4-1.png)
 
@@ -422,7 +422,7 @@ Port `4444` confirmed.
 
 ---
 
-## Question 5 — Local file read by Updater.exe for encryption key material
+## Question 5 - Local file read by Updater.exe for encryption key material
 
 **Question:** What local file does `Updater.exe` read before communicating with the C2 server, used as key material for encryption?
 
@@ -430,7 +430,7 @@ Port `4444` confirmed.
 
 ### Solution
 
-We opened `Updater.exe` in IDA Pro and let the autoanalysis finish. The binary imports `BCryptOpenAlgorithmProvider`, `BCryptGenerateSymmetricKey`, `BCryptEncrypt`, and `BCryptDecrypt` from `bcrypt.dll`, so AES encryption is happening somewhere. It also imports `connect`, `send`, and `recv` from `WS2_32` — classic reverse shell plumbing.
+We opened `Updater.exe` in IDA Pro and let the autoanalysis finish. The binary imports `BCryptOpenAlgorithmProvider`, `BCryptGenerateSymmetricKey`, `BCryptEncrypt`, and `BCryptDecrypt` from `bcrypt.dll`, so AES encryption is happening somewhere. It also imports `connect`, `send`, and `recv` from `WS2_32` - classic reverse shell plumbing.
 
 Interestingly, `CreateFileW` and `ReadFile` only show up in library helper functions, not in any user code. That's a red flag. We checked `main()` and found why: the binary resolves `CreateFileA` and `ReadFile` **dynamically** at runtime via `GetProcAddress`, storing the results in global function pointers.
 
@@ -443,13 +443,13 @@ qword_140040328 = (__int64)GetProcAddress(ModuleHandleA, ProcName);
 qword_140040330 = (__int64)GetProcAddress(v4, v78);
 ```
 
-This is a simple trick to hide file I/O from static import analysis — the imports tab shows nothing, but the binary can still open and read files at runtime.
+This is a simple trick to hide file I/O from static import analysis - the imports tab shows nothing, but the binary can still open and read files at runtime.
 
 Cross-referencing those two globals (`qword_140040328`, `qword_140040330`) led us to `sub_140006A80`, which is called in `main()` right after the C2 connection is established. Inside, it calls the resolved `CreateFileA` pointer to open a file, checks the size is reasonable, allocates a buffer, then calls the resolved `ReadFile` pointer to read the entire contents into memory.
 
-![sub_140006A80 — GetFileSize and ReadFile via dynamic function pointer](photos/qsn5-2.png)
+![sub_140006A80 - GetFileSize and ReadFile via dynamic function pointer](photos/qsn5-2.png)
 
-The file path isn't passed in as a parameter — `sub_140006A80` calls another function, `sub_1400053B0`, to build the path internally. That function constructs a string one character at a time by pushing integer literals onto a `std::string`. No string constant appears in the binary — another way to dodge static string searches.
+The file path isn't passed in as a parameter - `sub_140006A80` calls another function, `sub_1400053B0`, to build the path internally. That function constructs a string one character at a time by pushing integer literals onto a `std::string`. No string constant appears in the binary - another way to dodge static string searches.
 
 Decoding the byte sequence:
 
@@ -458,17 +458,17 @@ Decoding the byte sequence:
  C  :  \   W   i   n   d   o   w   s   \   h   h  .   e   x   e
 ```
 
-The path is `C:\Windows\hh.exe` — the Windows HTML Help executable that ships with every Windows install.
+The path is `C:\Windows\hh.exe` - the Windows HTML Help executable that ships with every Windows install.
 
-![sub_1400053B0 — path built byte-by-byte, decodes to C:\Windows\hh.exe](photos/qsn5-3.png)
+![sub_1400053B0 - path built byte-by-byte, decodes to C:\Windows\hh.exe](photos/qsn5-3.png)
 
 The file contents are then used in `main()` to build a 256-entry lookup table (`v74`), which maps each unique byte value found in `hh.exe` to its first occurrence index. This table is what gets passed into `sub_140006300` as the key material for AES decryption of C2 commands.
 
-In short: `Updater.exe` reads `C:\Windows\hh.exe` and uses its byte distribution as an encryption key — a living-off-the-land approach where a legitimate, always-present system file acts as a shared secret between implant and server.
+In short: `Updater.exe` reads `C:\Windows\hh.exe` and uses its byte distribution as an encryption key - a living-off-the-land approach where a legitimate, always-present system file acts as a shared secret between implant and server.
 
 ---
 
-## Question 6 — Original MD5 hash of the file when read by Updater.exe
+## Question 6 - Original MD5 hash of the file when read by Updater.exe
 
 **Question:** What was the original MD5 hash of this file when it was read by Updater.exe?
 
@@ -504,7 +504,7 @@ length = struct.unpack_from('>I', raw, 0)[0]   # 0x4800 = 18432 bytes
 key = bytes.fromhex('1337c0de')
 decoded = bytes(b ^ key[i % 4] for i, b in enumerate(raw[4:4+length]))
 
-print(decoded[:2])          # b'MZ' — valid PE header, confirms correct decode
+print(decoded[:2])          # b'MZ' - valid PE header, confirms correct decode
 print(hashlib.md5(decoded).hexdigest())
 ```
 
@@ -521,7 +521,7 @@ The MZ header at offset 0 confirms we recovered a valid PE file. The 18432-byte 
 
 ---
 
-## Question 7 — First command issued by the attacker via C2
+## Question 7 - First command issued by the attacker via C2
 
 **Question:** After establishing the C2 connection, what was the first command issued and executed by the attacker via the C2 server?
 
@@ -529,67 +529,67 @@ The MZ header at offset 0 confirms we recovered a valid PE file. The 18432-byte 
 
 ### Solution
 
-After sending the XOR'd `hh.exe`, `Updater.exe` enters a receive loop. The C2 server sends back 8 encoded command messages, each length-prefixed with a 4-byte big-endian integer. Each message body is an ASCII string of dot-separated signed decimal integers — each integer is the first-occurrence index of a byte value in `hh.exe`. The malware decodes these by looking up each index in a 256-entry table it built from the file, then executes the resulting command string via `sub_140006720`.
+After sending the XOR'd `hh.exe`, `Updater.exe` enters a receive loop. The C2 server sends back 8 encoded command messages, each length-prefixed with a 4-byte big-endian integer. Each message body is an ASCII string of dot-separated signed decimal integers - each integer is the first-occurrence index of a byte value in `hh.exe`. The malware decodes these by looking up each index in a 256-entry table it built from the file, then executes the resulting command string via `sub_140006720`.
 
 We confirmed this with x64dbg dynamic analysis. Setup:
 
-**Step 1 — Load and set breakpoints**
+**Step 1 - Load and set breakpoints**
 
 `Updater.exe` was opened in x64dbg. Three breakpoints were placed:
 
 | Address | Purpose |
 |---|---|
-| `0x7FF6C0FAAADF` | `call [connect]` — redirect C2 IP |
-| `0x7FF6C0FA6B0B` | `call [CreateFileA]` — redirect hh.exe path |
-| `0x7FF6C0FA6720` | command executor — read decoded command |
+| `0x7FF6C0FAAADF` | `call [connect]` - redirect C2 IP |
+| `0x7FF6C0FA6B0B` | `call [CreateFileA]` - redirect hh.exe path |
+| `0x7FF6C0FA6720` | command executor - read decoded command |
 
 ![x64dbg loaded with Updater.exe at entry point](photos/qsn7-1.png)
 
 ![Breakpoints panel showing all 3 BPs set](photos/qsn7-2.png)
 
-**Step 2 — Replay server**
+**Step 2 - Replay server**
 
 A Python replay server was written to listen on `127.0.0.1:4444`, receive the XOR'd `hh.exe` upload, verify its MD5, then replay all 8 original C2 messages from the PCAP.
 
 ![Replay server extracting 8 C2 messages from PCAP, listening on 127.0.0.1:4444](photos/qsn7-3.png)
 
-**Step 3 — Redirect C2 connection**
+**Step 3 - Redirect C2 connection**
 
-At the connect BP, `RDX` points to the `sockaddr_in` struct. The IP field at offset `+4` contains `c0 a8 75 01` (192.168.117.1 — the real C2). We overwrote it with `7f 00 00 01` (127.0.0.1) so the malware connects to our replay server instead.
+At the connect BP, `RDX` points to the `sockaddr_in` struct. The IP field at offset `+4` contains `c0 a8 75 01` (192.168.117.1 - the real C2). We overwrote it with `7f 00 00 01` (127.0.0.1) so the malware connects to our replay server instead.
 
-![x64dbg paused at connect BP — call [connect] highlighted, RDX pointing to sockaddr](photos/qsn7-4.png)
+![x64dbg paused at connect BP - call [connect] highlighted, RDX pointing to sockaddr](photos/qsn7-4.png)
 
-![Navigate to dump dialog — entering sockaddr address to inspect IP bytes](photos/qsn7-5.png)
+![Navigate to dump dialog - entering sockaddr address to inspect IP bytes](photos/qsn7-5.png)
 
-**Step 4 — Redirect hh.exe path**
+**Step 4 - Redirect hh.exe path**
 
 At the CreateFileA BP, `RCX` contains the heap pointer to the path string `C:\Windows\hh.exe`. The system's `hh.exe` (40960 bytes) differs from Tsuki's (18432 bytes), so the lookup table would be wrong. We copied Tsuki's recovered `hh.exe` to `C:\Users\ACER\hh.exe` and overwrote the path in memory with the new path bytes (`43 3A 5C 55 73 65 72 73 5C 41 43 45 52 5C 68 68 2E 65 78 65 00`).
 
-![x64dbg at CreateFileA BP — RCX and tooltips showing original path C:\Windows\hh.exe](photos/qsn7-6.png)
+![x64dbg at CreateFileA BP - RCX and tooltips showing original path C:\Windows\hh.exe](photos/qsn7-6.png)
 
-![Memory dump after patch — ASCII column shows C:\Users\ACER\hh at the patched address](photos/qsn7-7.png)
+![Memory dump after patch - ASCII column shows C:\Users\ACER\hh at the patched address](photos/qsn7-7.png)
 
-**Step 5 — Connection established, hh.exe received**
+**Step 5 - Connection established, hh.exe received**
 
-After resuming, the malware connected to `127.0.0.1:4444`, sent the XOR'd `hh.exe`, and the replay server confirmed MD5 `2c8fe78d53c8ca27523a71dfd2938241` — Tsuki's correct `hh.exe` — then sent all 8 C2 messages back.
+After resuming, the malware connected to `127.0.0.1:4444`, sent the XOR'd `hh.exe`, and the replay server confirmed MD5 `2c8fe78d53c8ca27523a71dfd2938241` - Tsuki's correct `hh.exe` - then sent all 8 C2 messages back.
 
 ![Replay server output confirming connection, correct MD5, and all 8 messages sent](photos/qsn7-9.png)
 
-**Step 6 — Command executor hit**
+**Step 6 - Command executor hit**
 
-The malware decoded the first C2 message using the lookup table and called `sub_140006720`. We hit the BP there. At this point `R8` in the hints panel already shows a preview of `\r\nWindows IP Configuration\r\n` — the output of `ipconfig /all` being prepared to send back. The right-hand stack/reference panel confirms the full string.
+The malware decoded the first C2 message using the lookup table and called `sub_140006720`. We hit the BP there. At this point `R8` in the hints panel already shows a preview of `\r\nWindows IP Configuration\r\n` - the output of `ipconfig /all` being prepared to send back. The right-hand stack/reference panel confirms the full string.
 
-![x64dbg at command executor BP — R8 preview and stack panel showing Windows IP Configuration output](photos/qsn7-8.png)
+![x64dbg at command executor BP - R8 preview and stack panel showing Windows IP Configuration output](photos/qsn7-8.png)
 
-The decoded first command was `ipconfig /all`. Its output — hostname `DESKTOP-HRP7SJJ`, all adapter info — was assembled in memory and sent back to the C2 server.
+The decoded first command was `ipconfig /all`. Its output - hostname `DESKTOP-HRP7SJJ`, all adapter info - was assembled in memory and sent back to the C2 server.
 
-![ipconfig /all output confirming command execution — hostname DESKTOP-HRP7SJJ](photos/qsn7-10.png)
+![ipconfig /all output confirming command execution - hostname DESKTOP-HRP7SJJ](photos/qsn7-10.png)
 
 **Answer: `ipconfig /all`**
 
 ---
 
-## Question 8 — Return result of the whoami command
+## Question 8 - Return result of the whoami command
 
 **Question:** What was the return result of the `whoami` command executed by the attacker?
 
@@ -599,9 +599,9 @@ The decoded first command was `ipconfig /all`. Its output — hostname `DESKTOP-
 
 #### Reversing the C2 encoding scheme
 
-The C2 traffic is not just indexed lookups into `hh.exe` — the full encoding scheme needed to be reversed to decrypt both commands and their responses.
+The C2 traffic is not just indexed lookups into `hh.exe` - the full encoding scheme needed to be reversed to decrypt both commands and their responses.
 
-In IDA Pro, `sub_140004D80` (the parser called by the C2 decoder) reveals the exact logic. At line 111, it checks whether the first byte of each token equals `45` — the ASCII code for `-`:
+In IDA Pro, `sub_140004D80` (the parser called by the C2 decoder) reveals the exact logic. At line 111, it checks whether the first byte of each token equals `45` - the ASCII code for `-`:
 
 ```c
 if ( *(_BYTE *)v13 == 45 )   // token starts with '-'
@@ -620,7 +620,7 @@ else
 }
 ```
 
-![IDA Pro sub_140004D80 — line 111 sign-check branch: negative = raw byte, positive = hh.exe index lookup](photos/qsn8-1.png)
+![IDA Pro sub_140004D80 - line 111 sign-check branch: negative = raw byte, positive = hh.exe index lookup](photos/qsn8-1.png)
 
 So the encoding scheme is:
 - **Positive integer** → index into `hh.exe`; the byte at that position is the decoded value
@@ -669,7 +669,7 @@ Tsuki's machine hostname is `DESKTOP-GB98L3M` and the logged-in user is `tsuki`.
 
 ---
 
-## Question 9 — New user created by the attacker
+## Question 9 - New user created by the attacker
 
 **Question:** The attacker created a new user on the victim's computer. What are the username and password of this user?
 
@@ -683,15 +683,15 @@ From the full command list decoded in Q8, command 6 is:
 net user aurahack P@ssw0rd /add
 ```
 
-This creates a local Windows user account with username `aurahack` and password `P@ssw0rd`. No further analysis needed — the credentials are plaintext in the decrypted C2 command.
+This creates a local Windows user account with username `aurahack` and password `P@ssw0rd`. No further analysis needed - the credentials are plaintext in the decrypted C2 command.
 
-![All 8 decrypted C2 commands — command 6 shows net user aurahack P@ssw0rd /add](photos/qsn8-2.png)
+![All 8 decrypted C2 commands - command 6 shows net user aurahack P@ssw0rd /add](photos/qsn8-2.png)
 
 **Answer: `aurahack` / `P@ssw0rd`**
 
 ---
 
-## Question 10 — 7th word of the MetaMask wallet seed phrase
+## Question 10 - 7th word of the MetaMask wallet seed phrase
 
 **Question:** By analyzing the retrieved files, what is the 7th word of the MetaMask wallet seed phrase saved by the victim?
 
@@ -701,7 +701,7 @@ This creates a local Windows user account with username `aurahack` and password 
 
 After solving Q9, the CTF provided `Evidence.zip` with password `18ae3a54-1c1a-4f44-adca-9884acb80d9a`. Extracting it yields a single file: `Cache0000.bin` (48 MB).
 
-The `RDP8bmp` magic header identifies this as a **Windows RDP bitmap cache** file — tiles of screen content cached during the attacker's RDP session (which they enabled via the `REG ADD ... fDenyTSConnections` command in Q7). These tiles contain fragments of whatever was visible on Tsuki's screen during the RDP session.
+The `RDP8bmp` magic header identifies this as a **Windows RDP bitmap cache** file - tiles of screen content cached during the attacker's RDP session (which they enabled via the `REG ADD ... fDenyTSConnections` command in Q7). These tiles contain fragments of whatever was visible on Tsuki's screen during the RDP session.
 
 We used [bmc-tools](https://github.com/ANSSI-FR/bmc-tools) (ANSSI-FR) to extract and reassemble the tiles into a collage:
 
@@ -709,15 +709,15 @@ We used [bmc-tools](https://github.com/ANSSI-FR/bmc-tools) (ANSSI-FR) to extract
 python bmc-tools.py -s Cache0000.bin -d bmc_out -b
 ```
 
-![Terminal — bmc-tools extracting 2943 tiles and generating collage](photos/qsn10-2.png)
+![Terminal - bmc-tools extracting 2943 tiles and generating collage](photos/qsn10-2.png)
 
-This produced a 4096×2944 collage BMP from 2943 cached screen tiles:
+This produced a 4096�-2944 collage BMP from 2943 cached screen tiles:
 
 ![bmc-tools collage showing reconstructed RDP screen fragments including MetaMask](photos/qsn10-3.png)
 
 Examining the collage closely, a MetaMask "Save your Secret Recovery Phrase" dialog is visible in the top strip, showing all 12 seed words in numbered order:
 
-![Cropped seed phrase strip — all 12 words visible](photos/qsn10-4.png)
+![Cropped seed phrase strip - all 12 words visible](photos/qsn10-4.png)
 
 ```
 1. labor    2. trophy   3. emerge   4. material   5. divorce   6. input
@@ -728,7 +728,7 @@ The 7th word is **`faint`**.
 
 ---
 
-## Question 11 — Victim's Ethereum wallet address
+## Question 11 - Victim's Ethereum wallet address
 
 **Question:** What is the victim's Ethereum wallet address?
 
@@ -758,7 +758,7 @@ The `eth_account` library handles BIP-39 mnemonic → seed → BIP-44 HD key der
 
 ## Flag
 
-![All 11 questions completed — flag revealed](photos/qsn11-1.png)
+![All 11 questions completed - flag revealed](photos/qsn11-1.png)
 
 ```
 r3ctf{F1NaI1Y-yOu-fIND-th3-53CReT-BEh1Nd_rhythm_@Nd_Trace_them0}

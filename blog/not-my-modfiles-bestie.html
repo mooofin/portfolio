@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="L3AK CTF - Not my mod files bestie (DFIR) - DFIR CTF writeup on ModCollabTool, a Haskell-in-disguise malware targeting a Dark Souls Remastered modder" name="description"/>
+<title>L3AK CTF - Not my mod files bestie (DFIR) - mooofin</title>
+<meta property="og:title" content="L3AK CTF - Not my mod files bestie (DFIR)" />
+<meta property="og:description" content="DFIR CTF writeup: memory forensics, a GHC/Haskell-compiled encryption VM, and a planted artifact hidden inside Dark Souls Remastered map files." />
+<meta property="og:image" content="https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie/preview-banner.jpg" />
+<meta property="og:type" content="article" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie/preview-banner.jpg" />
+<link href="../style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" rel="stylesheet"/>
+<link href="../public/favicon.ico" rel="icon"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" />
+<style>
+    .blog-content {
+      font-family: "Verdana", sans-serif;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .blog-content h1,
+    .blog-content h2,
+    .blog-content h3 {
+      color: #000080;
+      margin-top: 20px;
+      border-bottom: 1px dotted #ccc;
+      padding-bottom: 5px;
+    }
+
+    .blog-content p {
+      margin-bottom: 15px;
+    }
+
+    .blog-content img {
+      max-width: 100%;
+      border: 1px solid #999;
+      padding: 4px;
+      background: #fff;
+    }
+
+    .blog-content video {
+      max-width: 100%;
+      border: 1px solid #999;
+      padding: 4px;
+      background: #fff;
+    }
+
+    .blog-content .img-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .blog-content pre {
+      background: #fbfbf8;
+      border: 1px solid #cfcfc7;
+      padding: 12px 14px;
+      overflow-x: auto;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      box-shadow: inset 0 0 0 1px #f4f4ef;
+    }
+
+    .blog-content p code,
+    .blog-content li code,
+    .blog-content h1 code,
+    .blog-content h2 code,
+    .blog-content h3 code,
+    .blog-content h4 code {
+      background: #f7f7f3;
+      border: 1px solid #e4e4db;
+      color: #1f4aa8;
+      padding: 1px 5px;
+      font-family: "Courier New", monospace;
+      font-size: 0.95em;
+      font-weight: 700;
+    }
+
+    .blog-content pre code {
+      background: none;
+      border: none;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+      font-weight: 400;
+    }
+
+    .blog-content blockquote {
+      border-left: 4px solid #000080;
+      padding-left: 10px;
+      color: #555;
+      font-style: italic;
+      margin: 15px 0;
+    }
+
+    .blog-meta {
+      color: #666;
+      font-size: 11px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+
+    .hljs { background: #fbfbf8; color: #111; }
+    .hljs-keyword,
+    .hljs-selector-tag,
+    .hljs-section {
+      color: #1f4aa8;
+      font-weight: 700;
+    }
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-addition {
+      color: #0f6b3c;
+    }
+    .hljs-comment {
+      color: #6e6e6e;
+      font-style: italic;
+    }
+    .hljs-number,
+    .hljs-built_in,
+    .hljs-literal {
+      color: #7b3fb3;
+    }
+    .hljs-type,
+    .hljs-meta,
+    .hljs-meta .hljs-keyword {
+      color: #9a4d00;
+    }
+    .hljs-title.class_,
+    .hljs-title.function_,
+    .hljs-params,
+    .hljs-attr {
+      color: #111;
+    }
+    .hljs-deletion {
+      color: #a13131;
+    }
+  </style>
+</head>
+<body>
+<div class="desktop flex gap-16" style="flex-direction: row">
+<div class="sidebar-95">
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/computer-3.png"/>
+            Navigation
+          </div>
+<div class="window-body" style="padding: 0">
+<ul class="list-group" style="border: none">
+<li class="list-group-item">
+<a href="../index.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"/>
+                  Home
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../about.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/users-1.png"/>
+                  About Me
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../projects.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"/>
+                  Projects
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../blog.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"/>
+                  Blog
+                </a>
+</li>
+</ul>
+</div>
+</div>
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/gear-0.png"/>
+            Actions
+          </div>
+<div class="window-body" style="padding: 0">
+<ul class="list-group" style="border: none">
+<li class="list-group-item">
+<a href="javascript:history.back()">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/undo-0.png"/>
+                  Go Back
+                </a>
+</li>
+<li class="list-group-item">
+<a href="#" onclick="
+                    window.scrollTo(0, 0);
+                    return false;
+                  ">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"/>
+                  Top of Page
+                </a>
+</li>
+</ul>
+</div>
+</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
+          <img src="../images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
+        </div>
+      </div>
+
+      <div class="content-95">
+<div class="window" style="margin-bottom: 8px">
+<div class="window-body" style="padding: 4px 8px; font-size: 11px">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"/>
+<a href="../index.html">Home</a> &gt;
+            <a href="../blog.html">Blog</a> &gt; L3AK CTF - Not my mod files bestie (DFIR)
+          </div>
+</div>
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"/>
+            L3AK CTF - Not my mod files bestie (DFIR)
+          </div>
+<div class="window-body">
+<div class="blog-meta">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/clock-0.png"/>
+              Posted: 2026-08-02 |
+              <img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/user-0.png"/>
+              Author: Siddharth |
+              <img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"/>
+              Category: DFIR / Reverse Engineering
+            </div>
+<div class="blog-meta">
+<strong>Date:</strong> 2026-08-02 | <strong>Tags:</strong> DFIR, Memory Forensics, Volatility, MemProcFS, GHC/Haskell, IDA, Dark Souls Modding
+</div>
+<div class="blog-content">
+
+<h2 id="challenge-description">Challenge Description</h2>
+
+<p><img alt="Not My Mod Files Bestie - CTF challenge card" src="not-my-modfiles-bestie/chall-photo.png"/></p>
+
+<h2 id="challenge-design-notes">Challenge Design Notes</h2>
+
+<p>I had the pleasure to author a challenge for L3AK CTF 26 for forensics. While making this challenge, i thought of making a standard DFIR investigate qsn via qsn based on a memory dump and maybe a packet capture analysis, tbh nothing out of the blue, and the malware was actually originally a c++ VM based obsfuscator, and thats pretty much it. After that all the news started to come out of how AI agents are getting 0 days buy just propmpting etcetc and i thought of something to make the challenge clanker proof and genuinly fun for humans. And so it began ...</p>
+
+<p>The first issues and thoughts were  was on trying to make the c++ VM hard, i wanted to use some mordern c++ features and something leaning into property based heavily compiled type encryption. This repo <a href="https://github.com/JustasMasiulis/xorstr" rel="nofollow noreferrer noopener" target="_blank">https://github.com/JustasMasiulis/xorstr</a> was basically what i was looking for and my thoughts here were to use NTTP string literals to adapt this repo into my own funny fork if any Agent managed to understand that is was based on that .[<a href="https://blog.ganets.ky/StaticString/" rel="nofollow noreferrer noopener" target="_blank">https://blog.ganets.ky/StaticString/</a>] (C++20) to kill the macro. The literal becomes an NTTP value, it enters the mangled name of the instantiation and as per Itanium ABI[<a href="https://itanium-cxx-abi.github.io/cxx-abi/abi.html" rel="nofollow noreferrer noopener" target="_blank">https://itanium-cxx-abi.github.io/cxx-abi/abi.html</a>] class-type NTTP values encode their bytes something so that the AI cannot see that it uses xorstr's model to encrypt directly and would have to think a bit </p>
+
+<p>This worked out quite well before testing, but i wasn't satisfied since AI could just write a dissassembler with <a href="https://github.com/cea-sec/miasm" rel="nofollow noreferrer noopener" target="_blank">miasm</a> or lift it with <a href="https://github.com/lifting-bits/remill" rel="nofollow noreferrer noopener" target="_blank">remill</a> and <a href="https://github.com/lifting-bits/mcsema" rel="nofollow noreferrer noopener" target="_blank">mcsema</a> and defeat the obsfucation. My main issue here was figuring out writing an symbolic execution script with angr or miasm could be trivial for ai so there's that as well [https://miasm.re/blog/2016/09/03/zeusvm_analysis.html] something like this could be made up for this challenge trivially by a smart harness, last thing i wanted was to throw the binary into ida pro and let it manage all the reversing, after all there were many good ida plugins made by smarter people than me to figure and resolve all these techniques : <a href="https://github.com/kweatherman/ida_missinglink" rel="nofollow noreferrer noopener" target="_blank">https://github.com/kweatherman/ida_missinglink</a> etc etc which would be easy to identify ...</p>
+
+<p>Then while talking with my friends <a href="https://github.com/valium007" rel="nofollow noreferrer noopener" target="_blank">valium</a> and <a href="https://thiazikara.github.io/" rel="nofollow noreferrer noopener" target="_blank">cortexauth</a> about reversing a VM, valium sent a binary to reverse while we were arguing about dynamic debugging frameworks to devirtualise a VM based crackme and he said something which caught my interest</p>
+
+<p><img alt="photos-1" src="not-my-modfiles-bestie/photos-1.png"/></p>
+
+<p>and this part especially</p>
+
+<p><img alt="photos-2" src="not-my-modfiles-bestie/photos-2.png"/></p>
+
+<p>Ive had heard about path explosion but had no idea how does that work internally so i read the paper he sent</p>
+
+<p><a href="https://www.sciopen.com/article/10.32604/cmc.2025.062743" rel="nofollow noreferrer noopener" target="_blank">https://www.sciopen.com/article/10.32604/cmc.2025.062743</a></p>
+
+<p>Think about what a symbolic enginedoes- it explores all paths through a program, building path constraints at each branch which we can narrow down to find the constrainsts to reach the path we need, which can be a flag or some basic block wtv.</p>
+
+<p>Now write Collatz as a loop;</p>
+
+<pre><code>while (n != 1) {
+    if (n % 2 == 0) n = n / 2;
+    else n = 3 * n + 1;
+}</code></pre>
+
+<p>Now u can use any symbolic engine of your wish to symbolically execute this with n as an unconstrained symbolic integer. At every iteration you fork on n % 2 == 0. The path tree branches infinitely, to determine whether a path terminates (reaches n == 1), you'd need to prove the Collatz conjecture for that class of inputs</p>
+
+<p>This is what is called as an path explosion since collatz has no mergeable structure because the even/odd paths feed back into each other nonlinearly</p>
+
+<p>Now how could i do this to twarth all the sloppers?? Enter liquidhaskell and n ranked polymorphics.</p>
+
+<p><a href="https://ucsd-progsys.github.io/liquidhaskell/" rel="nofollow noreferrer noopener" target="_blank">https://ucsd-progsys.github.io/liquidhaskell/</a></p>
+
+<p>This was as close i could emulate the avoidance of being solved by symbolic solvers because of how haskell is built, these decompilers today are very alien to haskells decompilation, read this for more info - <a href="https://www.reddit.com/r/haskell/comments/iqz0l/reverse_engineering_of_compiled_haskell/" rel="nofollow noreferrer noopener" target="_blank">https://www.reddit.com/r/haskell/comments/iqz0l/reverse_engineering_of_compiled_haskell/</a></p>
+
+<p>GHC compiles to Spineless Tagless G-machine, and the ret and jumps are evaluated to into heap-allocated closures via an info pointer and the best part is the stack is owned by the GHC and "returning" is entering a continuation closure so this will get resolved into a blob of indirect jumps which we will see in the writeup.</p>
+
+<p>Now the best ways to form logic about reversing is to xref the data blocks and see how the call with the arguments etc and for this haskell can help, an unevaluated expression is a thunk which is a heap object whose info pointer initially points to the evaluation code. First entry evaluates it, then overwrites the info pointer to point at the value. So the same indirect jump target mutates at runtime</p>
+
+<p>Terminating the basic blocks were intresting, for ida this jmp [rax+offset] with no recoverable jump table will not be correct. case on an algebraic type enters the scrutinee, which then jumps to the correct case alternative via a return vector or tagged pointer (if im not mistaken)</p>
+
+<p>And the best part for the last no C ABI frames.</p>
+
+<p>Now the malware was done and i was still thinking about the later parts of the DFIR challenge, i mainly tend to avoid DFIR challenge's with only the answer as the flag because it dosent built an intuition for the player to how to see and look at things. Some time ago I played r3kaCTF and the theme was about a game dev loosing their files, I have some experince is modding fromsoftware games and loves darksouls remastered and maybe it was time to bring those together to make a CTF challenge.</p>
+
+<p>Since the modding utils and tools dont have an MCP's and people can't just vibe it but need to actually look up a youtube guide or read some reddit comments , join a the community discord for these stuff and read and find out like how CTF's are meant to be , seemed like a good way ahead to make a challenge than a PCAP sorta way . These are the main tools needed</p>
+
+<p>Smithbox: a multi-purpose GUI tool with support for most FromSoftware games. Primarily for editing maps, parameters and text.<br/>
+WitchyBND: a unpacking/packing tool used to unpack encrypted or compressed files inside BNDs, the generic archive format for game files.<br/>
+Soulstruct: a multi-purpose GUI tool with a focus on Dark Souls, Dark Souls: Remastered and Bloodborne. Edits maps, events, parameters, text, and ESD.<br/>
+DarkScript: a GUI tool for editing EMEVD files, Fromsoft's event script format.</p>
+
+<p>And there are a lot of video guides which are helpful on what to do - <a href="https://www.youtube.com/watch?v=V76X6tDEK7Q" rel="nofollow noreferrer noopener" target="_blank">https://www.youtube.com/watch?v=V76X6tDEK7Q</a>, this one specifically is a really nice video using the OP's own tool called soulstruct.</p>
+
+<h2 id="funny-moments">During the CTF bloopers</h2>
+
+<p>1) One of the players came close till the 6th qsn out of 7, and was having trouble parsing everything by hand or AI(this team got banned for slopping on another challenge), the encrypted files were not parsed properly it seems, maybe they should have gooled how to parse havoc engine file formats and these is an entire repo based on what to do exactly for each files...</p>
+
+<p><a href="https://github.com/soulsmods/Paramdex" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/Paramdex</a> for the info if they wanted to give it to the clanker or maybe a whole entire library for <a href="https://github.com/soulsmods/SoulsFormatsNEXT" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/SoulsFormatsNEXT</a> ..</p>
+
+<p><img alt="photos3" src="not-my-modfiles-bestie/photos3.png"/></p>
+
+<p>2) We had a team who got till the 7th qsn and was trying to parse the files again but they actually were right, i didnt ask them for any solve scripts because this was the first time someone was this close to doing it, so i helped them by givng the link for <a href="https://github.com/soulsmods/SoulsFormatsNEXT" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/SoulsFormatsNEXT</a> and asked them to see what they were doing wrong for the files and they could have gotten the first blood for the challenge so i hyped them up.</p>
+
+<p>But he said we wont submit the flag? and uhm and didnt bother to reply for the next minutes, and it should go to people who were hardworking ... And he said he spent around 88 million output tokens on GPT 5.6 sol high combined with a army of agents who were talking to each other and trying to figure it out, the exact agent setup used to cross talk were</p> But credit where credit is due , 100 points for honesty 
+
+<div class="img-container">
+<img alt="photos4" src="not-my-modfiles-bestie/photos4.png"/>
+<p style="font-size: 0.85rem; font-style: italic; margin-top: 4px; text-align: center;"><em>agentic setup used to reverse the malware</em></p>
+</div>
+
+<p>3) This one team did actually use their agents to rebuilt the repos mentioned above when they could have just googled and made a sort of python library to interact with the files,and they got all the parts except the coordinates correct which was so close bc no one made it till far. Since they were using python to interact it had miscl they forgot about the endiness or their library was trying to extract the files but not keeping the refernce model valid for the attackers placed model, it's hard to know if you're writing your own library with AI, but 20 minutues of googling was all it needs.</p>
+
+<p>Eventually this team also got banned for slopping.</p>
+
+<p><a href="https://github.com/katalash/DSLuaDecompiler" rel="nofollow noreferrer noopener" target="_blank">https://github.com/katalash/DSLuaDecompiler</a> - Lua/HavokScript decompiler for Dark Souls/Bloodborne/Sekiro AI lua files and Havok behavior scripts (hks)</p>
+
+<p><a href="https://github.com/soulsmods/DSMapStudio" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/DSMapStudio</a> - A standalone map/level editor for Demon's Souls, Dark Souls 1/2/3, Bloodborne, Sekiro, and Elden Ring</p>
+
+<h1 id="writeup">Writeup :)</h1>
+
+<p>We are given 3 things in the handout, eml a zipped protected folder called evidence and a memory dump.</p>
+
+<h2 id="q1">Q1: What is the password of Natsume's Windows account?</h2>
+
+<p>windows stores passwords ans NTLM and lets use volatility for extracting the hash.</p>
+
+<p><img alt="qsn1-1" src="not-my-modfiles-bestie/qsn1-1.png"/></p>
+
+<p>nastume's hash is: natsume 1001&nbsp;&nbsp;&nbsp;&nbsp;aad3b435b51404eeaad3b435b51404ee&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;afe5244a02f5443c41893a5dd8593ef1</p>
+
+<p>we can now crack this with crackstation.</p>
+
+<p><img alt="qsn1-2" src="not-my-modfiles-bestie/qsn1-2.png"/></p>
+
+<p>the password is sukii.</p>
+
+<h2 id="q2">Q2: What is the name of the malicious executable found on Natsume's machine?</h2>
+
+<p>First instinct is pslist, see what's running.</p>
+
+<p><img alt="qsn2-1" src="not-my-modfiles-bestie/qsn2-1.png"/></p>
+
+<p>Only notepad.exe stands out as user-launched.</p>
+
+<p>Luckily there's another forensic artifact that can help us called shimcahce. The <strong>Shimcache</strong> (AppCompatCache) is a kernel-maintained list in the registry that tracks files accessed by the OS loader. It persists across reboots and process exits.</p>
+
+<p>Vol3's <code>windows.shimcachemem</code> plugin reads the in-memory shimcache (more complete than the on-disk registry hive since unflushed entries are still in kernel memory):</p>
+
+<p><img alt="qsn2-2" src="not-my-modfiles-bestie/qsn2-2.png"/></p>
+
+<p>Order 7 shows <code>C:\Users\natsume\Desktop\ModCollabTool.exe</code> with Last Modified <code>2026-07-11 17:23:36 UTC</code>. That's our malware.</p>
+
+<p>Answer: <strong>ModCollabTool.exe</strong></p>
+
+<hr/>
+
+<p>Shimcache lives at <code>SYSTEM\CurrentControlSet\Control\SessionManager\AppCompatCache\AppCompatCache</code>. Windows writes it to the registry only on shutdown, so if you parse the on-disk hive from a live machine you'll miss everything from the current session. The memory dump catches what hasn't been flushed yet, which is why <code>windows.shimcachemem</code> finds ModCollabTool even though it ran and exited.<br/>
+Note: on Windows 10, shimcache records a file the moment it's visible to the OS loader, not necessarily when it actually ran. Browsing to the Desktop in Explorer can shim an exe you never double-clicked. So shimcache proves the file existed on disk and was seen by the system, not that it executed. For execution proof we need <a href="https://medium.com/@boutnaru/the-windows-forensic-journey-bam-background-activity-moderator-729970b43e6c" rel="nofollow noreferrer noopener" target="_blank">BAM</a> or <a href="https://isc.sans.edu/diary/Forensic+Value+of+Prefetch/29168" rel="nofollow noreferrer noopener" target="_blank">prefetch</a>.</p>{read these amazing blogs}
+
+<h2 id="q3">Q3: What password did Natsume use to extract the tool sent by the attacker?</h2>
+
+<p>This qsn was based on this amazing <a href="https://www.sans.org/blog/analysis-user-data-vads-extraction-precise-data-notepad-memory-hunting-malware-behavior" rel="nofollow noreferrer noopener" target="_blank">paper</a> written by <a href="https://www.sans.org/profiles/abdelrhman-mohamed" rel="nofollow noreferrer noopener" target="_blank">Abdelrhman Mohamed</a> and <a href="https://x.com/Azr43lKn1ght" rel="nofollow noreferrer noopener" target="_blank">Azr43lKn1ght</a>.</p>
+
+<p>Notepad is open in the pslist, Natsume wrote the password down there.</p>
+
+<p>We'll use MemProcFS, it mounts a memory dump as a virtual filesystem, exposing processes, threads, and memory regions as browsable files and directories. It needs Dokany (a Windows kernel filesystem driver) installed as a dependency grab it from <a href="https://github.com/dokan-dev/dokany/releases" rel="nofollow noreferrer noopener" target="_blank">https://github.com/dokan-dev/dokany/releases</a>.</p>
+
+<p>But without the system's DTB (Directory Table Base / CR3 register), MemProcFS can't locate the Windows kernel and fails:</p>
+
+<p><img alt="qsn3-1" src="not-my-modfiles-bestie/qsn3-1.png"/></p>
+
+<p>DTB is the physical address of the page directory (how the CPU translates virtual addresses. MemProcFS needs it to walk the page tables and reconstruct process memory.) Get it from Vol3's <code>windows.info</code>:</p>
+
+<p><img alt="qsn3-2" src="not-my-modfiles-bestie/qsn3-2.png"/></p>
+
+<p>DTB = <code>0x1ad000</code>. Pass it explicitly:</p>
+
+<pre><code>MemProcFS.exe -device memdump.raw -mount M: -dtb 0x1ad000</code></pre>
+
+<p><img alt="qsn3-3" src="not-my-modfiles-bestie/qsn3-3.png"/></p>
+
+<p>Mounted at <code>M:\</code>. MemProcFS synthesizes a full kernel dump at <code>M:\memory.dmp</code>. Open that in WinDbg - gives us a real kernel debugging session with full cross-process memory access:</p>
+
+<p><img alt="qsn3-4" src="not-my-modfiles-bestie/qsn3-4.png"/></p>
+
+<p>Find notepad and switch into its virtual address space:</p>
+
+<pre><code>!process 0 0 notepad.exe
+.process /p /r ffff9b0e630c3080</code></pre>
+
+<p><img alt="qsn3-5" src="not-my-modfiles-bestie/qsn3-5.png"/></p>
+
+<p>Now enumerate notepad's heap to understand the memory layout. <code>!heap -a</code> walks every heap chunk and prints its address, size, and flags:</p>
+
+<p><img alt="qsn3-6" src="not-my-modfiles-bestie/qsn3-6.png"/></p>
+
+<p>u can see that <code>busy extra user_flag</code> chunks stand out, Windows sets <code>user_flag</code> on heap blocks that carry application-defined metadata, like text buffer allocations. These are where Notepad stores its content:</p>
+
+<p><img alt="qsn3-7" src="not-my-modfiles-bestie/qsn3-7.png"/></p>
+
+<p><img alt="qsn3-8" src="not-my-modfiles-bestie/qsn3-8.png"/></p>
+
+<p>Navigate the Memory pane to the address of that chunk and the password is there in UTF-16LE:</p>
+
+<p><img alt="qsn3-9" src="not-my-modfiles-bestie/qsn3-9.png"/></p>
+
+<p>There is another approach - Volatility 2 has a <code>vadtree</code> plugin that can render the VAD tree as a dot graph. Sadly it did not work on this dump. Windows on build 19041 encrypts the KDBG structure, so Vol2's profile-based symbol resolution fails completely - it cannot locate <code>EPROCESS</code> or walk the VAD tree. Vol3 avoids this by using type layers instead of KDBG, which is why we went with <code>windows.vadinfo</code> above.</p>
+
+<p>To help visualise what the VAD tree actually looks like and how this forensic process works, here is a short animation:</p>
+
+<div class="img-container">
+<video controls="" src="not-my-modfiles-bestie/qsn3-vad-sound.mp4" width="100%"></video>
+</div>
+
+<p>This isnt entirely accurate at all, but the focus is on VAD as a whole and how the vad plugin works.</p>
+
+<p>Answer: <strong>vX#82mK$pL@3nR!qZ9wT</strong></p>
+
+<p>Alternate solution (credit <a href="https://github.com/houssem0x1" rel="nofollow noreferrer noopener" target="_blank">houssem0x1</a>) - instead of reading heap content via WinDbg, dump the process memory and run strings on it directly, keeping the UTF-16LE encoding Windows uses in mind:</p>
+
+<p><img alt="qsn3 alternate solution - dumping process memory with Volatility3 and strings" src="not-my-modfiles-bestie/qsn3-alt-solution.png"/></p>
+
+<h2 id="q4">Q4: What is the master encryption key used by ModCollabTool?</h2>
+
+<p>So lets analyse the file now, we have the zip password from solving qsn 3</p>
+
+<p>scaning on virustotal shows that it's packed by upx so unpack it.</p>
+
+<p><img alt="qsn5-1" src="not-my-modfiles-bestie/qsn5-1.png"/></p>
+
+<p>Now lets open up ida and try to understand how it encrypts the files.</p>
+
+<p><img alt="qsn5-2" src="not-my-modfiles-bestie/qsn5-2.png"/></p>
+
+<p>we can see there are strings for a key, rounds, accumulator state and a module called crypto which is not a standard library</p>
+
+<p>lets look at what crypto state and grep for more functions related to it</p>
+
+<p>upon more investigating we can see this is a haskell binary, so the non standard ABI means ida cannot restructure it properly</p>
+
+<p><img alt="qsn5-3" src="not-my-modfiles-bestie/qsn5-3.png"/></p>
+
+<p>after searching for where the crypto modules is used we can find an xor which is using 0xAB as immediate<br/>
+seeing it more in deapth is a bytecode.</p>
+
+<p><img alt="qsn5-4" src="not-my-modfiles-bestie/qsn5-4.png"/></p>
+
+<pre><code>0x140004348: mov dil, [rax+rsi]
+    0x14000434c: movzx edi, dil
+    0x140004350: xor rdi, 0ABh
+    0x140004357: mov [rbx+rsi], dil
+    0x14000435b: inc rsi
+    0x14000435e: cmp rsi, rcx
+    0x140004361: jl 0x140004348</code></pre>
+
+<p>So This is a byte-by-byte XOR deobfuscation loop. Mask = 0xAB.<br/>
+The source buffer (rax) contains encoded key bytes and the destination (rbx) receives the decoded master key</p>
+
+<p>We need to investigate the surrounding adresses for more crypto module loads</p>
+
+<p><img alt="qsn5-5" src="not-my-modfiles-bestie/qsn5-5.png"/></p>
+
+<pre><code>  0x140001570: mov rdi, 9E3779B97F4A7C15h
+    0x14000157E: imul r8, rdi
+    0x140001582: add r8, rsi
+    0x140001591: shr rsi, 38h
+    0x1400015A5: xor r9, r10
+    0x1400015B8: shl r9, 3
+    0x1400015B0: shr r11, 5
+    0x1400015BC: or r9, r11
+    0x1400015C6: xor r9, r10</code></pre>
+
+<p>that is certainly huge constant lol</p>
+
+<p><img alt="qsn5-6" src="not-my-modfiles-bestie/qsn5-6.png"/></p>
+
+<p>there is also another mov rdx, 0DEADBEEFCAFEBABEh + rotateL</p>
+
+<p>we can now look into the xref of the data before this</p>
+
+<p>this is the 0x140A07110: dq offset loc_140858080, GHC W8# info table</p>
+
+<p>the reason why ida cannot decompile it properly here for instance if i press c on the area it will pop out<br/>
+<img alt="qsn5-7" src="not-my-modfiles-bestie/qsn5-7.png"/></p>
+
+<p>its bc IDA struggles heavily with GHC-compiled binaries. GHC uses the STG (Spineless Tagless G-machine) runtime instead of standard calling conventions, it uses rbp as a stack pointer, r13 as heap pointer, and jumps between code blocks via jmp [rbp+0] (continuation passing). but IDA expects standard prologues (push rbp; mov rbp, rsp) to identify functions and well GHC has none, so most code stays as raw data blobsd and string xrefs are broken because strings are accessed through CAF closures at runtime, not direct lea references</p>
+
+<p>In memory, a thunk is just a pointer to a closure: a code pointer (info table) + captured variables, when you dereference it, GHC overwrites it with the result (this is called black-holing the thunk gets replaced so it's only evaluated once) bc every value is a thunk (a suspended computation) until forced</p>
+
+<p>we need to move onto dynamic analysis for recovering the VM state</p>
+
+<p>come all the way up here till the bp that the buffer reads in.Step into any of the VM transition states between the accumulator and Vm.crypto and bp on the state , and go onto running and reading the data from the dump and if you do it correctly you will see the master key plaintext xored </p>
+
+<p><img alt="qsn5-8" src="not-my-modfiles-bestie/qsn5-8.png"/></p>
+
+<p>then in the dump view check for the bytes</p>
+
+<p><img alt="qsn5-9" src="not-my-modfiles-bestie/qsn5-9.png"/></p>
+
+<p>XOR each byte with 0xAB to get the master key:</p>
+
+<p><strong>xK9#mP2$vL7@nQ4&amp;wR1!zT5*bY8^cU3@</strong></p>
+
+<hr/>
+
+<blockquote>
+<p><strong>Notes</strong></p>
+<p>you can also do this via static as well<br/>
+GHC stores <code>[Word8]</code> literals as flat static closures in <code>.data</code>. Each byte is a qword value interleaved with a repeating info table pointer (<code>0x140858080</code> = GHC <code>W8#</code> constructor) every 16 bytes. Search <code>.data</code> for <code>AB 00 00 00 00 00 00 00</code> which is tthe XOR mask stored as a boxed Word8. The 32 encoded key bytes should follow immediately after in the same pattern. So we will need to read every 16 bytes, skip the info pointers, XOR with 0xAB.</p>
+<p><strong>Note GHC CAF evaluation issues</strong><br/>
+If you set the breakpoint and run, it hits multiple times before any file is even touche bc GHC evaluates Constant Applicative Forms (CAFs) which is top-level values like the key, lazily at program startup, not at the call site which would have been the case if this was a c++ or rust. The XOR deobfuscation runs once during GHC's runtime init to force the CAF, then the result is cached (black-holed) forever. So the "hit we want "  is the first one the key is decoded before <code>main</code> even starts. Later hits (there is ) are other ByteStrings going through the same loop.</p>
+</blockquote>
+
+<hr/>
+
+<h2 id="q5">Q5: What MITRE ATT&amp;CK techniques does ModCollabTool use?</h2>
+
+<p>so 2 things happened here, obsfucation of files and encrypted data, the answer can be either of the one's</p>
+
+<p><strong>MITRE ATT&amp;CK:</strong><br/>
+- T1027 - Obfuscated Files or Information (XOR-encoded key in <code>.data</code>)<br/>
+- T1486 - Data Encrypted for Impact (encrypts <code>.msb</code> files, appends <code>.l3ak</code>)</p>
+
+<hr/>
+
+<h2 id="q6">Q6: What map contains the attacker's planted artifact?</h2>
+
+<p>the question gives us the evidence archive password: <code>s0und_0f_a_s0ul</code></p>
+
+<p>extract <code>evidence.7z</code> with it. we now have a folder of <code>.l3ak</code> files with hex-obfuscated names</p>
+
+<p><img alt="qsn7-1" src="not-my-modfiles-bestie/qsn7-1.png"/></p>
+
+<p>the eml attachment zip also contains <code>filelist.txt</code> - 2073 known Dark Souls map folder filenames. this is our brute-force dictionary to pass the solver to.</p>
+
+<p><strong>how filename obfuscation works:</strong></p>
+
+<p>From reversing ModCollabTool derives a per-file subkey from the master key + original filename + file index (alphabetical DFS order), then XORs the filename bytes against the subkey and hex-encodes:</p>
+
+<pre><code>obfuscated_name = hex(xor(filename_bytes, subkey[:len(filename)])) + ".l3ak"</code></pre>
+
+<p>to recover we need to try every candidate in <code>filelist.txt</code> which the fromsoft modder sent for the skelton, derive its subkey, XOR + hex, check if it matches the <code>.l3ak</code> stem on disk</p>
+
+<p>the logic, as a diagram:</p>
+
+<div class="img-container">
+<p style="padding-left: 16px; margin-bottom: 0">
+$$
+\begin{array}{c}
+\text{masterKey} \\[4pt]
+\big\downarrow\ \scriptstyle \text{mixByte over each byte of filename} \\[4pt]
+(k_1, a_1) \\[4pt]
+\downarrow\ \scriptstyle \text{mixWord32}(idx) \\[4pt]
+(k_2, a_2) \\[4pt]
+\downarrow\ \scriptstyle \text{doRound} \times 16\ \text{(roundConsts, rotl8, xor)} \\[4pt]
+\text{subkey} \\[4pt]
+\downarrow \\[4pt]
+\text{hexName}(fname, subkey)\ \overset{?}{=}\ \text{stem} \\[4pt]
+\downarrow\ \scriptstyle \text{match} \\[4pt]
+\text{decryptL3ak}(data, subkey)\ \longrightarrow\ \text{plaintext}
+\end{array}
+$$
+</p>
+</div>
+
+<blockquote>
+<p>this is just the pure logic - the solver still needs to walk <code>enc_dir</code>, read each <code>.l3ak</code> file, and write the plaintext back. implementation is left as an exercise.</p>
+</blockquote>
+
+<p>after decrypting the files we can see they have the structured location back.</p>
+
+<p>Going back to the email, the attacker mentioned Natsume was working on 2 areas - kiln of the first flame and blighttown. These correspond to <code>m18</code> and <code>m15</code>.</p>
+
+<p>After recovering the map files, unpack them with <a href="https://github.com/Nordgaren/UXM-Selective-Unpack" rel="nofollow noreferrer noopener" target="_blank">UXM Selective Unpack</a> and load them into <a href="https://github.com/soulsmods/DSMapStudio" rel="nofollow noreferrer noopener" target="_blank">DSMapStudio</a> to see the assets and how they're related.</p>
+
+<p>Some notes about unpacking and loading the game files;</p>
+
+<p>Inside a map's MSB, many objects - enemies, certain assets, regions - have an entity ID field. It's a number that functions as a stable handle. The event system (EMEVD) is a separate layer of scripts that runs the map's logic: spawning enemies, opening doors, triggering cutscenes, awarding items. Those scripts don't know positions or models - they know entity IDs. An object's entity ID is the name events use to talk about it.</p>
+
+<p>Two consequences: an object no script needs to reference doesn't strictly need an entity ID (decorative scenery, say); and any object you do want a script to react to - a boss whose death unlocks something, a trigger region - must carry a unique entity ID the script targets.</p>
+
+<p>DS map studio expects unpacked files, UXM-unpacked is needed so we need it back, Darksouls predates UXM and unpacks with UDSFM instead; Each level is one MSB file (Map Studio Binary). Open a map and you're editing its MSB, shown as a tree of categories:</p>
+
+<pre><code>    Parts - the physical contents: map pieces (geometry), objects/assets, enemies and characters, player spawn points, collision, and navmesh. Most placement work happens here.
+    Regions - invisible volumes and points: trigger areas, spawn points, warp targets, markers that events reference.
+    Events - map-level event data and groupings that tie into the game's event scripting.</code></pre>
+
+<p>Every object has a position, rotation, and properties - and many carry an entity ID that the game's event scripts use to address them. Editing a map means selecting objects in the tree or viewport and changing where they are and what they reference.</p>
+
+<p>with that out of the way lets load the map onto studio editor's param index mode.</p>
+
+<p>The qsn asks for the map id, and the ids referencing the two regions are <code>m18_00_00_00</code> for kiln and <code>m15_00_00_00</code> for blighttown<br/>
+so we can try both since the attacker was targeting either based on the eml. <code>m18</code> is the correct answer.</p>
+
+<h2 id="q7">Q7: The attacker planted something in Gwyn's boss room. Find the collision mesh ID, boss room BGM region event, XYZ coordinates of the model, and the map piece ID.</h2>
+
+<p>okies, lets load it up in and see the area,</p>
+
+<p><img alt="qsn8-1" src="not-my-modfiles-bestie/qsn8-1.png"/></p>
+
+<p>Load <code>m18</code> into DSMapStudio and navigate to the main boss area. The boss is Gwyn, Lord of Cinder. When you try to select that model, map studio complains it cannot load the navmesh for the entity - a red highlight shows up on the paramview window bar. So the attacker did something to mess with the boss AI.</p>
+
+<p><img alt="qsn8-2" src="not-my-modfiles-bestie/qsn8-2.png"/></p>
+
+<p>Now we need to find where the model is actually trying to load from. In Dark Souls, bosses with cutscenes have 2 models - one animated inside the cutscene, one for the actual fight. Export that model onto the model viewer window and see where the duplicate of that boss AI is located - coordinates <code>pos:383.891,-103.660,202.784</code>. The Y axis is out of range for the ID, so the game can't load it - that's the error.</p>
+
+<p><img alt="qsn8-3" src="not-my-modfiles-bestie/qsn8-3.png"/></p>
+
+<p>Open the entity ID for the rest of the values:</p>
+
+<p><img alt="qsn8-4" src="not-my-modfiles-bestie/qsn8-4.png"/></p>
+
+<p><code>mesh</code> is the navmesh the model was actually meant to load, <code>ThinkParamID</code> is the boss AI behavior, then position and map.</p>
+
+<p>if you want to sanity-check a <code>ThinkParamID</code> or param edit like this without repacking the map and relaunching the game every time, <a href="https://github.com/Grimrukh/DS1RParamReloader" rel="nofollow noreferrer noopener" target="_blank">DS1RParamReloader</a> does this by hooking the running DSR process (finds it by window title via PropertyHook), then for whatever param you click it builds a small assembly stub, patches in the target address and param name at fixed offsets, allocates RWX memory inside the game process, writes the stub there, and executes it directly - basically manual code-caving to trigger the game's own internal param-reload routine.</p>
+
+<p>Answer: {mesh:h0006B0|ThinkParamID:537000|pos:383.891,-103.660,202.784|map:m18_00_00_00}</p>
+
+
+<p>There are also multiple ways to do this but i found this one straightforward, but you can google a data sheet of the SFX model which Gwyn uses and refer from it to finish it in a few minutes if navigating map studio is a bit messy.</p>
+
+<p>SFX are the special visual effects that use models and textures to "simulate" glowing, fire, flames and magic. They are located in the sfx folder of the game (you can just download them from the web):</p>
+
+<ul>
+<li>There is the <code>FRPG_SfxBnd_CommonEffects.ffxbnd(.dcx)</code> that contains SFX that can appear everywhere which also includes magic.</li>
+<li>There are e.g. <code>FRPG_SfxBnd_m10.ffxbnd(.dcx)</code> which are the map SFX.</li>
+<li>There are e.g. <code>FRPG_SfxBnd_c3471.ffxbnd(.dcx)</code> which are the SFX for special enemies.</li>
+</ul>
+
+<h2 id="flag">FINAL FLAG</h2>
+
+<pre><code>L3AK{fr0ms0ftm0dd3r_w4s_h3r3_h0p3_y0u_3nj0y3d_7h3_k1ln_0f_7h3_f1rs7_fl4m3_:3}</code></pre>
+
+<h2 id="shoutouts">Shoutouts</h2>
+
+<p>Shoutout and thanks to houssem0x1, suvoni, Andyrew, aresinheaven, 0x1622 and the l3ak forensics department for helping me out and playtesting the challenge &lt;3</p>
+
+<p><img alt="modding in progress" src="not-my-modfiles-bestie/modding-in-progress.jpg"/></p>
+
+<div class="img-container">
+<video controls="" src="not-my-modfiles-bestie/modding-video.mp4" width="100%"></video>
+</div>
+
+<p><img alt="sleep schedule ruined" src="not-my-modfiles-bestie/endingthankyou.jpg"/></p>
+
+<h2 id="references">References</h2>
+
+<ul>
+<li><a href="https://github.com/JustasMasiulis/xorstr" rel="nofollow noreferrer noopener" target="_blank">JustasMasiulis/xorstr</a> - compile-time string obfuscation library using C++17 constexpr.</li>
+<li><a href="https://blog.ganets.ky/StaticString/" rel="nofollow noreferrer noopener" target="_blank">Static Strings as Template Parameters (ganets.ky)</a> - explains using C++20 non-type template parameter (NTTP) string literals so encrypted strings get baked into mangled symbol names instead of macros, making them harder to spot statically.</li>
+<li><a href="https://itanium-cxx-abi.github.io/cxx-abi/abi.html" rel="nofollow noreferrer noopener" target="_blank">Itanium C++ ABI</a> - the name-mangling spec referenced for how class-type NTTP values get encoded byte-for-byte into a symbol name, which is what let the key bytes hide inside the mangled name.</li>
+<li><a href="https://github.com/kweatherman/ida_missinglink" rel="nofollow noreferrer noopener" target="_blank">kweatherman/ida_missinglink</a> - an IDA Pro plugin that helps resolve indirect/virtual calls; mentioned as one of the "easy way out" tools the challenge was designed to make less useful.</li>
+<li><a href="https://www.sciopen.com/article/10.32604/cmc.2025.062743" rel="nofollow noreferrer noopener" target="_blank">CMC paper on path explosion (sciopen.com)</a> - background reading on why symbolic execution engines blow up on loops like Collatz, which motivated using a Haskell/GHC-compiled core to resist symbolic solvers.</li>
+<li><a href="https://ucsd-progsys.github.io/liquidhaskell/" rel="nofollow noreferrer noopener" target="_blank">LiquidHaskell</a> - refinement-type checker for Haskell; used here less for its verification features and more for leaning into GHC's STG-machine compilation model to defeat standard decompilers.</li>
+<li><a href="https://ucsd-progsys.github.io/liquidhaskell-tutorial/" rel="nofollow noreferrer noopener" target="_blank">LiquidHaskell Tutorial</a> - the hands-on tutorial for learning refinement types in LiquidHaskell, useful for actually getting comfortable with the tooling used to shape the crypto core.</li>
+<li><a href="https://www.reddit.com/r/haskell/comments/iqz0l/reverse_engineering_of_compiled_haskell/" rel="nofollow noreferrer noopener" target="_blank">Reverse Engineering of Compiled Haskell (r/haskell)</a> - discussion on how alien GHC-compiled binaries look to disassemblers/decompilers, which is exactly the problem solvers hit reversing ModCollabTool's crypto routine.</li>
+<li><a href="https://www.youtube.com/watch?v=V76X6tDEK7Q" rel="nofollow noreferrer noopener" target="_blank">Soulstruct video guide (YouTube)</a> - walkthrough of using Soulstruct to edit Dark Souls maps/params/events, the tool ecosystem the second half of the challenge (map artifact hunting) is built around.</li>
+<li><a href="https://github.com/soulsmods/Paramdex" rel="nofollow noreferrer noopener" target="_blank">soulsmods/Paramdex</a> - reference definitions for FromSoftware's param file formats, needed to correctly parse the game's parameter data rather than guessing field layouts by hand.</li>
+<li><a href="https://github.com/soulsmods/SoulsFormatsNEXT" rel="nofollow noreferrer noopener" target="_blank">soulsmods/SoulsFormatsNEXT</a> - a library implementing FromSoftware's proprietary file formats (MSB, BND, param, etc); the correct way to parse the game files instead of hand-rolling a broken parser.</li>
+<li><a href="https://github.com/katalash/DSLuaDecompiler" rel="nofollow noreferrer noopener" target="_blank">katalash/DSLuaDecompiler</a> - Lua/HavokScript decompiler for Dark Souls/Bloodborne/Sekiro AI and behavior scripts; relevant to teams trying to fully unpack the game's scripting layer.</li>
+<li><a href="https://github.com/soulsmods/DSMapStudio" rel="nofollow noreferrer noopener" target="_blank">soulsmods/DSMapStudio</a> - standalone map/level editor for the Souls games, an alternative to Smithbox for viewing and editing the planted map artifact.</li>
+<li><a href="https://github.com/dokan-dev/dokany/releases" rel="nofollow noreferrer noopener" target="_blank">dokan-dev/dokany</a> - the Windows kernel filesystem driver MemProcFS depends on to mount a memory dump as a browsable virtual filesystem; required before MemProcFS can expose process memory for the WinDbg-based heap analysis in Q3.</li>
+<li><a href="https://github.com/soulsmods/DSMapStudio/releases/latest" rel="nofollow noreferrer noopener" target="_blank">DSMapStudio</a> - MSB map editor with param and text editors; the map-loading tool referenced for opening the decrypted Dark Souls map files in Q6/Q7.</li>
+<li><a href="https://github.com/vawser/Smithbox" rel="nofollow noreferrer noopener" target="_blank">Smithbox</a> - a fork of DSMapStudio, multi-purpose GUI for editing maps, params, and text across most FromSoftware games.</li>
+<li><a href="https://github.com/Grimrukh/soulstruct/releases" rel="nofollow noreferrer noopener" target="_blank">Soulstruct</a> - Python-based editor for Params, Text, AI, TalkESD, Maps, and Events; the tool behind the video guide linked above.</li>
+<li><a href="https://github.com/Pear0533/GParamStudio/releases" rel="nofollow noreferrer noopener" target="_blank">GParamStudio</a> - map lighting (GPARAM) file editor, useful if the planted artifact's surroundings needed lighting inspection.</li>
+<li><a href="https://github.com/FWang1221/NPCParam-SpEffect-Reorganizer" rel="nofollow noreferrer noopener" target="_blank">NPCParam-SpEffect-Reorganizer</a> - reconfigures NPCParam csv exports for mass-editing without overriding IDs.</li>
+<li><a href="https://github.com/FWang1221/Easy-Souls-AI/releases" rel="nofollow noreferrer noopener" target="_blank">EasySoulsAI</a> - KVP system for easy creation and modification of enemy behaviors, relevant to the Elden Ring AI/event layer tooling ecosystem.</li>
+<li>ER OBJ2HKX - converts OBJ to HKX Elden Ring collision meshes with materials, shared via a Discord thread rather than a repo.</li>
+<li><a href="https://github.com/Grimrukh/soulstruct-blender/releases" rel="nofollow noreferrer noopener" target="_blank">Soulstruct for Blender</a> - Blender plugin to export/import FLVER map pieces and HKX collisions/navmeshes, useful for visually inspecting the planted model geometry.</li>
+<li><a href="http://soulsmodding.wikidot.com/local--files/tool:main/SoulsCollisionExport_1_2_7.7z" rel="nofollow noreferrer noopener" target="_blank">SoulsCollisionExport</a> - collision converter to OBJ format (drag-and-drop HKX onto the exe), an alternative path for inspecting the boss-room collision mesh in Q7.</li>
+<li><a href="https://github.com/vawser/MapBuddy/releases/latest" rel="nofollow noreferrer noopener" target="_blank">MapBuddy</a> - helper tool to quickly apply entity/map IDs, relevant to the entity ID concepts explained before Q6.</li>
+<li><a href="https://github.com/cea-sec/miasm" rel="nofollow noreferrer noopener" target="_blank">cea-sec/miasm</a> - a reverse engineering framework with its own disassembler and IR, one of the tools an AI agent could use to try and automatically disassemble the challenge's VM.</li>
+<li><a href="https://github.com/lifting-bits/remill" rel="nofollow noreferrer noopener" target="_blank">lifting-bits/remill</a> - a library for lifting machine code to LLVM bitcode, the kind of tool that could be used to lift the obfuscated binary into something more analyzable.</li>
+<li><a href="https://github.com/lifting-bits/mcsema" rel="nofollow noreferrer noopener" target="_blank">lifting-bits/mcsema</a> - builds on remill to translate binaries into LLVM bitcode for further analysis, another potential path around the obfuscation the challenge was designed to resist.</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+    onload="
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: '$$', right: '$$', display: true },
+                { left: '$', right: '$', display: false },
+            ],
+        })
+    "
+></script>
+<script src="../site.js"></script>
+<script>
+  // this post skips the auto-generated LaTeX-mode table of contents and author block
+  (function () {
+    var kill = function () {
+      var toc = document.querySelector(".latex-toc");
+      if (toc) toc.remove();
+      var author = document.querySelector(".latex-author");
+      if (author) author.remove();
+    };
+    kill();
+    new MutationObserver(kill).observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
+<style>
+  /* this post skips the LaTeX-mode numbered-section counters on headings */
+  html.latex-mode .blog-content h2::before,
+  html.latex-mode .blog-content h3::before {
+    content: none;
+  }
+  /* this post skips the LaTeX-mode auto-numbered figure captions under videos/images */
+  html.latex-mode .blog-content .img-container::after {
+    content: none;
+  }
+  /* this post skips LaTeX-mode's justified text - it stretches short/link-only paragraphs into ugly gaps */
+  html.latex-mode .blog-content p {
+    text-align: left;
+  }
+</style>
+</body>
+</html>
