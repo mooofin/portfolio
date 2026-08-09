@@ -20,7 +20,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css?v=20260717";
+  local.href = base + "latex-mode.css?v=20260809b";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";
@@ -71,6 +71,72 @@
     if (btn) btn.textContent = on ? "\\end{document}" : "TeX";
     var pfp = document.getElementById("pfp");
     if (pfp) pfp.src = on ? base + "images/pfp1.jpg" : base + "images/pfp.jpg";
+    if (on) renderLatexMath();
+  }
+
+  var katexLoadPromise = null;
+
+  function loadScriptOnce(id, src) {
+    return new Promise(function (resolve, reject) {
+      var existing = document.getElementById(id);
+      if (existing) {
+        if (existing.dataset.loaded === "1") return resolve();
+        existing.addEventListener("load", resolve, { once: true });
+        existing.addEventListener("error", reject, { once: true });
+        return;
+      }
+      var s = document.createElement("script");
+      s.id = id;
+      s.src = src;
+      s.defer = true;
+      s.onload = function () {
+        s.dataset.loaded = "1";
+        resolve();
+      };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function ensureKatex() {
+    if (typeof window.renderMathInElement === "function") return Promise.resolve();
+    if (katexLoadPromise) return katexLoadPromise;
+    if (!document.getElementById("katex-css-cdn")) {
+      var css = document.createElement("link");
+      css.id = "katex-css-cdn";
+      css.rel = "stylesheet";
+      css.href = "https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css";
+      document.head.appendChild(css);
+    }
+    katexLoadPromise = loadScriptOnce("katex-js-cdn", "https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js")
+      .then(function () {
+        return loadScriptOnce("katex-auto-render-cdn", "https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js");
+      })
+      .catch(function () {});
+    return katexLoadPromise;
+  }
+
+  function renderLatexMath(root) {
+    root = root || document.querySelector(".blog-content") || document.body;
+    if (!root || root.dataset.mathRendered === "1") return;
+    ensureKatex().then(function () {
+      if (typeof window.renderMathInElement === "function") {
+        try {
+          window.renderMathInElement(root, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false },
+            ],
+            ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+            throwOnError: false,
+          });
+          root.dataset.mathRendered = "1";
+        } catch (e) {}
+      }
+      if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+        try { window.MathJax.typesetPromise([root]); } catch (e) {}
+      }
+    });
   }
 
   // \author{} \date{} block under the title + colophon at page end
@@ -753,6 +819,7 @@
     }
     
     if (isOn()) decorate();
+    renderLatexMath();
     
     // Clock: update immediately (interval already running from _startClock)
     _updateClock();
