@@ -763,3 +763,9 @@ The `eth_account` library handles BIP-39 mnemonic → seed → BIP-44 HD key der
 ```
 r3ctf{F1NaI1Y-yOu-fIND-th3-53CReT-BEh1Nd_rhythm_@Nd_Trace_them0}
 ```
+
+---
+
+Thank you r3kapig for the $300 prize :)
+
+![Prize from r3kapig](photos/prize.png)

@@ -15,6 +15,30 @@ html.latex-mode body {
   min-height: auto;
 }
 
+html.latex-mode body,
+html.latex-mode .desktop,
+html.latex-mode .window,
+html.latex-mode .window-body,
+html.latex-mode .content-95,
+html.latex-mode .blog-content,
+html.latex-mode .blog-content p,
+html.latex-mode .blog-content li,
+html.latex-mode .blog-content td,
+html.latex-mode .blog-content th,
+html.latex-mode .blog-content div:not(.katex):not(.katex *),
+html.latex-mode .blog-content span:not(.katex):not(.katex *),
+html.latex-mode .blog-content a,
+html.latex-mode .blog-content strong,
+html.latex-mode .blog-content em,
+html.latex-mode .blog-content blockquote,
+html.latex-mode .blog-content summary,
+html.latex-mode .blog-content figcaption,
+html.latex-mode .latex-author,
+html.latex-mode .latex-toc,
+html.latex-mode .latex-colophon {
+  font-family: "Latin Modern", Georgia, Cambria, "Times New Roman", Times, serif !important;
+}
+
 /* kill win95 layout wrappers */
 html.latex-mode .desktop {
   display: block !important;
@@ -1300,6 +1324,7 @@ html.latex-mode code {
   padding: 0.1em 0.35em;
   border-radius: 2px;
 }
+
 html.latex-mode.latex-dark code {
   background: #2e2e30 !important;
   color: #ddd;

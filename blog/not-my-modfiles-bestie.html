@@ -224,17 +224,6 @@
             L3AK CTF - Not my mod files bestie (DFIR)
           </div>
 <div class="window-body">
-<div class="blog-meta">
-<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/clock-0.png"/>
-              Posted: 2026-08-02 |
-              <img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/user-0.png"/>
-              Author: Siddharth |
-              <img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"/>
-              Category: DFIR / Reverse Engineering
-            </div>
-<div class="blog-meta">
-<strong>Date:</strong> 2026-08-02 | <strong>Tags:</strong> DFIR, Memory Forensics, Volatility, MemProcFS, GHC/Haskell, IDA, Dark Souls Modding
-</div>
 <div class="blog-content">
 
 <h2 id="challenge-description">Challenge Description</h2>
@@ -413,6 +402,10 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 <p><img alt="qsn3-9" src="not-my-modfiles-bestie/qsn3-9.png"/></p>
 
 <p>There is another approach - Volatility 2 has a <code>vadtree</code> plugin that can render the VAD tree as a dot graph. Sadly it did not work on this dump. Windows on build 19041 encrypts the KDBG structure, so Vol2's profile-based symbol resolution fails completely - it cannot locate <code>EPROCESS</code> or walk the VAD tree. Vol3 avoids this by using type layers instead of KDBG, which is why we went with <code>windows.vadinfo</code> above.</p>
+
+<p>A VAD (Virtual Address Descriptor) is Windows' per-process map of virtual memory ranges. It is the higher-level tree Windows keeps so it knows which address ranges belong to mapped images, private heaps, stacks, memory-mapped files, and so on. In a VAD tree, lower virtual address ranges sit on the left, higher ranges sit on the right, and every node describes a range plus metadata like protection and backing file.</p>
+
+<p>So the workflow is: use <code>vadinfo/vadtree</code> to understand the process ranges, then use MemProcFS/WinDbg to step into the specific private region and read the user data from memory. The tree gives structure; the heap chunk gives the password.</p>
 
 <p>To help visualise what the VAD tree actually looks like and how this forensic process works, here is a short animation:</p>
 
@@ -743,10 +736,6 @@ so we can try both since the attacker was targeting either based on the eml. <co
   /* this post skips the LaTeX-mode auto-numbered figure captions under videos/images */
   html.latex-mode .blog-content .img-container::after {
     content: none;
-  }
-  /* this post skips LaTeX-mode's justified text - it stretches short/link-only paragraphs into ugly gaps */
-  html.latex-mode .blog-content p {
-    text-align: left;
   }
 </style>
 </body>
