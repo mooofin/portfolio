@@ -178,41 +178,6 @@
       document.body.appendChild(arxiv);
     }
 
-    // \marginpar reviewer-2 notes on random paragraphs
-    if (content && !document.querySelector(".latex-marginnote")) {
-      var notes = [
-        "citation needed",
-        "why?",
-        "is this rigorous?",
-        "left as an exercise to the reader",
-        "[reviewer 2: unclear]",
-        "TODO: verify",
-        "cf. Knuth, vol. 3",
-        "nice.",
-        "see Appendix B",
-        "trivially follows",
-      ];
-      var paras = Array.prototype.slice.call(content.querySelectorAll("p"));
-      paras = paras.filter(function (p) {
-        return p.textContent.trim().length > 120;
-      });
-      var count = Math.min(3, paras.length);
-      var used = {};
-      for (var k = 0; k < count; k++) {
-        var idx;
-        do {
-          idx = Math.floor(Math.random() * paras.length);
-        } while (used[idx]);
-        used[idx] = true;
-        var note = document.createElement("span");
-        note.className = "latex-marginnote";
-        note.textContent = notes[Math.floor(Math.random() * notes.length)];
-        paras[idx].style.position = "relative";
-        note.style.top = "0";
-        paras[idx].appendChild(note);
-      }
-    }
-
     // bibliography [n] style for the References section
     document.querySelectorAll("h2").forEach(function (h) {
       if (/references/i.test(h.textContent)) {
