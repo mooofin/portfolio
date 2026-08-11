@@ -1,4 +1,4 @@
-﻿# S4nct1m0ny - DFIR Challenge Writeup
+# S4nct1m0ny - DFIR Challenge Writeup
 
 **Difficulty:** `Insane` | **Author:** [gh0stkn1ght](https://twitter.com/mspr75)
 
@@ -28,9 +28,9 @@ Peter Parker, the Daily Bugle's star photographer and secretly Spider-Man, expos
 
 **Answer: macOS 10.11.6 El Capitan**
 
-![Volatility banners output](photos/qsn1.png)
+![Volatility banners output](../../images/posts/s4nct1m0ny/qsn1.png)
 
-![Apple Wiki kernel version table](photos/qsn1-2.png)
+![Apple Wiki kernel version table](../../images/posts/s4nct1m0ny/qsn1-2.png)
 
 First thing - the `.raw` extension threw me  off , i thought of using  Autopsy and mac_apt failed to load it as a disk image because it isn't one and went bak to dear volatility
 
@@ -206,7 +206,7 @@ That showed `osxpmem` was used to capture the memory, but not the hostname direc
 .\vol2\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone.exe --plugins=vol2\plugins -f chall\chall.raw --profile=MacElCapitan_15G31x64 mac_psenv 2>&1 | findstr "HOSTNAME"
 ```
 
-![mac_psenv HOSTNAME output](photos/qsn2.png)
+![mac_psenv HOSTNAME output](../../images/posts/s4nct1m0ny/qsn2.png)
 
 `HOSTNAME=Mac-Admin.local` appears across multiple process environments. The `.local` suffix is macOS's Bonjour mDNS domain automatically appended to the computer name.
 
@@ -220,7 +220,7 @@ That showed `osxpmem` was used to capture the memory, but not the hostname direc
 
 My First instinct was to look at running processes. `mac.pstree` and `mac.pslist` showed nothing (well this chall was not gonna be that easy ig ) obviously malicious - just standard macOS daemons and a few user apps (Safari, TextEdit, Preview, Flock). 
 
-![mac.pstree output](photos/qsn3-1.png)
+![mac.pstree output](../../images/posts/s4nct1m0ny/qsn3-1.png)
 
 #### Step 2 - bash history, also a dead end :(
 
@@ -240,7 +240,7 @@ sudo osxpmem.app/osxpmem -o OSXPMem/Memcap/mem.aff4
 
 Interesting context (checking SIP status is classic attacker recon) but no direct reference to the malicious app. 
 
-![mac.bash output](photos/qsn3-2.png)
+![mac.bash output](../../images/posts/s4nct1m0ny/qsn3-2.png)
 
 #### Step 3 - checking open files, starting with Downloads
 
@@ -250,7 +250,7 @@ Since the app wasn't running, we checked what files were open on the system. Wel
 .\volatility3-win-exes-2.28.0\vol.exe -f chall\chall.raw mac.lsof | findstr -i "download"
 ```
 
-![lsof Downloads output](photos/qsn3.png)
+![lsof Downloads output](../../images/posts/s4nct1m0ny/qsn3.png)
 
 That showed `/System/Users/admin/Downloads/ImageEnhancePro.app/Contents/MacOS/applet` 
 
@@ -302,7 +302,7 @@ Already surfaced in Q3. When we ran the strings search against memory we found:
 b'ImageEnhancePro.zip","text":"","timestamp":"1749131547760","timestampInMillis":1749131547760,"uid":"1749131547760-z3v-m'
 ```
 
-![Flock message JSON in memory](photos/qsn4.png)
+![Flock message JSON in memory](../../images/posts/s4nct1m0ny/qsn4.png)
 
 This is Flock's internal message JSON format - `text`, `timestamp`, `timestampInMillis`, `uid` are all Flock message fields. The `ImageEnhancePro.zip` was shared as a file attachment in a Flock chat, which triggered the download. 
 
@@ -335,7 +335,7 @@ The key match was a **contact record** embedded in the Flock process memory:
 "ownerGuid".k47pkcc74p5lb5lk
 ```
 
-![Flock contact record in memory showing Eddie Brock's email](photos/qsn5.png)
+![Flock contact record in memory showing Eddie Brock's email](../../images/posts/s4nct1m0ny/qsn5.png)
 
 Eddie Brock's Flock account: JID `ezkzyseeykzbz6vy@go.to`, email `hecoj34842@eduhed.com`.
 
@@ -376,7 +376,7 @@ So Robbie is JID `9dm99teajkdad949@go.to`. Looking up that JID in the contact re
 "email"."jefoyil452@baxima.com"
 ```
 
-![Robbie Robertson's Flock contact record in memory](photos/qsn6.png)
+![Robbie Robertson's Flock contact record in memory](../../images/posts/s4nct1m0ny/qsn6.png)
 
 Okie so it  explains the "Hello Peter! Jefoyil452 just joined Flock" notification we saw earlier - that was Robbie Robertson joining Peter's team, not Eddie Brock.
 
@@ -396,7 +396,7 @@ This one took me a lot of time , prolly the most time while solving this challen
 So it began , i started searching for CVE's related for macos authentication for around 3 hours straight , but found nothing . Well what if it wasnt a CVE tho ? Since the kernel version is 2016 based i tried loooking for blogs for it . Finally i asked chatgpt to search everywhere for password authentication , DFIR , login issues for any PDF's detailing some forencis stuff and it gave me a lot of articles to go through ..
 (not limited to US defence department ) uhm
 
-![meme](photos/meme-1.png)
+![meme](../../images/posts/s4nct1m0ny/meme-1.png)
 
 **References I read:**
 - [macOS Memory Forensics Thesis - LSU](https://repository.lsu.edu/gradschool_theses/5477/)
@@ -421,7 +421,7 @@ When you type your password at the login screen, `LoginWindow.app` - the process
 This struct is constructed in `loginwindow`'s heap memory and passed to the OS authentication layer. When authentication succeeds, the OS gives loginwindow back a token saying "this user is verified."
 
 
-![NPS paper on macOS memory forensics](photos/qsn7-1.png)
+![NPS paper on macOS memory forensics](../../images/posts/s4nct1m0ny/qsn7-1.png)
 
 BUT one of the paper's said an interesting thing about loginwindow , something unbelivable  **loginwindow never zeroes out that struct after auth completes.** It just keeps it sitting in the heap for the entire duration of the session. There's no `memset(password_buffer, 0, len)` call, no `SecureZeroMemory` lol , this sounded too crazy to be true bc this is a basic secure coding practice that's been understood since the 1980s - `passwd(1)` on Unix zeroed credentials after use decades ago.
 
@@ -431,7 +431,7 @@ BUT one of the paper's said an interesting thing about loginwindow , something u
 
 Since we have a full RAM capture taken mid-session, those credentials are in memory exactly as they were at login time hopefully , but this was the only related lead i could find . No way this works right ??
 
-![meme-2](photos/meme-2.gif) 
+![meme-2](../../images/posts/s4nct1m0ny/meme-2.gif) 
 
 #### Extracting the password
 
@@ -452,7 +452,7 @@ Total hits: **10**. Hits 1–8 are code segment strings. Hit **#9** at offset `5
 longname........Admin............password........!_L0v3_U%3000
 ```
 
-![longname hit #9 showing plaintext password in memory](photos/qsn7.png)
+![longname hit #9 showing plaintext password in memory](../../images/posts/s4nct1m0ny/qsn7.png)
 
 - `longname` `Admin`
 - `password` `!_L0v3_U%3000`
@@ -476,7 +476,7 @@ macOS stores all saved credentials - Wi-Fi passwords, website logins, app tokens
 
 The login keychain is automatically unlocked when the user logs in, using the same password as the account. It stays unlocked for the entire session - which is why iCloud credentials are accessible without re-entering anything once you're logged in.
 
-![macOS Keychain wiki - login.keychain stores iCloud credentials](photos/qsn8.png)
+![macOS Keychain wiki - login.keychain stores iCloud credentials](../../images/posts/s4nct1m0ny/qsn8.png)
 
 
 
@@ -485,13 +485,13 @@ The `.keychain` file itself is a `SecKeychainItem` database encrypted with a key
 The obvious forensic question is: can we read the keychain on a non-macOS system? searching for tools to open keychain files without macOS came up empty. Most answers online (gemini ai TBH  ) said it's impossible without the originating system
 
 
-![Searching for keychain decryption on non-macOS](photos/qsn8-1.png)
+![Searching for keychain decryption on non-macOS](../../images/posts/s4nct1m0ny/qsn8-1.png)
 
 The thought then was: could we dump the decrypted keychain data from memory, the same way we extracted the plaintext password from loginwindow? The `securityd` daemon holds unlocked keychain data in memory. 
 
 I was gonna give up on this then i searched it again with DFIR and boom the AI that gaslit me gave me exactly what i needed 
 
-![Chainbreaker found via DFIR search](photos/qsn8-3.png)
+![Chainbreaker found via DFIR search](../../images/posts/s4nct1m0ny/qsn8-3.png)
 
 **[Chainbreaker](https://github.com/n0fate/chainbreaker)** - a Python tool that parses and decrypts macOS keychain files given the unlock password.
 
@@ -543,7 +543,7 @@ Since the login keychain is encrypted with the same password as the user account
 python -m chainbreaker --dump-all --password "!_L0v3_U%3000" extracted\kc_dump\login.keychain
 ```
 
-![Chainbreaker output showing iCloud credentials](photos/qsn8-4.png)
+![Chainbreaker output showing iCloud credentials](../../images/posts/s4nct1m0ny/qsn8-4.png)
 
 ```
 [+] Generic Password Record
@@ -691,7 +691,7 @@ In Q3 we identified `ImageEnhancePro.app` as the infection vector.Now time to re
 
 The executable registered with macOS is `applet` - the standard AppleScript runtime binary. But the actual payload is two levels deep: `main.scpt` is the compiled AppleScript, and it in turn executes `preview`, a binary bundled in `Contents/Resources/`.
 
-![mac_list_files output showing ImageEnhancePro files](photos/qsn9.png)
+![mac_list_files output showing ImageEnhancePro files](../../images/posts/s4nct1m0ny/qsn9.png)
 
 #### Dumping and reading main.scpt
 
@@ -700,11 +700,11 @@ vol2 mac_dump_file -q 0xffffff802bb763c0 -O extracted\main.scpt
 # Wrote 1494 bytes
 ```
 
-![main.scpt dump](photos/qsn9-1.png)
+![main.scpt dump](../../images/posts/s4nct1m0ny/qsn9-1.png)
 
 Decompiling the `.scpt` with Script Editor reveals the full attack chain:
 
-![main.scpt decompiled](photos/qsn9-2.png)
+![main.scpt decompiled](../../images/posts/s4nct1m0ny/qsn9-2.png)
 
 ```applescript
 -- 1. SM  Flash update dialog
@@ -726,14 +726,14 @@ vol2 mac_dump_file -q 0xffffff802bb712d0 -O extracted\preview
 # Wrote 101388 bytes
 ```
 
-![preview dump](photos/qsn9-3.png)
+![preview dump](../../images/posts/s4nct1m0ny/qsn9-3.png)
 
 ```
 certutil -hashfile extracted\preview SHA256
 # 45b098a1208cf63c8ad0beab32ab6d2f9ff2dbf05b6d88382acde55170fcf559
 ```
 
-![SHA256 of preview](photos/qsn9-4.png)
+![SHA256 of preview](../../images/posts/s4nct1m0ny/qsn9-4.png)
 
 **Answer: `preview_45b098a1208cf63c8ad0beab32ab6d2f9ff2dbf05b6d88382acde55170fcf559`**
 
@@ -747,7 +747,7 @@ With `preview` dumped, we loaded it into IDA Pro for static analysis.
 
 The first thing that stands out is a massive encrypted string sitting in the binary's read-only data section, been done too many challs to know that this is a runtime-decrypted payload but obsfucated ofc . Lets go through the main one by one 
 
-![IDA - large encrypted blob in preview](photos/qsn10-1.png)
+![IDA - large encrypted blob in preview](../../images/posts/s4nct1m0ny/qsn10-1.png)
 
 #### Reverse engineering the end of main: `sub_1000059d0`
 
@@ -807,7 +807,7 @@ int64_t sub_1000059d0()
 
 #### Anti-analysis gate 1 - `sub_100005420`: ptrace anti-debug
 
-![sub_100005420 - ptrace anti-debug](photos/qsn10-2.png)
+![sub_100005420 - ptrace anti-debug](../../images/posts/s4nct1m0ny/qsn10-2.png)
 
 Classic macOS `ptrace(PT_DENY_ATTACH, 0, 0, 0)`. If ptrace returns anything other than -1 (0xffffffff) a debugger is not attached and execution continues. Any debugger attempting to attach after this call is killed by the kernel. In `main` the result is XOR'd with `0xff` - failure calls `_exit(1)` immediately.
 
@@ -935,7 +935,7 @@ This function takes the C2 data returned by `sub_100002930`, pipes it into an XO
 
 #### XOR decoder - `sub_100002210`: key = `gh057_kn1gh7`
 
-![sub_100002210 - XOR decoder graph view](photos/qsn10-3.png)
+![sub_100002210 - XOR decoder graph view](../../images/posts/s4nct1m0ny/qsn10-3.png)
 
 ```c
 int64_t sub_100002210(int64_t arg1, int64_t arg2, int64_t arg3)
@@ -1027,7 +1027,7 @@ With the drop path decoded (`/tmp/com.apple.updatesvc`), we used `mac_list_files
   --profile=MacElCapitan_15G31x64 mac_list_files 2>&1 | findstr "updatesvc"
 ```
 
-![mac_list_files - updatesvc vnode](photos/qsn10-4.png)
+![mac_list_files - updatesvc vnode](../../images/posts/s4nct1m0ny/qsn10-4.png)
 
 Output:
 ```
@@ -1042,7 +1042,7 @@ Dumped with `mac_dump_file`:
   --profile=MacElCapitan_15G31x64 mac_dump_file -q 0xffffff802867c780 -O extracted\updatesvc
 ```
 
-![mac_dump_file - 17204 bytes written](photos/qsn10-5.png)
+![mac_dump_file - 17204 bytes written](../../images/posts/s4nct1m0ny/qsn10-5.png)
 
 ```
 Volatility Foundation Volatility Framework 2.6
@@ -1053,7 +1053,7 @@ Wrote 17204 bytes to extracted\updatesvc from vnode at address ffffff802867c780
 
 #### Stage-2 analysis in Cutter(R2)
 
-![updatesvc loaded in Cutter - function list and strings](photos/qsn10-6.png)
+![updatesvc loaded in Cutter - function list and strings](../../images/posts/s4nct1m0ny/qsn10-6.png)
 
 Loaded `extracted\updatesvc` in Cutter (radare2 GUI). Native Mach-O x86-64 binary. Function list (`afl`):
 
@@ -1072,7 +1072,7 @@ Loaded `extracted\updatesvc` in Cutter (radare2 GUI). Native Mach-O x86-64 binar
 
 `fcn.100000f9d` (8086 bytes) is the decrypted shellcode payload written into executable memory by `main` via `mmap`.
 
-![Cutter strings panel - /bin/sh and system paths visible](photos/qsn10-7.png)
+![Cutter strings panel - /bin/sh and system paths visible](../../images/posts/s4nct1m0ny/qsn10-7.png)
 
 Strings (`iz`):
 
@@ -1088,7 +1088,7 @@ nth   paddr        vaddr        len  section             string
 
 `main` allocates RWX memory with `mmap`, copies the shellcode from `__TEXT.__cstring` into it, then jumps. Cutter's disassembly of the shellcode section starting at `0x100000f28`:
 
-![Cutter - shellcode disassembly overview](photos/10-9.png)
+![Cutter - shellcode disassembly overview](../../images/posts/s4nct1m0ny/10-9.png)
 
 ```asm
 ; ── socket(AF_INET, SOCK_STREAM, 0) ─────────────────────────────
@@ -1133,9 +1133,9 @@ nth   paddr        vaddr        len  section             string
 
 #### Raw bytes confirm IP and port
 
-![Raw hex dump - sockaddr_in bytes highlighted](photos/qsn10-8.png)
+![Raw hex dump - sockaddr_in bytes highlighted](../../images/posts/s4nct1m0ny/qsn10-8.png)
 
-![Cutter - pd 20 and hex bytes around connect](photos/10-10.png)
+![Cutter - pd 20 and hex bytes around connect](../../images/posts/s4nct1m0ny/10-10.png)
 
 Raw bytes at `0x100000f47`:
 
@@ -1174,7 +1174,7 @@ To get the actual UUID from the memory dump, we listed all files in the Keychain
   --profile=MacElCapitan_15G31x64 mac_list_files 2>&1 | findstr "Keychains"
 ```
 
-![mac_list_files Keychains directory - Hardware UUID visible in path](photos/qsn11.png)
+![mac_list_files Keychains directory - Hardware UUID visible in path](../../images/posts/s4nct1m0ny/qsn11.png)
 
 Output (relevant entries):
 
@@ -1231,7 +1231,7 @@ mac_lsof 2>&1 | findstr "581"
 mac_bash
 ```
 
-![mac_lsof for PID 581 and mac_bash history](photos/qsn12.png)
+![mac_lsof for PID 581 and mac_bash history](../../images/posts/s4nct1m0ny/qsn12.png)
 
 `mac_lsof` showed only `/dev/ttys000` - the reverse shell redirected I/O over the socket, leaving no file handles behind. `mac_bash` revealed the attacker's session commands: `ls`, `csrutil status`, `xcode-select --install`, `cd Desktop`. The final entry - `sudo osxpmem.app/osxpmem -o OSXPMem/Memcap/mem.aff4` - is Peter Parker capturing the memory dump after noticing the compromise.
 
@@ -1243,7 +1243,7 @@ Next, listed all files under `/private/tmp`:
   --profile=MacElCapitan_15G31x64 mac_list_files 2>&1 | Select-String "tmp"
 ```
 
-![mac_list_files output for /tmp](photos/qsn14-1.png)
+![mac_list_files output for /tmp](../../images/posts/s4nct1m0ny/qsn14-1.png)
 
 ```
 0xffffff8028ace780  /private/tmp/dubvm20.sh
@@ -1261,7 +1261,7 @@ Next, listed all files under `/private/tmp`:
 780.jpeg   27,032 bytes
 ```
 
-![Extracted Spider-Man photos - 700.jpeg, 778.jpeg, 779.jpeg, 780.jpeg](photos/qsn14-2.png)
+![Extracted Spider-Man photos - 700.jpeg, 778.jpeg, 779.jpeg, 780.jpeg](../../images/posts/s4nct1m0ny/qsn14-2.png)
 
 Peter Parker's Spider-Man photographs - exactly what Eddie Brock sent the service shop to steal.
 
@@ -1279,7 +1279,7 @@ Peter Parker's Spider-Man photographs - exactly what Eddie Brock sent the servic
   --profile=MacElCapitan_15G31x64 mac_dump_file -q 0xffffff8028ace780 -O extracted\dubvm20.sh
 ```
 
-![mac_dump_file - dubvm20.sh - 183 bytes](photos/qsn15.png)
+![mac_dump_file - dubvm20.sh - 183 bytes](../../images/posts/s4nct1m0ny/qsn15.png)
 
 ```
 Wrote 183 bytes to extracted\dubvm20.sh from vnode at address ffffff8028ace780

