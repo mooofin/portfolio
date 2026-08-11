@@ -1,1 +1,40 @@
 .ruff_cache/
+
+# Local editor/agent configuration.
+.claude/
+
+# Local CTF and reverse-engineering work; these are not published site content.
+__pycache__/
+ctf_outputs/
+*.bin
+*.log
+*.tsv
+*.zip
+analysis_out.txt
+images/str.gif
+
+# One-off local analysis helpers (the published site uses run_site.py only).
+add_missing_taskbar.py
+ais_decode_attempt.py
+analyze_spacecraft.py
+audit.py
+calc_flag.py
+crack_qry.py
+crib_lfsr.py
+derandomize_ccsds.py
+extract_ais_text.py
+fast_ais_scan.py
+hunt_flag_transforms.py
+linecode_qry.py
+manytime.py
+mav_readonly_probe.py
+one_to_rule_them_all_solve.py
+protocol_probe.py
+reassemble_qry.py
+recv_zmq.py
+remove_clock.py
+solve_fishing.py
+swarm_web_probe.ps1
+update_taskbar.py
+viterbi2.py
+viterbi_qry.py

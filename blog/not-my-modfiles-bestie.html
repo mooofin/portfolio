@@ -8,10 +8,10 @@
 <title>L3AK CTF - Not my mod files bestie (DFIR) - mooofin</title>
 <meta property="og:title" content="L3AK CTF - Not my mod files bestie (DFIR)" />
 <meta property="og:description" content="Featuring WinDbg-assisted volatile memory extraction from VAD-backed address spaces, reverse engineering a Liquid Haskell malware and rank-n polymorphism-based VM, and structural analysis of proprietary HAVOC engine file formats  " />
-<meta property="og:image" content="https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie/preview-banner.jpg" />
+<meta property="og:image" content="https://mooofin.github.io/portfolio/images/posts/not-my-modfiles-bestie/preview-banner.jpg" />
 <meta property="og:type" content="article" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie/preview-banner.jpg" />
+<meta name="twitter:image" content="https://mooofin.github.io/portfolio/images/posts/not-my-modfiles-bestie/preview-banner.jpg" />
 <link href="../style.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" rel="stylesheet"/>
 <link href="../public/favicon.ico" rel="icon"/>
@@ -228,7 +228,7 @@
 
 <h2 id="challenge-description">Challenge Description</h2>
 
-<p><img alt="Not My Mod Files Bestie - CTF challenge card" src="not-my-modfiles-bestie/chall-photo.png"/></p>
+<p><img alt="Not My Mod Files Bestie - CTF challenge card" src="../images/posts/not-my-modfiles-bestie/chall-photo.png"/></p>
 
 <h2 id="challenge-design-notes">Challenge Design Notes</h2>
 
@@ -240,11 +240,11 @@
 
 <p>Then while talking with my friends <a href="https://github.com/valium007" rel="nofollow noreferrer noopener" target="_blank">valium</a> and <a href="https://thiazikara.github.io/" rel="nofollow noreferrer noopener" target="_blank">cortexauth</a> about reversing a VM, valium sent a binary to reverse while we were arguing about dynamic debugging frameworks to devirtualise a VM based crackme and he said something which caught my interest</p>
 
-<p><img alt="photos-1" src="not-my-modfiles-bestie/photos-1.png"/></p>
+<p><img alt="photos-1" src="../images/posts/not-my-modfiles-bestie/photos-1.png"/></p>
 
 <p>and this part especially</p>
 
-<p><img alt="photos-2" src="not-my-modfiles-bestie/photos-2.png"/></p>
+<p><img alt="photos-2" src="../images/posts/not-my-modfiles-bestie/photos-2.png"/></p>
 
 <p>Ive had heard about path explosion but had no idea how does that work internally so i read the paper he sent</p>
 
@@ -294,14 +294,14 @@ DarkScript: a GUI tool for editing EMEVD files, Fromsoft's event script format.<
 
 <p><a href="https://github.com/soulsmods/Paramdex" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/Paramdex</a> for the info if they wanted to give it to the clanker or maybe a whole entire library for <a href="https://github.com/soulsmods/SoulsFormatsNEXT" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/SoulsFormatsNEXT</a> ..</p>
 
-<p><img alt="photos3" src="not-my-modfiles-bestie/photos3.png"/></p>
+<p><img alt="photos3" src="../images/posts/not-my-modfiles-bestie/photos3.png"/></p>
 
 <p>2) We had a team who got till the 7th qsn and was trying to parse the files again but they actually were right, i didnt ask them for any solve scripts because this was the first time someone was this close to doing it, so i helped them by givng the link for <a href="https://github.com/soulsmods/SoulsFormatsNEXT" rel="nofollow noreferrer noopener" target="_blank">https://github.com/soulsmods/SoulsFormatsNEXT</a> and asked them to see what they were doing wrong for the files and they could have gotten the first blood for the challenge so i hyped them up.</p>
 
 <p>But he said we wont submit the flag? and uhm and didnt bother to reply for the next minutes, and it should go to people who were hardworking ... And he said he spent around 88 million output tokens on GPT 5.6 sol high combined with a army of agents who were talking to each other and trying to figure it out, the exact agent setup used to cross talk were</p> But credit where credit is due , 100 points for honesty 
 
 <div class="img-container">
-<img alt="photos4" src="not-my-modfiles-bestie/photos4.png"/>
+<img alt="photos4" src="../images/posts/not-my-modfiles-bestie/photos4.png"/>
 <p style="font-size: 0.85rem; font-style: italic; margin-top: 4px; text-align: center;"><em>agentic setup used to reverse the malware</em></p>
 </div>
 
@@ -321,13 +321,13 @@ DarkScript: a GUI tool for editing EMEVD files, Fromsoft's event script format.<
 
 <p>windows stores passwords ans NTLM and lets use volatility for extracting the hash.</p>
 
-<p><img alt="qsn1-1" src="not-my-modfiles-bestie/qsn1-1.png"/></p>
+<p><img alt="qsn1-1" src="../images/posts/not-my-modfiles-bestie/qsn1-1.png"/></p>
 
 <p>nastume's hash is: natsume 1001&nbsp;&nbsp;&nbsp;&nbsp;aad3b435b51404eeaad3b435b51404ee&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;afe5244a02f5443c41893a5dd8593ef1</p>
 
 <p>we can now crack this with crackstation.</p>
 
-<p><img alt="qsn1-2" src="not-my-modfiles-bestie/qsn1-2.png"/></p>
+<p><img alt="qsn1-2" src="../images/posts/not-my-modfiles-bestie/qsn1-2.png"/></p>
 
 <p>the password is sukii.</p>
 
@@ -335,7 +335,7 @@ DarkScript: a GUI tool for editing EMEVD files, Fromsoft's event script format.<
 
 <p>First instinct is pslist, see what's running.</p>
 
-<p><img alt="qsn2-1" src="not-my-modfiles-bestie/qsn2-1.png"/></p>
+<p><img alt="qsn2-1" src="../images/posts/not-my-modfiles-bestie/qsn2-1.png"/></p>
 
 <p>Only notepad.exe stands out as user-launched.</p>
 
@@ -343,7 +343,7 @@ DarkScript: a GUI tool for editing EMEVD files, Fromsoft's event script format.<
 
 <p>Vol3's <code>windows.shimcachemem</code> plugin reads the in-memory shimcache (more complete than the on-disk registry hive since unflushed entries are still in kernel memory):</p>
 
-<p><img alt="qsn2-2" src="not-my-modfiles-bestie/qsn2-2.png"/></p>
+<p><img alt="qsn2-2" src="../images/posts/not-my-modfiles-bestie/qsn2-2.png"/></p>
 
 <p>Order 7 shows <code>C:\Users\natsume\Desktop\ModCollabTool.exe</code> with Last Modified <code>2026-07-11 17:23:36 UTC</code>. That's our malware.</p>
 
@@ -364,42 +364,42 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 
 <p>But without the system's DTB (Directory Table Base / CR3 register), MemProcFS can't locate the Windows kernel and fails:</p>
 
-<p><img alt="qsn3-1" src="not-my-modfiles-bestie/qsn3-1.png"/></p>
+<p><img alt="qsn3-1" src="../images/posts/not-my-modfiles-bestie/qsn3-1.png"/></p>
 
 <p>DTB is the physical address of the page directory (how the CPU translates virtual addresses. MemProcFS needs it to walk the page tables and reconstruct process memory.) Get it from Vol3's <code>windows.info</code>:</p>
 
-<p><img alt="qsn3-2" src="not-my-modfiles-bestie/qsn3-2.png"/></p>
+<p><img alt="qsn3-2" src="../images/posts/not-my-modfiles-bestie/qsn3-2.png"/></p>
 
 <p>DTB = <code>0x1ad000</code>. Pass it explicitly:</p>
 
 <pre><code>MemProcFS.exe -device memdump.raw -mount M: -dtb 0x1ad000</code></pre>
 
-<p><img alt="qsn3-3" src="not-my-modfiles-bestie/qsn3-3.png"/></p>
+<p><img alt="qsn3-3" src="../images/posts/not-my-modfiles-bestie/qsn3-3.png"/></p>
 
 <p>Mounted at <code>M:\</code>. MemProcFS synthesizes a full kernel dump at <code>M:\memory.dmp</code>. Open that in WinDbg - gives us a real kernel debugging session with full cross-process memory access:</p>
 
-<p><img alt="qsn3-4" src="not-my-modfiles-bestie/qsn3-4.png"/></p>
+<p><img alt="qsn3-4" src="../images/posts/not-my-modfiles-bestie/qsn3-4.png"/></p>
 
 <p>Find notepad and switch into its virtual address space:</p>
 
 <pre><code>!process 0 0 notepad.exe
 .process /p /r ffff9b0e630c3080</code></pre>
 
-<p><img alt="qsn3-5" src="not-my-modfiles-bestie/qsn3-5.png"/></p>
+<p><img alt="qsn3-5" src="../images/posts/not-my-modfiles-bestie/qsn3-5.png"/></p>
 
 <p>Now enumerate notepad's heap to understand the memory layout. <code>!heap -a</code> walks every heap chunk and prints its address, size, and flags:</p>
 
-<p><img alt="qsn3-6" src="not-my-modfiles-bestie/qsn3-6.png"/></p>
+<p><img alt="qsn3-6" src="../images/posts/not-my-modfiles-bestie/qsn3-6.png"/></p>
 
 <p>u can see that <code>busy extra user_flag</code> chunks stand out, Windows sets <code>user_flag</code> on heap blocks that carry application-defined metadata, like text buffer allocations. These are where Notepad stores its content:</p>
 
-<p><img alt="qsn3-7" src="not-my-modfiles-bestie/qsn3-7.png"/></p>
+<p><img alt="qsn3-7" src="../images/posts/not-my-modfiles-bestie/qsn3-7.png"/></p>
 
-<p><img alt="qsn3-8" src="not-my-modfiles-bestie/qsn3-8.png"/></p>
+<p><img alt="qsn3-8" src="../images/posts/not-my-modfiles-bestie/qsn3-8.png"/></p>
 
 <p>Navigate the Memory pane to the address of that chunk and the password is there in UTF-16LE:</p>
 
-<p><img alt="qsn3-9" src="not-my-modfiles-bestie/qsn3-9.png"/></p>
+<p><img alt="qsn3-9" src="../images/posts/not-my-modfiles-bestie/qsn3-9.png"/></p>
 
 <p>There is another approach - Volatility 2 has a <code>vadtree</code> plugin that can render the VAD tree as a dot graph. Sadly it did not work on this dump. Windows on build 19041 encrypts the KDBG structure, so Vol2's profile-based symbol resolution fails completely - it cannot locate <code>EPROCESS</code> or walk the VAD tree. Vol3 avoids this by using type layers instead of KDBG, which is why we went with <code>windows.vadinfo</code> above.</p>
 
@@ -410,7 +410,7 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 <p>To help visualise what the VAD tree actually looks like and how this forensic process works, here is a short animation:</p>
 
 <div class="img-container">
-<video controls="" src="not-my-modfiles-bestie/qsn3-vad.mp4" width="100%"></video>
+<video controls="" src="../images/posts/not-my-modfiles-bestie/qsn3-vad.mp4" width="100%"></video>
 </div>
 
 <p>This isnt entirely accurate at all, but the focus is on VAD as a whole and how the vad plugin works.</p>
@@ -419,7 +419,7 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 
 <p>Alternate solution (credit <a href="https://github.com/houssem0x1" rel="nofollow noreferrer noopener" target="_blank">houssem0x1</a>) - instead of reading heap content via WinDbg, dump the process memory and run strings on it directly, keeping the UTF-16LE encoding Windows uses in mind:</p>
 
-<p><img alt="qsn3 alternate solution - dumping process memory with Volatility3 and strings" src="not-my-modfiles-bestie/qsn3-alt-solution.png"/></p>
+<p><img alt="qsn3 alternate solution - dumping process memory with Volatility3 and strings" src="../images/posts/not-my-modfiles-bestie/qsn3-alt-solution.png"/></p>
 
 <h2 id="q4">Q4: What is the master encryption key used by ModCollabTool?</h2>
 
@@ -427,11 +427,11 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 
 <p>scaning on virustotal shows that it's packed by upx so unpack it.</p>
 
-<p><img alt="qsn5-1" src="not-my-modfiles-bestie/qsn5-1.png"/></p>
+<p><img alt="qsn5-1" src="../images/posts/not-my-modfiles-bestie/qsn5-1.png"/></p>
 
 <p>Now lets open up ida and try to understand how it encrypts the files.</p>
 
-<p><img alt="qsn5-2" src="not-my-modfiles-bestie/qsn5-2.png"/></p>
+<p><img alt="qsn5-2" src="../images/posts/not-my-modfiles-bestie/qsn5-2.png"/></p>
 
 <p>we can see there are strings for a key, rounds, accumulator state and a module called crypto which is not a standard library</p>
 
@@ -439,12 +439,12 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 
 <p>upon more investigating we can see this is a haskell binary, so the non standard ABI means ida cannot restructure it properly</p>
 
-<p><img alt="qsn5-3" src="not-my-modfiles-bestie/qsn5-3.png"/></p>
+<p><img alt="qsn5-3" src="../images/posts/not-my-modfiles-bestie/qsn5-3.png"/></p>
 
 <p>after searching for where the crypto modules is used we can find an xor which is using 0xAB as immediate<br/>
 seeing it more in deapth is a bytecode.</p>
 
-<p><img alt="qsn5-4" src="not-my-modfiles-bestie/qsn5-4.png"/></p>
+<p><img alt="qsn5-4" src="../images/posts/not-my-modfiles-bestie/qsn5-4.png"/></p>
 
 <pre><code>0x140004348: mov dil, [rax+rsi]
     0x14000434c: movzx edi, dil
@@ -459,7 +459,7 @@ The source buffer (rax) contains encoded key bytes and the destination (rbx) rec
 
 <p>We need to investigate the surrounding adresses for more crypto module loads</p>
 
-<p><img alt="qsn5-5" src="not-my-modfiles-bestie/qsn5-5.png"/></p>
+<p><img alt="qsn5-5" src="../images/posts/not-my-modfiles-bestie/qsn5-5.png"/></p>
 
 <pre><code>  0x140001570: mov rdi, 9E3779B97F4A7C15h
     0x14000157E: imul r8, rdi
@@ -473,7 +473,7 @@ The source buffer (rax) contains encoded key bytes and the destination (rbx) rec
 
 <p>that is certainly huge constant lol</p>
 
-<p><img alt="qsn5-6" src="not-my-modfiles-bestie/qsn5-6.png"/></p>
+<p><img alt="qsn5-6" src="../images/posts/not-my-modfiles-bestie/qsn5-6.png"/></p>
 
 <p>there is also another mov rdx, 0DEADBEEFCAFEBABEh + rotateL</p>
 
@@ -482,7 +482,7 @@ The source buffer (rax) contains encoded key bytes and the destination (rbx) rec
 <p>this is the 0x140A07110: dq offset loc_140858080, GHC W8# info table</p>
 
 <p>the reason why ida cannot decompile it properly here for instance if i press c on the area it will pop out<br/>
-<img alt="qsn5-7" src="not-my-modfiles-bestie/qsn5-7.png"/></p>
+<img alt="qsn5-7" src="../images/posts/not-my-modfiles-bestie/qsn5-7.png"/></p>
 
 <p>its bc IDA struggles heavily with GHC-compiled binaries. GHC uses the STG (Spineless Tagless G-machine) runtime instead of standard calling conventions, it uses rbp as a stack pointer, r13 as heap pointer, and jumps between code blocks via jmp [rbp+0] (continuation passing). but IDA expects standard prologues (push rbp; mov rbp, rsp) to identify functions and well GHC has none, so most code stays as raw data blobsd and string xrefs are broken because strings are accessed through CAF closures at runtime, not direct lea references</p>
 
@@ -492,11 +492,11 @@ The source buffer (rax) contains encoded key bytes and the destination (rbx) rec
 
 <p>come all the way up here till the bp that the buffer reads in.Step into any of the VM transition states between the accumulator and Vm.crypto and bp on the state , and go onto running and reading the data from the dump and if you do it correctly you will see the master key plaintext xored </p>
 
-<p><img alt="qsn5-8" src="not-my-modfiles-bestie/qsn5-8.png"/></p>
+<p><img alt="qsn5-8" src="../images/posts/not-my-modfiles-bestie/qsn5-8.png"/></p>
 
 <p>then in the dump view check for the bytes</p>
 
-<p><img alt="qsn5-9" src="not-my-modfiles-bestie/qsn5-9.png"/></p>
+<p><img alt="qsn5-9" src="../images/posts/not-my-modfiles-bestie/qsn5-9.png"/></p>
 
 <p>XOR each byte with 0xAB to get the master key:</p>
 
@@ -530,7 +530,7 @@ If you set the breakpoint and run, it hits multiple times before any file is eve
 
 <p>extract <code>evidence.7z</code> with it. we now have a folder of <code>.l3ak</code> files with hex-obfuscated names</p>
 
-<p><img alt="qsn7-1" src="not-my-modfiles-bestie/qsn7-1.png"/></p>
+<p><img alt="qsn7-1" src="../images/posts/not-my-modfiles-bestie/qsn7-1.png"/></p>
 
 <p>the eml attachment zip also contains <code>filelist.txt</code> - 2073 known Dark Souls map folder filenames. this is our brute-force dictionary to pass the solver to.</p>
 
@@ -597,19 +597,19 @@ so we can try both since the attacker was targeting either based on the eml. <co
 
 <p>okies, lets load it up in and see the area,</p>
 
-<p><img alt="qsn8-1" src="not-my-modfiles-bestie/qsn8-1.png"/></p>
+<p><img alt="qsn8-1" src="../images/posts/not-my-modfiles-bestie/qsn8-1.png"/></p>
 
 <p>Load <code>m18</code> into DSMapStudio and navigate to the main boss area. The boss is Gwyn, Lord of Cinder. When you try to select that model, map studio complains it cannot load the navmesh for the entity - a red highlight shows up on the paramview window bar. So the attacker did something to mess with the boss AI.</p>
 
-<p><img alt="qsn8-2" src="not-my-modfiles-bestie/qsn8-2.png"/></p>
+<p><img alt="qsn8-2" src="../images/posts/not-my-modfiles-bestie/qsn8-2.png"/></p>
 
 <p>Now we need to find where the model is actually trying to load from. In Dark Souls, bosses with cutscenes have 2 models - one animated inside the cutscene, one for the actual fight. Export that model onto the model viewer window and see where the duplicate of that boss AI is located - coordinates <code>pos:383.891,-103.660,202.784</code>. The Y axis is out of range for the ID, so the game can't load it - that's the error.</p>
 
-<p><img alt="qsn8-3" src="not-my-modfiles-bestie/qsn8-3.png"/></p>
+<p><img alt="qsn8-3" src="../images/posts/not-my-modfiles-bestie/qsn8-3.png"/></p>
 
 <p>Open the entity ID for the rest of the values:</p>
 
-<p><img alt="qsn8-4" src="not-my-modfiles-bestie/qsn8-4.png"/></p>
+<p><img alt="qsn8-4" src="../images/posts/not-my-modfiles-bestie/qsn8-4.png"/></p>
 
 <p><code>mesh</code> is the navmesh the model was actually meant to load, <code>ThinkParamID</code> is the boss AI behavior, then position and map.</p>
 
@@ -636,9 +636,9 @@ so we can try both since the attacker was targeting either based on the eml. <co
 
 <p>Shoutout and thanks to houssem0x1, suvoni, Andyrew, aresinheaven, 0x1622 and the l3ak forensics department for helping me out and playtesting the challenge &lt;3</p>
 
-<p><img alt="modding in progress" src="not-my-modfiles-bestie/modding-in-progress.jpg"/></p>
+<p><img alt="modding in progress" src="../images/posts/not-my-modfiles-bestie/modding-in-progress.jpg"/></p>
 
-<p><img alt="sleep schedule ruined" src="not-my-modfiles-bestie/endingthankyou.jpg"/></p>
+<p><img alt="sleep schedule ruined" src="../images/posts/not-my-modfiles-bestie/endingthankyou.jpg"/></p>
 
 <h2 id="references">References</h2>
 
@@ -691,7 +691,7 @@ so we can try both since the attacker was targeting either based on the eml. <co
       </div>
       <div class="tray" style="display: flex; align-items: center; gap: 4px;">
         <div style="border: 1px inset #fff; background: #fff; padding: 2px 4px; font-size: 11px; color: #000; display: flex; align-items: center; width: 140px; overflow: hidden; white-space: nowrap; font-family: 'MS Sans Serif', sans-serif;">
-          <marquee scrollamount="3" id="now-playing-marquee">🎵 now playing: ruby</marquee>
+          <marquee scrollamount="3" id="now-playing-marquee">ðŸŽµ now playing: ruby</marquee>
         </div>
         <button class="btn" id="music-prev" style="padding: 1px 6px; font-size: 10px;">&#9668;</button>
         <button class="btn" id="music-toggle" style="padding: 1px 6px; font-size: 10px; font-weight: bold; width: 24px;">||</button>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll" name="description"/>
+<title>Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll</title>
+<meta property="og:title" content="Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll" />
+<meta property="og:description" content="Reverse engineering ntdll's VEH dispatch chain, RtlDispatchException, and RtlRestoreContext to understand VEHguard internals." />
+<meta property="og:image" content="https://mooofin.github.io/portfolio/blog/vehguard/image6.png" />
+<meta property="og:url" content="https://mooofin.github.io/portfolio/blog/vehguard.html" />
+<meta property="og:type" content="article" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://mooofin.github.io/portfolio/blog/vehguard/image6.png" />
+<link href="../style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" rel="stylesheet"/>
+<link href="../public/favicon.ico" rel="icon"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" />
+<style>
+    /* Blog specific styles */
+    .blog-content {
+      font-family: "Verdana", sans-serif;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .blog-content h1,
+    .blog-content h2,
+    .blog-content h3 {
+      color: #000080;
+      margin-top: 20px;
+      border-bottom: 1px dotted #ccc;
+      padding-bottom: 5px;
+    }
+
+    .blog-content p {
+      margin-bottom: 15px;
+    }
+
+    .blog-content img {
+      max-width: 100%;
+      border: 1px solid #999;
+      padding: 4px;
+      background: #fff;
+    }
+
+    .blog-content .img-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .blog-content pre {
+      background: #eee;
+      border: 1px inset #ccc;
+      padding: 10px;
+      overflow-x: auto;
+      font-family: "Courier New", monospace;
+    }
+
+    .blog-content code {
+      background: #f0f0f0;
+      padding: 2px 4px;
+      font-family: "Courier New", monospace;
+    }
+
+    .blog-content blockquote {
+      border-left: 4px solid #000080;
+      padding-left: 10px;
+      color: #555;
+      font-style: italic;
+      margin: 15px 0;
+    }
+
+    .blog-meta {
+      color: #666;
+      font-size: 11px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+
+    .blog-content pre code { background: none; padding: 0; border: none; }
+    .hljs { background: #fafaf8; }
+    .hljs-keyword { color: #b0306a; }
+    .hljs-string { color: #2d6a2d; }
+    .hljs-comment { color: #808080; font-style: italic; }
+    .hljs-number { color: #7a2d8a; }
+    .hljs-type { color: #c06030; }
+    .hljs-literal { color: #d49080; }
+    .hljs-built_in { color: #7a2d8a; }
+    .hljs-title.class_ { color: #212529; }
+    .hljs-title.function_ { color: #212529; }
+    .hljs-attr { color: #b0306a; }
+    .hljs-params { color: #424242; }
+    .hljs-meta { color: #c06030; }
+    .hljs-meta .hljs-keyword { color: #c06030; }
+    .hljs-symbol { color: #2d6a2d; }
+    .hljs-section { color: #b0306a; }
+    .hljs-selector-tag { color: #b0306a; }
+    .hljs-addition { color: #2d6a2d; }
+    .hljs-deletion { color: #a04040; }
+  </style>
+</head>
+<body>
+<div class="desktop flex gap-16" style="flex-direction: row">
+<div class="sidebar-95">
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/computer-3.png"/>
+            Navigation
+          </div>
+<div class="window-body" style="padding: 0">
+<ul class="list-group" style="border: none">
+<li class="list-group-item">
+<a href="../index.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"/>
+                  Home
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../about.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/users-1.png"/>
+                  About Me
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../projects.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"/>
+                  Projects
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../blog.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"/>
+                  Blog
+                </a>
+</li>
+</ul>
+</div>
+</div>
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/gear-0.png"/>
+            Actions
+          </div>
+<div class="window-body" style="padding: 0">
+<ul class="list-group" style="border: none">
+<li class="list-group-item">
+<a href="javascript:history.back()">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/undo-0.png"/>
+                  Go Back
+                </a>
+</li>
+<li class="list-group-item">
+<a href="#" onclick="
+                    window.scrollTo(0, 0);
+                    return false;
+                  ">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"/>
+                  Top of Page
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../blog.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"/>
+                  All Posts
+                </a>
+</li>
+</ul>
+</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
+          <img src="../images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
+        </div>
+      </div>
+
+      <div class="content-95">
+<div class="window" style="margin-bottom: 8px">
+<div class="window-body" style="padding: 4px 8px; font-size: 11px">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"/>
+<a href="../index.html">Home</a> &gt;
+            <a href="../blog.html">Blog</a> &gt; VEHguard Internals
+          </div>
+</div>
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"/>
+            VEHguard Internals
+          </div>
+<div class="window-body">
+<div class="blog-meta">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/clock-0.png"/>
+              Posted: 2026-08-01 |
+              <img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/user-0.png"/>
+              Author: Siddharth |
+              <img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"/>
+              Category: Reverse Engineering
+            </div>
+<div class="blog-content">
+
+<div style="margin: 4px 0 24px; text-align: center; font-size: 1.2em;">
+<p>
+$\textit{Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in }\texttt{ntdll.dll}$
+</p>
+</div>
+
+<p>Before going on this, I'd want to let the basics of <code>VirtualAlloc</code> and <code>VirtualAllocEx</code> be known to the reader, if you already know this, skip to the next section.</p>
+
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc" rel="nofollow noreferrer noopener" target="_blank">https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc</a></p>
+
+<p><code>VirtualAlloc</code> is the primary user mode API for allocating pages in the "current process", if you wanna allocate in another process then use <code>VirtualAllocEx</code>.</p>
+
+<p>I like this comment - <a href="https://news.ycombinator.com/item?id=31964221" rel="nofollow noreferrer noopener" target="_blank">https://news.ycombinator.com/item?id=31964221</a>, read about this as well.</p>
+
+<p>Every call at the end reaches <code>NtAllocateVirtualMemory</code> which manipulates the VAD and can also manipulate the page table itself.</p>
+
+<p>One thing to keep in mind is that allocation on the NT kernel is a 2 step process, reserve and commit.
+Read this if you wanna know how VAD works: <a href="https://www.sans.org/blog/analysis-user-data-vads-extraction-precise-data-notepad-memory-hunting-malware-behavior" rel="nofollow noreferrer noopener" target="_blank">SANS - Analysis of User Data VADs</a>. In short when you reserve you're asking the NT kernel to give you a memory address, you have a bunch of virtual memory pages which you wanna allocate.</p>
+
+<p>The other one is mem-commit which the windows documentation explains very well: "The function also guarantees that when the caller later initially accesses the memory, the contents will be zero. Actual physical pages are not allocated unless/until the virtual addresses are actually accessed". Something interesting worth noting is that a VirtualAlloc-returned page doesn't belong to any DLL and has no PDB symbols, and the fun thing we will use is that it has no entry in the process's <code>RUNTIME_FUNCTION</code>.</p>
+
+<p>Keep this in mind later - To reserve and commit pages in one step, call VirtualAlloc with <code>MEM_COMMIT | MEM_RESERVE</code>.</p>
+
+<h2 id="vehguard-internals">VEHguard internals</h2>
+
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/debug/vectored-exception-handling" rel="nofollow noreferrer noopener" target="_blank">https://learn.microsoft.com/en-us/windows/win32/debug/vectored-exception-handling</a></p>
+
+<p>If that confuses or doesn't explain it properly, it's basically a callback that windows uses when an exception occurs before any <code>__try</code>/<code>catch</code> tries to run. To add one we use the <code>AddVectoredExceptionHandler</code> function (errhandlingapi.h), it takes a (FirstHandler, YourFunction) - passing 1 to it makes our handler go at the front of the internal chain which manages the order of what is to be called, and 0 puts it at the back.</p>
+
+<p>Every process in windows has ntdll.dll loaded onto it, it is what every syscall needs to be ran through to communicate to the kernel via syscalls. This thread has some answers for any more things that pique the reader's interest: <a href="https://www.reddit.com/r/sysadmin/comments/vqcf67/windows_undocumented_emergency_restart/" rel="nofollow noreferrer noopener" target="_blank">r/sysadmin - Windows undocumented emergency restart</a></p>
+
+<p>Now we can try to see how exactly these get resolved and the context switching happens, load up ntdll into IDA and let it finish downloading symbols.</p>
+
+<p><img alt="ntdll VEH handler list" src="vehguard/image1.png"/></p>
+
+<p>See the <code>LdrpVectorHandlerList</code>, this is what keeps the list of what the priority order is for calling it.</p>
+
+<p>Decompile and let's search for the loop where it has to</p>
+
+<p><img alt="VEH dispatch loop decompiled" src="vehguard/image2.png"/></p>
+
+<p>Handlers are encoded (<code>RtlDecodePointer</code>) as an anti-corruption mitigation, and returning -1 breaks the loop, returns 1, which is ended up as "handled".</p>
+
+<p><img alt="VEH handler encoding" src="vehguard/image3.png"/></p>
+
+<p>See the entry block! RSP now points at an <code>EXCEPTION_RECORD</code> + <code>CONTEXT</code> the kernel prepared, and then it checks if it's a WOW64 (32-bit-on-64-bit) process by testing if <code>Wow64PrepareForException</code> is set.</p>
+
+<p>Block 3 is the main dispatch, <code>RtlDispatchException</code> walks the VEH list (through <code>RtlpCallVectoredHandlers</code> which we just reversed) and returns 1 if handled, 0 if not.</p>
+
+<p><img alt="RtlDispatchException entry block" src="vehguard/image4.png"/></p>
+
+<p>Now we should see how the handled patch will be dispatched throughout.</p>
+
+<p><img alt="RtlDispatchException main dispatch" src="vehguard/image5.png"/></p>
+
+<p>After VehHandler returns -1, execution reaches this block, and <code>RtlGuardRestoreContext</code> reads the <code>CONTEXT*</code> (still on rsp) and marks every register.</p>
+
+<p>Moving onto how <code>RtlGuardRestoreContext</code> passes the modified RIP onto the CPU.</p>
+
+<p><img alt="RtlGuardRestoreContext" src="vehguard/image6.png"/></p>
+
+<p>Pretty huge, but let's start by tracing the CFG from the first entry basic block.</p>
+
+<p><img alt="CFG entry basic block" src="vehguard/image7.png"/></p>
+
+<p>The first arg is the struct we will need to modify in our entry VEH-handler.</p>
+
+<p><img alt="VEH-handler struct argument" src="vehguard/image8.png"/></p>
+
+<p>Next instructions are pretty explanatory; <code>KiUserExceptionDispatcher</code> calls with <code>EDX = 0</code> (a null <code>ExceptionRecord</code> pointer), then jumps straight to <code>loc_180035A17</code>. For a deeper walkthrough of this dispatcher and its stack layout, <a href="https://momo5502.com/posts/2024-09-07-a-journey-through-kiuserexceptiondispatcher/" rel="nofollow noreferrer noopener" target="_blank">read Maurice Heumann's “A journey through KiUserExceptionDispatcher”</a>. A related implementation is <a href="https://github.com/brew02/KiUserExceptionDispatcherHook" rel="nofollow noreferrer noopener" target="_blank">brew02's KiUserExceptionDispatcherHook repository</a>.</p>
+
+<p><img alt="KiUserExceptionDispatcher call" src="vehguard/image9.png"/></p>
+
+<p>Now this is a wrapper around <code>RtlRestoreContext</code>, the core primitive, these are just CFG validations or checking some things mostly.</p>
+
+<p><img alt="RtlRestoreContext wrapper" src="vehguard/image10.png"/></p>
+
+<p>But if you look at the right blocks of these, the context struct is being copied to a local stack buffer before being restored. This is so the restore process can safely trash registers without losing track of the source.</p>
+
+<p>Below that is <code>RcFrameConsolidation</code> which is where the actual register-by-register restoration happens.</p>
+
+<p>From all these we can try to form a mini mental model of VEH: the <code>RtlRestoreContext</code>  passes context on to the CPU registers which then copies the caller-supplied <code>CONTEXT</code> into a local buffer then jumps to <code>RcFrameConsolidation</code> which restores every register. When we set <code>ctx->Rip = g_RetGadget</code> inside <code>VehHandler</code>, our context passes to <code>RtlDispatchException</code>, which passes to <code>RtlGuardRestoreContext</code> for validation, which passes to the <code>RtlRestoreContext</code> copy, which passes to <code>RcFrameConsolidation</code>, which sets the RIP register. <a href="https://stackoverflow.com/questions/9428637/what-does-rtlrestorecontext-do-when-exceptioncode-is-status-unwind-consolidate" rel="nofollow noreferrer noopener" target="_blank">See this Stack Overflow explanation</a>.</p>
+
+<div class="img-container">
+<p style="padding-left: 16px; margin-bottom: 0">
+$$
+\begin{array}{c}
+\text{VehHandler}(ctx) \\[4pt]
+\big\downarrow\ \scriptstyle ctx\text{-}\!>\!Rip \leftarrow g\_RetGadget \\[4pt]
+\text{RtlDispatchException}(ctx) \\[4pt]
+\downarrow \\[4pt]
+\text{RtlGuardRestoreContext}(ctx) \\[4pt]
+\downarrow\ \scriptstyle \text{(validation)} \\[4pt]
+\text{RtlRestoreContext}(ctx) \\[4pt]
+\downarrow\ \scriptstyle ctx \to \text{local stack buffer (rep movsq)} \\[4pt]
+\text{RcFrameConsolidation}(ctx) \\[4pt]
+\downarrow \\[4pt]
+RIP \leftarrow ctx.Rip
+\end{array}
+$$
+</p>
+</div>
+
+
+<h2 id="dynamic-analysis">Dynamic Analysis</h2>
+
+<p><strong>Notes:</strong> WinDbg exception controls are documented in Microsoft's <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/sx--sxd--sxe--sxi--sxn--sxr--sx---set-exceptions" rel="nofollow noreferrer noopener" target="_blank">Set Exceptions documentation</a>.</p>
+
+<p>When opening  WinDbg stops at its initial debugger break in <code>ntdll!LdrpDoDebuggerBreak</code> and dw about this and just continue running </p>
+
+<p><img alt="WinDbg initial startup breakpoint while loading VEHguard" src="vehguard/image11.png"/></p>
+
+<p>After enabling first-chance guard-page breaks with <code>sxe gp</code> it  stops on <code>STATUS_GUARD_PAGE_VIOLATION</code> (<code>0x80000001</code>). The exception address is our  payload page, and u can see the test payload <code>EB FE</code>, an infinite short jump to itself.  the  <code>PAGE_GUARD</code> intercepted the first execution attempt before the handler redirects control flow </p>
+
+<p><img alt="WinDbg catching the VEHguard guard-page violation at the payload" src="vehguard/image12.png"/></p>
+
+<p>then continue from the first-chance exception and setting <code>bu VEHguard!VehHandler</code> breaks at the user-defined handler. see in the command window that the  guard-page exception has been dispatched to <code>VehHandler</code>. as per __fastcall  x64 Windows, the first argument is passed in <code>RCX</code>but since we overwrote it ,it is the <code>EXCEPTION_POINTERS*</code> that contains the exception record .</p>
+
+<p><img alt="WinDbg breaking at the VEHguard exception handler" src="vehguard/image13.png"/></p>
+
+<p><img alt="WinDbg inspecting the guard-page exception and context pointer" src="vehguard/image14.png"/></p>
+
+<pre><code>0:000&gt; r rcx
+rcx=000000fd`9f7aeb60
+0:000&gt; dt ntdll!_EXCEPTION_POINTERS @rcx
+Symbol ntdll!_EXCEPTION_POINTERS not found.
+0:000&gt; dt ntdll!_EXCEPTION_RECORD poi(@rcx)
+   +0x000 ExceptionCode    : 0n-2147483647
+   +0x004 ExceptionFlags   : 0
+   +0x008 ExceptionRecord  : (null)
+   +0x010 ExceptionAddress : 0x0000022f`236f0000 Void
+   +0x018 NumberParameters : 2
+   +0x020 ExceptionInformation : [15] 8
+0:000&gt; dt ntdll!_CONTEXT poi(@rcx+8) Rip Rsp
+   +0x098 Rsp : 0x000000fd`9f7af508
+   +0x0f8 Rip : 0x0000022f`236f0000</code></pre>
+
+<p>here <code>RCX</code> contains the handler's <code>EXCEPTION_POINTERS*</code>.  in the  exception record  <code>0x80000001</code> (<code>STATUS_GUARD_PAGE_VIOLATION</code>) the allocated payload page as the exception address. But context record still has <code>RIP</code> which is pointing at that payload address, ie the state before <code>VehHandler</code> applies its redirect.</p>
+
+<p>step through the handler,and we can see the redirect has been applied:</p>
+
+<p><img alt="WinDbg showing the modified RIP and RSP after the VEH handler redirect" src="vehguard/image15.png"/></p>
+
+<pre><code>0:000&gt; dt ntdll!_CONTEXT poi(000000fd`9f7aeb60+8) Rip Rsp
+   +0x098 Rsp : 0x000000fd`9f7af500
+   +0x0f8 Rip : 0x00007ffa`54fc10ea</code></pre>
+
+<p><code>RSP</code> has moved down by 8 bytes,for matching the handler's stack adjustment, while <code>RIP</code> now points at the selected <code>RET</code> gadget instead of the payload page. 
+
+<h2 id="new-call-frame">New Call Frame</h2>
+
+<p>Now lets use  x64dbg for viewing the same event from the thread's pov to see the call-stack getting called from ntdll's ret gadget. Load <code>VEHguard.exe</code>, let the process run, and  with the <strong>Call Stack</strong> pane, Set a bp on <code>VEHguard!VehHandler</code> .
+
+<p>in the call stack below shows the main thread and the transition back through the program's startup/runtime frames. The imp detail is that the guard-page exception is handled before normal user code resumes since we added it to the first priority.</p>
+
+<p><img alt="x64dbg call stack for the VEHguard main thread" src="vehguard/x64dbg-callstack.png"/></p>
+
+<p>TAfter the handler modifies the context,we can  compare the current <code>RIP</code> with the payload address and follow <code>RSP</code> in the dump pane. 
+
+<p><img alt="x64dbg CPU, registers, and stack memory while examining VEHguard" src="vehguard/x64dbg-context.png"/></p>
+
+<p>In x64dbg, pause at the handler, step over the writes to <code>ctx-&gt;Rsp</code> and <code>ctx-&gt;Rip</code>, then inspect the call stack, which now returns through the <code>ntdll.dll</code> ROP gadget.
+
+<p><strong>Source code:</strong> <a href="https://github.com/mooofin/VEHguard" rel="nofollow noreferrer noopener" target="_blank">VEHguard on GitHub</a>.</p>
+
+
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+    <div class="taskbar">
+      <div style="display: flex; gap: 8px; flex: 1; overflow: hidden; align-items: center;">
+        <a href="/" class="start-button">
+          <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" class="icon-16" alt="" />
+          Start
+        </a>
+        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px; height: 16px;"></div>
+        <button class="btn" style="border: 2px inset #fff; font-weight: bold; display: flex; align-items: center; gap: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default;" id="taskbar-active-window">
+          <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+          <span id="taskbar-title">mooofin.exe</span>
+        </button>
+      </div>
+      <div class="tray" style="display: flex; align-items: center; gap: 4px;">
+        <div style="border: 1px inset #fff; background: #fff; padding: 2px 4px; font-size: 11px; color: #000; display: flex; align-items: center; width: 140px; overflow: hidden; white-space: nowrap; font-family: 'MS Sans Serif', sans-serif;">
+          <marquee scrollamount="3" id="now-playing-marquee">🎵 now playing: ruby</marquee>
+        </div>
+        <button class="btn" id="music-prev" style="padding: 1px 6px; font-size: 10px;">&#9668;</button>
+        <button class="btn" id="music-toggle" style="padding: 1px 6px; font-size: 10px; font-weight: bold; width: 24px;">||</button>
+        <button class="btn" id="music-next" style="padding: 1px 6px; font-size: 10px;">&#9658;|</button>
+        <div class="time" id="clock">12:00 PM</div>
+      </div>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+    onload="
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: '$$', right: '$$', display: true },
+                { left: '$', right: '$', display: false },
+            ],
+        })
+    "
+></script>
+<script src="../site.js"></script>
+</body>
+</html>
