@@ -419,6 +419,8 @@ Note: on Windows 10, shimcache records a file the moment it's visible to the OS 
 
 <p>Alternate solution (credit <a href="https://github.com/houssem0x1" rel="nofollow noreferrer noopener" target="_blank">houssem0x1</a>) - instead of reading heap content via WinDbg, dump the process memory and run strings on it directly, keeping the UTF-16LE encoding Windows uses in mind:</p>
 
+But in a real DFIR scenario , you shouldnt verify just by strings , as it's not a definite proof that the password is and was used by the uses , then you should only use the windbg method mentioned in the paper , string can help with maybe get context around the stack or registers lead you to look where's next . That's all .
+
 <p><img alt="qsn3 alternate solution - dumping process memory with Volatility3 and strings" src="../images/posts/not-my-modfiles-bestie/qsn3-alt-solution.png"/></p>
 
 <h2 id="q4">Q4: What is the master encryption key used by ModCollabTool?</h2>
