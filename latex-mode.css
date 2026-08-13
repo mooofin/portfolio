@@ -13,6 +13,7 @@ html.latex-mode body {
   line-height: 1.8;
   display: block;
   min-height: auto;
+  overflow-x: hidden;
 }
 
 html.latex-mode body,
@@ -233,6 +234,7 @@ html.latex-mode .latex-toc li {
   align-items: baseline;
   gap: 0.5em;
   margin-bottom: 0.2rem;
+  min-width: 0;
 }
 html.latex-mode .latex-toc li::before {
   content: counter(tocsec);
@@ -246,6 +248,7 @@ html.latex-mode .latex-toc li .toc-dots {
 }
 html.latex-mode .latex-toc a {
   text-decoration: none;
+  overflow-wrap: anywhere;
 }
 .latex-toc {
   display: none;
@@ -355,6 +358,7 @@ html.latex-mode .latex-vimline {
   padding: 2px 10px;
   background: #1a1a1a;
   color: #fff;
+  min-width: 0;
 }
 html.latex-mode.latex-dark .latex-vimline {
   background: #ddd;
@@ -393,6 +397,7 @@ html.latex-mode .latex-bibcard {
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
   max-width: 90vw;
   overflow-x: auto;
+  overflow-wrap: anywhere;
 }
 html.latex-mode .latex-bib li:hover .latex-bibcard {
   display: block;
@@ -484,12 +489,15 @@ html.latex-mode .img-container img {
   background: transparent !important;
   display: block;
   margin: 1rem auto;
+  max-width: 100% !important;
+  height: auto !important;
 }
 
 /* code stays monospace but flat, with Listing N captions */
 html.latex-mode pre {
   border: 1px solid #1a1a1a !important;
   background: #fff !important;
+  max-width: 100%;
 }
 html.latex-mode .blog-content pre {
   counter-increment: listing;
@@ -785,6 +793,7 @@ html.latex-mode .projects-list-table tbody tr {
   position: relative;
   counter-increment: projentry;
   align-items: start;
+  min-width: 0;
 }
 html.latex-mode .projects-list-table tbody tr:last-child {
   border-bottom: none !important;
@@ -823,6 +832,8 @@ html.latex-mode .projects-list-table td:nth-child(2) {
   color: #555 !important;
   font-size: 0.875rem;
   line-height: 1.55;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 html.latex-mode .projects-list-table td:nth-child(2)::before {
   content: "- ";
@@ -857,6 +868,7 @@ html.latex-mode.latex-dark .projects-list-table td:nth-child(2) {
 html.latex-mode .oe-table {
   display: table !important;
   width: 100% !important;
+  max-width: 100%;
   border-collapse: collapse !important;
   font-family: inherit !important;
   font-size: 0.95rem !important;
@@ -915,6 +927,7 @@ html.latex-mode .oe-table .msg-row:last-child td {
 html.latex-mode .oe-table .msg-row td:nth-child(3) {
   font-style: normal;
   padding-right: 1rem !important;
+  overflow-wrap: anywhere;
 }
 /* date col */
 html.latex-mode .oe-table .msg-row td:nth-child(4) {
@@ -1134,6 +1147,7 @@ html.latex-mode #preview-body {
   font-family: inherit !important;
   font-size: 1rem !important;
   padding: 0 !important;
+  overflow-wrap: anywhere;
 }
 
 /* dark-mode corrections for the forced light colors above */
@@ -1402,6 +1416,14 @@ html.latex-mode .sidebar-95 .list-group a {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    gap: 0.5rem;
+    padding-inline: 6px;
+  }
+
+  html.latex-mode .latex-vimline > * {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* buttons: slightly larger tap target */
@@ -1409,15 +1431,20 @@ html.latex-mode .sidebar-95 .list-group a {
   html.latex-mode #latex-dark-toggle {
     padding: 6px 12px !important;
     font-size: 13px !important;
+    max-width: calc(50vw - 12px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* pfp + abstract: stack vertically on small screens */
   /* stack pfp + bio vertically on mobile (intro table only, not table-95) */
   html.latex-mode .content-95 table:not(.table-95) {
-    display: table;
+    display: block;
     width: 100%;
     overflow-x: visible;
   }
+  html.latex-mode .content-95 table:not(.table-95) tr,
   html.latex-mode .content-95 table:not(.table-95) td {
     display: block;
     width: 100% !important;
@@ -1434,16 +1461,65 @@ html.latex-mode .sidebar-95 .list-group a {
     right: 0;
     white-space: pre-wrap;
     font-size: 10px;
+    max-width: calc(100vw - 28px);
+    max-height: 45vh;
   }
 
   /* TOC: tighter */
   html.latex-mode .latex-toc {
     margin: 1rem auto;
+    max-width: 100%;
+  }
+
+  html.latex-mode .latex-toc li {
+    gap: 0.35em;
+  }
+
+  html.latex-mode .latex-toc li .toc-dots {
+    min-width: 1.5rem;
   }
 
   /* blockquote: smaller margin on mobile */
   html.latex-mode blockquote {
     margin: 0.75rem 0.5rem !important;
+  }
+
+  html.latex-mode table,
+  html.latex-mode .blog-content table,
+  html.latex-mode .table-95,
+  html.latex-mode .oe-table {
+    max-width: 100%;
+  }
+
+  html.latex-mode .blog-content table,
+  html.latex-mode .table-95 {
+    display: block !important;
+    overflow-x: auto !important;
+  }
+
+  html.latex-mode .oe-table {
+    display: table !important;
+    font-size: 0.82rem !important;
+  }
+
+  html.latex-mode .oe-table thead th,
+  html.latex-mode .oe-table .msg-row td {
+    padding-block: 0.35rem !important;
+  }
+
+  html.latex-mode .oe-table .msg-row td:nth-child(4) {
+    width: 5.6rem;
+    font-size: 0.68rem;
+  }
+
+  html.latex-mode pre {
+    margin-inline: 0;
+    font-size: 0.78rem;
+  }
+
+  html.latex-mode .blog-content pre::after {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
 
