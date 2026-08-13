@@ -12,6 +12,12 @@ html {
   min-height: 100%;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* Body styles */
 body {
   font-family: "MS Sans Serif", "Microsoft Sans Serif", sans-serif;
@@ -32,6 +38,14 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
 }
 
 /* Scrollbar (Webkit) */
@@ -123,6 +137,7 @@ button:active {
   background: silver;
   color: #212529;
   margin-bottom: 16px;
+  max-width: 100%;
 }
 
 .card.square,
@@ -158,6 +173,7 @@ button:active {
 .window-body {
   padding: 12px;
   background: silver;
+  max-width: 100%;
 }
 
 /* LIST GROUPS */
@@ -356,6 +372,7 @@ button:active {
 /* FORMS */
 .form-95 {
   width: 100%;
+  max-width: 100%;
   border: 2px inset #d5d5d5;
   color: #424242;
   background: #fff;
@@ -431,6 +448,7 @@ textarea:focus {
 .blog-content {
   overflow-wrap: break-word;
   word-wrap: break-word;
+  word-break: normal;
   max-width: 100%;
 }
 
@@ -438,6 +456,12 @@ textarea:focus {
   overflow-x: auto;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.blog-content code,
+.window-body code,
+.window-body a {
+  overflow-wrap: anywhere;
 }
 
 .blog-content img {
@@ -449,6 +473,12 @@ textarea:focus {
   display: block;
   overflow-x: auto;
   max-width: 100%;
+}
+
+.blog-content svg,
+.window-body svg {
+  max-width: 100%;
+  height: auto;
 }
 
 /* KaTeX display math: scroll horizontally instead of overflowing */
@@ -479,7 +509,8 @@ textarea:focus {
   min-height: calc(100vh - 100px);
   padding: 16px;
   box-sizing: border-box;
-  max-width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 /* Sidebar */
@@ -493,6 +524,7 @@ textarea:focus {
   flex: 1;
   min-width: 0;
   overflow: hidden;
+  max-width: 100%;
 }
 
 /* Fieldset / Group box */
@@ -589,49 +621,110 @@ hr.separator {
 
 /* Responsive */
 @media (max-width: 768px) {
-  body {
-    padding-bottom: 0;
+  html {
     overflow-x: hidden;
+  }
+
+  body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-attachment: scroll;
   }
 
   .desktop {
     flex-direction: column !important;
-    padding: 8px;
+    width: 100%;
+    max-width: 100vw;
+    min-height: auto;
+    padding: 6px;
     gap: 8px !important;
+    overflow-x: hidden;
   }
 
   .sidebar-95 {
     width: 100%;
     min-width: unset;
+    max-width: 100%;
+  }
+
+  .content-95 {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .window,
+  .card {
+    width: 100%;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .window-body,
+  .card-body {
+    padding: 8px;
+    overflow-wrap: anywhere;
   }
 
   .navbar-95 {
     flex-wrap: wrap;
   }
 
+  .sidebar-95 .list-group-item a,
+  .nav-link,
+  .btn,
+  button {
+    min-height: 28px;
+    align-items: center;
+  }
+
   .taskbar {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 4px;
     padding: 3px 4px;
+    max-width: 100vw;
   }
 
   .taskbar > div:first-child {
+    display: flex;
     flex-wrap: wrap;
     gap: 4px;
     min-width: 0;
+    overflow: hidden;
+  }
+
+  .taskbar .start-button {
+    flex-shrink: 0;
+    padding-inline: 5px;
   }
 
   #taskbar-active-window {
-    max-width: 140px !important;
+    flex: 1 1 96px;
+    min-width: 0;
+    max-width: min(38vw, 140px) !important;
     font-size: 11px;
   }
 
+  .taskbar .tray {
+    min-width: 0;
+    padding: 1px 3px;
+  }
+
+  .taskbar .tray > div[style*="width: 140px"],
+  .taskbar .time {
+    display: none !important;
+  }
+
   body {
-    padding-bottom: 60px;
+    padding-bottom: 54px;
   }
 
   .container-95 {
     padding: 8px;
+    max-width: 100%;
   }
 
   /* Blog list: float:right dates stack below title on narrow screens */
@@ -640,6 +733,7 @@ hr.separator {
     flex-wrap: wrap;
     align-items: baseline;
     gap: 4px;
+    min-width: 0;
   }
 
   .list-group-item a span[style*="float"] {
@@ -654,9 +748,14 @@ hr.separator {
     word-break: break-word;
   }
 
+  .table-95 th,
+  .table-95 td {
+    padding: 5px;
+  }
+
   .table-95 th:first-child,
   .table-95 td:first-child {
-    width: 80px;
+    width: 72px;
     font-size: 10px;
     white-space: nowrap;
     overflow: hidden;
@@ -669,7 +768,16 @@ hr.separator {
   }
 
   .blog-content code {
-    word-break: break-all;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .blog-content img,
+  .blog-content svg,
+  .window-body img,
+  .window-body svg {
+    max-width: 100% !important;
+    height: auto !important;
   }
 
   /* Intro table on homepage: stack photo and text */
@@ -685,5 +793,119 @@ hr.separator {
   .window-body table:not(.table-95) td {
     display: block;
     width: auto !important;
+  }
+
+  #ygm-dialog {
+    width: min(320px, calc(100vw - 24px)) !important;
+  }
+
+  #ygm-dialog .ygm-body {
+    padding: 12px !important;
+  }
+
+  .oe-shell {
+    margin-bottom: 16px !important;
+  }
+
+  .oe-toolbar {
+    flex-wrap: wrap;
+    align-items: stretch !important;
+  }
+
+  .oe-toolbar .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 72px;
+  }
+
+  .oe-toolbar > div[style*="border-left"] {
+    display: none !important;
+  }
+
+  .oe-panes {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .oe-folders {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-height: 130px;
+    border-right: 0 !important;
+    border-bottom: 2px groove #a0a0a0;
+  }
+
+  .oe-right {
+    width: 100%;
+    min-width: 0;
+    overflow: visible !important;
+  }
+
+  .oe-msglist {
+    flex: none !important;
+    max-height: 190px;
+    overflow: auto !important;
+  }
+
+  .oe-table {
+    display: table !important;
+    min-width: 520px;
+  }
+
+  .oe-table thead,
+  .oe-table tbody {
+    display: table-row-group !important;
+  }
+
+  .oe-table tr {
+    display: table-row !important;
+  }
+
+  .oe-table th,
+  .oe-table td {
+    display: table-cell !important;
+    width: auto !important;
+  }
+
+  .oe-preview {
+    flex: none !important;
+    max-height: none;
+    overflow: visible !important;
+  }
+
+  #preview-header,
+  #preview-body {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 430px) {
+  .desktop {
+    padding: 4px;
+  }
+
+  .window-body,
+  .card-body {
+    padding: 6px;
+  }
+
+  .window-title,
+  .card-header {
+    font-size: 11px;
+  }
+
+  .taskbar {
+    grid-template-columns: 1fr auto;
+  }
+
+  #taskbar-active-window {
+    max-width: 32vw !important;
+  }
+
+  .table-95 th:first-child,
+  .table-95 td:first-child {
+    width: 64px;
   }
 }
