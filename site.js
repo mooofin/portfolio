@@ -20,7 +20,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css?v=20260816a";
+  local.href = base + "latex-mode.css?v=20260816e";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";
@@ -75,6 +75,7 @@
   }
 
   var katexLoadPromise = null;
+  var mathJaxLoadPromise = null;
 
   function loadScriptOnce(id, src) {
     return new Promise(function (resolve, reject) {
@@ -116,25 +117,71 @@
     return katexLoadPromise;
   }
 
+  function ensureMathJax() {
+    if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+      return Promise.resolve();
+    }
+    if (mathJaxLoadPromise) return mathJaxLoadPromise;
+
+    window.MathJax = window.MathJax || {};
+    window.MathJax.tex = window.MathJax.tex || {
+      inlineMath: [["$", "$"]],
+      displayMath: [["$$", "$$"]],
+    };
+
+    var existing = document.querySelector('script[src*="mathjax"]');
+    if (existing) {
+      mathJaxLoadPromise = new Promise(function (resolve) {
+        if (window.MathJax && typeof window.MathJax.typesetPromise === "function") return resolve();
+        existing.addEventListener("load", resolve, { once: true });
+        existing.addEventListener("error", resolve, { once: true });
+      }).then(function () {
+        if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+          return window.MathJax.startup.promise.catch(function () {});
+        }
+      });
+      return mathJaxLoadPromise;
+    }
+
+    mathJaxLoadPromise = loadScriptOnce("mathjax-js-cdn", "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js")
+      .then(function () {
+        if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+          return window.MathJax.startup.promise.catch(function () {});
+        }
+      })
+      .catch(function () {});
+    return mathJaxLoadPromise;
+  }
+
   function renderLatexMath(root) {
     root = root || document.querySelector(".blog-content") || document.body;
     if (!root || root.dataset.mathRendered === "1") return;
-    ensureKatex().then(function () {
-      if (typeof window.renderMathInElement === "function") {
-        try {
-          window.renderMathInElement(root, {
-            delimiters: [
-              { left: "$$", right: "$$", display: true },
-              { left: "$", right: "$", display: false },
-            ],
-            ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
-            throwOnError: false,
-          });
-          root.dataset.mathRendered = "1";
-        } catch (e) {}
-      }
+    ensureMathJax().then(function () {
       if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
-        try { window.MathJax.typesetPromise([root]); } catch (e) {}
+        try {
+          if (typeof window.MathJax.typesetClear === "function") {
+            window.MathJax.typesetClear([root]);
+          }
+          window.MathJax.typesetPromise([root]).then(function () {
+            root.dataset.mathRendered = "1";
+          }).catch(function () {});
+        } catch (e) {}
+      } else {
+        ensureKatex().then(function () {
+          if (typeof window.renderMathInElement === "function") {
+            try {
+              window.renderMathInElement(root, {
+                delimiters: [
+                  { left: "$$", right: "$$", display: true },
+                  { left: "$", right: "$", display: false },
+                ],
+                ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+                throwOnError: false,
+              });
+              root.dataset.mathRendered = "1";
+            } catch (e) {}
+          }
+        });
       }
     });
   }
@@ -833,6 +880,211 @@
     });
   }
 
+  var highlightLoadPromise = null;
+
+  function installSharedCodeStyles() {
+    if (document.getElementById("shared-blog-code-style")) return;
+    var style = document.createElement("style");
+    style.id = "shared-blog-code-style";
+    style.textContent = [
+      ".blog-content pre, .window-body .blog-content pre {",
+      "  background:#eee;",
+      "  border:1px inset #ccc;",
+      "  padding:10px;",
+      "  overflow-x:auto;",
+      "  font-family:\"Courier New\",monospace;",
+      "  max-width:100%;",
+      "}",
+      ".blog-content pre code, .window-body .blog-content pre code {",
+      "  background:none !important;",
+      "  padding:0 !important;",
+      "  border:none !important;",
+      "  font-family:\"Courier New\",monospace;",
+      "}",
+      ".blog-content .hljs, .window-body .blog-content .hljs { background:#fafaf8; color:#212529; }",
+      ".blog-content .hljs-keyword, .blog-content .hljs-selector-tag, .blog-content .hljs-section { color:#b0306a; }",
+      ".blog-content .hljs-string, .blog-content .hljs-symbol, .blog-content .hljs-addition { color:#2d6a2d; }",
+      ".blog-content .hljs-comment { color:#808080; font-style:italic; }",
+      ".blog-content .hljs-number, .blog-content .hljs-built_in { color:#7a2d8a; }",
+      ".blog-content .hljs-type, .blog-content .hljs-meta, .blog-content .hljs-meta .hljs-keyword { color:#c06030; }",
+      ".blog-content .hljs-literal { color:#d49080; }",
+      ".blog-content .hljs-title.class_, .blog-content .hljs-title.function_ { color:#212529; }",
+      ".blog-content .hljs-attr { color:#b0306a; }",
+      ".blog-content .hljs-params { color:#424242; }",
+      ".blog-content .hljs-deletion { color:#a04040; }"
+    ].join("\n");
+    document.head.appendChild(style);
+  }
+
+  function ensureHighlightJs() {
+    if (window.hljs && typeof window.hljs.highlightElement === "function") return Promise.resolve();
+    if (highlightLoadPromise) return highlightLoadPromise;
+    if (!document.getElementById("highlight-css-cdn")) {
+      var css = document.createElement("link");
+      css.id = "highlight-css-cdn";
+      css.rel = "stylesheet";
+      css.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css";
+      document.head.appendChild(css);
+    }
+    highlightLoadPromise = loadScriptOnce("highlight-js-cdn", "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js")
+      .catch(function () {});
+    return highlightLoadPromise;
+  }
+
+  function escapeHtml(s) {
+    return s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function highlightSolidity(code) {
+    var KEYWORDS = ["pragma","solidity","contract","interface","library","function","external","public","private","internal","view","pure","payable","returns","return","memory","storage","calldata","constructor","modifier","require","revert","assert","if","else","for","while","do","break","continue","new","delete","import","is","abstract","virtual","override","event","emit","indexed","struct","enum","mapping","using","assembly","let","this","super"];
+    var TYPES = ["uint256","uint","uint8","uint16","uint32","uint64","uint128","int256","int","int8","address","bool","bytes","bytes4","bytes32","string"];
+    var LITERALS = ["true","false","msg","block","tx","wei","ether","gwei"];
+    var WORD_RE = new RegExp(
+      "(\\/\\/[^\\n]*)" +
+      '|("(?:[^"\\\\]|\\\\.)*")' +
+      "|\\b(" + KEYWORDS.join("|") + ")\\b" +
+      "|\\b(" + TYPES.join("|") + ")\\b" +
+      "|\\b(" + LITERALS.join("|") + ")\\b" +
+      "|\\b(\\d+)\\b",
+      "g"
+    );
+
+    return escapeHtml(code).replace(WORD_RE, function (m, comment, str, kw, ty, lit, num) {
+      if (comment) return '<span class="hljs-comment">' + comment + "</span>";
+      if (str) return '<span class="hljs-string">' + str + "</span>";
+      if (kw) return '<span class="hljs-keyword">' + kw + "</span>";
+      if (ty) return '<span class="hljs-type">' + ty + "</span>";
+      if (lit) return '<span class="hljs-literal">' + lit + "</span>";
+      if (num) return '<span class="hljs-number">' + num + "</span>";
+      return m;
+    });
+  }
+
+  function highlightRust(code) {
+    var KEYWORDS = ["as","async","await","break","const","continue","crate","else","enum","extern","false","fn","for","if","impl","in","let","loop","match","mod","move","mut","pub","ref","return","self","Self","static","struct","super","trait","true","type","unsafe","use","where","while"];
+    var TYPES = ["Address","Arc","Http","LocalWallet","Provider","Result","SignerMiddleware","String","Vec","bool","str","u8","u16","u32","u64","u128","usize","i8","i16","i32","i64","i128","isize"];
+    var WORD_RE = new RegExp(
+      "(\\/\\/[^\\n]*)" +
+      '|("(?:[^"\\\\]|\\\\.)*")' +
+      "|\\b(" + KEYWORDS.join("|") + ")\\b" +
+      "|\\b(" + TYPES.join("|") + ")\\b" +
+      "|\\b([A-Za-z_][A-Za-z0-9_]*!)" +
+      "|\\b(\\d+(?:u64|usize)?)\\b",
+      "g"
+    );
+
+    return escapeHtml(code).replace(WORD_RE, function (m, comment, str, kw, ty, macroName, num) {
+      if (comment) return '<span class="hljs-comment">' + comment + "</span>";
+      if (str) return '<span class="hljs-string">' + str + "</span>";
+      if (kw) return '<span class="hljs-keyword">' + kw + "</span>";
+      if (ty) return '<span class="hljs-type">' + ty + "</span>";
+      if (macroName) return '<span class="hljs-built_in">' + macroName + "</span>";
+      if (num) return '<span class="hljs-number">' + num + "</span>";
+      return m;
+    });
+  }
+
+  function highlightAsm(code) {
+    var INSTRUCTIONS = ["add","and","b","bl","call","cmp","db","dd","dq","dw","int","ja","jae","jb","jbe","jc","je","jg","jge","jl","jle","jmp","jne","jnz","jz","lea","mov","movabs","nop","or","pop","push","ret","sub","test","xor"];
+    var REGISTERS = ["ah","al","ax","bh","bl","bp","bpl","bx","ch","cl","cx","dh","di","dil","dl","dx","eax","ebp","ebx","ecx","edi","edx","eip","esi","esp","ip","r8","r9","r10","r11","r12","r13","r14","r15","rax","rbp","rbx","rcx","rdi","rdx","rip","rsi","rsp","si","sil","sp","spl"];
+    var WORD_RE = new RegExp(
+      "(;[^\\n]*|//[^\\n]*)" +
+      "|\\b(" + INSTRUCTIONS.join("|") + ")\\b" +
+      "|\\b(" + REGISTERS.join("|") + ")\\b" +
+      "|\\b(0x[0-9a-fA-F]+|\\d+)\\b",
+      "gi"
+    );
+
+    return escapeHtml(code).replace(WORD_RE, function (m, comment, op, reg, num) {
+      if (comment) return '<span class="hljs-comment">' + comment + "</span>";
+      if (op) return '<span class="hljs-keyword">' + op + "</span>";
+      if (reg) return '<span class="hljs-built_in">' + reg + "</span>";
+      if (num) return '<span class="hljs-number">' + num + "</span>";
+      return m;
+    });
+  }
+
+  function highlightAppleScript(code) {
+    var KEYWORDS = ["activate","application","as","beep","delay","display","do","else","end","error","if","in","is","not","of","on","open","osascript","repeat","return","set","shell","tell","then","to","try"];
+    var WORD_RE = new RegExp(
+      "(--[^\\n]*)" +
+      '|("(?:[^"\\\\]|\\\\.)*")' +
+      "|\\b(" + KEYWORDS.join("|") + ")\\b" +
+      "|\\b(\\d+)\\b",
+      "gi"
+    );
+
+    return escapeHtml(code).replace(WORD_RE, function (m, comment, str, kw, num) {
+      if (comment) return '<span class="hljs-comment">' + comment + "</span>";
+      if (str) return '<span class="hljs-string">' + str + "</span>";
+      if (kw) return '<span class="hljs-keyword">' + kw + "</span>";
+      if (num) return '<span class="hljs-number">' + num + "</span>";
+      return m;
+    });
+  }
+
+  function highlightCode(root) {
+    root = root || document;
+    installSharedCodeStyles();
+    root.querySelectorAll("code.language-solidity").forEach(function (block) {
+      if (block.dataset.sharedHighlighted === "1") return;
+      block.innerHTML = highlightSolidity(block.textContent);
+      block.classList.add("hljs");
+      block.dataset.sharedHighlighted = "1";
+    });
+    root.querySelectorAll("code.language-rust").forEach(function (block) {
+      if (block.dataset.sharedHighlighted === "1") return;
+      block.innerHTML = highlightRust(block.textContent);
+      block.classList.add("hljs");
+      block.dataset.sharedHighlighted = "1";
+    });
+    root.querySelectorAll("code.language-asm").forEach(function (block) {
+      if (block.dataset.sharedHighlighted === "1") return;
+      block.innerHTML = highlightAsm(block.textContent);
+      block.classList.add("hljs");
+      block.dataset.sharedHighlighted = "1";
+    });
+    root.querySelectorAll("code.language-applescript").forEach(function (block) {
+      if (block.dataset.sharedHighlighted === "1") return;
+      block.innerHTML = highlightAppleScript(block.textContent);
+      block.classList.add("hljs");
+      block.dataset.sharedHighlighted = "1";
+    });
+
+    ensureHighlightJs().then(function () {
+      if (!window.hljs || typeof window.hljs.highlightElement !== "function") return;
+      root.querySelectorAll("pre code").forEach(function (block) {
+        if (block.dataset.sharedHighlighted === "1") return;
+        try {
+          window.hljs.highlightElement(block);
+          block.dataset.sharedHighlighted = "1";
+        } catch (e) {}
+      });
+    });
+  }
+
+  function bindHandouts(root) {
+    root = root || document;
+    root.querySelectorAll(".handout-box").forEach(function (box) {
+      box.querySelectorAll(".handout-tab").forEach(function (tab) {
+        if (tab.dataset.handoutBound === "1") return;
+        tab.dataset.handoutBound = "1";
+        tab.addEventListener("click", function () {
+          var file = tab.getAttribute("data-file");
+          box.querySelectorAll(".handout-tab").forEach(function (t) {
+            t.classList.toggle("active", t === tab);
+          });
+          box.querySelectorAll(".handout-pane").forEach(function (p) {
+            p.classList.toggle("active", p.getAttribute("data-file") === file);
+          });
+        });
+      });
+    });
+  }
+
   function handlePjax(html) {
     var dp = new DOMParser();
     var doc = dp.parseFromString(html, "text/html");
@@ -856,8 +1108,12 @@
       taskbarTitle.textContent = shortTitle;
     }
     
+    var content = document.querySelector(".blog-content");
+    if (content) delete content.dataset.mathRendered;
     if (isOn()) decorate();
-    renderLatexMath();
+    bindHandouts(document);
+    highlightCode(document);
+    renderLatexMath(content);
     
     // Clock: update immediately (interval already running from _startClock)
     _updateClock();
@@ -865,6 +1121,9 @@
     // Re-bind zoom on newly injected blog images
     _bindZoom();
   }
+
+  bindHandouts(document);
+  highlightCode(document);
 
   document.addEventListener("click", function(e) {
     var a = e.target.closest("a");
