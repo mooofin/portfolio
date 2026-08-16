@@ -20,7 +20,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css?v=20260809b";
+  local.href = base + "latex-mode.css?v=20260816a";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";

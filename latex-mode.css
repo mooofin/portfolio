@@ -1344,6 +1344,54 @@ html.latex-mode.latex-dark code {
   color: #ddd;
 }
 
+/* House of Apple 2 code palette, shared by all highlighted blog snippets. */
+html.latex-mode .hljs,
+html.latex-mode pre code.hljs {
+  background: #fbfbf8 !important;
+  color: #111 !important;
+}
+
+html.latex-mode .hljs-keyword,
+html.latex-mode .hljs-selector-tag,
+html.latex-mode .hljs-section {
+  color: #1f4aa8 !important;
+  font-weight: 700;
+}
+
+html.latex-mode .hljs-string,
+html.latex-mode .hljs-symbol,
+html.latex-mode .hljs-addition {
+  color: #0f6b3c !important;
+}
+
+html.latex-mode .hljs-comment {
+  color: #6e6e6e !important;
+  font-style: italic;
+}
+
+html.latex-mode .hljs-number,
+html.latex-mode .hljs-built_in,
+html.latex-mode .hljs-literal {
+  color: #7b3fb3 !important;
+}
+
+html.latex-mode .hljs-type,
+html.latex-mode .hljs-meta,
+html.latex-mode .hljs-meta .hljs-keyword {
+  color: #9a4d00 !important;
+}
+
+html.latex-mode .hljs-title.class_,
+html.latex-mode .hljs-title.function_,
+html.latex-mode .hljs-params,
+html.latex-mode .hljs-attr {
+  color: #111 !important;
+}
+
+html.latex-mode .hljs-deletion {
+  color: #a13131 !important;
+}
+
 /* pre blocks: scroll horizontally on overflow */
 html.latex-mode pre {
   overflow-x: auto !important;
