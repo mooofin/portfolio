@@ -1331,72 +1331,151 @@ html.latex-mode img {
   height: auto !important;
 }
 
-/* inline code: slight tint so it reads as code */
+/* inline code stays textual in LaTeX mode; block snippets keep their frame. */
 html.latex-mode code {
   font-size: 0.9em;
-  background: #f3f3f3 !important;
-  padding: 0.1em 0.35em;
-  border-radius: 2px;
+  background: transparent !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0;
 }
 
 html.latex-mode.latex-dark code {
-  background: #2e2e30 !important;
+  background: transparent !important;
   color: #ddd;
 }
 
-/* House of Apple 2 code palette, shared by all highlighted blog snippets. */
+/* Code blocks: quiet LaTeX listings/minted-style treatment. */
+html.latex-mode pre {
+  overflow-x: auto !important;
+  max-width: 100%;
+  white-space: pre;
+  background: #f8f8f8 !important;
+  border: 1px solid #d8d8d8 !important;
+  border-left: 3px solid #6f6f6f !important;
+  box-shadow: none !important;
+  margin: 1.25rem 0;
+  padding: 0.85rem 1rem !important;
+}
+
+html.latex-mode .blog-content pre {
+  background: #f8f8f8 !important;
+  border: 1px solid #d8d8d8 !important;
+  border-left: 3px solid #6f6f6f !important;
+}
+
+html.latex-mode pre code,
 html.latex-mode .hljs,
 html.latex-mode pre code.hljs {
-  background: #fbfbf8 !important;
-  color: #111 !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: #222 !important;
+  font-family: "Consolas", "Liberation Mono", "Courier New", monospace !important;
+  font-size: 0.86rem !important;
+  line-height: 1.55;
+  padding: 0 !important;
 }
 
 html.latex-mode .hljs-keyword,
 html.latex-mode .hljs-selector-tag,
 html.latex-mode .hljs-section {
-  color: #1f4aa8 !important;
+  color: #b0306a !important;
   font-weight: 700;
 }
 
 html.latex-mode .hljs-string,
 html.latex-mode .hljs-symbol,
 html.latex-mode .hljs-addition {
-  color: #0f6b3c !important;
+  color: #2d6a2d !important;
 }
 
 html.latex-mode .hljs-comment {
-  color: #6e6e6e !important;
+  color: #808080 !important;
   font-style: italic;
 }
 
 html.latex-mode .hljs-number,
-html.latex-mode .hljs-built_in,
+html.latex-mode .hljs-built_in {
+  color: #7a2d8a !important;
+}
+
 html.latex-mode .hljs-literal {
-  color: #7b3fb3 !important;
+  color: #d49080 !important;
 }
 
 html.latex-mode .hljs-type,
 html.latex-mode .hljs-meta,
 html.latex-mode .hljs-meta .hljs-keyword {
-  color: #9a4d00 !important;
+  color: #c06030 !important;
 }
 
 html.latex-mode .hljs-title.class_,
-html.latex-mode .hljs-title.function_,
-html.latex-mode .hljs-params,
+html.latex-mode .hljs-title.function_ {
+  color: #212529 !important;
+  font-weight: 700;
+}
+
+html.latex-mode .hljs-params {
+  color: #424242 !important;
+}
+
 html.latex-mode .hljs-attr {
-  color: #111 !important;
+  color: #b0306a !important;
 }
 
 html.latex-mode .hljs-deletion {
-  color: #a13131 !important;
+  color: #a04040 !important;
 }
 
-/* pre blocks: scroll horizontally on overflow */
-html.latex-mode pre {
-  overflow-x: auto !important;
-  max-width: 100%;
-  white-space: pre;
+html.latex-mode.latex-dark pre {
+  background: #202124 !important;
+  border-color: #4b4d52 !important;
+  border-left-color: #9a9a9a !important;
+}
+
+html.latex-mode.latex-dark pre code,
+html.latex-mode.latex-dark .hljs,
+html.latex-mode.latex-dark pre code.hljs {
+  color: #e6e6e6 !important;
+}
+
+html.latex-mode.latex-dark .hljs-keyword,
+html.latex-mode.latex-dark .hljs-selector-tag,
+html.latex-mode.latex-dark .hljs-section {
+  color: #8fb8ff !important;
+}
+
+html.latex-mode.latex-dark .hljs-string,
+html.latex-mode.latex-dark .hljs-symbol,
+html.latex-mode.latex-dark .hljs-addition {
+  color: #9bd39b !important;
+}
+
+html.latex-mode.latex-dark .hljs-comment {
+  color: #a8a8a8 !important;
+}
+
+html.latex-mode.latex-dark .hljs-number,
+html.latex-mode.latex-dark .hljs-built_in,
+html.latex-mode.latex-dark .hljs-literal,
+html.latex-mode.latex-dark .hljs-title.class_,
+html.latex-mode.latex-dark .hljs-title.function_ {
+  color: #d7b4ff !important;
+}
+
+html.latex-mode.latex-dark .hljs-type,
+html.latex-mode.latex-dark .hljs-meta,
+html.latex-mode.latex-dark .hljs-meta .hljs-keyword {
+  color: #e0bf87 !important;
+}
+
+html.latex-mode.latex-dark .hljs-params,
+html.latex-mode.latex-dark .hljs-attr {
+  color: #ededed !important;
+}
+
+html.latex-mode.latex-dark .hljs-deletion {
+  color: #ff9d9d !important;
 }
 
 /* blog/newsletter tables: scroll if wider than viewport */
