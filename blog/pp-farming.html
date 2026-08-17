@@ -589,7 +589,7 @@ $$
                 call stack depth limit (1024) on a bigger target.
               </p>
               <p>
-                lets try to understand what happens now
+                The exploit flow:
               </p>
               <ol>
                 <li>
@@ -633,8 +633,8 @@ $$
                 <code>foundry</code> (<code>forge</code> + <code>cast</code>).
               </p>
               <blockquote>
-                <strong></strong> A "wallet" is
-                just a keypair: a private key (secret, like a password) and a
+                Quick vocab for the run below: a "wallet" is just a keypair:
+                a private key (secret, like a password) and a
                 public address (like an account number, safe to share). RPC
                 is the URL your tools use to talk to the blockchain, think of
                 it as the server address. "Gas" is the fee you pay in ETH to
@@ -648,11 +648,11 @@ $$
                 (<code>cast send</code>, <code>forge create</code>).
               </blockquote>
               <p>
-                <strong>Step 1, set up your environment and sanity-check
-                the starting state.</strong>
+                <strong>Set up the environment and sanity-check the starting
+                state.</strong>
                 <code>cast wallet address</code> derives your public address from
-                the private key the challenge gave you (never share this key
-                outside the challenge), and <code>cast balance</code> just reads
+                the private key the challenge gave you, and
+                <code>cast balance</code> just reads
                 an account's ETH balance off the chain.
               </p>
               <pre><code class="language-bash">cd blockchain_pp-farming
@@ -674,10 +674,10 @@ cast balance $ATM_ADDR --rpc-url $RPC_URL --ether</code></pre>
                 the ATM's balance hits exactly zero.
               </p>
               <p>
-                <strong>Step 2, compile and deploy the exploit
+                <strong>Compile and deploy the exploit
                 contract.</strong> <code>forge build</code> compiles every
-                <code>.sol</code> file in the project and catches syntax/type
-                errors before we spend gas. <code>forge create</code> then
+                <code>.sol</code> file in the project.
+                <code>forge create</code> then
                 deploys a specific contract to the chain, here we deploy
                 <code>Exploit</code>, passing the ATM's address as the constructor
                 argument.
@@ -693,7 +693,7 @@ Transaction hash: 0x76020dd47db36d793dbea06ebc2bab197effb1a0f0248439f0eaa73a4d07
                 attacker contract.
               </p>
               <p>
-                <strong>Step 3, fire the attack.</strong>
+                <strong>Fire the attack.</strong>
                 <code>cast send</code> submits a real transaction that calls a
                 function and waits for it to be mined. We're calling
                 <code>attack()</code> and attaching 1 ether via
@@ -718,8 +718,7 @@ to                   0x140DA5fD33cCF31b89Ce8107906a4c4dACDf35D9</code></pre>
                 .
               </p>
               <p>
-                <strong></strong> Now lets
-                read the chain state back to prove it worked.
+                Read the chain state back.
               </p>
               <pre><code class="language-bash">cast balance $ATM_ADDR --rpc-url $RPC_URL --ether
 cast call $ATM_ADDR "isSolved()(bool)" --rpc-url $RPC_URL</code></pre>
@@ -1008,8 +1007,7 @@ contract PerformancePointATM {
                 that the two contracts agree on what lives at slot $k$.
               </p>
               <p>
-                This has a name: <strong>storage collision</strong>. And it has a
-                body count. <img src="../ctf-writeups/lon.gif" alt="pep" style="height:1.4em;vertical-align:middle;image-rendering:pixelated;" /> The
+                This is <strong>storage collision</strong>. <img src="../ctf-writeups/lon.gif" alt="pep" style="height:1.4em;vertical-align:middle;image-rendering:pixelated;" /> The
                 <a href="https://www.gemini.com/cryptopedia/parity-hack-ethereum" target="_blank" rel="noopener">Parity multisig hack in 2017</a>
                 lost around $30M to this exact mechanism. Their wallet library had
                 an <code>initWallet()</code> function that was supposed to be called
@@ -1082,7 +1080,7 @@ contract PerformancePointATM {
                 first-come-first-served.
               </p>
               <p>
-                So, the helper's <code>atm</code> variable sits at slot
+                The helper's <code>atm</code> variable sits at slot
                 1, and the ATM's own <code>performancePointHelper</code> pointer
                 also sits at slot 1. Solidity storage doesn't know or care about
                 variable <em>names</em>. It's just numbered slots, and
@@ -1096,10 +1094,10 @@ contract PerformancePointATM {
                 for one variable land on a completely different one.
               </p>
               <p>
-                Putting it together: <code>ATM.setATM(evilAddress)</code> is
-                callable by anyone, with no permission check, and it silently
-                repoints the ATM's real <code>performancePointHelper</code> at
-                whatever address we choose. From that point on, every
+                <code>ATM.setATM(evilAddress)</code> is callable by anyone, with
+                no permission check, and it silently repoints the ATM's real
+                <code>performancePointHelper</code> at whatever address we choose.
+                From that point on, every
                 <code>withdrawPP()</code> call delegatecalls into <em>our</em>
                 contract instead of the legitimate helper.
               </p>
@@ -1116,9 +1114,9 @@ contract PerformancePointATM {
     }
 }</code></pre>
               <p>
-                Notice <code>address(this).balance</code>, inside a
-                delegatecall, <code>this</code> still refers to the caller (the
-                ATM), not the contract whose code is running. So
+                Inside a delegatecall, <code>address(this).balance</code> still
+                refers to the caller (the ATM), not the contract whose code is
+                running. So
                 <code>address(this).balance</code> is the ATM's full ETH balance,
                 and we forward all of it to <code>recipient</code> regardless of
                 what the legitimate <code>amount</code> argument said. Also worth
@@ -1134,7 +1132,7 @@ contract PerformancePointATM {
                 against the live instance,
               </p>
               <p>
-                <strong>Step 0, set up env vars and confirm the starting
+                <strong>Set up env vars and confirm the starting
                 state.</strong> Same idea as part one: know your balances and
                 the ATM's current wiring before touching anything. We also
                 check <code>performancePointHelper()</code> and
@@ -1165,7 +1163,7 @@ false</code></pre>
                 currently open, as expected between transactions.
               </p>
               <p>
-                <strong>Step 1, deploy the malicious helper.</strong>
+                <strong>Deploy the malicious helper.</strong>
                 Same <code>forge create</code> as before. The contract lands on
                 chain at its own address but isn't wired into anything yet.
               </p>
@@ -1175,7 +1173,7 @@ false</code></pre>
 Deployed to: 0xb77292E167831C731082e184b83b200F9Fadb21C
 Transaction hash: 0xd0f28086332b9ece789eada02f106ebc973b97b7dc84667271f650e7a0a126ca</code></pre>
               <p>
-                <strong>Step 2, hijack <code>performancePointHelper</code>
+                <strong>Hijack <code>performancePointHelper</code>
                 via the unauthenticated fallback.</strong> Calling
                 <code>setATM(address)</code> on the ATM hits no known selector,
                 so <code>fallback()</code> picks it up and delegatecalls it into
@@ -1200,7 +1198,7 @@ to                   0x71364db63C1690034a82C87271Ef4E77c356850A
                 is reachable directly through the ATM's own fallback.
               </p>
               <p>
-                <strong>Step 3, seed a nonzero score.</strong>
+                <strong>Seed a nonzero score.</strong>
                 <code>withdrawPP()</code> still checks
                 <code>require(score > 0)</code> before doing anything, so we need
                 <em>sm</em> balance recorded for our own address. A tiny
@@ -1213,7 +1211,7 @@ to                   0x71364db63C1690034a82C87271Ef4E77c356850A
               <pre><code>status               1 (success)
 transactionHash      0x142bb94e48f3ec719cd8407ed02ebbeaf4a1adc510e627d674a63090c12ef814</code></pre>
               <p>
-                <strong>Step 4, withdraw.</strong> This is a completely
+                <strong>Withdraw.</strong> This is a completely
                 ordinary call to <code>withdrawPP()</code>. The only difference is
                 that <code>performancePointHelper</code> now points at our
                 contract, so the delegatecall inside it runs our
