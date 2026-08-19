@@ -453,9 +453,14 @@
     function cycleStatus() {
       statusIdx = (statusIdx + 1) % statusMessages.length;
       const bar = document.querySelector('.status-bar');
-      if (bar) bar.textContent = statusMessages[statusIdx];
+      if (bar) {
+        bar.textContent = statusMessages[statusIdx];
+      } else {
+        clearInterval(window.newsletterStatusInterval);
+      }
     }
-    setInterval(cycleStatus, 3500);
+    if (window.newsletterStatusInterval) clearInterval(window.newsletterStatusInterval);
+    window.newsletterStatusInterval = setInterval(cycleStatus, 3500);
 
     const messages = {
       'rss': {

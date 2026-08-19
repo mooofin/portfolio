@@ -1120,6 +1120,19 @@
 
     // Re-bind zoom on newly injected blog images
     _bindZoom();
+
+    // Execute inline scripts from the loaded page so they initialize properly
+    doc.querySelectorAll("script").forEach(function(s) {
+      if (!s.src && s.textContent) {
+        try {
+          var execScript = document.createElement("script");
+          execScript.textContent = s.textContent;
+          document.body.appendChild(execScript).parentNode.removeChild(execScript);
+        } catch(err) {
+          console.error("Error executing PJAX page script:", err);
+        }
+      }
+    });
   }
 
   bindHandouts(document);

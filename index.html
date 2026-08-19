@@ -465,13 +465,19 @@
 
       const pfpImgs = ["images/pfp.jpg", "https://media.tenor.com/VpW1CY-5rrcAAAAd/peepo-high-high.gif", "https://media.tenor.com/660lQV3gF9IAAAAM/peppe.gif"];
       let pfpIdx = 0;
-      setInterval(() => {
+      if (window.pfpInterval) clearInterval(window.pfpInterval);
+      window.pfpInterval = setInterval(() => {
+        const pfpEl = document.getElementById("pfp");
+        if (!pfpEl) {
+          clearInterval(window.pfpInterval);
+          return;
+        }
         if (document.documentElement.classList.contains("latex-mode")) {
-          document.getElementById("pfp").src = "images/pfp1.jpg";
+          pfpEl.src = "images/pfp1.jpg";
           return;
         }
         pfpIdx = (pfpIdx + 1) % pfpImgs.length;
-        document.getElementById("pfp").src = pfpImgs[pfpIdx];
+        pfpEl.src = pfpImgs[pfpIdx];
       }, 3000);
     </script>
     <script src="site.js?v=20260816e"></script>
