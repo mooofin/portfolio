@@ -365,6 +365,12 @@
                   </tr>
                 </thead>
                 <tbody id="msg-list">
+                  <tr class="msg-row" data-id="rss" onclick="selectMsg('rss')" style="cursor:pointer; font-weight:bold;">
+                    <td style="padding:2px 6px; text-align:center;" class="unread-icon">📧</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">mooofin</td>
+                    <td style="padding:2px 6px; border-right:1px solid #d0d0d0;">Alternative: Subscribe via RSS Feed</td>
+                    <td style="padding:2px 6px;">Aug 19 2026</td>
+                  </tr>
                   <tr class="msg-row" data-id="4" onclick="selectMsg(4)"
                     style="cursor:pointer; background:#08216b; color:#fff; font-weight:bold;">
                     <td style="padding:2px 6px; text-align:center;" class="unread-icon">📧</td>
@@ -423,7 +429,7 @@
 
         <!-- Status bar -->
         <div class="status-bar" style="font-size:11px;">
-          4 message(s), 4 unread &nbsp;|&nbsp; Working offline
+          5 message(s), 5 unread &nbsp;|&nbsp; Working offline
         </div>
       </div>
 
@@ -438,10 +444,10 @@
     }
 
     const statusMessages = [
-      '4 message(s), 4 unread  |  Working offline',
-      '4 message(s), 4 unread  |  Connecting to mail.mooofin.net…',
-      '4 message(s), 4 unread  |  Connected',
-      '4 message(s), 4 unread  |  Working offline',
+      '5 message(s), 5 unread  |  Working offline',
+      '5 message(s), 5 unread  |  Connecting to mail.mooofin.net…',
+      '5 message(s), 5 unread  |  Connected',
+      '5 message(s), 5 unread  |  Working offline',
     ];
     let statusIdx = 0;
     function cycleStatus() {
@@ -452,6 +458,21 @@
     setInterval(cycleStatus, 3500);
 
     const messages = {
+      'rss': {
+        subject: "Alternative: Subscribe via RSS Feed",
+        date: "Wed, 19 Aug 2026",
+        body: `<p>Prefer not to receive emails? You can subscribe to my blog posts via RSS!</p>
+<p>RSS (Really Simple Syndication) allows you to follow updates anonymously without subscribing your email address or dealing with algorithms. Your reader will fetch updates chronologically directly from the site.</p>
+<p><strong>How to subscribe:</strong></p>
+<ol>
+  <li>Copy my feed link: <code style="background:#eee;padding:2px 4px;font-family:'Courier New',monospace;border:1px inset #ccc;display:inline-block;margin:4px 0;word-break:break-all;">https://mooofin.github.io/portfolio/feed.xml</code></li>
+  <li>Open your favorite RSS feed reader (such as <a href="https://feedly.com/" target="_blank">Feedly</a>, <a href="https://netnewswire.com/" target="_blank">NetNewsWire</a>, or <a href="https://www.inoreader.com/" target="_blank">Inoreader</a>).</li>
+  <li>Add a new subscription and paste the URL.</li>
+</ol>
+<p>You can also access the feed file directly anytime by clicking the <strong>RSS Feed</strong> option in the site's navigation sidebar!</p>
+<hr style="border:none;border-top:1px dotted #ccc;margin:16px 0;" />
+<p style="font-size:11px;color:#888;">- sid</p>`
+      },
       4: {
         subject: "Vol. 4 - R3CTF, SekaiCTF, DEF CON Aerospace Village, and recent writeups",
         date: "Sun, 02 Aug 2026",
