@@ -1,0 +1,101 @@
+# mooofin's Homepage
+
+> Blog posts on systems programming, compilers, reverse engineering, and digital forensics by sid.
+
+## Pages
+- [Home](https://mooofin.github.io/portfolio/index.html) - Welcome to my Homepage (Featured projects, latest updates).
+- [About Me](https://mooofin.github.io/portfolio/about.html) - About Siddharth (NixOS, Gentoo, systems programming).
+- [Projects](https://mooofin.github.io/portfolio/projects.html) - Software, reverse engineering tools, and plugin projects.
+- [Blog](https://mooofin.github.io/portfolio/blog.html) - Chronological archive of all articles.
+- [Contact](https://mooofin.github.io/portfolio/contact.html) - Contact info and social profiles.
+- [Newsletter](https://mooofin.github.io/portfolio/newsletter.html) - Sign up for article notifications.
+
+## Articles
+
+### [Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll](https://mooofin.github.io/portfolio/blog/vehguard.html)
+**Date:** 2026-08-01  
+**Description:** Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll
+
+### [L3AK CTF - Not my mod files bestie (DFIR)](https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie.html)
+**Date:** 2026-08-02  
+**Description:** L3AK CTF - Not my mod files bestie (DFIR) - DFIR CTF writeup on ModCollabTool, a Haskell-in-disguise malware targeting a Dark Souls Remastered modder
+
+### [R3CTF - Tsuki's Rhythm Game Writeup (DFIR)](https://mooofin.github.io/portfolio/blog/tsuki-rhythm-game.html)
+**Date:** 2026-07-08  
+**Description:** R3CTF CTF writeup: Digital forensics on a compromised rhythm game, uncovering Python malware, steganography, reverse shells, and wallet draining.
+
+### [SekaiCTF Blockchain](https://mooofin.github.io/portfolio/blog/pp-farming.html)
+**Date:** 2026-07-01  
+**Description:** SekaiCTF 2026 blockchain writeup: draining PerformancePointATM twice, once via classic reentrancy and once via a delegatecall storage collision.
+
+### [s4nct1m0ny - macOS DFIR report](https://mooofin.github.io/portfolio/blog/s4nct1m0ny.html)
+**Date:** 2026-06-26  
+**Description:** s4nct1m0ny - macOS DFIR report
+
+### [Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM](https://mooofin.github.io/portfolio/blog/shackleton-llvm-gp.html)
+**Date:** 2026-05-30  
+**Description:** Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM
+
+### [RISC-V H-Extension: The Only Hypervisor Spec You Can Read at Lunch](https://mooofin.github.io/portfolio/blog/risc-v-hypervisor.html)
+**Date:** 2026-05-23  
+**Description:** Here is a thing about RISC-V hypervisors that nobody tells you. The hypervisor extension is twenty CSRs. Not twenty new instructions. Not a separate root privilege level. Not a microcode blob you h...
+
+### [My First Patch to LLVM](https://mooofin.github.io/portfolio/blog/my-first-llvm-patch.html)
+**Date:** 2026-04-16  
+**Description:** My First Patch to LLVM - April 2026
+
+### [A minimal x86 bootloader from scratch](https://mooofin.github.io/portfolio/blog/bootloader.html)
+**Date:** 2026-02-09  
+**Description:** So you want to understand how computers actually boot? Not the handwavy "BIOS loads the OS" explanation, but the real, low-level mechanics of what happens when you hit the power button? Good
+
+### [I Use a Gap Buffer, Bitch.](https://mooofin.github.io/portfolio/blog/honeymoon.html)
+**Date:** 2026-01-26  
+**Description:** I Use a Gap Buffer, Bitch.
+
+### [32 Rounds of TEA and Psychological Damage](https://mooofin.github.io/portfolio/blog/tea-and-psychological-damage.html)
+**Date:** 2025-12-29  
+**Description:** 32 Rounds of TEA and Psychological Damage, Surviving a Stripped 32-bit Binary
+
+### [How to Make Your Program Spill Tea](https://mooofin.github.io/portfolio/blog/format-string-3.html)
+**Date:** 2025-12-29  
+**Description:** how to make your program spill tea
+
+### [Oops, Your Control Flow Is Mine](https://mooofin.github.io/portfolio/blog/ropfu.html)
+**Date:** 2025-12-29  
+**Description:** Oops, Your Control Flow Is Mine
+
+### [Strings Don't Lie, Packers Do](https://mooofin.github.io/portfolio/blog/strings-dont-lie-packers-do.html)
+**Date:** 2025-12-29  
+**Description:** Strings Don't Lie, Packers Do
+
+### [Like Father Like Son - DFIR report](https://mooofin.github.io/portfolio/blog/like-father-like-son.html)
+**Date:** 2025-11-14  
+**Description:** Like Father Like Son - DFIR report
+
+### [Slay the JIT: From Hotpatches to Symbolic Couture in Miasm](https://mooofin.github.io/portfolio/blog/vmware.html)
+**Date:** 2025-10-28  
+**Description:** Slay the JIT: From Hotpatches to Symbolic Couture in Miasm
+
+### [Provenance and Purity: Nix programming language & Fixed-Output Flakes](https://mooofin.github.io/portfolio/blog/nixos-flakes.html)
+**Date:** 2025-09-19  
+**Description:** Provenance and Purity: Nix programming language & Fixed-Output Flakes
+
+### [The Deployment Gap: From Your Machine to Theirs](https://mooofin.github.io/portfolio/blog/nix.html)
+**Date:** 2025-08-06  
+**Description:** So you've built some amazing software. It runs beautifully on your machine,flawless, fast, and bug-free. You package it up, send it out into the world, and then the emails start pouring in: _"It cr...
+
+### [House of Apple 2](https://mooofin.github.io/portfolio/blog/an-apple-a-day.html)
+**Date:** 2025-07-22  
+**Description:** House of Apple 2: Subverting glibc Wide-Mode I/O via _wide_data Corruption
+
+### [Gotham Hustle, DFIR report](https://mooofin.github.io/portfolio/blog/gotham-hustle.html)
+**Date:** 2025-07-11  
+**Description:** Gotham Hustle, DFIR report
+
+### [Onapookkalam / ഓണപ്പൂക്കളം - DFIR report](https://mooofin.github.io/portfolio/blog/onapookkalam.html)
+**Date:** 2025-06-25  
+**Description:** While preparing for Onapookkalam, notes were recorded on a mobile device. The phone was suspected to be tampered with, potentially having data modified or deleted.
+
+### [Reverse Engineering Proprietary Havoc Engine File Formats](https://mooofin.github.io/portfolio/blog/havok-engine-reverse-engineering.html)
+**Date:** 2025-06-09  
+**Description:** Reverse Engineering Proprietary Havoc Engine File Formats

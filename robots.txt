@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# LLM Crawler context file
+# See llm.txt for developer/AI agent context on this site.
+# https://mooofin.github.io/portfolio/llm.txt
+
+Sitemap: https://mooofin.github.io/portfolio/feed.xml

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mooofin's Blog</title>
+    <link>https://mooofin.github.io/portfolio/</link>
+    <description>Blog posts on systems programming, compilers, reverse engineering, and digital forensics by sid.</description>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 19 Aug 2026 12:03:51 +0000</lastBuildDate>
+    <atom:link href="https://mooofin.github.io/portfolio/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll</title>
+      <link>https://mooofin.github.io/portfolio/blog/vehguard.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/vehguard.html</guid>
+      <pubDate>Sat, 01 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll</description>
+    </item>
+    <item>
+      <title>L3AK CTF - Not my mod files bestie (DFIR)</title>
+      <link>https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/not-my-modfiles-bestie.html</guid>
+      <pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate>
+      <description>L3AK CTF - Not my mod files bestie (DFIR) - DFIR CTF writeup on ModCollabTool, a Haskell-in-disguise malware targeting a Dark Souls Remastered modder</description>
+    </item>
+    <item>
+      <title>R3CTF - Tsuki&apos;s Rhythm Game Writeup (DFIR)</title>
+      <link>https://mooofin.github.io/portfolio/blog/tsuki-rhythm-game.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/tsuki-rhythm-game.html</guid>
+      <pubDate>Wed, 08 Jul 2026 00:00:00 +0000</pubDate>
+      <description>R3CTF CTF writeup: Digital forensics on a compromised rhythm game, uncovering Python malware, steganography, reverse shells, and wallet draining.</description>
+    </item>
+    <item>
+      <title>SekaiCTF Blockchain</title>
+      <link>https://mooofin.github.io/portfolio/blog/pp-farming.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/pp-farming.html</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>SekaiCTF 2026 blockchain writeup: draining PerformancePointATM twice, once via classic reentrancy and once via a delegatecall storage collision.</description>
+    </item>
+    <item>
+      <title>s4nct1m0ny - macOS DFIR report</title>
+      <link>https://mooofin.github.io/portfolio/blog/s4nct1m0ny.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/s4nct1m0ny.html</guid>
+      <pubDate>Fri, 26 Jun 2026 00:00:00 +0000</pubDate>
+      <description>s4nct1m0ny - macOS DFIR report</description>
+    </item>
+    <item>
+      <title>Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM</title>
+      <link>https://mooofin.github.io/portfolio/blog/shackleton-llvm-gp.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/shackleton-llvm-gp.html</guid>
+      <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
+      <description>Breeding Better Binaries: Shackleton and the Case for Evolutionary Optimizations in LLVM</description>
+    </item>
+    <item>
+      <title>RISC-V H-Extension: The Only Hypervisor Spec You Can Read at Lunch</title>
+      <link>https://mooofin.github.io/portfolio/blog/risc-v-hypervisor.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/risc-v-hypervisor.html</guid>
+      <pubDate>Sat, 23 May 2026 00:00:00 +0000</pubDate>
+      <description>Here is a thing about RISC-V hypervisors that nobody tells you. The hypervisor extension is twenty CSRs. Not twenty new instructions. Not a separate root privilege level. Not a microcode blob you h...</description>
+    </item>
+    <item>
+      <title>My First Patch to LLVM</title>
+      <link>https://mooofin.github.io/portfolio/blog/my-first-llvm-patch.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/my-first-llvm-patch.html</guid>
+      <pubDate>Thu, 16 Apr 2026 00:00:00 +0000</pubDate>
+      <description>My First Patch to LLVM - April 2026</description>
+    </item>
+    <item>
+      <title>A minimal x86 bootloader from scratch</title>
+      <link>https://mooofin.github.io/portfolio/blog/bootloader.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/bootloader.html</guid>
+      <pubDate>Mon, 09 Feb 2026 00:00:00 +0000</pubDate>
+      <description>So you want to understand how computers actually boot? Not the handwavy &quot;BIOS loads the OS&quot; explanation, but the real, low-level mechanics of what happens when you hit the power button? Good</description>
+    </item>
+    <item>
+      <title>I Use a Gap Buffer, Bitch.</title>
+      <link>https://mooofin.github.io/portfolio/blog/honeymoon.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/honeymoon.html</guid>
+      <pubDate>Mon, 26 Jan 2026 00:00:00 +0000</pubDate>
+      <description>I Use a Gap Buffer, Bitch.</description>
+    </item>
+    <item>
+      <title>32 Rounds of TEA and Psychological Damage</title>
+      <link>https://mooofin.github.io/portfolio/blog/tea-and-psychological-damage.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/tea-and-psychological-damage.html</guid>
+      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
+      <description>32 Rounds of TEA and Psychological Damage, Surviving a Stripped 32-bit Binary</description>
+    </item>
+    <item>
+      <title>How to Make Your Program Spill Tea</title>
+      <link>https://mooofin.github.io/portfolio/blog/format-string-3.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/format-string-3.html</guid>
+      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
+      <description>how to make your program spill tea</description>
+    </item>
+    <item>
+      <title>Oops, Your Control Flow Is Mine</title>
+      <link>https://mooofin.github.io/portfolio/blog/ropfu.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/ropfu.html</guid>
+      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
+      <description>Oops, Your Control Flow Is Mine</description>
+    </item>
+    <item>
+      <title>Strings Don&apos;t Lie, Packers Do</title>
+      <link>https://mooofin.github.io/portfolio/blog/strings-dont-lie-packers-do.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/strings-dont-lie-packers-do.html</guid>
+      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
+      <description>Strings Don&apos;t Lie, Packers Do</description>
+    </item>
+    <item>
+      <title>Like Father Like Son - DFIR report</title>
+      <link>https://mooofin.github.io/portfolio/blog/like-father-like-son.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/like-father-like-son.html</guid>
+      <pubDate>Fri, 14 Nov 2025 00:00:00 +0000</pubDate>
+      <description>Like Father Like Son - DFIR report</description>
+    </item>
+    <item>
+      <title>Slay the JIT: From Hotpatches to Symbolic Couture in Miasm</title>
+      <link>https://mooofin.github.io/portfolio/blog/vmware.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/vmware.html</guid>
+      <pubDate>Tue, 28 Oct 2025 00:00:00 +0000</pubDate>
+      <description>Slay the JIT: From Hotpatches to Symbolic Couture in Miasm</description>
+    </item>
+    <item>
+      <title>Provenance and Purity: Nix programming language &amp; Fixed-Output Flakes</title>
+      <link>https://mooofin.github.io/portfolio/blog/nixos-flakes.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/nixos-flakes.html</guid>
+      <pubDate>Fri, 19 Sep 2025 00:00:00 +0000</pubDate>
+      <description>Provenance and Purity: Nix programming language &amp; Fixed-Output Flakes</description>
+    </item>
+    <item>
+      <title>The Deployment Gap: From Your Machine to Theirs</title>
+      <link>https://mooofin.github.io/portfolio/blog/nix.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/nix.html</guid>
+      <pubDate>Wed, 06 Aug 2025 00:00:00 +0000</pubDate>
+      <description>So you&apos;ve built some amazing software. It runs beautifully on your machine,flawless, fast, and bug-free. You package it up, send it out into the world, and then the emails start pouring in: _&quot;It cr...</description>
+    </item>
+    <item>
+      <title>House of Apple 2</title>
+      <link>https://mooofin.github.io/portfolio/blog/an-apple-a-day.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/an-apple-a-day.html</guid>
+      <pubDate>Tue, 22 Jul 2025 00:00:00 +0000</pubDate>
+      <description>House of Apple 2: Subverting glibc Wide-Mode I/O via _wide_data Corruption</description>
+    </item>
+    <item>
+      <title>Gotham Hustle, DFIR report</title>
+      <link>https://mooofin.github.io/portfolio/blog/gotham-hustle.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/gotham-hustle.html</guid>
+      <pubDate>Fri, 11 Jul 2025 00:00:00 +0000</pubDate>
+      <description>Gotham Hustle, DFIR report</description>
+    </item>
+    <item>
+      <title>Onapookkalam / ഓണപ്പൂക്കളം - DFIR report</title>
+      <link>https://mooofin.github.io/portfolio/blog/onapookkalam.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/onapookkalam.html</guid>
+      <pubDate>Wed, 25 Jun 2025 00:00:00 +0000</pubDate>
+      <description>While preparing for Onapookkalam, notes were recorded on a mobile device. The phone was suspected to be tampered with, potentially having data modified or deleted.</description>
+    </item>
+    <item>
+      <title>Reverse Engineering Proprietary Havoc Engine File Formats</title>
+      <link>https://mooofin.github.io/portfolio/blog/havok-engine-reverse-engineering.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/havok-engine-reverse-engineering.html</guid>
+      <pubDate>Mon, 09 Jun 2025 00:00:00 +0000</pubDate>
+      <description>Reverse Engineering Proprietary Havoc Engine File Formats</description>
+    </item>
+  </channel>
+</rss>
