@@ -48,9 +48,9 @@
 **Date:** 2026-02-09  
 **Description:** So you want to understand how computers actually boot? Not the handwavy "BIOS loads the OS" explanation, but the real, low-level mechanics of what happens when you hit the power button? Good
 
-### [I Use a Gap Buffer, Bitch.](https://mooofin.github.io/portfolio/blog/honeymoon.html)
+### [I Use a Gap Buffer, ehe.](https://mooofin.github.io/portfolio/blog/honeymoon.html)
 **Date:** 2026-01-26  
-**Description:** I Use a Gap Buffer, Bitch.
+**Description:** I Use a Gap Buffer, ehe.
 
 ### [32 Rounds of TEA and Psychological Damage](https://mooofin.github.io/portfolio/blog/tea-and-psychological-damage.html)
 **Date:** 2025-12-29  
