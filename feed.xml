@@ -5,8 +5,15 @@
     <link>https://mooofin.github.io/portfolio/</link>
     <description>Blog posts on systems programming, compilers, reverse engineering, and digital forensics by sid.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 19 Aug 2026 12:03:51 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 31 Aug 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://mooofin.github.io/portfolio/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reverse-Engineering Jane Street&apos;s ASIC</title>
+      <link>https://mooofin.github.io/portfolio/blog/jane-street-asic.html</link>
+      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/jane-street-asic.html</guid>
+      <pubDate>Mon, 31 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Reverse-Engineering Jane Street&apos;s ASIC - recovering the netlist, cell behavior, and 121-bit key from puzzle.gds to solve a Star Battle hidden in silicon</description>
+    </item>
     <item>
       <title>Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll</title>
       <link>https://mooofin.github.io/portfolio/blog/vehguard.html</link>
