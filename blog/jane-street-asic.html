@@ -1,0 +1,1419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reverse-Engineering Jane Street's ASIC" />
+    <title>Reverse-Engineering Jane Street's ASIC - mooofin</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+    <link rel="icon" href="../public/favicon.ico" />
+    <style>
+    /* Blog specific styles */
+    .blog-content { font-family: "Verdana", sans-serif; line-height: 1.6; font-size: 14px; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { color: #000080; margin-top: 20px; border-bottom: 1px dotted #ccc; padding-bottom: 5px; }
+    .blog-content p { margin-bottom: 15px; }
+    .blog-content img { max-width: 100%; border: 1px solid #999; padding: 4px; background: #fff; }
+    .blog-content .img-container { text-align: center; margin: 20px 0; }
+    .blog-content pre { background: #eee; border: 1px inset #ccc; padding: 10px; overflow-x: auto; font-family: "Courier New", monospace; }
+    .blog-content code { background: #f0f0f0; padding: 2px 4px; font-family: "Courier New", monospace; }
+    .blog-content blockquote { border-left: 4px solid #000080; padding-left: 10px; color: #555; font-style: italic; margin: 15px 0; }
+    .blog-meta { color: #666; font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+
+    .blog-content pre code { background: none; padding: 0; border: none; }
+    .hljs { background: #fafaf8; }
+    .hljs-keyword { color: #b0306a; }
+    .hljs-string { color: #2d6a2d; }
+    .hljs-comment { color: #808080; font-style: italic; }
+    .hljs-number { color: #7a2d8a; }
+    .hljs-type { color: #c06030; }
+    .hljs-literal { color: #d49080; }
+    .hljs-built_in { color: #7a2d8a; }
+    .hljs-title.class_ { color: #212529; }
+    .hljs-title.function_ { color: #212529; }
+    .hljs-attr { color: #b0306a; }
+    .hljs-params { color: #424242; }
+    .hljs-meta { color: #c06030; }
+    .hljs-meta .hljs-keyword { color: #c06030; }
+    .hljs-symbol { color: #2d6a2d; }
+    .hljs-section { color: #b0306a; }
+    .hljs-selector-tag { color: #b0306a; }
+    .hljs-addition { color: #2d6a2d; }
+    .hljs-deletion { color: #a04040; }
+  </style>
+  </head>
+  <body>
+    <div class="desktop flex gap-16" style="flex-direction: row">
+      <div class="sidebar-95">
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
+              class="icon-16"
+              alt=""
+            />
+            Navigation
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="../index.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Home
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../about.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/users-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  About Me
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../projects.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Projects
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Blog
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/gear-0.png"
+              class="icon-16"
+              alt=""
+            />
+            Actions
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="javascript:history.back()">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Go Back
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  onclick="
+                    window.scrollTo(0, 0);
+                    return false;
+                  "
+                >
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Top of Page
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  All Posts
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
+          <img src="../images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
+        </div>
+      </div>
+
+      <div class="content-95">
+        <div class="window" style="margin-bottom: 8px">
+          <div class="window-body" style="padding: 4px 8px; font-size: 11px">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+              class="icon-16"
+              alt=""
+            />
+            <a href="../index.html">Home</a> &gt;
+            <a href="../blog.html">Blog</a> &gt; Reverse-Engineering Jane Street's ASIC
+          </div>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+              class="icon-16"
+              alt=""
+            />
+            Reverse-Engineering Jane Street's ASIC
+          </div>
+          <div class="window-body">
+            <div class="blog-meta">
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/clock-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Posted: 2026-08-31 |
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/user-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Author: Siddharth |
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Category: Reverse Engineering
+            </div>
+            <div class="blog-meta">
+              <strong>Date:</strong> 2026-08-31 | <strong>Tags:</strong>
+            </div>
+
+            <div class="blog-content">
+              <h1>Reverse-Engineering Jane Street's ASIC</h1>
+
+              <h2>The ASIC</h2>
+              <p>
+                Jane Street put out a reverse-engineering challenge on their website. I had
+                only known them for algorithmic programming challenges, so a reverse-engineering
+                challenge was not something I expected lol. They also gave a warmup challenge for the people who had never done hardware reversing so try that out before you spoil yourself and read this blog .<a href="https://github.com/janestreet/asic-puzzle-2026"> All the files are in this
+                repository</a>. Most
+                reverse-engineering, crackme, and devirtualisation problems begin with a program
+                you can run or load into IDA, but this challenge taught me reversing is more than that .
+              </p>
+              <p>
+                Jane Street's <a href="https://blog.janestreet.com/can-you-reverse-engineer-an-asic/">2026 ASIC
+                puzzle</a> has  a binary, or should I say the program, was <code>puzzle.gds</code>:
+                the final physical layout of a small chip. The blog provided more information on what we are gonna be doing :
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/photos/image1-the%20netlist-photo-from-the-blog.png" alt="The netlist image from Jane Street's blog" />
+              </div>
+              <p>
+                As with any reverse-engineering challenge, but here in the context of a chip,
+                the question was: what would this circuit accept as a correct solution?
+              </p>
+              <p>
+                You can see the two problems here: a constraint problem and a reversing problem,
+                which was much more fun to do, and hard. Before I could write a disassembler
+                using something like Triton, or a symbolic solver using
+                <a href="https://github.com/cea-sec/miasm">Miasm</a> (is that even possible,
+                because how does one emulate a clock without using things like LLVM-circt ?), to
+                solve for an input, I needed to recover the wires hidden in the layout, attach
+                those wires to the right gates, give every gate the right behavior, and model
+                how the circuit changed on each clock edge. The biggest problem was that a
+                single mistake anywhere could derail me and every step that followed.
+              </p>
+              <p>
+                Now that we know what to reverse, we can make a path similar to any VM crackme:
+                find the VM dispatcher, find handlers, keep track of registers, write a
+                disassembler, and solve for the path or basic block we need. Here, it could  be
+                something like:
+              </p>
+              <pre class="code-block"><code>polygons -&gt; nets -&gt; gates -&gt; time -&gt; constraints
+</code></pre>
+              <p>
+                If you don't have an electronics background, please read these before
+                continuing:
+              </p>
+              <ul>
+                <li><a href="https://getwelsim.medium.com/gdsii-the-data-format-for-chip-and-integrated-circuit-design-012352970a54">https://getwelsim.medium.com/gdsii-the-data-format-for-chip-and-integrated-circuit-design-012352970a54</a></li>
+                <li><a href="https://www.quora.com/What-is-a-GDSII-file-in-VLSI-and-what-information-does-it-contain-Can-anyone-provide-a-sample-GDSII-file-with-explanation">https://www.quora.com/What-is-a-GDSII-file-in-VLSI-and-what-information-does-it-contain-Can-anyone-provide-a-sample-GDSII-file-with-explanation</a></li>
+              </ul>
+              <p>
+                The GDS had enough supplied enough structural information to recover placements, pins, and
+                candidate connectivity. Pinned SKY130 functional models supplied cell behavior,
+                and the VCD supplied protocol evidence. This sounds like its gonna make our life easier but nope .
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/layout.png" alt="Annotated full-chip layout with primary inputs, outputs, and the output-generator block" />
+              </div>
+              <p>
+                <em>Figure 1. Full-chip layout with the output block marked.</em>
+              </p>
+
+              <h2>A Program With No Source Code</h2>
+              <p>
+                A chip normally (should be right ? )starts as code , then a  synthesis tool turns that code into a
+                <strong>netlist</strong>(you will hear lot about this coming soon to read ), a list of logic cells and the wires between them,then a Place-and-route
+                tools then put each cell at a physical location and draw those wires as metal.
+                GDS records the result as something like polygons arranged in layers and grouped
+                into reusable cells for the chip architecture
+              </p>
+              <p>
+                If you followd it till now , the puzzle gives us  that last representation , if you still havent caught up think of this example ,consider a single inverter for that in a netlist it can be written as one cell
+                with an input pin, an output pin, and two named nets so in GDS it will appear as an
+                instance of a standard-cell layout placed at some coordinates and also small polygons will
+                mark its pins. More polygons form wires on several metal layers. A <strong>via</strong> joins
+                two layers where the design needs a vertical connection; the small opening used
+                to form that connection is called a <strong>cut</strong>.
+              </p>
+              <p>
+                But the catch is that none of those polygons says, in anything that  "this wire will carry or should carry the previous
+                input bit" or "this gate checks the final result." The  layout had retained some
+                useful SKY130 standard-cell names and pin data inside the cell definitions, but
+                the logical net names, behavioral source, and puzzle rules were gone just like your compiler kabboms it on -03 -strip.(could knoy think of this example , maybe someone can tell me a better example to connect with my non hardware reverse engineering audience  )
+              </p>
+              <p>
+                So we have to  treat the layout as a program with no source code.Like i said before in reference to devirtualisation ,the metal
+                first had to become logical wires. Each standard-cell name should  then  become a
+                Boolean function or a state update and the it hopefully solves ??
+              </p>
+              <p>
+                Coming back to designing our primitives for this challenge we have to solve which can be summed up as
+              </p>
+              <ol>
+                <li>Which physical shapes are electrically connected?</li>
+                <li>What Boolean or sequential behavior does each cell implement?</li>
+                <li>What sequence of inputs takes the circuit to its accepting state?</li>
+              </ol>
+              <p>
+                Connectivity comes first as like this is obvious because  a perfect model of an AND gate is useless if one of
+                its pins has been attached to the wrong wire which would be very sad and cursed  to debug
+              </p>
+
+              <h2>From Polygons to Nets</h2>
+              <h3>Recovering Cells and Pins</h3>
+              <p>
+                One thing if you read the blogs before (&gt;u&lt; read it !!) is that in GDS it is a  one standard-cell layout that can be placed many times
+                without copying all its polygons. Each placement will carry a cell name, a
+                position, and possibly a reflection or rotation. A pin drawn at the left edge
+                of a cell definition may therefore appear on the right edge of one placed
+                instance and the left edge of another.(important !!)
+              </p>
+              <p>
+                We can use <code>gdstk</code> to read the file and apply each placement transform to the
+                polygons I needed. The puzzle has a flat hierarchy and on its  top cell
+                contains 9,875 direct placements, and none of their cell definitions contains
+                another reference. A single pass over those placements was enough for this time , though it
+                would not be enough for if this had an  arbitrary nested GDS
+              </p>
+              <p>
+                Ok So  inside a SKY130 cell, datatype-16 polygons
+                on layers 67 and 68 marked pins. Texttype-5 labels supplied names such as <code>A</code>,
+                <code>B</code>, or <code>Q</code> so we can  begin by  matching each label to its local pin polygon, then transformed
+                that polygon into the coordinate system of the full chip. Datatype-20 polygons
+                on the same two layers will tell us the short pieces of routing drawn inside the
+                cell. Other rules (which iwill explain in a bit as you read) handles the metal above the cells and the cuts between
+                layers.
+              </p>
+              <p>
+                At this stage I kept geometry from every <code>sky130*</code> placement because even a
+                physical-only cell can touch a conductor. The logical build step i thought of planning it later. It
+                removed taps, decoupling cells, diodes, power pins, explicit via cells, and
+                other physical helpers. What remained was a flat netlist of 728 functional
+                cells. Ninety-two were flip-flops: 84 with reset, four with set, and four with
+                no async control.
+              </p>
+              <p>
+                Since every gate we had now could be names because of pins at coordinates  the next plan was to decide which pin should belong to which wire (def not wanna mess this up )
+              </p>
+              <h3>Building Electrical Components RIP</h3>
+              <p>
+                Now imagine trying to  following one signal out of a gate. It will begin  at a pin polygon, crosses
+                a short strip of metal inside the cell, joins a routed wire above the cell, and
+                may climb through several metal layers before reaching another pin.But GDS stores
+                those pieces separately. Now our extractor has to decide like do they form or even make sense that all of it aligns to one electrical component .
+              </p>
+              <p>
+                After transforming every selected polygon into top-level coordinates, I
+                converted it to a Shapely geometry <a href="https://github.com/shapely/shapely">https://github.com/shapely/shapely</a>. Now after comparing all 63,463 shapes with every
+                other shape would have been wasteful and not the right approach obv lol  , so an <code>STRtree</code> first found nearby
+                bounding boxes then  we try to make exact geometric intersections which then to be decided whether each pair
+                should connect or nope
+              </p>
+              <p>
+                If you followed up until now , we can infer this as a reversing axiom/rule : two conductor shapes on the same layer joined
+                when they overlapped with positive area. Mere contact at a point or edge did
+                not normally count but the  one  exception  we'll need to keep in mind is for pieces of internal
+                routing drawn by the same placed cell(meaning - where some local routing pieces intentionally connect along an edge). Those pieces could join along an edge of
+                positive length.
+              </p>
+              <p>
+                More thoughts - if we wanna move  between layers , we need a different rule. An explicit <code>VIA_*</code> placement
+                contains conductor polygons for its landing layers, so the extractor should  join
+                the polygons belonging to that via as one group. Standard cells also contain
+                implicit contacts. Their datatype-44 polygons are cuts, not metal. A cut on
+                layer <code>L</code> joined the conductor overlapping it on layer <code>L</code> to the conductor
+                overlapping it on layer <code>L+1</code>. (if you feel this is hard to understand , try out the warm up challenge which is in the same repo )
+              </p>
+              <p>
+                After this lets put each accepted join as a  union operation in a disjoint-set, or union-find,
+                structure.And at the end, every shape with the same root belonged to the same
+                physical component. This helpes me to reduce the selected geometry to 3,986 components.
+                However most actually did never touched a functional pin. After pin attachment and physical-cell
+                filtering, the logical netlist used 739 distinct component IDs.
+              </p>
+              <p>
+                Also uhm these are not verilog singal names or sm but rather new labels for us to understand the layout connectivity.
+              </p>
+              <h3>The Netlists That Looked Right but Were Wrong smh</h3>
+              <p>
+                I did mess up a lot in the start tho , the final rules sound tidy now after a week of experimentation and crossing things off the list .
+                My first extractors logic  collected pins and top-level routing but ignored the
+                cell-internal cuts. Another idea was to experiment with and treat every same-layer edge contact as
+                a connection. That joined 1,365 components through touch-only paths, far too
+                broad of a rule eventho i didnt know circuit design these are just too much to reverse . I replaced it with the limited same-instance exception
+                described above.
+              </p>
+              <p>
+                The most stupid failure came in a later extractor. I made a broad condition
+                selected datatype 20 <em>or</em> 44 on layers 67 and 68 before the code checked for
+                cuts. This means that the low-layer datatype-44 shapes became ordinary conductors.
+                The error was small in code but kinda devestating in meaning if you think about it : a cut connects the
+                layers on either side of it but does not extend either layer sideways.
+              </p>
+              <p>
+                But the result still looked like a netlist. It had the expected 728 functional
+                cells, the expected kinda setup with around 92 flip-flops, and no net with two drivers.
+              </p>
+              <p>
+                The amount of undriven reset and data pins made me think of the vertical-connection
+                rules the first suspect. Checking those rules against the SKY130 layer
+                definitions showed me  the ordering error tho .  I later  changed the tests so datatype 44 was
+                known first, and then to stored each cut separately, and joined it only through
+                positive-area landings on adjacent layers. With cuts fixed, four undriven nets
+                remained. Three ended at <code>D</code> pins on resettable flip-flops and looking into it deeply showed
+                that each depended on two pieces of internal layer-67 routing that shared an
+                edge inside one cell. Adding the narrow abutment rule reduced the result to 739
+                nets and one explicit undriven component which uhm we will figure out later
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/extraction-pipeline.png" alt="Extraction pipeline, checked cut census, and the separate structure, behavior, and protocol evidence layers" />
+              </div>
+              <p>
+                <em>Figure 2. Geometry extraction from GDS polygons to checked logical nets.</em>
+              </p>
+
+              <h2>But How Do You Know the Netlist Is Right?</h2>
+              <h3>Structural Invariants</h3>
+              <p>
+                We need to verify the structures properly before any emulation , so we need to make sure that thr structure was coherant and valid.
+              </p>
+              <p>
+                The 728 functional cells use 739 distinct component IDs. Cell outputs drive 734
+                of them, each exactly once. Four more are the primary inputs <code>I</code>, <code>clk</code>,
+                <code>enable</code>, and <code>rst_n</code>.
+              </p>
+              <p>
+                That leaves component 61217 which  reaches the <code>A1</code> pins of two gates but has no
+                recovered cell output, primary input, constant, or the worst one which is no power source.I didnt know what to do with this so rather than
+                hide it, <code>work/netlist.json</code> you can see it named as
+                <code>undriven_61217</code>. (DW it will come back later )
+              </p>
+              <p>
+                Onwards to the vertical connections which offered another POV on our plight . Expanding every placement
+                produced 33,323 datatype-44 cut occurrences. Of these, 16,255 sit inside 8,221
+                explicit via placements. The other 17,068 occur inside SKY130 cells and pass
+                through the extractor's geometric landing check. Now all  14,452 cuts in retained
+                functional cells overlap selected conductors on both sides. The remaining 2,616
+                belong to physical-only cells filtered from the logical netlist which includes
+                the 20 one-sided diode cases.
+              </p>
+              <h3>The Warm-Up as an Oracle ?</h3>
+              <p>
+                Jane Street gladly supplied a smaller practice chip with something the puzzle did not
+                have: source code. It shifts in two eight-bit numbers and raises <code>S</code> when their
+                sum is 496. so a good function test .
+              </p>
+              <p>
+                For solving this an exhaustive runner  tried every ordered pair of eight-bit
+                values. Under its fixed harness, all 65,536 pairs agreed with <code>A + B == 496</code>.
+                Exactly 15 pairs raised <code>S</code>, as the equation predicts.
+              </p>
+              <p>
+                The <code>work/verification/verify_warmup.py</code> starts from that checked netlist JSON, builds
+                the source and lowered transition models, then tests 1,034 distinct operand
+                pairs so  all 15 satisfying pairs plus seeded random cases.Read the code for more info.
+                The exhaustive sweep supports the geometry rules on a known design which we see later in the blog , this helped me form some intuision on how to go on about things later on ...
+              </p>
+              <h3>A Rule for the Rest of the Project</h3>
+              <p>
+                One rule now was to for   every representation boundary, give a
+                mistake another way to become visible because we dont have a verifier so this became my priority
+              </p>
+              <p>
+                Geometry needed structural counts and a known warm-up design. Recovered cell
+                behavior needed the official Verilog models. The serial-input harness needed
+                the supplied waveform. I thought of compiler lowering  but would need separate source and target
+                evaluators, a Z3 miter, and mutations designed to make the checks fail.
+              </p>
+              <p>
+                 "separate" here means that two evaluators can take different execution
+                paths while still sharing a parser, verifier, model manifest, or test harness.
+                And those shared parts leave room for common mistakes for me
+              </p>
+
+              <h2>How Bout We Give the Gates Meaning ?</h2>
+              <h3>Why the PDK Headers Were Not Enough</h3>
+              <p>
+                The netlist told me that one instance was an <code>and2_2</code> and another was an
+                <code>a21bo_2</code>. The suffix
+                describes drive strength, but the base name identifies a logical function from
+                the SKY130 standard-cell library. To execute the chip, I needed a model for
+                every base cell used by the recovered design which is open source so lets hunt there now .
+              </p>
+              <p>
+                 Vendor the relevant functional Verilog wrappers from the
+                <a href="https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hd"><code>sky130_fd_sc_hd</code></a>
+                library . Across the
+                combinational wrappers in our solution repo, <code>work/verification/parse_official_models.py</code> extracts scalar ports and
+                positional gate instances such as <code>and</code>, <code>nor</code>, and <code>buf</code>, then orders them by
+                their wire dependencies. The resulting ordinary-cell graphs come from the
+                structure of the official wrappers.
+              </p>
+              <p>
+                The parser is not a general Verilog frontend tho so it does not handle
+                arbitrary modules, assignments, vectors, timing, or power behavior and we dont need to care about it now to solve this challenge. It
+                recognizes the mux wrapper's UDP call tho . The tie
+                cell uses pull-up and pull-down primitives, and the three supported flip-flop
+                families need state.
+                <code>work/extraction/build_cell_manifest.py</code> serializes these definitions into
+                <code>models/cells.json</code>. The project contains 64 base models, and hashes each functional wrapper.
+              </p>
+              <p>
+                I used Icarus to  run the
+                vendored official wrappers and UDP definitions. The test suite
+                compares all binary inputs for the 60 combinational types and the tie cell, then
+                uses directed tests for mux and flip-flop behavior.
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/cell-semantics.png" alt="Recovered a21bo cell name, pinned primitive graph, executed vectors, and evidence boundary" />
+              </div>
+              <p>
+                <em>Figure 3. Recovered cell names become pinned SKY130 behavior.</em>
+              </p>
+              <h3>Time Enters the Model</h3>
+              <p>
+                FOr Combinational gates their outputs follow from their current
+                inputs. Flip-flops make the circuit different. Their output <code>Q</code> is part of the
+                current state, while their input <code>D</code> determines state after a clock edge. A
+                useful model therefore has to say not only what each wire means, but also when
+                values are observed.
+              </p>
+              <p>
+                Here we can choose a <a href="https://arxiv.org/html/1706.09748v1">sampled-edge model</a>.
+                One evaluation observes the primary outputs from the current inputs and current
+                flip-flop state, then computes every flip-flop's next value at one abstract
+                positive edge. Also, the
+                <a href="https://little-ball-of-fur.readthedocs.io/en/latest/modules/edge_sampling.html">Little Ball of Fur edge-sampling docs</a>
+                are a goated resource for graph sampling. In compact form:
+              </p>
+              <pre class="code-block"><code>outputs(t) = F(inputs(t), state(t))
+state(t + 1) = T(inputs(t), state(t))
+</code></pre>
+              <p>
+                Onto some explanation  . <code>dfxtp</code> simply
+                captures <code>D</code>. For <code>dfrtp</code>, <code>RESET_B=0</code> forces the next <code>Q</code> to zero. For <code>dfstp</code>,
+                <code>SET_B=0</code> forces it to one. Also while testing the last case help me catch a bug in the legacy
+                simulator because it compared the control pin with the value to be forced. .
+              </p>
+              <p>
+                So wrapping it up the current state is an explicit input to this transition function. We dont need the  compiler
+                to invent a power-on value(althought ill try this out later after learning more electronics ). Puzzle-specific tools make a separate harness design choice which i can think of writing this would be that
+                : flip-flops with an asynchronous value begin at that value, and the
+                remaining flip-flops begin at zero. And to keep initialization outside the cell
+                semantics.
+              </p>
+              <p>
+                This model is very much narrower than an event-driven Verilog simulator bc it represents
+                an asynchronous control as an override when that control is stable at the
+                sampled edge. We dont need to model immediate changes between edges, propagation
+                delay, metastability, arbitrary clock waveforms, power, or general <code>X</code> and <code>Z</code>
+                resolution blah blah .
+              </p>
+              <h3>Reading the Failed Attempts</h3>
+              <p>
+                The supplied VCD's defenition of the input protocol. Which contains two reset-separated trials. In each one,
+                <code>rst_n</code> stays low for three rising edges. The trace then gives the circuit one
+                idle edge after reset and raises <code>enable</code> for exactly 121 rising edges. The
+                serial input <code>I</code> changes on falling edges, so each bit is stable before the
+                next sample.
+              </p>
+              <p>
+                At the first rising-edge timestamp after <code>enable</code> falls, <code>O[7:0]</code> begins to
+                change once per clock:
+              </p>
+              <pre class="code-block"><code>54 52 59 20 41 47 41 49 4e 00
+ T  R  Y     A  G  A  I  N
+</code></pre>
+              <p>
+                Uhm the same sequence appears after both input streams
+              </p>
+              <p>
+                We can use this waveform as evidence for the reset schedule, serial length, and
+                observable failed output. I think that a direct comparison would need to
+                state that phase alignment and handle the trace's initial unknown values.
+              </p>
+              <p>
+                With connectivity and sampled cell behavior in place, we can move onto figure out   which 121-bit stream could take it to an accepting state. &gt;U&lt; actual reversing time ehe
+              </p>
+
+              <h2>Turning Time Into Logic</h2>
+              <h3>Unrolling the Circuit</h3>
+              <p>
+                A simulator answers a forward question: given an input stream, what does the
+                chip do? I needed the reverse direction: which input stream makes <code>success</code>
+                true? The transition model made that a bounded symbolic-execution problem.
+              </p>
+              <p>
+                If you want more background on symbolic execution, I have written about it in
+                another reverse-engineering post:
+              </p>
+              <ul>
+                <li><a href="vmware.html?latex=1">Slay the JIT: From Hotpatches to Symbolic Couture in Miasm</a></li>
+              </ul>
+              <p>
+                If the reversing and radare UI9yes it looks very messy at times) is not your taste, here's my explanation
+                Concrete execution uses a real input first. Symbolic execution uses a
+                placeholder first.
+              </p>
+              <p>
+                So instead of trying:
+              </p>
+              <pre class="code-block"><code>x = 13
+</code></pre>
+              <p>
+                we say:
+              </p>
+              <pre class="code-block"><code>x = some unknown 8-bit value
+</code></pre>
+              <p>
+                If the program later computes <code>y = (x xor 0x5a) + 3</code>, then <code>y</code> is a little expression:
+              </p>
+              <pre class="code-block"><code>y = (unknown xor 0x5a) + 3
+</code></pre>
+              <p>
+                So in Symbolic execution it builds a formula and
+                asks the solver to fill in the unknowns that make the target true.
+              </p>
+              <p>
+                Branches add a path condition." If a program checks <code>if x &gt; 10</code>, then the two paths carry:
+              </p>
+              <pre class="code-block"><code>then path: x &gt; 10
+else path: x &lt;= 10
+</code></pre>
+              <p>
+                Concolic execution is the practical hybrid version. It runs once with a real
+                input, records the symbolic path condition, flips one branch condition, asks a
+                solver for a new input, and runs again.
+              </p>
+              <p>
+                For this ASIC puzzle, after lifting it i had a clocked
+                circuit. Each clock edge takes the current flip-flop state plus one input bit
+                and produces the next flip-flop state:
+              </p>
+              <pre class="code-block"><code>next_state = T(current_state, input_bit)
+</code></pre>
+              <p>
+                The unknown key is 121 bits:
+              </p>
+              <pre class="code-block"><code>K = k_0, k_1, ..., k_120
+</code></pre>
+              <p>
+                Unrolling means copying the same transition step across time:
+              </p>
+              <pre class="code-block"><code>S_1   = T(S_0,   k_0)
+S_2   = T(S_1,   k_1)
+...
+S_121 = T(S_120, k_120)
+S_122 = T(S_121, 0)
+</code></pre>
+              <p>
+                Then Z3 gets one big question:
+              </p>
+              <pre class="code-block"><code>Find k_0..k_120 such that every clock step is valid
+and success is true after the verdict edge.
+</code></pre>
+              <p>
+                This is much better than brute force. Symbolic unrolling still creates a
+                large formula, but the formula follows the circuit structure .(This is an into if youre interested to get into taint analysis)
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/symbolic-unrolling.png" alt="Concrete simulation, concolic path steering, and bounded symbolic unrolling" />
+              </div>
+              <p>
+                These were also useful while I was learning symbolic execution. My first
+                practical intro to angr was this beginner reverse-engineering walkthrough from john hammond , so I
+                recommend starting there before jumping into the papers:
+              </p>
+              <ul>
+                <li><a href="https://youtu.be/RCgEIBfnTEI?si=NG5XZQo_Z_Tu_keQ">INGoogle CTF, Beginner Reverse Engineering with ANGR</a>, by John Hammond.</li>
+                <li><a href="https://github.com/angr/angr">angr</a>. A practical symbolic-execution framework
+                  for binary analysis and reverse engineering.</li>
+                <li>James C. King, <em>Symbolic Execution and Program Testing</em>. The first paper from
+                  1976 for executing over symbols instead of concrete inputs:
+                  <a href="https://research.ibm.com/publications/symbolic-execution-and-program-testing">https://research.ibm.com/publications/symbolic-execution-and-program-testing</a></li>
+                <li>Cristian Cadar, <em>Introduction to Dynamic Symbolic Execution and KLEE</em>. A
+                  longer academic tutorial if you want something more rigorous:
+                  <a href="https://wp.cs.ucl.ac.uk/tarot2018/talks/">https://wp.cs.ucl.ac.uk/tarot2018/talks/</a></li>
+                <li>DART and CUTE. The classic 2005 concolic or dynamic symbolic execution papers:
+                  <a href="https://osl.cs.illinois.edu/publications/conf/pldi/GodefroidKS05.html">https://osl.cs.illinois.edu/publications/conf/pldi/GodefroidKS05.html</a> and
+                  <a href="https://osl.cs.illinois.edu/publications/conf/sigsoft/SenMA05.html">https://osl.cs.illinois.edu/publications/conf/sigsoft/SenMA05.html</a></li>
+                <li>KLEE. A practical symbolic-execution system for generating high-coverage tests
+                  and finding real bugs in systems programs:
+                  <a href="https://llvm.org/pubs/2008-12-OSDI-KLEE.html">https://llvm.org/pubs/2008-12-OSDI-KLEE.html</a></li>
+              </ul>
+              <p>
+                Now let <code>S_t</code>  be to denote all 92 flip-flop values before edge <code>t</code>, and let <code>I_t</code> be the
+                serial input on that edge. One step of the recovered circuit defines
+              </p>
+              <pre class="code-block"><code>S_(t + 1) = T(S_t, I_t)
+</code></pre>
+              <p>
+                Lets  create fresh
+                Z3 Boolean variables <code>k_0</code> through <code>k_120</code>. <code>k_0</code> is simply the first bit
+                sampled in time; no integer endianness or grid interpretation is needed yet(very fun stuff if you wanna deep dive on why it would not be needed here ), then we can
+                 copy the transition relation across the input window, feeding each
+                state expression into the next edge.
+              </p>
+              <p>
+                And now our harness should fix everything that is not part of the key. Flip-flops with an
+                asynchronous value start at that value, while the others start at zero.
+                <code>rst_n</code> remains high, <code>undriven_61217</code> is fixed to zero, and <code>enable</code> stays high
+                for all 121 symbolic bits.
+                After the last bit, I set <code>I=0</code>, lowered <code>enable</code>, and took one more transition.
+                That is like the verdict edge. Because the model exposes outputs before each abstract
+                edge, I asked for <code>success=1</code> in the following frame. And now we have
+                121 enabled transitions and  one disabled transition
+              </p>
+              <p>
+                So our current checker treats only the first 121 as symbolic key material and rejects a
+                fixture whose tail is not all zero.
+              </p>
+              <p>
+                Finally after messing around a lot , we get the accepting output and we can use Z3 for a model. The solver
+                returned a concrete 121-bit stream.
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/protocol-and-unrolling.png" alt="VCD-derived protocol timeline and 121-step symbolic transition unrolling" />
+              </div>
+              <p>
+                <em>Figure 4. Protocol timing and 121-step symbolic unrolling.</em>
+              </p>
+              <h3>Is There Another Key tho ?</h3>
+              <p>
+                An important thing to keep in mind is that one satisfying input does not imply a unique input. To check that,
+                <code>work/verification/verify_key_uniqueness.py</code> has the acceptance formula from the serialized
+                recovered-cell model and solves it without constraining the key to the retained
+                answer.For the first query it returns  SAT.
+              </p>
+              <p>
+                Lets add one more blocking clause:
+              </p>
+              <pre class="code-block"><code>(k_0 differs) OR (k_1 differs) OR ... OR (k_120 differs)
+</code></pre>
+              <p>
+                The acceptance constraint remains in place. The second query  asks ie means that
+                whether any different 121-bit stream can succeed under the same harness. Z3
+                returns UNSAT.
+              </p>
+              <p>
+                This is a bounded uniqueness statement,which holds true for the current binary
+                SKY130 source model, the fixed initial state, <code>rst_n=1</code>,
+                <code>undriven_61217=0</code>, 121 enabled samples, <code>I=0</code> afterward, and one disabled
+                verdict edge.
+              </p>
+              <h3>Asking a Different Simulator mhmm</h3>
+              <p>
+                The symbolic solve still depended on my Python interpretation of the cells. To
+                test that interpretation through a different execution engine,
+                <code>work/verification/verify_gate_simulation.py</code> emits a temporary gate-level Verilog module directly from
+                the checked netlist.
+              </p>
+
+              <h2>The Stars Appear drum rolls please</h2>
+              <p>
+                The protocol had contained 121 samples, so I tried laying Z3's result out as an
+                11-by-11 grid. Under a row-major interpretation, I placed the first
+                sample in the upper-left corner, continued from left to right, and wrapped
+                after every eleven bits. Replacing zero with <code>.</code> and one with <code>*</code> produced:
+              </p>
+              <pre class="code-block"><code>.......*.*.
+*....*.....
+.......*.*.
+*.*........
+....*.*....
+..*.....*..
+....*.....*
+.*....*....
+...*......*
+.....*..*..
+.*.*.......
+</code></pre>
+              <p>
+                YEY so as you can see  stream contains 22 one-bits. Every row has two. Every column has two. I
+                also checked every horizontal, vertical, and diagonal neighboring pair; no two
+                ones touch. The grid met the row, column, and no-touch rules of a two-star Star
+                Battle.(the region boundaries are missing but who cares lol )
+              </p>
+              <p>
+                Star Battle also requires irregular regions, with exactly two stars in each
+                region.
+              </p>
+              <p>
+                Lets try replaying the stream through the source and lowered interpreters named the
+                puzzle explicitly. After the 121 enabled samples, the circuit took one
+                disabled verdict edge. In the following pre-edge frame, <code>success</code> was high and
+                the output bus began emitting:
+              </p>
+              <pre class="code-block"><code>(* TWO STARS *)
+</code></pre>
+              <p>
+                The printable message contains 15 bytes, followed by a zero byte which is our answer .
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/solution-grid.png" alt="The accepted 121-bit stream arranged as an 11-by-11 star grid" />
+              </div>
+              <p>
+                <em>Figure 5. The accepted 121-bit stream as an 11-by-11 star grid.</em>
+              </p>
+
+              <h2>Phew , The  Regions Were Hiding in State</h2>
+              <h3>From One-Hot Inputs and adding  Sensitivity Supports &gt;U&lt;</h3>
+              <p>
+                Well if you read until here now theres a good question to ask: were the missing region
+                boundaries also present in the circuit? Rather than identify every counter by
+                hand, I treated the final flip-flop state as a set of probes :)
+              </p>
+              <p>
+                <code>work/verification/recover_regions.py</code> begins with the current lowered model, translation-
+                validated under IND-1, and the same explicit initial-state rule used by the
+                puzzle harness. It first runs
+                an all-zero serial stream. Then it runs 121 more streams, each from a fresh copy
+                of the initial state. Stream <code>c</code> contains a single one at input position <code>c</code>
+                and zeros everywhere else.Every stream has 121 enabled transitions followed
+                by 20 disabled tail transitions, with <code>rst_n=1</code> and <code>undriven_61217=0</code>.
+              </p>
+              <p>
+                For each of the 92 state bits, I compared its final value in every one-hot run
+                with its final value in the all-zero baseline. Okie let this define a support:
+              </p>
+              <pre class="code-block"><code>support(q) = { c | final_q(one_at_c) differs from final_q(all_zero) }
+</code></pre>
+              <p>
+                Also if a state bit was part of a counter associated with some set of grid cells,
+                its support could reveal that set. The current probe found 43 state bits with
+                nonempty supports. Eight supports were disconnected on the 11-by-11 grid. The
+                remaining 35 distinct supports are connected using only up, down, left, and
+                right neighbors.
+              </p>
+              <p>
+                All-zero baseline refers to the input stream btw and four
+                active-low-set flip-flops begin at one, and the final baseline state contains
+                eleven ones. The probe also observes only the state after its fixed 20-cycle
+                tail. So Why track any intermediate change ??
+              </p>
+              <h3>Two Covers</h3>
+              <p>
+                Next I treated the 35 connected supports as candidates and searched for exact
+                covers: choose e eleven supports that are pairwise disjoint and cover all
+                121 cells. The search found two answers mhmm ?
+              </p>
+              <p>
+                The first answer was the eleven literal columns. Each support contained one
+                column from top to bottom. The second answer was this irregular partition.
+              </p>
+              <pre class="code-block"><code>AAAAABBCDDE
+AAFAABCCDDE
+AAFBBBBCCDE
+AAFBGGGECCE
+FAFBGEEEEEE
+FFFBGGGEHHH
+BBBBBBGEHII
+BJJJGGGEHII
+BJJKEEEEHII
+BBJKKEEEHHH
+BJJKEEEEEEE
+</code></pre>
+              <p>
+                The letters are presentation labels assigned after the cover is chosen
+                Selecting the irregular cover as the puzzle regions requires assumptions.Lets record them
+              </p>
+              <ol>
+                <li>The 121 enabled samples map row-major to an 11-by-11 grid.</li>
+                <li>Intended regions are connected through four-neighbor adjacency.</li>
+                <li>The region partition appears as eleven disjoint supports under this
+                    final-state probe.</li>
+                <li>The region-counter bank is distinct from the literal-column counter bank.</li>
+              </ol>
+              <p>
+                Now under those assumptions, the irregular partition is the sole non-column
+                connected cover produced by the observed supports.
+              </p>
+              <p>
+                I probed the model, built the
+                supports, found both covers, identified the literal columns, and selected the
+                sole non-column cover before loading <code>work/solution_bits.txt</code>. Only afterward
+                did I annotate the selected regions with stars and check that each one contains
+                two. The final <code>regions.json</code> therefore contains key-derived validation fields,
+                but the choice between covers is keyless lol
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/supports-and-covers.png" alt="One-hot final-state supports and the two exact covers" />
+              </div>
+              <p>
+                <em>Figure 6. One-hot supports reduce to two exact region covers.</em>
+              </p>
+              <h3>Solving the Recovered Regions Without the Key</h3>
+              <p>
+                Well  I wrote a standalone Star Battle solver that uses
+                only the irregular region grid.
+              </p>
+              <p>
+                Its depth-first search places two stars in each row. It rejects a placement as
+                soon as a column or region would exceed two stars, or a new star would touch an
+                existing one horizontally, vertically, or diagonally. The search stops after
+                finding two solutions. If it returns one, it has exhausted every remaining
+                branch and established uniqueness; if it returns two, the puzzle has at least
+                two.
+              </p>
+              <p>
+                For the recovered grid, the search found one solution.
+              </p>
+              <p>
+                The verification scripts regenerate the region artifact from the current
+                lowered transition model and require byte-for-byte equality with
+                <code>work/regions.json</code> if yall wanna see .
+              </p>
+
+              <h2>So What is this  Circuit even about ?</h2>
+              <h3>Is this a Checker ?</h3>
+              <p>
+                So the circuit checks the bits as they arrive instead of storing it someplace and checking it .
+              </p>
+              <p>
+                Two four-bit position machines track the current column and row. They only progress if the
+                 effective sample is accepted, so lowering <code>enable</code> pauses the
+                board r. A twelve-bit shift window retains the most
+                recent accepted inputs for adjacency checks. At the same time, small counters
+                accumulate stars by row, column, irregular region, and total population.
+                Sticky flags remember whether any completed row was bad or any touching pair
+                was seen.
+              </p>
+              <p>
+                The 92 flip-flops can be categorised based on what we found .
+              </p>
+              <table>
+                <thead>
+                  <tr><th>Role</th><th style="text-align: right;">Flip-flops</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Previous input bits</td><td style="text-align: right;">12</td></tr>
+                  <tr><td>Row and column position</td><td style="text-align: right;">8</td></tr>
+                  <tr><td>Eleven column counters</td><td style="text-align: right;">22</td></tr>
+                  <tr><td>Eleven irregular-region counters</td><td style="text-align: right;">22</td></tr>
+                  <tr><td>Current-row count and row-error flag</td><td style="text-align: right;">3</td></tr>
+                  <tr><td>Touch-error flag</td><td style="text-align: right;">1</td></tr>
+                  <tr><td>Total-star count</td><td style="text-align: right;">8</td></tr>
+                  <tr><td>Completion and verdict control</td><td style="text-align: right;">4</td></tr>
+                  <tr><td>Message address</td><td style="text-align: right;">4</td></tr>
+                  <tr><td>Rolling output-generator state</td><td style="text-align: right;">8</td></tr>
+                </tbody>
+              </table>
+              <p>
+                Only the history register stores literal past inputs, and it keeps only the
+                latest twelve. At completion those states contain cells 109
+                through 120. The rest of the machine stores position, capped counts, rolling
+                summaries, and sticky facts. It remembers like about the stream to decide the
+                puzzle(should have stored it in someplace and we could have cheesed it even more with just normal symoblic execution )
+              </p>
+              <p>
+                The effective sampling condition is <code>enable AND NOT complete</code>. On the final
+                cell, every counter and error latch still sees the current bit, and the same
+                edge raises completion. From then on the effective condition stays false even
+                if external <code>enable</code> remains high and the next edge evaluates the accumulated
+                state and starts the output phase.
+              </p>
+              <h3>Checking Neighbors With Twelve Bits of History</h3>
+              <p>
+                In row-major order, a current cell can touch four cells that have already
+                arrived:
+              </p>
+              <table>
+                <thead>
+                  <tr><th style="text-align: right;">Offset</th><th>Grid position</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align: right;"><code>t - 1</code></td><td>left</td></tr>
+                  <tr><td style="text-align: right;"><code>t - 10</code></td><td>up-right</td></tr>
+                  <tr><td style="text-align: right;"><code>t - 11</code></td><td>up</td></tr>
+                  <tr><td style="text-align: right;"><code>t - 12</code></td><td>up-left</td></tr>
+                </tbody>
+              </table>
+              <p>
+                The twelve history flip-flops form an enable-controlled shift register. Before
+                the edge accepting sample <code>t</code>, its first stage contains <code>t - 1</code> and its last
+                stage contains <code>t - 12</code>. The current input remains a combinational value beside
+                that window. Disabled edges hold every stage
+                so these are accepted-sample offsets .
+              </p>
+              <p>
+                Three taps need column-boundary guards. In the first column, <code>t - 1</code> would be
+                the previous row's final cell and <code>t - 12</code> would also wrap incorrectly. In the
+                last column, <code>t - 10</code> points at the current row's first cell rather than an
+                up-right neighbor. The column-position state suppresses those cases. The
+                <code>t - 11</code> tap never wraps and good for us  .
+              </p>
+              <p>
+                If the current bit and any valid prior-neighbor tap are both one, the circuit
+                sets a sticky touch-error flag. Checking only four directions is enough for this then the
+                other four directions belong to future cells, and each pair is detected when
+                its later endpoint arrives. Across an 11-by-11 grid, the taps cover all 110
+                horizontal, 110 vertical, and 200 diagonal neighbor pairs and we also need Every real
+                unordered touching pair is checked once cuz ofc .
+              </p>
+              <h3>How about we Count Without Remembering the Grid</h3>
+              <p>
+                Rows, columns, and regions need counts. The circuit uses a two-bit saturating code:
+              </p>
+              <pre class="code-block"><code>zero       00
+one        10
+exactly two 01
+three or more 11
+</code></pre>
+              <p>
+                On each hit the sequence is <code>00 -&gt; 10 -&gt; 01 -&gt; 11</code>, with <code>11</code> absorbing. So we can actually
+                distinguish the only four cases the checker needs .
+              </p>
+              <p>
+                At column ten, the circuit includes
+                the current bit, checks whether the completed row total is exactly two, records
+                any failure in a sticky row-error latch, and resets the two counter bits for the
+                next row. The circuit therefore should and must reuses three state bits across all eleven rows:
+                two for the count and one for accumulated failure.
+              </p>
+              <p>
+                Also columns cannot be reused because all eleven remain active while the board
+                streams past. They receive eleven persistent two-bit counters, selected by the
+                column-position decoder. The irregular regions receive another eleven two-bit
+                counters, selected by row-and-column membership logic. One input star therefore
+                increments exactly one row count, one column count, one irregular count, and
+                the total population count in parallel.
+              </p>
+              <p>
+                The total counter is an ordinary eight-bit binary incrementer
+                and cannot wrap during a 121-cell run. The terminal cone contains a separate
+                decoder for the unique eight-bit encoding of 22. That check's logic is  if every one of eleven columns contains exactly two
+                stars, the total must already be 22.
+              </p>
+              <p>
+                At the end the row latch we can identify that the two sticky error bits and the persistent counters compress the
+                whole stream into terminal facts and with the row latch says whether every row was
+                valid. The touch latch says whether any forbidden pair appeared. The column
+                and irregular banks retain capped counts, while the total counter retains the
+                population
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/streaming-checker.png" alt="Streaming checker architecture, counter fanout, and backward-neighbor stencil" />
+              </div>
+              <p>
+                <em>Figure 7. Streaming checker state for rows, regions, population, and adjacency.</em>
+              </p>
+              <h3>The One-Cycle Verdict Window</h3>
+              <p>
+                The following frame has a phase that occurs once in normal operation:
+              </p>
+              <pre class="code-block"><code>complete = 1
+message_active = 0
+</code></pre>
+              <p>
+                The result latch samples the accumulated terminal condition.
+                That condition requires the completion phase, eleven exact-two column counts,
+                eleven exact-two irregular counts,and the
+                intended total-count state. The same edge raises <code>message_active</code>, whether the
+                input was accepted or rejected.
+              </p>
+              <p>
+                 Completion is sticky, and so is message-active
+                follows completion . Once message-active becomes one, the
+                phase <code>complete=1, message_active=0</code> cannot recur until reset.
+              </p>
+              <p>
+                On a normal accepted run, <code>success</code> rises on that verdict edge and stays high
+                until reset. Arbitrary injected states need not behave the same way if they come up in your test case ..
+              </p>
+              <h3>A Sequencer to get the answer</h3>
+              <p>
+                Message output uses two separate pieces of state and Four flip-flops form an
+                address sequencer. while message-active is low their
+                next-state logic drives them to zero, so they settle before we get anything . A
+                separate bank of eight flip-flops evolves with the input stream and contributes
+                to the generated bytes.
+              </p>
+              <p>
+                To avoid inventing numeric significance for the four physical address bits,
+                lets write them in state-ID order <code>(234, 235, 236, 237)</code>. During message mode they
+                follow:
+              </p>
+              <pre class="code-block"><code>0000 -&gt; 0100 -&gt; 0010 -&gt; 0110
+     -&gt; 1000 -&gt; 1100 -&gt; 1010 -&gt; 1110
+     -&gt; 0001 -&gt; 0101 -&gt; 0011 -&gt; 0111
+     -&gt; 1001 -&gt; 1101 -&gt; 1011 -&gt; 1111
+</code></pre>
+              <p>
+                The sequencer visits all sixteen patterns once, then remains at <code>1111</code>.
+              </p>
+              <p>
+                The address, rolling generator state, population count, and verdict mode feed
+                the combinational byte decoder. For an accepted input, the fifteen transient
+                addresses produce :)
+              </p>
+              <pre class="code-block"><code>(* TWO STARS *)
+</code></pre>
+              <p>
+                and <code>1111</code> forces <code>O[7:0]</code> to NUL forever. Rejected inputs use the same address
+                path but different byte-selection logic; the ordinary failure mode produces
+                <code>TRY AGAIN</code>.
+              </p>
+              <p>
+                One thing i remember is from an year ago i remember authoring a reverse engg challenge which was a custom chip 8 implementation so this is kinda unusual than a ROM indexed by a counter. The chip carries a
+                rolling eight-bit summary during input, latches a verdict mode, walks a
+                nonnumeric four-bit address path, and combines those pieces for our reply
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/verdict-and-message.png" alt="Verdict timing and the physical message-address tuple sequence" />
+              </div>
+              <p>
+                <em>Figure 8. Verdict timing and message-byte address order.</em>
+              </p>
+
+              <h2>Can i make a decompiler ????</h2>
+              <p>
+                By this point, the project had an extractor, simulator, symbolic solver, region
+                probe, and several checkers.
+                I had a model manifest kinda stuff which removed some duplication, but it did not create a clean
+                boundary. Port ordering, state ordering, output mapping, clock policy, and
+                undriven-net handling still appeared in several places. The thing is  many wrong transition models can agree on
+                one successful path.
+              </p>
+              <p>
+                An intermediate representation [ will be abbreviated to IR] , the first textual-IR slice did not solve this fully , i made it emit both a SKY130
+                layer and a lower-level Silicon layer, but generated each one independently
+                from the same netlist. The target looked like the result of a lowering pass
+                but didnt  actually use  the source artifact.
+                In my current path , it validates the checked netlist, emits
+                one source operation per recovered cell, serializes and reparses the source,
+                then gives only that reparsed source module and the model manifest to the
+                lowerer. The target is serialized, reparsed, and verified in turn as well. Simulation,
+                symbolic validation, and puzzle analysis can then use the results  those explicit
+                representations instead of rebuilding cell semantics ad hoc.
+              </p>
+              <p>
+                 The hard
+                part is controlling semantic change , the hard part is as you guessed  recovered physical-cell vocabulary on one
+                side, a small Boolean transition vocabulary on the other, and checks around the
+                transformation between them , for this I  have defined a narrow
+                profile called IND-1 .
+              </p>
+
+              <h2>A Tiny IR for Recovered Silicon</h2>
+              <h3>Why Build a Custom IR?</h3>
+              <p>
+                (it's a really small IR ) My inspiration was from MLIR from learning LLVM .
+                MLIR stuff like modules, SSA names, typed function signatures, quoted operation names,
+                and attribute dictionaries. The implementation is in Python.
+              </p>
+              <p>
+                The source layer has <code>sky130.cell</code> operation for every recovered instance.
+                Each operation records its instance ID, base model, original
+                drive-strength-qualified cell name, ordered pins, operands, and results. Module
+                metadata binds the representation to the netlist and model-manifest hashes and
+                records the clock, state order, output order, and pre-edge observation rule(this can be improvised and i will come back to it in the future).
+              </p>
+              <p>
+                Flip-flop state  is in the <code>@step</code> function which takes
+                92 current-state bits as arguments and returns 92 next-state bits before its
+                nine primary outputs.A
+                simulator can carry returned state into another call; a solver can replace the
+                arguments with symbolic values; a miter can compare two implementations of the
+                same function.
+              </p>
+              <p>
+                The target layer uses only constants, Boolean gates, muxes, and explicit DFF
+                next-state operations. This canonical form is less descriptive of the physical
+                library but easier for analyses(passes like stuff in the future ) to execute.
+              </p>
+              <h3>The IND-1 Boundary</h3>
+              <p>
+                IND-1 describes one binary sampled transition. Its validated boundary starts at
+                the checked <code>work/netlist.json</code>. It would have taken me a lot more time to do from GDS so extract the netlist for this .
+              </p>
+              <p>
+                A valid input uses only the 64 pinned SKY130 base models in the
+                manifest. Nets are scalar, consumed nets have one driver, and the combinational
+                graph must be acyclic. The design may have one declared positive-edge input
+                clock, reached directly or through supported clock-buffer chains.
+              </p>
+              <p>
+                One call returns pre-edge primary outputs and post-edge state and  each client must choose or quantify over current state.
+                That is why the translation miter can cover arbitrary binary states if you got it.
+              </p>
+              <h3>One Legitimate Lowering Path</h3>
+              <p>
+                At the end after a lot of failing and thinking , this was the compiler lowering pass design stucture i  designed
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/legitimate-lowering-path.png" alt="One legitimate lowering path from checked netlist and pinned models through SKY130 IR, verified lowering, and executable clients" />
+              </div>
+              <p>
+                The source artifact contains 729 operations: one metadata operation and 728
+                cell operations. Combinational cells remain at library level, constants keep
+                their source pins, and every flip-flop operation consumes its explicit current
+                state and produces one next-state result.
+              </p>
+              <p>
+                The lowerer accepts a source module and the manifest. It accepts no netlist
+                object, so source operands and SSA results provide connectivity. Combinational
+                model DAGs expand into binary <code>not</code>, <code>and</code>, <code>or</code>, <code>xor</code>, and <code>mux</code> operations.
+                Buffers become SSA aliases. Tie-cell outputs become constants. Each source
+                flip-flop becomes one <code>silicon.dff</code> operation with explicit data, clock,
+                current-state, and optional sampled asynchronous-control operands.
+              </p>
+              <p>
+                The puzzle target contains 1,541 operations, including metadata, twelve
+                constants, and 92 DFF transitions.
+              </p>
+              <p>
+                 The
+                source is printed, parsed into a fresh AST, and verified before lowering. The
+                target is verified, printed, parsed again, and verified again. Only after both
+                layers pass are the output files replaced : )
+              </p>
+
+              <h2>Checking the Lowering with Z3</h2>
+              <h3>Separate Executions of Source and Target</h3>
+              <p>
+                The source
+                evaluator walks <code>sky130.cell</code> operations and interprets each model through the
+                manifest's primitive graph. The target evaluator handles canonical constants, gates, muxes, and DFF
+                next-state operations.
+              </p>
+              <h3>Counterexample</h3>
+              <p>
+                The miter creates one Boolean symbol for each represented non-clock input and
+                current-state bit. The puzzle has four such inputs and 92 state bits, for 96
+                public symbols. The clock is fixed to the active-edge value because one IND-1
+                call already represents that edge.
+              </p>
+              <p>
+                One symbolic evaluator expands the serialized SKY130 operations through the
+                values we have set up . Another expands the serialized Silicon operations directly. Each
+                produces 101 values:
+              </p>
+              <pre class="code-block"><code>92 next-state bits + 9 pre-edge primary outputs
+</code></pre>
+              <p>
+                For every paired result, the checker creates a mismatch expression. It ORs all
+                101 mismatches and asks Z3 whether any assignment to the 96 symbols can make
+                that root true. A SAT result would include a concrete input and current state
+                that distinguish the artifacts. For the current puzzle translation, Z3 returns
+                UNSAT.
+              </p>
+              <p>
+                The ending result we got was  under IND-1 binary sampled-edge semantics and no
+                assignment to the four represented non-clock inputs and 92 current-state bits
+                makes the serialized source.
+              </p>
+              <p>
+                Oh and about the blocked key unroll and Star Battle enumeration are
+                separate arguments. Their UNSAT and uniqueness results should not be merged
+                with this one.
+              </p>
+              <div class="img-container">
+                <img src="jane-street-asic/figures/lowering-and-miter.png" alt="IND-1 lowering pipeline, translation-validation miter, and adversarial evidence" />
+              </div>
+              <p>
+                <em>Figure 9. IND-1 lowering checked by a Z3 miter and regression cases.</em>
+              </p>
+              <h3>Injecting Faults</h3>
+              <p>
+                I introduced faults to
+                make sure each layer could turn red for the right reason.
+              </p>
+              <p>
+                So 16 malformed IR fixtures attack metadata, SSA definitions and uses,
+                operation signatures, return ordering, missing connections, dropped live
+                operations, clock sources, clock edges, source models, pin order, instance IDs,
+                and current-state binding.
+              </p>
+              <p>
+                Five mutations remain structurally valid but change behavior which are currently implemted as  swap mux arms,
+                invert an asynchronous control's active level, change its forced value, replace
+                a live AND with OR, and flip a live constant. The miter finds a SAT
+                counterexample for each one. A positive control inserts two NOT operations in
+                series and rewires the uses. (but the miter remains UNSAT)
+              </p>
+              <p>
+                19 selected fixtures
+                cover missing and unknown fields, duplicate IDs and keys, bad pins, undriven or
+                multiply driven nets, combinational loops, unsupported clocks, invalid net IDs,
+                and malformed model entries.
+              </p>
+              <p>
+                At the end  ten seeded micro-netlists each expose four inputs and three state bits.
+                For each design, the tests enumerate all <code>2^7 = 128</code> one-step assignments and
+                compare source and target execution, giving 1,280 exhaustive fixture
+                transitions and with this model we should make every micro-design also receives an UNSAT miter check.
+              </p>
+              <h3>Returning to Official Models</h3>
+              <p>
+                The miter can only compare the two semantics I wrote. To check those semantics
+                against the library source.
+              </p>
+              <p>
+                At cell level, Icarus exhaustively checks every binary input combination for 60
+                combinational types and the tie cell, comparing 848 output bits. Eight directed
+                mux cases exercise four-state behavior, and twenty directed observations cover
+                the three supported flip-flop families. These cases are especially important
+                for the mux UDP and explicit reset/set mappings that the small model parser does
+                not derive in full.
+              </p>
+              <p>
+                At kinda the whole level the puzzle check uses 128 seeded arbitrary-state
+                one-step assignments. Each compares nine pre-edge outputs and 92 post-edge
+                state bits, for 12,928 bit comparisons. A smaller warm-up run contributes 272
+                more. As as i said earlier, these are independent assignments rather than
+                state-carrying protocol streams
+              </p>
+              <p>
+                Icarus provides a separate execution engine and runs the official wrappers and
+                UDPs inside the emitted device , think of this as an external oracle .
+              </p>
+              <p>
+                This file here <code>work/ind1_evidence.json</code> records the model and artifact hashes, library commit,
+                tool versions, seeds, miter formula hash, mutation results, and semantic-loss
+                ledger.
+              </p>
+
+              <h2>Why Use a Compiler Without Optimization?</h2>
+              <p>
+                I mean there is no optimizer in this pipeline, and we dont also need it and it would be useless ofc . Canonicalization turns a library-specific netlist
+                into a stable transition language. Parsing, verification, and translation
+                validation make each semantic change inspectable. In reverse  my opinion is that,
+                knowing exactly which changes occur matters more.
+              </p>
+
+              <h2>What I Learned from the Chip</h2>
+              <p>
+                The hardest part of this puzzle was deciding
+                what formula deserved to be solved.
+              </p>
+              <p>
+                 I
+                attached sampled behavior to cell names without trying  to model timing or
+                power and made state explicit before unrolling the circuit, and made the
+                lower-level IR consume the source representation .
+              </p>
+              <p>
+                Once the transition system was almost done , the solver could find an accepted
+                stream and the resulting bits showed the results which was the
+                the star placement. The final state then revealed candidate region structure
+                through sensitivity supports : )
+              </p>
+              <p>
+                Uniqueness belongs to one
+                recorded harness and region recovery produces two covers and selects the irregular
+                one under stated assumptions. The compiler miter covers one binary transition.
+              </p>
+
+              <h2>Conclution</h2>
+              <p>
+                At first when i saw this GDS i was dumbfounded but as it went on i applied what my fundementaly about reversing at the end  one chain
+                could be followed from a pin shape, through a recovered net and cell, into a
+                state update, a puzzle constraint, and finally a star on an 11-by-11 board
+              </p>
+              <p>
+                The latex diagrams are based on : <a href="https://www.bsaver.io/misc/pretty-figures">https://www.bsaver.io/misc/pretty-figures</a>  check it out .
+              </p>
+              <p>
+                Thankyou to my roomate <a href="https://github.com/Deagle2">Nathan</a> and <a href="https://ctftime.org/team/220336/">L3AK</a> team for motivating me always yall goated .
+              </p>
+            </div>
+            <div class="status-bar mt-16">
+              <a href="../blog.html" class="btn">
+                <img
+                  src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                  class="icon-16"
+                  alt=""
+                />
+                Back to All Posts
+              </a>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom: 60px"></div>
+      </div>
+    </div>
+    <div class="taskbar">
+      <div style="display: flex; gap: 8px; flex: 1; overflow: hidden; align-items: center;">
+        <a href="/" class="start-button">
+          <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" class="icon-16" alt="" />
+          Start
+        </a>
+        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px; height: 16px;"></div>
+        <button class="btn" style="border: 2px inset #fff; font-weight: bold; display: flex; align-items: center; gap: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default;" id="taskbar-active-window">
+          <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+          <span id="taskbar-title">mooofin.exe</span>
+        </button>
+      </div>
+      <div class="tray" style="display: flex; align-items: center; gap: 4px;">
+        <div style="border: 1px inset #fff; background: #fff; padding: 2px 4px; font-size: 11px; color: #000; display: flex; align-items: center; width: 140px; overflow: hidden; white-space: nowrap; font-family: 'MS Sans Serif', sans-serif;">
+          <marquee scrollamount="3" id="now-playing-marquee">🎵 now playing: ruby</marquee>
+        </div>
+        <button class="btn" id="music-prev" style="padding: 1px 6px; font-size: 10px;">&#9668;</button>
+        <button class="btn" id="music-toggle" style="padding: 1px 6px; font-size: 10px; font-weight: bold; width: 24px;">||</button>
+        <button class="btn" id="music-next" style="padding: 1px 6px; font-size: 10px;">&#9658;|</button>
+        <div class="time" id="clock">12:00 PM</div>
+      </div>
+    </div>
+    <script>
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        document.getElementById("clock").textContent =
+          hours + ":" + minutes + " " + ampm;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="../site.js?v=20260827-cloud"></script>
+  </body>
+</html>
