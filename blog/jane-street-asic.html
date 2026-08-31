@@ -699,7 +699,7 @@ and success is true after the verdict edge.
               <p>
                 Lets  create fresh
                 Z3 Boolean variables <code>k_0</code> through <code>k_120</code>. <code>k_0</code> is simply the first bit
-                sampled in time; no integer endianness or grid interpretation is needed yet(very fun stuff if you wanna deep dive on why it would not be needed here ), then we can
+                sampled in time; no integer endianness or grid interpretation is needed yet(very fun stuff if you wanna dig into why it would not be needed here ), then we can
                  copy the transition relation across the input window, feeding each
                 state expression into the next edge.
               </p>
@@ -1261,36 +1261,6 @@ message_active = 0
               </div>
               <p>
                 <em>Figure 9. IND-1 lowering checked by a Z3 miter and regression cases.</em>
-              </p>
-              <h3>Injecting Faults</h3>
-              <p>
-                I introduced faults to
-                make sure each layer could turn red for the right reason.
-              </p>
-              <p>
-                So 16 malformed IR fixtures attack metadata, SSA definitions and uses,
-                operation signatures, return ordering, missing connections, dropped live
-                operations, clock sources, clock edges, source models, pin order, instance IDs,
-                and current-state binding.
-              </p>
-              <p>
-                Five mutations remain structurally valid but change behavior which are currently implemted as  swap mux arms,
-                invert an asynchronous control's active level, change its forced value, replace
-                a live AND with OR, and flip a live constant. The miter finds a SAT
-                counterexample for each one. A positive control inserts two NOT operations in
-                series and rewires the uses. (but the miter remains UNSAT)
-              </p>
-              <p>
-                19 selected fixtures
-                cover missing and unknown fields, duplicate IDs and keys, bad pins, undriven or
-                multiply driven nets, combinational loops, unsupported clocks, invalid net IDs,
-                and malformed model entries.
-              </p>
-              <p>
-                At the end  ten seeded micro-netlists each expose four inputs and three state bits.
-                For each design, the tests enumerate all <code>2^7 = 128</code> one-step assignments and
-                compare source and target execution, giving 1,280 exhaustive fixture
-                transitions and with this model we should make every micro-design also receives an UNSAT miter check.
               </p>
               <h3>Returning to Official Models</h3>
               <p>
