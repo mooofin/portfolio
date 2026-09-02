@@ -75,7 +75,10 @@ html.latex-mode .window-title {
 }
 
 html.latex-mode body.latex-blog-post .content-95 > .window > .window-title,
-html.latex-mode body.latex-blog-post .blog-meta {
+html.latex-mode body.latex-blog-post .blog-meta,
+html.latex-mode .content-95 > .window:has(+ .window .blog-content),
+html.latex-mode .content-95 > .window:has(.blog-content) > .window-title,
+html.latex-mode .content-95 > .window:has(.blog-content) .blog-meta {
   display: none !important;
 }
 
@@ -181,9 +184,18 @@ html.latex-mode .latex-author .affil {
   font-size: 0.9rem;
 }
 
-/* justified text with hyphenation, like TeX line breaking */
-html.latex-mode .blog-content p,
-html.latex-mode .window-body p {
+/* Blog articles read better with ragged-right lines; code names and URLs made
+   full justification leave awkward rivers of space. */
+html.latex-mode .blog-content p {
+  text-align: left;
+  line-height: 1.65;
+  word-spacing: normal;
+  overflow-wrap: anywhere;
+  hyphens: manual;
+  -webkit-hyphens: manual;
+}
+
+html.latex-mode .window-body p:not(.blog-content p) {
   text-align: justify;
   hyphens: auto;
   -webkit-hyphens: auto;
@@ -192,7 +204,7 @@ html.latex-mode .window-body p {
 /* LaTeX paragraph style: indent every paragraph except the first after a heading */
 html.latex-mode .blog-content p + p {
   text-indent: 1.5em;
-  margin-top: -0.5rem;
+  margin-top: 0;
 }
 
 /* numbered sections + subsections, like \section{} \subsection{} */
@@ -512,8 +524,9 @@ html.latex-mode .blog-content pre::after {
   display: block;
   text-align: center;
   font-family: "Latin Modern", Georgia, serif;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  margin-top: 0.35rem;
   font-style: italic;
 }
 
@@ -1353,20 +1366,26 @@ html.latex-mode.latex-dark code {
 /* Code blocks: quiet LaTeX listings/minted-style treatment. */
 html.latex-mode pre {
   overflow-x: auto !important;
+  width: fit-content;
+  min-width: min(28rem, 100%);
   max-width: 100%;
   white-space: pre;
   background: #f8f8f8 !important;
   border: 1px solid #d8d8d8 !important;
   border-left: 3px solid #6f6f6f !important;
   box-shadow: none !important;
-  margin: 1.25rem 0;
-  padding: 0.85rem 1rem !important;
+  margin: 1rem auto 1.35rem;
+  padding: 0.7rem 0.9rem !important;
 }
 
 html.latex-mode .blog-content pre {
   background: #f8f8f8 !important;
   border: 1px solid #d8d8d8 !important;
   border-left: 3px solid #6f6f6f !important;
+}
+
+html.latex-mode .blog-content pre:has(code) {
+  min-width: min(24rem, 100%);
 }
 
 html.latex-mode pre code,
@@ -1376,8 +1395,8 @@ html.latex-mode pre code.hljs {
   border: 0 !important;
   color: #222 !important;
   font-family: "Consolas", "Liberation Mono", "Courier New", monospace !important;
-  font-size: 0.86rem !important;
-  line-height: 1.55;
+  font-size: 0.78rem !important;
+  line-height: 1.45;
   padding: 0 !important;
 }
 
