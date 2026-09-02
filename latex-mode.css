@@ -76,6 +76,9 @@ html.latex-mode .window-title {
 
 html.latex-mode body.latex-blog-post .content-95 > .window > .window-title,
 html.latex-mode body.latex-blog-post .blog-meta,
+html.latex-mode .blog-crumb-window,
+html.latex-mode .blog-article-window > .window-title,
+html.latex-mode .blog-article-window > .window-body > .blog-meta,
 html.latex-mode .content-95 > .window:has(+ .window .blog-content),
 html.latex-mode .content-95 > .window:has(.blog-content) > .window-title,
 html.latex-mode .content-95 > .window:has(.blog-content) .blog-meta {
@@ -1379,9 +1382,16 @@ html.latex-mode pre {
 }
 
 html.latex-mode .blog-content pre {
+  display: table !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: min(44rem, 100%) !important;
   background: #f8f8f8 !important;
   border: 1px solid #d8d8d8 !important;
   border-left: 3px solid #6f6f6f !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0.55rem 0.75rem !important;
 }
 
 html.latex-mode .blog-content pre:has(code) {

@@ -20,7 +20,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css?v=20260827-blog-dedupe";
+  local.href = base + "latex-mode.css?v=20260827-no-dupe-small-code";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";
