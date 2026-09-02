@@ -20,7 +20,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css?v=20260827-no-dupe-small-code";
+  local.href = base + "latex-mode.css?v=20260827-dom-dedupe";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";
@@ -233,6 +233,21 @@
       if (document.querySelectorAll(".table-95 thead th").length > 2)
         th.classList.add("latex-hide-cell");
     });
+    var content = document.querySelector(".blog-content");
+    if (content) {
+      var articleWindow = content.closest(".window");
+      if (articleWindow) {
+        var title = articleWindow.querySelector(":scope > .window-title");
+        var meta = articleWindow.querySelector(":scope > .window-body > .blog-meta");
+        if (title) title.style.display = "none";
+        if (meta) meta.style.display = "none";
+        var previousWindow = articleWindow.previousElementSibling;
+        if (previousWindow && previousWindow.classList.contains("window")) {
+          previousWindow.style.display = "none";
+        }
+      }
+    }
+
     var h1 = document.querySelector(".blog-content h1, .content-95 h1, h1");
     if (h1 && !document.querySelector(".latex-author")) {
       var meta = document.querySelector(".blog-meta");
@@ -249,7 +264,6 @@
       h1.parentNode.insertBefore(d, h1.nextSibling);
     }
     // table of contents from h2 headings (blog posts only, 3+ sections)
-    var content = document.querySelector(".blog-content");
     if (content && !document.querySelector(".latex-toc")) {
       var heads = content.querySelectorAll("h2");
       if (heads.length >= 3) {
