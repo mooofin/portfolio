@@ -20,7 +20,7 @@
   var local = document.createElement("link");
   local.rel = "stylesheet";
   local.id = "latex-css-local";
-  local.href = base + "latex-mode.css?v=20260816e";
+  local.href = base + "latex-mode.css?v=20260827-blog-header";
 
   function isOn() {
     return sessionStorage.getItem(KEY) === "1";
@@ -37,6 +37,10 @@
 
   function apply(on) {
     document.documentElement.classList.toggle("latex-mode", on);
+    document.body.classList.toggle(
+      "latex-blog-post",
+      on && !!document.querySelector(".blog-content")
+    );
     try {
       var u = new URL(location.href);
       if (on) { u.searchParams.set("latex", "1"); } else { u.searchParams.delete("latex"); }
@@ -1109,6 +1113,7 @@
     }
     
     var content = document.querySelector(".blog-content");
+    document.body.classList.toggle("latex-blog-post", isOn() && !!content);
     if (content) delete content.dataset.mathRendered;
     if (isOn()) decorate();
     bindHandouts(document);

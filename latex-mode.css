@@ -74,6 +74,11 @@ html.latex-mode .window-title {
   margin-bottom: 0.75rem;
 }
 
+html.latex-mode body.latex-blog-post .content-95 > .window > .window-title,
+html.latex-mode body.latex-blog-post .blog-meta {
+  display: none !important;
+}
+
 /* sidebar becomes plain top nav */
 html.latex-mode .sidebar-95 {
   width: auto !important;

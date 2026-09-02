@@ -448,8 +448,7 @@
               </p>
               <h3>The Warm-Up as an Oracle ?</h3>
               <p>
-                Jane Street gladly supplied a smaller practice chip with something the puzzle did not
-                have: source code. It shifts in two eight-bit numbers and raises <code>S</code> when their
+                Jane Streetsupplied a smaller practice chip as the warm up with something a souce code . It shifts in two eight-bit numbers and raises <code>S</code> when their
                 sum is 496. so a good function test .
               </p>
               <p>
@@ -471,7 +470,7 @@
               <p>
                 Geometry needed structural counts and a known warm-up design. Recovered cell
                 behavior needed the official Verilog models. The serial-input harness needed
-                the supplied waveform. I thought of compiler lowering  but would need separate source and target
+                the supplied waveform. I thought of compiler lowering  but would that would need separate source and target
                 evaluators, a Z3 miter, and mutations designed to make the checks fail.
               </p>
               <p>
@@ -483,7 +482,7 @@
               <h2>How Bout We Give the Gates Meaning ?</h2>
               <h3>Why the PDK Headers Were Not Enough</h3>
               <p>
-                The netlist told me that one instance was an <code>and2_2</code> and another was an
+                From the  netlist  we can kinda infer that one instance was an <code>and2_2</code> and another was an
                 <code>a21bo_2</code>. The suffix
                 describes drive strength, but the base name identifies a logical function from
                 the SKY130 standard-cell library. To execute the chip, I needed a model for
@@ -509,9 +508,7 @@
               </p>
               <p>
                 I used Icarus to  run the
-                vendored official wrappers and UDP definitions. The test suite
-                compares all binary inputs for the 60 combinational types and the tie cell, then
-                uses directed tests for mux and flip-flop behavior.
+                vendored official wrappers and UDP definitions.
               </p>
               <div class="img-container">
                 <img src="jane-street-asic/figures/cell-semantics.png" alt="Recovered a21bo cell name, pinned primitive graph, executed vectors, and evidence boundary" />
@@ -1234,18 +1231,15 @@ message_active = 0
               </p>
               <p>
                 One symbolic evaluator expands the serialized SKY130 operations through the
-                values we have set up . Another expands the serialized Silicon operations directly. Each
-                produces 101 values:
+                values we have set up and produces 101 values:
               </p>
               <pre class="code-block"><code>92 next-state bits + 9 pre-edge primary outputs
 </code></pre>
               <p>
-                For every paired result, the checker creates a mismatch expression. It ORs all
+                For every paired result, the checker  ORs all
                 101 mismatches and asks Z3 whether any assignment to the 96 symbols can make
                 that root true. A SAT result would include a concrete input and current state
-                that distinguish the artifacts. For the current puzzle translation, Z3 returns
-                UNSAT.
-              </p>
+                that distinguish the artifacts and for this it returns unsat 
               <p>
                 The ending result we got was  under IND-1 binary sampled-edge semantics and no
                 assignment to the four represented non-clock inputs and 92 current-state bits
@@ -1253,8 +1247,7 @@ message_active = 0
               </p>
               <p>
                 Oh and about the blocked key unroll and Star Battle enumeration are
-                separate arguments. Their UNSAT and uniqueness results should not be merged
-                with this one.
+                separate arguments we dont need them to be merged with this one .
               </p>
               <div class="img-container">
                 <img src="jane-street-asic/figures/lowering-and-miter.png" alt="IND-1 lowering pipeline, translation-validation miter, and adversarial evidence" />
@@ -1265,7 +1258,7 @@ message_active = 0
               <h3>Injecting Faults</h3>
               <p>
                 I introduced faults to
-                make sure each layer could turn red for the right reason.
+                make sure each layer as like adding print statements for debugging.
               </p>
               <p>
                 So 16 malformed IR fixtures attack metadata, SSA definitions and uses,
@@ -1274,7 +1267,7 @@ message_active = 0
                 and current-state binding.
               </p>
               <p>
-                Five mutations remain structurally valid but change behavior which are currently implemted as  swap mux arms,
+                Five mutations which change behavior which are currently implemted as  swap mux arms,
                 invert an asynchronous control's active level, change its forced value, replace
                 a live AND with OR, and flip a live constant. The miter finds a SAT
                 counterexample for each one. A positive control inserts two NOT operations in
@@ -1298,23 +1291,18 @@ message_active = 0
                 against the library source.
               </p>
               <p>
-                At cell level, Icarus exhaustively checks every binary input combination for 60
+                At cell level, Icarus checks every binary input combination for 60
                 combinational types and the tie cell, comparing 848 output bits. Eight directed
-                mux cases exercise four-state behavior, and twenty directed observations cover
-                the three supported flip-flop families. These cases are especially important
-                for the mux UDP and explicit reset/set mappings that the small model parser does
+                mux cases see that the  four-state behavior, and twenty directed observations cover
+                the three supported flip-flop families.we want this because the small model parser does
                 not derive in full.
               </p>
               <p>
-                At kinda the whole level the puzzle check uses 128 seeded arbitrary-state
-                one-step assignments. Each compares nine pre-edge outputs and 92 post-edge
-                state bits, for 12,928 bit comparisons. A smaller warm-up run contributes 272
-                more. As as i said earlier, these are independent assignments rather than
-                state-carrying protocol streams
+                
               </p>
               <p>
                 Icarus provides a separate execution engine and runs the official wrappers and
-                UDPs inside the emitted device , think of this as an external oracle .
+                UDPs inside the emitted device , think of this as an external oracle  we can use to verify .
               </p>
               <p>
                 This file here <code>work/ind1_evidence.json</code> records the model and artifact hashes, library commit,
@@ -1333,7 +1321,7 @@ message_active = 0
               <h2>What I Learned from the Chip</h2>
               <p>
                 The hardest part of this puzzle was deciding
-                what formula deserved to be solved.
+                what formula deserved to be solved from all these failed attempts 
               </p>
               <p>
                  I
@@ -1344,13 +1332,9 @@ message_active = 0
               <p>
                 Once the transition system was almost done , the solver could find an accepted
                 stream and the resulting bits showed the results which was the
-                the star placement. The final state then revealed candidate region structure
-                through sensitivity supports : )
+                the star placement.
               </p>
-              <p>
-                Uniqueness belongs to one
-                recorded harness and region recovery produces two covers and selects the irregular
-                one under stated assumptions. The compiler miter covers one binary transition.
+              
               </p>
 
               <h2>Conclution</h2>
@@ -1423,6 +1407,6 @@ message_active = 0
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
-    <script src="../site.js?v=20260827-cloud"></script>
+    <script src="../site.js?v=20260827-blog-header"></script>
   </body>
 </html>
