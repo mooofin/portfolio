@@ -249,7 +249,7 @@
     }
 
     var h1 = document.querySelector(".blog-content h1, .content-95 h1, h1");
-    if (h1 && !document.querySelector(".latex-author")) {
+    if (h1 && !document.querySelector(".latex-author") && !document.querySelector(".blog-content")) {
       var meta = document.querySelector(".blog-meta");
       var d = document.createElement("div");
       d.className = "latex-author";
