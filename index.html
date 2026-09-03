@@ -457,8 +457,6 @@
       updateClock();
       setInterval(updateClock, 1000);
 
-      const pfpImgs = ["images/pfp.jpg", "https://media.tenor.com/VpW1CY-5rrcAAAAd/peepo-high-high.gif", "https://media.tenor.com/660lQV3gF9IAAAAM/peppe.gif"];
-      let pfpIdx = 0;
       if (window.pfpInterval) clearInterval(window.pfpInterval);
       window.pfpInterval = setInterval(() => {
         const pfpEl = document.getElementById("pfp");
@@ -470,8 +468,7 @@
           pfpEl.src = "images/pfp1.jpg";
           return;
         }
-        pfpIdx = (pfpIdx + 1) % pfpImgs.length;
-        pfpEl.src = pfpImgs[pfpIdx];
+        pfpEl.src = "images/pfp.jpg";
       }, 3000);
     </script>
     <script src="site.js?v=20260816e"></script>
