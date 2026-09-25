@@ -12,6 +12,10 @@
 
 ## Articles
 
+### [Reverse-Engineering Jane Street's ASIC](https://mooofin.github.io/portfolio/blog/jane-street-asic.html)
+**Date:** 2026-08-31  
+**Description:** Reverse-Engineering Jane Street's ASIC
+
 ### [Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll](https://mooofin.github.io/portfolio/blog/vehguard.html)
 **Date:** 2026-08-01  
 **Description:** Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll
@@ -55,18 +59,6 @@
 ### [32 Rounds of TEA and Psychological Damage](https://mooofin.github.io/portfolio/blog/tea-and-psychological-damage.html)
 **Date:** 2025-12-29  
 **Description:** 32 Rounds of TEA and Psychological Damage, Surviving a Stripped 32-bit Binary
-
-### [How to Make Your Program Spill Tea](https://mooofin.github.io/portfolio/blog/format-string-3.html)
-**Date:** 2025-12-29  
-**Description:** how to make your program spill tea
-
-### [Oops, Your Control Flow Is Mine](https://mooofin.github.io/portfolio/blog/ropfu.html)
-**Date:** 2025-12-29  
-**Description:** Oops, Your Control Flow Is Mine
-
-### [Strings Don't Lie, Packers Do](https://mooofin.github.io/portfolio/blog/strings-dont-lie-packers-do.html)
-**Date:** 2025-12-29  
-**Description:** Strings Don't Lie, Packers Do
 
 ### [Like Father Like Son - DFIR report](https://mooofin.github.io/portfolio/blog/like-father-like-son.html)
 **Date:** 2025-11-14  

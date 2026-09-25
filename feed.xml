@@ -5,14 +5,14 @@
     <link>https://mooofin.github.io/portfolio/</link>
     <description>Blog posts on systems programming, compilers, reverse engineering, and digital forensics by sid.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 31 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 25 Sep 2026 04:44:46 +0000</lastBuildDate>
     <atom:link href="https://mooofin.github.io/portfolio/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Reverse-Engineering Jane Street&apos;s ASIC</title>
       <link>https://mooofin.github.io/portfolio/blog/jane-street-asic.html</link>
       <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/jane-street-asic.html</guid>
       <pubDate>Mon, 31 Aug 2026 00:00:00 +0000</pubDate>
-      <description>Reverse-Engineering Jane Street&apos;s ASIC - recovering the netlist, cell behavior, and 121-bit key from puzzle.gds to solve a Star Battle hidden in silicon</description>
+      <description>Reverse-Engineering Jane Street&apos;s ASIC</description>
     </item>
     <item>
       <title>Dynamic Analysis of VEH Dispatch and Exception-Context RIP Modification Using ROP Gadgets in ntdll.dll</title>
@@ -90,27 +90,6 @@
       <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/tea-and-psychological-damage.html</guid>
       <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
       <description>32 Rounds of TEA and Psychological Damage, Surviving a Stripped 32-bit Binary</description>
-    </item>
-    <item>
-      <title>How to Make Your Program Spill Tea</title>
-      <link>https://mooofin.github.io/portfolio/blog/format-string-3.html</link>
-      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/format-string-3.html</guid>
-      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
-      <description>how to make your program spill tea</description>
-    </item>
-    <item>
-      <title>Oops, Your Control Flow Is Mine</title>
-      <link>https://mooofin.github.io/portfolio/blog/ropfu.html</link>
-      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/ropfu.html</guid>
-      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
-      <description>Oops, Your Control Flow Is Mine</description>
-    </item>
-    <item>
-      <title>Strings Don&apos;t Lie, Packers Do</title>
-      <link>https://mooofin.github.io/portfolio/blog/strings-dont-lie-packers-do.html</link>
-      <guid isPermaLink="true">https://mooofin.github.io/portfolio/blog/strings-dont-lie-packers-do.html</guid>
-      <pubDate>Mon, 29 Dec 2025 00:00:00 +0000</pubDate>
-      <description>Strings Don&apos;t Lie, Packers Do</description>
     </item>
     <item>
       <title>Like Father Like Son - DFIR report</title>
