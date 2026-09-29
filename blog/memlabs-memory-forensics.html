@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <title>My First Memory Forensics Writeups: MemLabs - mooofin</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+    <link rel="icon" href="../public/favicon.ico" />
+    <style>
+      /* Blog specific styles */
+      .blog-content {
+        font-family: "Verdana", sans-serif;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        color: #000080;
+        margin-top: 20px;
+        border-bottom: 1px dotted #ccc;
+        padding-bottom: 5px;
+      }
+      .blog-content p {
+        margin-bottom: 15px;
+      }
+      .blog-content img {
+        max-width: 100%;
+        border: 1px solid #999;
+        padding: 4px;
+        background: #fff;
+      }
+      .blog-content .img-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .blog-content pre {
+        background: #eee;
+        border: 1px inset #ccc;
+        padding: 10px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content code {
+        background: #f0f0f0;
+        padding: 2px 4px;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content blockquote {
+        border-left: 4px solid #000080;
+        padding-left: 10px;
+        color: #555;
+        font-style: italic;
+        margin: 15px 0;
+      }
+      .blog-meta {
+        color: #666;
+        font-size: 11px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      }
+      .blog-content pre code { background: none; padding: 0; border: none; }
+      .hljs { background: #fafaf8; }
+      .hljs-keyword { color: #b0306a; }
+      .hljs-string { color: #2d6a2d; }
+      .hljs-comment { color: #808080; font-style: italic; }
+      .hljs-number { color: #7a2d8a; }
+      .hljs-type { color: #c06030; }
+      .hljs-literal { color: #d49080; }
+      .hljs-built_in { color: #7a2d8a; }
+      .hljs-title.class_ { color: #212529; }
+      .hljs-title.function_ { color: #212529; }
+      .hljs-attr { color: #b0306a; }
+      .hljs-params { color: #424242; }
+      .hljs-meta { color: #c06030; }
+      .hljs-meta .hljs-keyword { color: #c06030; }
+      .hljs-symbol { color: #2d6a2d; }
+      .hljs-section { color: #b0306a; }
+      .hljs-selector-tag { color: #b0306a; }
+      .hljs-addition { color: #2d6a2d; }
+      .hljs-deletion { color: #a04040; }
+    </style>
+  </head>
+  <body>
+    <div class="desktop flex gap-16" style="flex-direction: row">
+      <div class="sidebar-95">
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/computer-3.png"
+              class="icon-16"
+              alt=""
+            />
+            Navigation
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="../index.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Home
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../about.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/users-1.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  About Me
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../projects.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-5.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Projects
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Blog
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/gear-0.png"
+              class="icon-16"
+              alt=""
+            />
+            Actions
+          </div>
+          <div class="window-body" style="padding: 0">
+            <ul class="list-group" style="border: none">
+              <li class="list-group-item">
+                <a href="javascript:history.back()">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Go Back
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  onclick="
+                    window.scrollTo(0, 0);
+                    return false;
+                  "
+                >
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/arrow_up-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  Top of Page
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="../blog.html">
+                  <img
+                    src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"
+                    class="icon-16"
+                    alt=""
+                  />
+                  All Posts
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">
+          <img src="../images/gif-longbuterflycolors.gif" alt="butterfly" style="image-rendering: pixelated;" />
+        </div>
+      </div>
+
+      <div class="content-95">
+        <div class="window" style="margin-bottom: 8px">
+          <div class="window-body" style="padding: 4px 8px; font-size: 11px">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"
+              class="icon-16"
+              alt=""
+            />
+            <a href="../index.html">Home</a> &gt;
+            <a href="../blog.html">Blog</a> &gt; My First Memory Forensics Writeups: MemLabs
+          </div>
+        </div>
+        <div class="window">
+          <div class="window-title">
+            <img
+              src="https://win98icons.alexmeub.com/icons/png/write_wordpad-0.png"
+              class="icon-16"
+              alt=""
+            />
+            My First Memory Forensics Writeups: MemLabs
+          </div>
+          <div class="window-body">
+            <div class="blog-meta">
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/clock-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Posted: 2024-01-01 |
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/user-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Author: Siddharth |
+              <img
+                src="https://win98icons.alexmeub.com/icons/png/directory_listing-0.png"
+                class="icon-16"
+                alt=""
+              />
+              Category: DFIR / CTF
+            </div>
+            <div class="blog-meta">
+              <strong>Date:</strong> 2024-01-01 |
+              <strong>Tags:</strong> memory forensics, Volatility, DFIR, MemLabs
+            </div>
+
+            <div class="blog-content">
+<p>These are some of my earliest writeups: a run through the <a href="https://github.com/stuxnet999/MemLabs">MemLabs</a> memory forensics challenges. I was learning as I went, so these notes capture the tools I tried, the clues I followed, and the occasional detour along the way.</p>
+<p>The original notes live in my <a href="https://github.com/mooofin/CTFs/tree/main/CTFs-main/MEMLABS">CTFs repository</a>. I’ve brought the seven lab writeups together here as one post, keeping the original walkthroughs and screenshots.</p>
+<h2>Lab 0 — Never Too Late Mister</h2>
+<h2>Plugins i used</h2>
+<h3>consoles</h3>
+<p>Similar to cmdscan the consoles plugin finds commands that attackers typed into cmd.exe or executed via backdoors. However, instead of scanning for COMMAND_HISTORY, this plugin scans for CONSOLE_INFORMATION. The major advantage to this plugin is it not only prints the commands attackers typed, but it collects the entire screen buffer (input and output). For instance, instead of just seeing &quot;dir&quot;, you&#39;ll see exactly what the attacker saw, including all files and directories listed by the &quot;dir&quot; command.</p>
+<h3>pslist</h3>
+<p>To list the processes of a system, use the pslist command. This walks the doubly-linked list pointed to by PsActiveProcessHead and shows the offset, process name, process ID, the parent process ID, number of threads, number of handles, and date/time when the process started and exited. As of 2.1 it also shows the Session ID and if the process is a Wow64 process (it uses a 32 bit address space on a 64 bit kernel).</p>
+<p>This plugin does not detect hidden or unlinked processes (but psscan can do that).</p>
+<h3>pstree</h3>
+<p>To view the process listing in tree form, use the pstree command. This enumerates processes using the same technique as pslist, so it will also not show hidden or unlinked processes. Child process are indicated using indention and periods.</p>
+<h3>envars</h3>
+<p>To display a process&#39;s environment variables, use the envars plugin. Typically this will show the number of CPUs installed and the hardware architecture (though the kdbgscan output is a much more reliable source), the process&#39;s current directory, temporary directory, session name, computer name, user name, and various other interesting artifacts.</p>
+<h2>Notes -</h2>
+<p>In Windows, each process is represented in memory by an <strong>_EPROCESS structure</strong>, which contains all the information the kernel needs to manage that process  things like its PID, parent PID, handle table, and more. One important part of this structure is the <strong>ActiveProcessLinks</strong> field, which is used to link all active processes together in a <strong>doubly linked list</strong>.</p>
+<p>A <strong>doubly linked list</strong> means each node (process) has two pointers: <strong>Flink</strong> points to the next process in the list, and <strong>Blink</strong> points to the previous one. This allows the kernel to quickly traverse the list in either direction.</p>
+<p>The global symbol <code>nt!PsActiveProcessHead</code> points to the <strong>head of this list</strong>, which is essentially the starting point for enumerating all active processes. When you do something like:</p>
+<pre><code>dt nt!_list_entry poi(nt!PsActiveProcessHead)
+</code></pre>
+<p>you’re inspecting the first <code>_LIST_ENTRY</code> structure at the head of the list. The Flink and Blink pointers show the next and previous entries in memory, which themselves are offsets inside other <code>_EPROCESS.ActiveProcessLinks</code> fields.</p>
+<p>To find the <strong>start of the full _EPROCESS structure</strong> for a given list entry, you subtract the offset of <code>ActiveProcessLinks</code> (in your case, 0x2e8 or 744 decimal) from the Flink address. This gives you the base address of the <code>_EPROCESS</code> structure that contains that list entry. Once you have the base, you can access any field, for example, <code>ImageFileName</code>:</p>
+<pre><code>dt nt!_eprocess 0xffffc582`ca5c3328-0x2e8 ImageFileName
+</code></pre>
+<p>This shows the name of the process, e.g., “Registry” or “csrss.exe”.</p>
+<p>When you iterate through the Flinks of the doubly linked list starting from <code>nt!PsActiveProcessHead</code>, you’re effectively <strong>walking the entire list of active processes</strong> in the system. Each Flink points to the <code>ActiveProcessLinks</code> of the next <code>_EPROCESS</code> in memory, and subtracting the offset gives you that process’s structure. This is exactly what your <code>!list</code> command does: it traverses all entries and prints the <code>ImageFileName</code> for each.</p>
+<h2>Challenge Description</h2>
+<p>My friend John is an &quot;environmental&quot; activist and a humanitarian. He hated the ideology of Thanos from the Avengers: Infinity War. He sucks at programming. 
+He used too many variables while writing any program. One day, John gave me a memory dump and asked me to find out what he was doing while he took the dump. Can you figure it out for me?</p>
+<h2>Solution</h2>
+<p>First i unizpped it to check whats inside the dump </p>
+<pre><code class="language-bash">[nix-shell:~/sid/CTF/memlabs]$ tar -xf Challenge.tar.xz
+(.venv) 
+[nix-shell:~/sid/CTF/memlabs]$ ls
+Challenge.raw  Challenge.tar.xz  shell.nix
+(.venv)
+</code></pre>
+<p>Upon initial inspection of the memory dump Challenge.raw using the Volatility 3 framework, the windows.info command was executed to determine the system&#39;s profile. The analysis successfully identified the operating system as a 32-bit Windows 7 Service Pack 1, as indicated by the NTBuildLab string &quot;7601.24260.x86fre.win7sp1_ldr.18&quot;. Key memory structure addresses, such as the Kernel Base at 0x82604000, were resolved, and the appropriate debugging symbols were automatically downloaded and parsed. The tool also extracted a crucial timestamp, revealing the system time was set to October 23, 2018, at 08:30:51 UTC, providing an initial temporal baseline for the investigation. .</p>
+<img width="1733" height="779" alt="screenshot-1759772865" src="https://github.com/user-attachments/assets/64d93546-efdf-49f9-afd5-63fe8e1f9179" /><p>Also The cool plugin pslist helps us see what proccesses were running </p>
+<img width="1400" height="884" alt="screenshot-1759772947" src="https://github.com/user-attachments/assets/2ca05fb1-904d-4a47-852e-7efbb9fb7dc0" /><p>The investigation shows that the user logged in under Session ID 1, with explorer.exe (PID 324) serving as their main shell. From there, they opened a command prompt (cmd.exe, PID 2096) at 08:30:18 UTC.</p>
+<p>SO since Cmd.exe was executed , we&#39;ll try to find what commands were used in the PS shell , using the plugin  cmdscan</p>
+<p>I attempted to retrieve the user’s command-line history directly using Volatility 3’s windows.cmdscan and windows.consoles plugins, both designed to pull command history from memory. Unfortunately, both plugins failed. They returned a NotImplementedError, stating that the Windows version in the memory image (6.1.15.7601) wasn’t supported. This meant I couldn’t access the console buffer or command history using my current Volatility build</p>
+<p>Even when a program terminates, traces of its activity can remain in memory, including references to the files it opened. To search for such remnants, I used the windows.filescan plugin, which scans memory for _FILE_OBJECT structures representing files that were recently accessed by the system. At this stage, I didn’t know exactly which file I was looking for  I simply wanted to see what had been opened around the time of the user’s session. As I reviewed the output, one entry immediately stood out: a file object pointing to \Users\hello\Desktop\demon.py.txt at the virtual address 0x3d4d1dc8</p>
+<p>switched to volatility 2 : (</p>
+<p>At this point, I decided to switch tools and try <strong>Volatility 2</strong>, since some plugins in Volatility 3 weren’t fully supported for this image. Using the <code>consoles</code> plugin, I was able to extract the full command-line history from the user’s active session. The output revealed two console processes: one associated with <code>cmd.exe</code> (PID 2096) and another with <code>DumpIt.exe</code> (PID 2412).</p>
+<p>What caught my attention immediately was the command history linked to <code>cmd.exe</code>. It showed a single executed command:</p>
+<pre><code>C:\Python27\python.exe C:\Users\hello\Desktop\demon.py.txt
+</code></pre>
+<p>This confirmed that the user had explicitly run the Python interpreter to execute a script named <code>demon.py.txt</code> from their desktop. The captured screen buffer even showed the program’s output:</p>
+<pre><code>335d366f5d6031767631707f
+</code></pre>
+<p>This hexadecimal string was likely the key output or result produced by the script ? </p>
+<img width="859" height="928" alt="screenshot-1759775791" src="https://github.com/user-attachments/assets/e75d11a6-c3cf-41f1-9c95-29ea1638f1ba" /><p>After confirming that the user executed demon.py.txt, I wanted to see if there were any additional clues hidden in the system’s runtime environment. Processes often store useful information in environment variables, including configuration values, keys, or even passwords used during execution. To explore this, I ran the Volatility 2 plugin envars, which lists the environment variables for every process in memory.</p>
+<p>While reviewing the output, one particular process stood out svchost.exe (PID 716). Among its environment variables, I discovered entries referencing “Thanos”, “xor”, and “password”. </p>
+<p>After running several Volatility plugins, I decided to look into the environment variables using the <code>envars</code> plugin, since processes often store clues like encryption keys, commands, or passwords in memory. When I ran:</p>
+<pre><code class="language-bash">vol2 -f Challenge.raw --profile=Win7SP1x86 envars
+</code></pre>
+<p>I came across something interesting. Under the process <code>svchost.exe</code> (PID 716), I noticed an environment variable named <strong>Thanos</strong> with the value <strong>xor</strong>. Right next to it, there was also a <strong>password</strong> variable. At first, I didn’t quite understand what it meant, but seeing “xor” immediately made me think that the password might be hidden using a simple XOR cipher. This clue pointed me toward a potential decryption step.</p>
+<p>To confirm this, I next decided to check for user credentials stored in memory. Using the <code>hashdump</code> plugin, I was able to extract NTLM password hashes from the memory image:</p>
+<pre><code class="language-bash">vol2 -f Challenge.raw --profile=Win7SP1x86 hashdump
+</code></pre>
+<p>The output revealed the following users and hashes:</p>
+<pre><code>Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+hello:1000:aad3b435b51404eeaad3b435b51404ee:101da33f44e92c27835e64322d72e8b7:::
+</code></pre>
+<p>Given the earlier <strong>Thanos = xor</strong> clue, I suspected this string might be XOR-encrypted. So, I wrote a simple Python script to brute-force all possible XOR keys (0–255) and print the decrypted results:</p>
+<pre><code class="language-python">a = &quot;335d366f5d6031767631707f&quot;.decode(&quot;hex&quot;)
+
+for i in range(0, 255):
+    b = &quot;&quot;
+    for j in a:
+        b += chr(ord(j) ^ i)
+    print(b)
+</code></pre>
+<p>Solving the hash and concatenating the xor output gave the flag : ) </p>
+<p><code>flag{you_are_good_but1_4m_b3tt3r}</code></p>
+<hr>
+<h2>Lab 1</h2>
+<p>kdbgscan is responsible for locating the Kernel Debugger Block (KDBG) within a memory dump. The KDBG is a core Windows kernel structure that stores critical metadata about the running operating system, including the kernel base address, OS build number,offsets to important kernel structures, and even information about active processes and loaded modules.</p>
+<p>The way kdbgscan works is by scanning the memory dump for signatures that match the KDBG structure. Once found, it reports the addresses of the KDBG and other related kernel data. This allows Volatility to map the memory correctly and select the proper kernel symbols (PDBs) for analysis. For example, running vol -f MemoryDump_Lab1.raw windows.kdbgscan will output the kernel base, directory table base, and OS build number, all of which are essential for the other plugins to work properly.</p>
+<img width="1633" height="693" alt="image" src="https://github.com/user-attachments/assets/64e66429-b522-4793-8df0-9754b60f52e9" /><p>After running pslist to see what all ran in the time the PC crashed i used PSlist </p>
+<img width="1073" height="966" alt="image" src="https://github.com/user-attachments/assets/86150cd5-6191-41a6-a7ad-d8bfc050e3d4" /><p>I could see System and smss.exe at the top, followed by critical processes like csrss.exe, winlogon.exe, and services.exe. Each entry showed the PID, parent PID, number of threads, handles, session IDs, and creation times. It was satisfying to watch the familiar Windows processes appear alongside some user-level programs like explorer.exe, mspaint.exe, and even DumpIt.exe, which hinted at how the memory dump was created</p>
+<p>Also  Vol3 automatically reads the KDBG structure from the memory dump and maps the kernel symbols for me.</p>
+<p>These processes seem to be very out of place WinRAR.exe, mspaint.exe, wmpnetwk.exe </p>
+<p>So lemme dump these and look more inside .</p>
+<p>As a standard practise that i saw on last lab its good to see what all the computer was interacting with before it shut down . So we&#39;ll use netscan plugin : (</p>
+<img width="1918" height="916" alt="image" src="https://github.com/user-attachments/assets/1952db81-630a-4bfb-a245-947592dd11a2" /><p>There&#39;s a wierd uh name under owner tag called ?J3???? ? </p>
+<p>This might be the hacked process ig . </p>
+<p>moving on to see if that had commmunicated with any console to run any commands to run output , ill use the console plugin .</p>
+<img width="1878" height="897" alt="image" src="https://github.com/user-attachments/assets/7cf7a543-2336-426c-a65f-883aeacfd455" /><p>This was very abnormal and i think one of them is a b64 flag and i see dumpit.exe which was used to make the .raw dump .</p>
+<p>Decoding the b64 gives us </p>
+<pre><code>flag{th1s_1s_th3_1st_st4g3!!}
+</code></pre>
+<p>Ok now onto investigating mspaint and other sus process</p>
+<p>After googling , i found out that u need to give the PID of the process to memdump plugin to dump the data and mspaint has 2424 </p>
+<img width="1888" height="140" alt="image" src="https://github.com/user-attachments/assets/ca95096d-3b47-4276-8919-a8cdb1fe0445" /><p>Onto more investigation </p>
+<p>Since it was a ms paint , i thought of opening it in ms paint itself to see if there&#39;s anything but nothing really came out , then i tried using gimp and changed all the extensions to png jpg and data . I also tried looking at the metadata and hex in hex editor but nothing quite was in them so it must be the image itself . After not getting anything after running steghide , binwalk , i refred the writeup and you just had to open it as a .data in gimp ... which i overcomplicated .</p>
+<p>After opening it in gimp </p>
+<img width="1912" height="1014" alt="image" src="https://github.com/user-attachments/assets/3f32c01b-d503-47fc-871e-d1b4fb30acb4" /><p>After adjusting the values , i noticed a kinda text apperaing </p>
+<img width="705" height="767" alt="image" src="https://github.com/user-attachments/assets/18facfd5-7a7f-4001-9d2c-d47e345be231" /><p>Adjusting and playing around more gave me an image of the flag , alyssa was drawing but upside down tho </p>
+<img width="356" height="421" alt="image" src="https://github.com/user-attachments/assets/a29bc024-c9dc-4437-9a29-0c522a8e6763" /><pre><code>flag{G00d_BoY_good_girL}
+</code></pre>
+<p>For the third one , the process mentioned was wintrar </p>
+<p>So lemme find that info and dump it using PID </p>
+<img width="1888" height="112" alt="image" src="https://github.com/user-attachments/assets/11f8f13c-07c1-46d8-a8eb-8b325b7535b2" /><p>And it unzipped to Important.rar , so findstr(ripgrep better) , i got this : </p>
+<img width="1916" height="153" alt="image" src="https://github.com/user-attachments/assets/6227e502-76fc-47da-823a-fa053a5a820f" /><p>I assume the first coloumn values are offsets so id need to use them to extract later </p>
+<img width="1584" height="518" alt="image" src="https://github.com/user-attachments/assets/94d18de8-2d59-488a-9140-e8801d5f25cf" /><p>Then i tried extracting and saw this :</p>
+<pre><code>C:\Users\SIDDHARTH U\Downloads\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone&gt;tar -xf Important_extracted.rar
+flag3.png: Reading encrypted data is not currently supported: Illegal byte sequence
+tar: Error exit delayed from previous errors.
+</code></pre>
+<p>Looks like im on the right track ?</p>
+<p>Also it asks for a password tho , so we can check the hashes stored and see using the hashdump plugin : )</p>
+<img width="1900" height="204" alt="image" src="https://github.com/user-attachments/assets/95259866-3dd9-4e7b-8521-107e89b24fac" /><p>And then we can get the flag : p</p>
+<img width="1919" height="780" alt="image" src="https://github.com/user-attachments/assets/929b4cba-1615-42da-b384-d86c7cbc1268" /><hr>
+<h2>Lab 2</h2>
+<p>Uhm the Challenge description says 
+One of the clients of our company, lost the access to his system due to an unknown error. He is supposedly a very popular &quot;environmental&quot; activist. As a part of the investigation, he told us that his go to applications are browsers, his password managers etc. We hope that you can dig into this memory dump and find his important stuff and give it back to us.</p>
+<p>Note: This challenge is composed of 3 flags.</p>
+<p>Starting on some uhm keywords here , enviormental , browsers and password manager . </p>
+<p>First things first , we have to see profile or image info using KDGB which will tell us info about the dump . This is only for vol 2.6 as vol 3 does this automatically </p>
+<img width="1904" height="391" alt="image" src="https://github.com/user-attachments/assets/373462fb-9d5f-4315-8872-eca8d0620d64" /><p>next as always we need to see what all was running while the , dump was taken so we&#39;ll use pslist </p>
+<img width="1908" height="966" alt="image" src="https://github.com/user-attachments/assets/e01b58ee-5bc7-44c8-a0e4-c599a4c764d0" /><p>Sus processes that we would need to dump and investigate would be chrome.exe, keypass.exe ig </p>
+<p>Also whats wmpnetwk.exe ?</p>
+<p>Moving on next i like to do what was passed onto the consoles ...</p>
+<img width="1874" height="197" alt="image" src="https://github.com/user-attachments/assets/922b41c6-3f2b-4a3a-8587-b1fc1035e6ef" /><p>WOW , hidden kbdx !!!!!</p>
+<p>Grepping it , (findstr)</p>
+<img width="1889" height="260" alt="image" src="https://github.com/user-attachments/assets/33dc6060-4960-410c-b396-20fb225dd13f" /><p>so we need a keypass sofware to unlock this and we&#39;ll need a password as well . Hopefull and luckily greping for pass gave a good info </p>
+<p>A file called PASSWORD.PNG !!!!</p>
+<p>lets dump and open it quickly , hopefully no gimp or offset changing rgb values .</p>
+<p>Phew and we got the password :</p>
+<img width="1919" height="1025" alt="image" src="https://github.com/user-attachments/assets/118dd16d-7e75-43eb-9e3d-aa4cd0d8351d" /><p>The the right lower block , </p>
+<p>Now we have the password we can open the keypass software and get out first flag .</p>
+<img width="1831" height="889" alt="image" src="https://github.com/user-attachments/assets/4bfd85aa-fbcd-417f-9a74-9cb6d2dc218c" /><p>The workflow is to open this and see put the .kbdx and use the password we recovered and see if there&#39;s a flag </p>
+<img width="906" height="662" alt="image" src="https://github.com/user-attachments/assets/9b98f709-0274-46b6-bea6-089886671db7" /><p>And we got the first flag : 3 </p>
+<img width="631" height="629" alt="image" src="https://github.com/user-attachments/assets/b980112a-f946-4e1d-81f6-b91339942bcd" /><p>But the flag contents said this is the 2nd flag ? </p>
+<p>Reading the description again , i forgot to check the lead on enviorment variables </p>
+<p>After checking for env using envars plugin i found a b64 on a TEMP_var </p>
+<img width="1884" height="916" alt="image" src="https://github.com/user-attachments/assets/45dfc59a-7c5e-4b27-9cae-d00c6c1be90e" /><pre><code>flag{w3lc0m3_T0_$T4g3_!_Of_L4B_2}
+</code></pre>
+<p>Now onto finding the 3rd flag the hint was chrome ? After googling how to get history and stuff related like downloads  , there&#39;a s plugin to extrcat chrome history : p </p>
+<p>Also forgot to add , Win7SP1x64 !!, is how a Volatility profile identifier works . That means windoes 7 (why vol 3 dosent work smh) , Service pack 1 and X64 operation system .</p>
+<p>Service Pack (SP) is a collection of updates, fixes etc stuff ..</p>
+<p>After trying to get the chrome history i got into an error , apparently the plugin is broken for vol2 , so i&#39;ll just have to grep (findstr) chrome history </p>
+<img width="1899" height="429" alt="image" src="https://github.com/user-attachments/assets/d65e1b68-cb96-4913-bee9-123d0b66f95c" /><p>After going through the strings from the history dump i found a mega link </p>
+<img width="1876" height="568" alt="image" src="https://github.com/user-attachments/assets/0202e6a6-fd0e-46ad-9ddf-d1a3b60e2fc8" />
+openin that <img width="1825" height="843" alt="image" src="https://github.com/user-attachments/assets/8567eb73-fd44-4c01-a991-d2a589a1c990" /><p>And this zip file needs a password which is the uh  SHA1 of Lab 1  stage-3 : )</p>
+<p>after doing that we get an image of the flag :) and we&#39;re dong with lab3 </p>
+<p><code>flag{oK_So_Now_St4g3_3_is_DoNE!!}</code></p>
+<hr>
+<h2>Lab 3</h2>
+<p>Starting off like any lab , we will do imageinfo or kdgbscan to see info about the OS </p>
+<img width="1900" height="348" alt="image" src="https://github.com/user-attachments/assets/5e2cc211-1499-4ee3-83dd-049eeec365f7" /><p>we can see that there are multiple window profiles ? so we might need to check for all the profiles ig </p>
+<p>Moving onto to see what processes were running might give us more insight </p>
+<img width="1869" height="936" alt="image" src="https://github.com/user-attachments/assets/e678f017-0dbf-4602-86b1-5421b7ce6cbc" /><p>Also we see dump it .exe running , and its used to make the memory dump . A intuitive way to think about this is that whatever was running before dumpit.exe should be our focus and here we see 2 notepad.exe &#39;s running . </p>
+<p>Now the workflow for any DFIR challenge is to dump the info that you see might be worth looking into , so lets do that </p>
+<img width="1899" height="282" alt="image" src="https://github.com/user-attachments/assets/8b293c14-a499-4437-95c2-b0ba4bd1b08d" /><p>After running comndscan i got this </p>
+<img width="1916" height="943" alt="image" src="https://github.com/user-attachments/assets/5ab8b2de-a9a1-47ef-94f1-71c00c69dd54" /><p>seems like no lead .</p>
+<p>tehn i looked at the clues , which was about steghide ?? So i started searching for png , jpeg and jpg in the dump ..</p>
+<p>And there was one actually :) jpeg </p>
+<img width="1899" height="146" alt="image" src="https://github.com/user-attachments/assets/722aecbd-cbbc-4dec-acca-04144cd0b8ee" /><p>After dumping it and opening it i saw </p>
+<img width="1407" height="686" alt="image" src="https://github.com/user-attachments/assets/6844b03e-94af-4ea0-9f32-15d5a0536452" /><p>So this image might have been steghided with a password and we&#39;ll need a password to uncover ig .</p>
+<p>The way i thought was since steghide is a cmd line tool , the person who made the dump should run it on the commands line to steghide it . So the location or any insight could be that of getting the cmdline stdin .</p>
+<img width="1919" height="874" alt="image" src="https://github.com/user-attachments/assets/3a4f670d-dcd9-4334-a348-7914d5fd33ec" /><p>So yea , earlier we say two things running on notepad.exe that might have been this python encryption texts , </p>
+<pre><code class="language-bash">notepad.exe pid:   3736
+Command line : &quot;C:\Windows\system32\NOTEPAD.EXE&quot; C:\Users\hello\Desktop\evilscript.py
+************************************************************************
+notepad.exe pid:   3432
+Command line : &quot;C:\Windows\system32\NOTEPAD.EXE&quot; C:\Users\hello\Desktop\vip.txt
+</code></pre>
+<img width="1906" height="228" alt="image" src="https://github.com/user-attachments/assets/9fda83be-07d8-46a5-8266-d03c0830d789" /><p>Dumping them </p>
+<p>we get </p>
+<pre><code>C:\Users\SIDDHARTH U\Downloads\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone&gt;type vip.txt
+am1gd2V4M20wXGs3b2U=
+
+C:\Users\SIDDHARTH U\Downloads\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone&gt;type evilscript.py
+import sys
+import string
+
+def xor(s):
+
+        a = &#39;&#39;.join(chr(ord(i)^3) for i in s)
+        return a
+
+
+def encoder(x):
+
+        return x.encode(&quot;base64&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+
+        f = open(&quot;C:\\Users\\hello\\Desktop\\vip.txt&quot;, &quot;w&quot;)
+
+        arr = sys.argv[1]
+
+        arr = encoder(xor(arr))
+
+        f.write(arr)
+
+        f.close()
+</code></pre>
+<p>vip.txt  contained the base64 string <code>am1gd2V4M20wXGs3b2U=</code> and <code>evilscript.py</code> revealed the encoding routine: it XORs each character with the value 3 and then encodes the result with base64. Knowing this, I reversed the process by base64-decoding the <code>vip.txt</code> payload and XORing each byte with 3, which yielded the recovered secret: <code>inctf{0n3_h4lf}</code> :)</p>
+<p>Since the description said , you need to use the first part to get the 2nd part i used the flag part 1 was a password to extract the info .</p>
+<img width="1895" height="366" alt="image" src="https://github.com/user-attachments/assets/a5d5939c-dc81-4cf1-9de7-0d6c6f44375a" /><p>and we got the 2nd half </p>
+<img width="1236" height="72" alt="image" src="https://github.com/user-attachments/assets/a0296bea-0e0a-4b2f-9e89-b07fe4b64c7d" /><pre><code class="language-bash">inctf{0n3_h4lf_1s_n0t_3n0ugh}
+</code></pre>
+<hr>
+<h2>Lab 4</h2>
+<p>First lets run imageinfo using KDGB</p>
+<img width="1918" height="391" alt="image" src="https://github.com/user-attachments/assets/e0af3b2c-ebde-4ff4-b0f1-7c44b7fed9e3" /><p>Then lets see what proccess are there </p>
+<img width="1236" height="919" alt="image" src="https://github.com/user-attachments/assets/cb439154-ce60-46a2-8a72-772d4333f388" /><p>Next , wel&#39;ll have to use a plugin called psxview :3 </p>
+<img width="1156" height="340" alt="image" src="https://github.com/user-attachments/assets/0b5ae541-b50f-48cb-bc61-b64f80a87198" /><p>It  cross-checks multiple methods (pslist, pstree, thrdproc, etc.) to find processes that might be hidden by rootkits.</p>
+<pre><code>C:\Users\SIDDHARTH U\Downloads\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone&gt;volatility_2.6_win64_standalone.exe -f &quot;C:\Users\SIDDHARTH U\Downloads\MemLabs-Lab4\MemoryDump_Lab4.raw&quot; --profile=Win7SP1x64 psxview
+Volatility Foundation Volatility Framework 2.6
+Offset(P)          Name                    PID pslist psscan thrdproc pspcid csrss session deskthrd ExitTime
+------------------ -------------------- ------ ------ ------ -------- ------ ----- ------- -------- --------
+0x000000003e920350 conhost.exe            2636 True   True   True     True   True  True    True
+0x000000003f1c1b30 services.exe            472 True   True   True     True   True  True    False
+0x000000003fc62b30 dwm.exe                3000 True   True   True     True   True  True    True
+0x000000003e930060 winlogon.exe           2728 True   True   True     True   True  True    True
+0x000000003ec1b890 svchost.exe             220 True   True   True     True   True  True    True
+0x000000003e8f0610 GoogleCrashHan         2272 True   True   True     True   True  True    False
+0x000000003eaa4420 DumpIt.exe             2624 True   True   True     True   True  True    True
+0x000000003efb9b30 svchost.exe             840 True   True   True     True   True  True    False
+0x000000003ecaab30 spoolsv.exe            1132 True   True   True     True   True  True    True
+0x000000003fceeb30 VBoxTray.exe           2384 True   True   True     True   True  True    True
+0x000000003efacb30 svchost.exe             804 True   True   True     True   True  True    True
+0x000000003eec1b30 lsm.exe                 488 True   True   True     True   True  True    False
+0x000000003eaf7b30 explorer.exe           1944 True   True   True     True   True  True    True
+0x000000003e86e910 SearchProtocol         1696 True   True   True     True   True  True    True
+0x000000003fcaeb30 explorer.exe           3012 True   True   True     True   True  True    True
+0x000000003ed81b30 taskhost.exe           1804 True   True   True     True   True  True    True
+0x000000003ef30b30 VBoxService.ex          640 True   True   True     True   True  True    False
+0x000000003eeb5940 lsass.exe               480 True   True   True     True   True  True    False
+0x000000003eff1060 audiodg.exe             952 True   True   True     True   True  True    True
+0x000000003e892b30 dllhost.exe            2076 True   True   True     True   True  True    True
+0x000000003ec45630 svchost.exe             484 True   True   True     True   True  True    True
+0x000000003fc54b30 taskhost.exe           2976 True   True   True     True   True  True    True
+0x000000003efc6850 svchost.exe             864 True   True   True     True   True  True    True
+0x000000003e8f6b30 GoogleCrashHan         2284 True   True   True     True   True  True    False
+0x000000003edf9630 taskeng.exe            1824 True   True   True     True   True  True    False
+0x000000003ecd7b30 svchost.exe            1176 True   True   True     True   True  True    True
+0x000000003ed452e0 svchost.exe            1276 True   True   True     True   True  True    True
+0x000000003fd18b30 StikyNot.exe           2432 True   True   True     True   True  True    True
+0x000000003ee6f760 wininit.exe             384 True   True   True     True   True  True    True
+0x000000003e879890 SearchFilterHo         1688 True   True   True     True   True  True    True
+0x000000003ebabab0 VBoxTray.exe           1592 True   True   True     True   True  True    True
+0x000000003eabbb30 dwm.exe                1908 True   True   True     True   True  True    True
+0x000000003ee751f0 winlogon.exe            412 True   True   True     True   True  True    True
+0x000000003ef43a70 svchost.exe             708 True   True   True     True   True  True    True
+0x000000003e801ab0 SearchIndexer.         1068 True   True   True     True   True  True    False
+0x000000003ef02b30 svchost.exe             580 True   True   True     True   True  True    False
+0x000000003ff67960 csrss.exe               376 True   True   True     True   False True    True
+0x000000003ee57b30 csrss.exe               328 True   True   True     True   False True    True
+0x000000003ff5f040 System                    4 True   True   True     True   False False   False
+0x000000003f6af950 smss.exe                256 True   True   True     True   False False   False
+0x000000003eeac460 csrss.exe              2700 True   True   True     True   False True    True
+0x000000003edfab30 LogonUI.exe            2148 False  True   False    False  False False   False    2019-06-29 07:29:59 UTC+0000
+0x000000003ea94630 csrss.exe              2672 False  True   False    False  False False   False    2019-06-29 07:29:59 UTC+0000
+0x000000003fc5ab30 dllhost.exe            2572 False  True   False    False  False False   False    2019-06-29 07:30:07 UTC+0000
+</code></pre>
+<p>Ok uhm there&#39;s a wierd proccess called StikyNot i can see . </p>
+<p>and 2 proccess which were hidden </p>
+<pre><code>0x000000003ff67960 csrss.exe               376 True   True   True     True   False True    True
+0x000000003ee57b30 csrss.exe               328 True   True   True     True   False True    True
+</code></pre>
+<p>My idea for now is to see what commands did these proccess run ?</p>
+<p>for that cmdsline will help us </p>
+<img width="927" height="647" alt="image" src="https://github.com/user-attachments/assets/6455e1c4-faec-4d25-bf4d-097df2158932" /><p>After that , we can see that , it spwaned stickey note program .</p>
+<img width="1919" height="324" alt="image" src="https://github.com/user-attachments/assets/c40d34db-1f60-4695-9e62-7dd972d6e2aa" /><p>We&#39;ll dump the exe and see it later .</p>
+<p>Moving onto to finding interesting stuff , a focus should be on identifying what kind of files are in the memory dump . </p>
+<p>There are a lot of files now , but the user of the PC is called slim shady , so i&#39;ll search what files is under him or related to slimshady .</p>
+<pre><code>2019-06-27 13:14:13 UTC+0000 2019-06-27 13:14:13 UTC+0000   2019-06-27 13:14:13 UTC+0000   2019-06-27 13:14:13 UTC+0000   Users\SlimShady\Desktop\Important.txt
+</code></pre>
+<pre><code>Volatility Foundation Volatility Framework 2.6
+0x000000003e839710      2      2 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_256.db
+0x000000003e83b2d0      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\Videos\desktop.ini
+0x000000003e88a8c0      1      1 -W-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Temp\FXSAPIDebugLogFile.txt
+0x000000003e88ba20      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Themes\slideshow.ini
+0x000000003e89b070     15      0 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\GDIPFONTCACHEV1.DAT
+0x000000003e8a85b0      2      0 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\Flag not here.lnk
+0x000000003e8a9610     16      0 RW-r-- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations\1b4dd67f29cb1962.automaticDestinations-ms
+0x000000003e8aa6f0      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\desktop.ini
+0x000000003e8ab250      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_256.db
+0x000000003e8acc40     17      1 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Cookies\index.dat
+0x000000003e8ad250     14      0 R--r-- \Device\HarddiskVolume2\Users\eminem\Desktop\galf.jpeg
+0x000000003e8af4a0     17      1 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5\index.dat
+0x000000003e8b04e0     15      0 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\History\History.IE5\index.dat
+0x000000003e8b1a50      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\History\desktop.ini
+0x000000003e8b2a80      1      1 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\History\History.IE5\index.dat
+0x000000003e8bbf20      4      1 RWD--- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Temp\~PID8EC.tmp
+0x000000003e8c01a0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_idx.db
+0x000000003e8cdb20     15      0 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\History\History.IE5\MSHist012019062920190630\index.dat
+0x000000003e8ce500      8      1 RWD--- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Temp\~PIDAB5.tmp
+0x000000003e8ce650      1      1 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\History\History.IE5\MSHist012019062920190630\index.dat
+0x000000003e8d19e0     16      0 R--r-- \Device\HarddiskVolume2\Users\eminem\Desktop\Screenshot1.png
+0x000000003e8d1c80      2      0 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\galf.lnk
+0x000000003e8d7dd0      2      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations\337ed59af273c758.customDestinations-ms
+0x000000003e8da350      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_sr.db
+0x000000003e8da630      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\Desktop\DumpIt
+0x000000003e8e5a50      8      1 RWD--- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Temp\~PIE007.tmp
+0x000000003e8e5ba0      2      0 RW-rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\Screenshot1.lnk
+0x000000003e8e83c0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\Links
+0x000000003e8ecc80      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db
+0x000000003e8ecdd0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_idx.db
+0x000000003e8f1aa0      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\Links\desktop.ini
+0x000000003e8fc590      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Network Shortcuts
+0x000000003e9058a0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1024.db
+0x000000003e905b80      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db
+0x000000003e912190      6      0 R--r-d \Device\HarddiskVolume2\Users\eminem\Desktop\DumpIt\DumpIt.exe
+0x000000003e915070      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\Links
+0x000000003e9189d0     10      0 R--r-d \Device\HarddiskVolume2\Users\eminem\Desktop\DumpIt\DumpIt.exe
+0x000000003e921a30     16      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\LocalLow\Microsoft\CryptnetUrlCache\Content\94308059B57B3142E455B38A6EB92015
+0x000000003e922070      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\Desktop\DumpIt
+0x000000003e925ab0      2      2 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_sr.db
+0x000000003ea20070      1      1 RW-rwd \Device\clfs\Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat{a96b97fe-96f7-11e9-9a46-0800275e72bc}.TM
+0x000000003ea28c10      2      1 RW-r-- \Device\HarddiskVolume2\Users\eminem\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TMContainer00000000000000000001.regtrans-ms
+0x000000003ea34c10      1      1 RW---- \Device\HarddiskVolume2\Users\eminem\NTUSER.DAT
+0x000000003ea35ac0      1      1 RW---- \Device\HarddiskVolume2\Users\eminem\ntuser.dat.LOG1
+0x000000003ea35f20      1      1 RW---- \Device\HarddiskVolume2\Users\eminem\ntuser.dat.LOG2
+0x000000003ea366b0      2      1 RW-r-- \Device\HarddiskVolume2\Users\eminem\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TMContainer00000000000000000002.regtrans-ms
+0x000000003ea37ad0      1      1 RW-rwd \Device\clfs\Device\HarddiskVolume2\Users\eminem\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM
+0x000000003ea38dd0      2      1 RW-r-- \Device\HarddiskVolume2\Users\eminem\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM.blf
+0x000000003ea41960      2      1 RW-rw- \Device\clfs\Device\HarddiskVolume2\Users\eminem\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM
+0x000000003ea44dd0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Printer Shortcuts
+0x000000003ea60640      1      1 RW---- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat
+0x000000003ea64850      1      1 RW---- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat.LOG2
+0x000000003ea64f20      1      1 RW---- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat.LOG1
+0x000000003ea66dc0      2      1 RW-r-- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat{a96b97fe-96f7-11e9-9a46-0800275e72bc}.TM.blf
+0x000000003ea6cf20      2      1 RW-r-- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat{a96b97fe-96f7-11e9-9a46-0800275e72bc}.TMContainer00000000000000000001.regtrans-ms
+0x000000003ea6d070      2      1 RW-r-- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat{a96b97fe-96f7-11e9-9a46-0800275e72bc}.TMContainer00000000000000000002.regtrans-ms
+0x000000003ea75370      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Credentials
+0x000000003ea7ea70     16      0 R--rw- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Caches\cversions.1.db
+0x000000003ea83890      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Credentials
+0x000000003eaa4d00      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries\Pictures.library-ms
+0x000000003eaa8ea0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db
+0x000000003eae05d0      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\Pictures\desktop.ini
+0x000000003eafe3c0     14      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Caches\{AFBF9F1A-8EE8-4C77-AF34-C647E37CA0D9}.1.ver0x0000000000000006.db
+0x000000003eb04f20      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db
+0x000000003eb219e0      8      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\Local\IconCache.db
+0x000000003eb27070      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries\Videos.library-ms
+0x000000003eb5ad10      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\Desktop
+0x000000003eb78f20      2      0 R--rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Google Chrome.lnk
+0x000000003eb89790      2      2 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db
+0x000000003eb8ab30     16      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Burn\Burn\desktop.ini
+0x000000003eb8bc90      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\desktop.ini
+0x000000003eb914f0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Burn
+0x000000003eb91820     16      0 R--rwd \Device\HarddiskVolume2\Users\eminem\Desktop\desktop.ini
+0x000000003eb91970      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Burn
+0x000000003eb94a20     16      0 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db
+0x000000003eb95070     10      0 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db
+0x000000003eb95bb0      2      0 R--rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Internet Explorer.lnk
+0x000000003eba2070      2      0 R--rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Windows Media Player.lnk
+0x000000003eba33b0      2      0 R--rw- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Windows Explorer.lnk
+0x000000003eba3e60      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\Desktop
+0x000000003eba4d00     16      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\desktop.ini
+0x000000003eba84b0     16      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\desktop.ini
+0x000000003eba9d10     15      0 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_256.db
+0x000000003ebaaf20      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessories\Desktop.ini
+0x000000003ebab1e0      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessories\Accessibility\Desktop.ini
+0x000000003ebab650      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Maintenance\Desktop.ini
+0x000000003ebac710      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Administrative Tools\desktop.ini
+0x000000003ebaee50     16      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini
+0x000000003ebafa90      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessories\System Tools\Desktop.ini
+0x000000003ebb1070     16      0 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_idx.db
+0x000000003ebb36c0     16      0 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1024.db
+0x000000003ebb5440      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned
+0x000000003ebb91f0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu
+0x000000003ebb99c0     16      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries\desktop.ini
+0x000000003ebbaea0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Start Menu
+0x000000003ebbca20      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned
+0x000000003ebbfa70      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\desktop.ini
+0x000000003ebc0690      8      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Themes\TranscodedWallpaper.jpg
+0x000000003ebc1670     16      0 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_sr.db
+0x000000003ebccdd0      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries\Documents.library-ms
+0x000000003ebcd590      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\Documents\desktop.ini
+0x000000003ebd05e0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries
+0x000000003ebd1070      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries
+0x000000003ebd2570      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Libraries\Music.library-ms
+0x000000003ebdc890      2      0 R--rwd \Device\HarddiskVolume2\Users\eminem\Music\desktop.ini
+0x000000003ebe2a20      1      1 RW-rw- \Device\HarddiskVolume2\Users\eminem\Desktop\DumpIt\2PAC-20190629-072925.raw
+0x000000003ebe38e0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_256.db
+0x000000003ebeedc0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Printer Shortcuts
+0x000000003ec36d80      2      2 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db
+0x000000003ec45300      2      2 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_idx.db
+0x000000003ecd4070      2      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\LocalLow\Microsoft\CryptnetUrlCache\MetaData\94308059B57B3142E455B38A6EB92015
+0x000000003edeb470      2      1 RW-rw- \Device\clfs\Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\UsrClass.dat{a96b97fe-96f7-11e9-9a46-0800275e72bc}.TM
+0x000000003eeb97d0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db
+0x000000003eebb430      2      2 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1024.db
+0x000000003ef033f0      2      1 R--rwd \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Network Shortcuts
+0x000000003ef47f20      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_idx.db
+0x000000003eff6f20     16      0 R--r-- \Device\HarddiskVolume2\Users\eminem\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations\5afe4de1b92fc382.customDestinations-ms
+0x000000003f602590      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1024.db
+0x000000003f7daa90      4      1 RWD--- \Device\HarddiskVolume2\Users\eminem\AppData\Local\Temp\~PID92B.tmp
+0x000000003f9ccf20      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_sr.db
+0x000000003f9ce930      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1024.db
+0x000000003f9cea80      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_256.db
+0x000000003f9cebd0      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db
+0x000000003f9ffcb0      1      1 R--rw- \Device\HarddiskVolume2\Users\eminem\Desktop\DumpIt
+0x000000003fc48070      1      1 RW-rwd \Device\HarddiskVolume2\Users\eminem\AppData\Local\Microsoft\Windows\Explorer\thumbcache_sr.db
+
+C:\Users\SIDDHARTH U\Downloads\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone&gt;volatility_2.6_win64_standalone.exe -f &quot;C:\Users\SIDDHARTH U\Downloads\MemLabs-Lab4\MemoryDump_Lab4.raw&quot; --profile=Win7SP1x64 filescan | findstr &quot;SlimShady&quot;
+Volatility Foundation Volatility Framework 2.6
+0x000000003e900e60      2      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TMContainer00000000000000000002.regtrans-ms
+0x000000003e90df20      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\History\desktop.ini
+0x000000003ed01740      1      1 RW-rwd \Device\clfs\Device\HarddiskVolume2\Users\SlimShady\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM
+0x000000003ed382c0      2      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TMContainer00000000000000000001.regtrans-ms
+0x000000003ee47750      2      1 RW-rw- \Device\clfs\Device\HarddiskVolume2\Users\SlimShady\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM
+0x000000003ee49c40      2      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat{8381e871-9808-11e9-b1e1-0800275e72bc}.TM.blf
+0x000000003ee4b480      1      1 RW---- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat.LOG1
+0x000000003ee4b5d0      1      1 RW---- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat
+0x000000003ee4cb20      2      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat{8381e871-9808-11e9-b1e1-0800275e72bc}.TMContainer00000000000000000002.regtrans-ms
+0x000000003ee4cc70      1      0 R--r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations\337ed59af273c758.customDestinations-ms
+0x000000003ee4cf20      1      1 RW---- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat.LOG2
+0x000000003ee8e8c0      1      1 RW---- \Device\HarddiskVolume2\Users\SlimShady\ntuser.dat.LOG1
+0x000000003ee9b590     16      0 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations\9b9cdc69c1c24e2b.automaticDestinations-ms
+0x000000003eeb6950      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Printer Shortcuts
+0x000000003eeb7bb0     16      0 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations\1b4dd67f29cb1962.automaticDestinations-ms
+0x000000003eed64e0     16      0 R--rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Caches\cversions.1.db
+0x000000003eeec530     15      0 RW-rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\History\History.IE5\MSHist012019062920190630\index.dat
+0x000000003eeef070     17      1 RW-rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5\index.dat
+0x000000003f631070      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Printer Shortcuts
+0x000000003f633d50      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Recent\desktop.ini
+0x000000003f666aa0      1      1 RW---- \Device\HarddiskVolume2\Users\SlimShady\ntuser.dat.LOG2
+0x000000003f939720      2      0 RW-rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Recent\Important.lnk
+0x000000003f9ff6d0      1      1 RW---- \Device\HarddiskVolume2\Users\SlimShady\NTUSER.DAT
+0x000000003f9ff8e0      2      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM.blf
+0x000000003fc398d0     16      0 R--rw- \Device\HarddiskVolume2\Users\SlimShady\Desktop\Important.txt
+0x000000003fc39a20     17      1 RW-rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\History\History.IE5\index.dat
+0x000000003fc39cd0      2      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat{8381e871-9808-11e9-b1e1-0800275e72bc}.TMContainer00000000000000000001.regtrans-ms
+0x000000003fc39f20      1      1 RW-rwd \Device\clfs\Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat{8381e871-9808-11e9-b1e1-0800275e72bc}.TM
+0x000000003fc3c910      2      1 RW-rw- \Device\clfs\Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\UsrClass.dat{8381e871-9808-11e9-b1e1-0800275e72bc}.TM
+0x000000003fc3dbb0      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Credentials
+0x000000003fc3dd00      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Credentials
+0x000000003fcbd070      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Burn\Burn\desktop.ini
+0x000000003fcc5140     13      0 R--r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\IconCache.db
+0x000000003fce9640     15      0 R--r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Caches\{AFBF9F1A-8EE8-4C77-AF34-C647E37CA0D9}.1.ver0x0000000000000003.db
+0x000000003fcedca0      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessories\Accessibility\Desktop.ini
+0x000000003fcee070      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Maintenance\Desktop.ini
+0x000000003fcee1e0      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Administrative Tools\desktop.ini
+0x000000003fcf0a20      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\desktop.ini
+0x000000003fcf9690     16      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\Desktop\desktop.ini
+0x000000003fcfa070      2      0 R--rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Internet Explorer.lnk
+0x000000003fcfb240      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Burn
+0x000000003fcfba20      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\desktop.ini
+0x000000003fcfc7c0      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Burn
+0x000000003fcfd320      2      0 R--rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Google Chrome.lnk
+0x000000003fcfd5c0      1      1 RW-rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\History\History.IE5\MSHist012019062920190630\index.dat
+0x000000003fcfd920      2      0 R--rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Windows Media Player.lnk
+0x000000003fcfdb00      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\Desktop
+0x000000003fcfe810      2      0 R--rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Windows Explorer.lnk
+0x000000003fcfeac0      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\Desktop
+0x000000003fcfef20      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessories\Desktop.ini
+0x000000003fd00280      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\desktop.ini
+0x000000003fd0a970      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Libraries\Documents.library-ms
+0x000000003fd0b070      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Libraries\desktop.ini
+0x000000003fd0b480      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini
+0x000000003fd13850      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\Documents\desktop.ini
+0x000000003fd15800      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Libraries\Pictures.library-ms
+0x000000003fd17c80      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Libraries
+0x000000003fd17dd0      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Libraries
+0x000000003fd1a340      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\Pictures\desktop.ini
+0x000000003fd1bd50     11      0 R--r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Themes\TranscodedWallpaper.jpg
+0x000000003fd1c490     18      2 RW-rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db
+0x000000003fd1c5e0      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Libraries\Music.library-ms
+0x000000003fd214d0     18      2 RW-rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Explorer\thumbcache_256.db
+0x000000003fd22d90     18      2 RW-rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Explorer\thumbcache_idx.db
+0x000000003fd23d10      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\desktop.ini
+0x000000003fd24c70     18      2 RW-rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db
+0x000000003fd252e0      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\Music\desktop.ini
+0x000000003fd25bc0     18      2 RW-rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1024.db
+0x000000003fd26840     18      2 RW-rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Local\Microsoft\Windows\Explorer\thumbcache_sr.db
+0x000000003fd276c0      2      0 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessories\System Tools\Desktop.ini
+0x000000003fd32070      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu
+0x000000003fd32740      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned
+0x000000003fd32890      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned
+0x000000003fd32c80      2      1 R--rwd \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Start Menu
+0x000000003fd3d6d0     17      1 RW-rw- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Cookies\index.dat
+0x000000003fd40910     17      1 RW-r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
+0x000000003ff3dca0      1      0 R--r-- \Device\HarddiskVolume2\Users\SlimShady\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations\5afe4de1b92fc382.customDestinations-ms
+</code></pre>
+<p>From memlabs 2 , we should also see if there are any potential images , as they prolly hide a clue .</p>
+<img width="1891" height="183" alt="image" src="https://github.com/user-attachments/assets/873341b2-aac3-47da-9a0e-34c995506785" /><p>Ok so it&#39;s a joker image ! </p>
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/31163a06-9bd3-41d8-a868-9618f8b3c541" /><p>Also when i tried to dump the important.txt , it showed an exmpty file ? Even tho the offset was correct and all .</p>
+<p>This lead me to exploring and goggling , and after some time i stumbled upon how to recvover deleated files . </p>
+<img width="1891" height="149" alt="image" src="https://github.com/user-attachments/assets/0bec7613-8519-4774-bda9-81c25b329412" /><p>After seaching it in the delated dump files we get the flag :) </p>
+<img width="1919" height="986" alt="image" src="https://github.com/user-attachments/assets/c5141de5-6a5e-4aee-a6c4-061f579420c3" /><pre><code class="language-bash">flag inctf{1_is_n0t_EQu4l_7o_2_bUt_th1s_d0s3nt_m4ke_s3ns3}
+</code></pre>
+<p>Explaining the MFT table : p</p>
+<pre><code>Master File Table
+01/07/2021
+[This document applies only to version 3 of NTFS volumes.]
+
+The master file table (MFT) stores the information required to retrieve files from an NTFS partition.
+
+A file may have one or more MFT records, and can contain one or more attributes. In NTFS, a file reference is the MFT segment reference of the base file record. For more information, see MFT_SEGMENT_REFERENCE.
+
+The MFT contains file record segments; the first 16 of these are reserved for special files, such as the following:
+
+0: MFT ($Mft)
+5: root directory (\)
+6: volume cluster allocation file ($Bitmap)
+8: bad-cluster file ($BadClus)
+Each file record segment starts with a file record segment header. For more information, see FILE_RECORD_SEGMENT_HEADER. Each file record segment is followed by one or more attributes. Each attribute starts with an attribute record header. For more information, see ATTRIBUTE_RECORD_HEADER. The attribute record includes the attribute type (such as $DATA or $BITMAP), an optional name, and the attribute value. The user data stream is an attribute, as are all streams. The attribute list is terminated with 0xFFFFFFFF ($END).
+
+The following are some example attributes.
+
+The $Mft file contains an unnamed $DATA attribute that is the sequence of MFT record segments, in order.
+The $Mft file contains an unnamed $BITMAP attribute that indicates which MFT records are in use.
+The $Bitmap file contains an unnamed $DATA attribute that indicates which clusters are in use.
+The $BadClus file contains a $DATA attribute named $BAD that contains an entry that corresponds to each bad cluster.
+When there is no more space for storing attributes in the file record segment, additional file record segments are allocated and inserted in the first (or base) file record segment in an attribute called the attribute list. The attribute list indicates where each attribute associated with the file can be found. This includes all attributes in the base file record, except for the attribute list itself. For more information, see ATTRIBUTE_LIST_ENTRY.
+
+Structures related to the MFT include the following:
+
+ATTRIBUTE_LIST_ENTRY
+ATTRIBUTE_RECORD_HEADER
+FILE_NAME
+FILE_RECORD_SEGMENT_HEADER
+MFT_SEGMENT_REFERENCE
+MULTI_SECTOR_HEADER
+STANDARD_INFORMATION
+</code></pre>
+<p>The plugin that interests us for retrieving entries from the MFT table is &quot;MFTParser&quot;.</p>
+<p>Use mftparser output, filescan, pslist or vads to find processes that might have opened the file, and check pagefile or memory-mapped files for content. Timestamps can tell you which process was active when the file was created or deleted and guide you to memory region .</p>
+<p>ach MFT entry is typically 1 KB in size and contains metadata about a file rather than the file data itself, though very small files may be stored directly within the entry.</p>
+<p>Even after a file is deleted, the MFT entry is often left intact with a “deleted” flag. The space for its clusters may eventually be overwritten, but the metadata remains until reused</p>
+<hr>
+<h2>Lab 5</h2>
+<img width="1919" height="1028" alt="image" src="https://github.com/user-attachments/assets/92283b1a-d49b-420a-b5c4-47872e81aa05" /><p>First rituals should be running pslist and kDBG scan </p>
+<img width="1914" height="984" alt="image" src="https://github.com/user-attachments/assets/2ff35f7c-401d-461f-ac06-7f208e9efe7e" /><p>WIntrar !!, flahsbacks to first lab , we&#39;ll see if some zip file is there and try to dump it .</p>
+<p>Okie so lets see what command was it used to spwan it from (not pstree but cmdline)</p>
+<img width="1898" height="129" alt="image" src="https://github.com/user-attachments/assets/b377bb93-d62f-433a-9429-7ed8f9e7ee55" /><p>we&#39;re onto something here . </p>
+<p>nvm it&#39;s actually the 2nd part and the password is the first part flag . (Hint: You’ll get the stage 2 flag only when you have the stage 1 flag.) opps</p>
+<p>I tried to see deleated files , and then nothing happened .. </p>
+<p>Now lets move onto hidden files and see if filescan can get us something . </p>
+<p>Ok after locking in and reading the clues again , it&#39;s related to a network as the attacker is outside , so i started looking for plugins that could uncover this </p>
+<img width="1914" height="924" alt="image" src="https://github.com/user-attachments/assets/4877ec6f-2165-4275-8c50-06123994495d" /><p>Nothing much here tho . </p>
+<p>AFter exploring more and reading a writeup for this , i came across a plugin which does  </p>
+<pre><code>iehistory
+This plugin recovers fragments of IE history index.dat cache files. It can find basic accessed links (via FTP or HTTP), redirected links ( — REDR), and deleted entries ( — LEAK). It applies to any process which loads and uses the wininet.dll library, not just Internet Explorer. Typically that includes Windows Explorer and even malware samples.
+</code></pre>
+<img width="1919" height="312" alt="image" src="https://github.com/user-attachments/assets/99b406e2-a784-4622-9702-ee061a4fa26f" /><p>Decoding that gives the first flag :))</p>
+<p>flag{!!<em>w3LL_d0n3_St4g3–1_0f_L4B_5_D0n3</em>!!} and entering that to the zipped wintrar file gives us the 2nd flag in an image </p>
+<img width="1049" height="826" alt="image" src="https://github.com/user-attachments/assets/3d2e376c-4c56-4891-a1b8-56de3215d0d2" /><hr>
+<h2>Lab 6</h2>
+<p>Lets check the profile info </p>
+<img width="1919" height="646" alt="image" src="https://github.com/user-attachments/assets/005c153a-890d-456e-a80a-fa5f5bcf6ccc" /><p>This came from a 64-bit Windows 7 SP1 machine . </p>
+<img width="1912" height="954" alt="image" src="https://github.com/user-attachments/assets/53753f06-b31a-4709-b13b-2bf0fdfc5403" /><p>cmd.exe (PID 880) — suggests manual command-line activity.</p>
+<p>chrome.exe instances (PIDs 2124, 2132, 2168, 2340, etc.) — multiple browser tabs </p>
+<p>firefox.exe cluster (PIDs 2080–3316) — another browser session, possibly used concurrently</p>
+<p>WinRAR.exe (PID 3716) — indicates file compression/extraction activity like before </p>
+<p>Lets dump wintrar , it should be a direct indication of something </p>
+<img width="1914" height="174" alt="image" src="https://github.com/user-attachments/assets/f4e9b2e8-b120-46d7-851e-9301c990ae7c" /><p>Yes and now let&#39;s dump it</p>
+<img width="1893" height="340" alt="image" src="https://github.com/user-attachments/assets/f884f393-975b-4ea7-aba5-d0095530cf87" /><p>AFter trying to unrar it , well it needs a password :((</p>
+<pre><code>C:\Users\SIDDHARTH U\Downloads\volatility_2.6_win64_standalone\volatility_2.6_win64_standalone&gt;volatility_2.6_win64_standalone.exe --plugins=plugins/ -f &quot;C:\Users\SIDDHARTH U\Downloads\MemLabs-Lab6\MemoryDump_Lab6.raw&quot; --profile=Win7SP1x64 consoles
+Volatility Foundation Volatility Framework 2.6
+**************************************************
+ConsoleProcess: conhost.exe Pid: 916
+Console: 0xff086200 CommandHistorySize: 50
+HistoryBufferCount: 2 HistoryBufferMax: 4
+OriginalTitle: %SystemRoot%\system32\cmd.exe
+Title: C:\Windows\system32\cmd.exe
+AttachedProcess: cmd.exe Pid: 880 Handle: 0x60
+----
+CommandHistory: 0x1fedc0 Application: whoami.exe Flags:
+CommandCount: 0 LastAdded: -1 LastDisplayed: -1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x0
+----
+CommandHistory: 0x1feab0 Application: cmd.exe Flags: Allocated, Reset
+CommandCount: 2 LastAdded: 1 LastDisplayed: 1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x60
+Cmd #0 at 0x1fd530: whoami
+Cmd #1 at 0x1fdde0: env
+----
+Screen 0x1e0f80 X:80 Y:300
+Dump:
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\Jaffa&gt;whoami
+virus-pc\jaffa
+
+C:\Users\Jaffa&gt;env
+&#39;env&#39; is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Jaffa&gt;
+**************************************************
+ConsoleProcess: conhost.exe Pid: 4092
+Console: 0xff086200 CommandHistorySize: 50
+HistoryBufferCount: 1 HistoryBufferMax: 4
+OriginalTitle: C:\Users\Jaffa\Desktop\DumpIt.exe
+Title: C:\Users\Jaffa\Desktop\DumpIt.exe
+AttachedProcess: DumpIt.exe Pid: 4084 Handle: 0x60
+----
+CommandHistory: 0x30eab0 Application: DumpIt.exe Flags: Allocated
+CommandCount: 0 LastAdded: -1 LastDisplayed: -1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x60
+----
+Screen 0x2f0f80 X:80 Y:300
+Dump:
+  DumpIt - v1.3.2.20110401 - One click memory memory dumper
+  Copyright (c) 2007 - 2011, Matthieu Suiche &lt;http://www.msuiche.net&gt;
+  Copyright (c) 2010 - 2011, MoonSols &lt;http://www.moonsols.com&gt;
+
+
+    Address space size:        1610547200 bytes (   1535 Mb)
+    Free space size:           9889345536 bytes (   9431 Mb)
+
+    * Destination = \??\C:\Users\Jaffa\Desktop\VIRUS-PC-20190819-144155.raw
+
+    --&gt; Are you sure you want to continue? [y/n] y
+    + Processing...
+</code></pre>
+<p>Jaffa tried running envars before dumpit.exe so that&#39;s a lead for us </p>
+<p>From pervious lab refrence , lets try runnning envars for all the sus proccess we saw earlier .</p>
+<pre><code>Volatility Foundation Volatility Framework 2.6
+Pid      Process              Block              Variable                       Value
+-------- -------------------- ------------------ ------------------------------ -----
+    2124 chrome.exe           0x00000000003453f0 ALLUSERSPROFILE                C:\ProgramData
+    2124 chrome.exe           0x00000000003453f0 APPDATA                        C:\Users\Jaffa\AppData\Roaming
+    2124 chrome.exe           0x00000000003453f0 CHROME_CRASHPAD_PIPE_NAME      \\.\pipe\crashpad_2124_HYPTHIKRKHINVSMY
+    2124 chrome.exe           0x00000000003453f0 CHROME_RESTART                 Google Chrome|Whoa! Google Chrome has crashed. Relaunch now?|LEFT_TO_RIGHT
+    2124 chrome.exe           0x00000000003453f0 CommonProgramFiles             C:\Program Files\Common Files
+    2124 chrome.exe           0x00000000003453f0 CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+    2124 chrome.exe           0x00000000003453f0 CommonProgramW6432             C:\Program Files\Common Files
+    2124 chrome.exe           0x00000000003453f0 COMPUTERNAME                   VIRUS-PC
+    2124 chrome.exe           0x00000000003453f0 ComSpec                        C:\Windows\system32\cmd.exe
+    2124 chrome.exe           0x00000000003453f0 FP_NO_HOST_CHECK               NO
+    2124 chrome.exe           0x00000000003453f0 HOMEDRIVE                      C:
+    2124 chrome.exe           0x00000000003453f0 HOMEPATH                       \Users\Jaffa
+    2124 chrome.exe           0x00000000003453f0 LOCALAPPDATA                   C:\Users\Jaffa\AppData\Local
+    2124 chrome.exe           0x00000000003453f0 LOGONSERVER                    \\VIRUS-PC
+    2124 chrome.exe           0x00000000003453f0 NUMBER_OF_PROCESSORS           1
+    2124 chrome.exe           0x00000000003453f0 OS                             Windows_NT
+    2124 chrome.exe           0x00000000003453f0 Path                           C:\Program Files (x86)\Google\Chrome\Application;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\
+    2124 chrome.exe           0x00000000003453f0 PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    2124 chrome.exe           0x00000000003453f0 PROCESSOR_ARCHITECTURE         AMD64
+    2124 chrome.exe           0x00000000003453f0 PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+    2124 chrome.exe           0x00000000003453f0 PROCESSOR_LEVEL                6
+    2124 chrome.exe           0x00000000003453f0 PROCESSOR_REVISION             9e0a
+    2124 chrome.exe           0x00000000003453f0 ProgramData                    C:\ProgramData
+    2124 chrome.exe           0x00000000003453f0 ProgramFiles                   C:\Program Files
+    2124 chrome.exe           0x00000000003453f0 ProgramFiles(x86)              C:\Program Files (x86)
+    2124 chrome.exe           0x00000000003453f0 ProgramW6432                   C:\Program Files
+    2124 chrome.exe           0x00000000003453f0 PSModulePath                   C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+    2124 chrome.exe           0x00000000003453f0 PUBLIC                         C:\Users\Public
+    2124 chrome.exe           0x00000000003453f0 RAR password                   easypeasyvirus
+    2124 chrome.exe           0x00000000003453f0 SESSIONNAME                    Console
+    2124 chrome.exe           0x00000000003453f0 SystemDrive                    C:
+    2124 chrome.exe           0x00000000003453f0 SystemRoot                     C:\Windows
+    2124 chrome.exe           0x00000000003453f0 TEMP                           C:\Users\Jaffa\AppData\Local\Temp
+    2124 chrome.exe           0x00000000003453f0 TMP                            C:\Users\Jaffa\AppData\Local\Temp
+    2124 chrome.exe           0x00000000003453f0 USERDOMAIN                     VIRUS-PC
+    2124 chrome.exe           0x00000000003453f0 USERNAME                       Jaffa
+    2124 chrome.exe           0x00000000003453f0 USERPROFILE                    C:\Users\Jaffa
+    2124 chrome.exe           0x00000000003453f0 windir                         C:\Windows
+    2124 chrome.exe           0x00000000003453f0 windows_tracing_flags          3
+    2124 chrome.exe           0x00000000003453f0 windows_tracing_logfile        C:\BVTBin\Tests\installpackage\csilogfile.log
+    2132 chrome.exe           0x0000000000561320 ALLUSERSPROFILE                C:\ProgramData
+    2132 chrome.exe           0x0000000000561320 APPDATA                        C:\Users\Jaffa\AppData\Roaming
+    2132 chrome.exe           0x0000000000561320 CommonProgramFiles             C:\Program Files\Common Files
+    2132 chrome.exe           0x0000000000561320 CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+    2132 chrome.exe           0x0000000000561320 CommonProgramW6432             C:\Program Files\Common Files
+    2132 chrome.exe           0x0000000000561320 COMPUTERNAME                   VIRUS-PC
+    2132 chrome.exe           0x0000000000561320 ComSpec                        C:\Windows\system32\cmd.exe
+    2132 chrome.exe           0x0000000000561320 FP_NO_HOST_CHECK               NO
+    2132 chrome.exe           0x0000000000561320 HOMEDRIVE                      C:
+    2132 chrome.exe           0x0000000000561320 HOMEPATH                       \Users\Jaffa
+    2132 chrome.exe           0x0000000000561320 LOCALAPPDATA                   C:\Users\Jaffa\AppData\Local
+    2132 chrome.exe           0x0000000000561320 LOGONSERVER                    \\VIRUS-PC
+    2132 chrome.exe           0x0000000000561320 NUMBER_OF_PROCESSORS           1
+    2132 chrome.exe           0x0000000000561320 OS                             Windows_NT
+    2132 chrome.exe           0x0000000000561320 Path                           C:\Program Files (x86)\Google\Chrome\Application;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\
+    2132 chrome.exe           0x0000000000561320 PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    2132 chrome.exe           0x0000000000561320 PROCESSOR_ARCHITECTURE         AMD64
+    2132 chrome.exe           0x0000000000561320 PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+    2132 chrome.exe           0x0000000000561320 PROCESSOR_LEVEL                6
+    2132 chrome.exe           0x0000000000561320 PROCESSOR_REVISION             9e0a
+    2132 chrome.exe           0x0000000000561320 ProgramData                    C:\ProgramData
+    2132 chrome.exe           0x0000000000561320 ProgramFiles                   C:\Program Files
+    2132 chrome.exe           0x0000000000561320 ProgramFiles(x86)              C:\Program Files (x86)
+    2132 chrome.exe           0x0000000000561320 ProgramW6432                   C:\Program Files
+    2132 chrome.exe           0x0000000000561320 PSModulePath                   C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+    2132 chrome.exe           0x0000000000561320 PUBLIC                         C:\Users\Public
+    2132 chrome.exe           0x0000000000561320 RAR password                   easypeasyvirus
+    2132 chrome.exe           0x0000000000561320 SESSIONNAME                    Console
+    2132 chrome.exe           0x0000000000561320 SystemDrive                    C:
+    2132 chrome.exe           0x0000000000561320 SystemRoot                     C:\Windows
+    2132 chrome.exe           0x0000000000561320 TEMP                           C:\Users\Jaffa\AppData\Local\Temp
+    2132 chrome.exe           0x0000000000561320 TMP                            C:\Users\Jaffa\AppData\Local\Temp
+    2132 chrome.exe           0x0000000000561320 USERDOMAIN                     VIRUS-PC
+    2132 chrome.exe           0x0000000000561320 USERNAME                       Jaffa
+    2132 chrome.exe           0x0000000000561320 USERPROFILE                    C:\Users\Jaffa
+    2132 chrome.exe           0x0000000000561320 windir                         C:\Windows
+    2132 chrome.exe           0x0000000000561320 windows_tracing_flags          3
+    2132 chrome.exe           0x0000000000561320 windows_tracing_logfile        C:\BVTBin\Tests\installpackage\csilogfile.log
+    2168 chrome.exe           0x0000000000421320 ALLUSERSPROFILE                C:\ProgramData
+    2168 chrome.exe           0x0000000000421320 APPDATA                        C:\Users\Jaffa\AppData\Roaming
+    2168 chrome.exe           0x0000000000421320 CHROME_CRASHPAD_PIPE_NAME      \\.\pipe\crashpad_2124_HYPTHIKRKHINVSMY
+    2168 chrome.exe           0x0000000000421320 CommonProgramFiles             C:\Program Files\Common Files
+    2168 chrome.exe           0x0000000000421320 CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+    2168 chrome.exe           0x0000000000421320 CommonProgramW6432             C:\Program Files\Common Files
+    2168 chrome.exe           0x0000000000421320 COMPUTERNAME                   VIRUS-PC
+    2168 chrome.exe           0x0000000000421320 ComSpec                        C:\Windows\system32\cmd.exe
+    2168 chrome.exe           0x0000000000421320 FP_NO_HOST_CHECK               NO
+    2168 chrome.exe           0x0000000000421320 HOMEDRIVE                      C:
+    2168 chrome.exe           0x0000000000421320 HOMEPATH                       \Users\Jaffa
+    2168 chrome.exe           0x0000000000421320 LOCALAPPDATA                   C:\Users\Jaffa\AppData\Local
+    2168 chrome.exe           0x0000000000421320 LOGONSERVER                    \\VIRUS-PC
+    2168 chrome.exe           0x0000000000421320 NUMBER_OF_PROCESSORS           1
+    2168 chrome.exe           0x0000000000421320 OS                             Windows_NT
+    2168 chrome.exe           0x0000000000421320 Path                           C:\Program Files (x86)\Google\Chrome\Application;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\
+    2168 chrome.exe           0x0000000000421320 PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    2168 chrome.exe           0x0000000000421320 PROCESSOR_ARCHITECTURE         AMD64
+    2168 chrome.exe           0x0000000000421320 PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+    2168 chrome.exe           0x0000000000421320 PROCESSOR_LEVEL                6
+    2168 chrome.exe           0x0000000000421320 PROCESSOR_REVISION             9e0a
+    2168 chrome.exe           0x0000000000421320 ProgramData                    C:\ProgramData
+    2168 chrome.exe           0x0000000000421320 ProgramFiles                   C:\Program Files
+    2168 chrome.exe           0x0000000000421320 ProgramFiles(x86)              C:\Program Files (x86)
+    2168 chrome.exe           0x0000000000421320 ProgramW6432                   C:\Program Files
+    2168 chrome.exe           0x0000000000421320 PSModulePath                   C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+    2168 chrome.exe           0x0000000000421320 PUBLIC                         C:\Users\Public
+    2168 chrome.exe           0x0000000000421320 RAR password                   easypeasyvirus
+    2168 chrome.exe           0x0000000000421320 SESSIONNAME                    Console
+    2168 chrome.exe           0x0000000000421320 SystemDrive                    C:
+    2168 chrome.exe           0x0000000000421320 SystemRoot                     C:\Windows
+    2168 chrome.exe           0x0000000000421320 TEMP                           C:\Users\Jaffa\AppData\Local\Temp
+    2168 chrome.exe           0x0000000000421320 TMP                            C:\Users\Jaffa\AppData\Local\Temp
+    2168 chrome.exe           0x0000000000421320 USERDOMAIN                     VIRUS-PC
+    2168 chrome.exe           0x0000000000421320 USERNAME                       Jaffa
+    2168 chrome.exe           0x0000000000421320 USERPROFILE                    C:\Users\Jaffa
+    2168 chrome.exe           0x0000000000421320 windir                         C:\Windows
+    2168 chrome.exe           0x0000000000421320 windows_tracing_flags          3
+    2168 chrome.exe           0x0000000000421320 windows_tracing_logfile        C:\BVTBin\Tests\installpackage\csilogfile.log
+    2340 chrome.exe           0x0000000000551320 ALLUSERSPROFILE                C:\ProgramData
+    2340 chrome.exe           0x0000000000551320 APPDATA                        C:\Users\Jaffa\AppData\Roaming
+    2340 chrome.exe           0x0000000000551320 CHROME_CRASHPAD_PIPE_NAME      \\.\pipe\crashpad_2124_HYPTHIKRKHINVSMY
+    2340 chrome.exe           0x0000000000551320 CommonProgramFiles             C:\Program Files\Common Files
+    2340 chrome.exe           0x0000000000551320 CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+    2340 chrome.exe           0x0000000000551320 CommonProgramW6432             C:\Program Files\Common Files
+    2340 chrome.exe           0x0000000000551320 COMPUTERNAME                   VIRUS-PC
+    2340 chrome.exe           0x0000000000551320 ComSpec                        C:\Windows\system32\cmd.exe
+    2340 chrome.exe           0x0000000000551320 FP_NO_HOST_CHECK               NO
+    2340 chrome.exe           0x0000000000551320 HOMEDRIVE                      C:
+    2340 chrome.exe           0x0000000000551320 HOMEPATH                       \Users\Jaffa
+    2340 chrome.exe           0x0000000000551320 LOCALAPPDATA                   C:\Users\Jaffa\AppData\Local
+    2340 chrome.exe           0x0000000000551320 LOGONSERVER                    \\VIRUS-PC
+    2340 chrome.exe           0x0000000000551320 NUMBER_OF_PROCESSORS           1
+    2340 chrome.exe           0x0000000000551320 OS                             Windows_NT
+    2340 chrome.exe           0x0000000000551320 Path                           C:\Program Files (x86)\Google\Chrome\Application;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\
+    2340 chrome.exe           0x0000000000551320 PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    2340 chrome.exe           0x0000000000551320 PROCESSOR_ARCHITECTURE         AMD64
+    2340 chrome.exe           0x0000000000551320 PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+    2340 chrome.exe           0x0000000000551320 PROCESSOR_LEVEL                6
+    2340 chrome.exe           0x0000000000551320 PROCESSOR_REVISION             9e0a
+    2340 chrome.exe           0x0000000000551320 ProgramData                    C:\ProgramData
+    2340 chrome.exe           0x0000000000551320 ProgramFiles                   C:\Program Files
+    2340 chrome.exe           0x0000000000551320 ProgramFiles(x86)              C:\Program Files (x86)
+    2340 chrome.exe           0x0000000000551320 ProgramW6432                   C:\Program Files
+    2340 chrome.exe           0x0000000000551320 PSModulePath                   C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+    2340 chrome.exe           0x0000000000551320 PUBLIC                         C:\Users\Public
+    2340 chrome.exe           0x0000000000551320 RAR password                   easypeasyvirus
+    2340 chrome.exe           0x0000000000551320 SESSIONNAME                    Console
+    2340 chrome.exe           0x0000000000551320 SystemDrive                    C:
+    2340 chrome.exe           0x0000000000551320 SystemRoot                     C:\Windows
+    2340 chrome.exe           0x0000000000551320 TEMP                           C:\Users\Jaffa\AppData\Local\Temp
+    2340 chrome.exe           0x0000000000551320 TMP                            C:\Users\Jaffa\AppData\Local\Temp
+    2340 chrome.exe           0x0000000000551320 USERDOMAIN                     VIRUS-PC
+    2340 chrome.exe           0x0000000000551320 USERNAME                       Jaffa
+    2340 chrome.exe           0x0000000000551320 USERPROFILE                    C:\Users\Jaffa
+    2340 chrome.exe           0x0000000000551320 windir                         C:\Windows
+    2340 chrome.exe           0x0000000000551320 windows_tracing_flags          3
+    2340 chrome.exe           0x0000000000551320 windows_tracing_logfile        C:\BVTBin\Tests\installpackage\csilogfile.log
+    2080 firefox.exe          0x00000000005f1320 ALLUSERSPROFILE                C:\ProgramData
+    2080 firefox.exe          0x00000000005f1320 APPDATA                        C:\Users\Jaffa\AppData\Roaming
+    2080 firefox.exe          0x00000000005f1320 CommonProgramFiles             C:\Program Files\Common Files
+    2080 firefox.exe          0x00000000005f1320 CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+    2080 firefox.exe          0x00000000005f1320 CommonProgramW6432             C:\Program Files\Common Files
+    2080 firefox.exe          0x00000000005f1320 COMPUTERNAME                   VIRUS-PC
+    2080 firefox.exe          0x00000000005f1320 ComSpec                        C:\Windows\system32\cmd.exe
+    2080 firefox.exe          0x00000000005f1320 FP_NO_HOST_CHECK               NO
+    2080 firefox.exe          0x00000000005f1320 HOMEDRIVE                      C:
+    2080 firefox.exe          0x00000000005f1320 HOMEPATH                       \Users\Jaffa
+    2080 firefox.exe          0x00000000005f1320 LOCALAPPDATA                   C:\Users\Jaffa\AppData\Local
+    2080 firefox.exe          0x00000000005f1320 LOGONSERVER                    \\VIRUS-PC
+    2080 firefox.exe          0x00000000005f1320 NUMBER_OF_PROCESSORS           1
+    2080 firefox.exe          0x00000000005f1320 OS                             Windows_NT
+    2080 firefox.exe          0x00000000005f1320 Path                           C:\Program Files (x86)\Mozilla Firefox;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\
+    2080 firefox.exe          0x00000000005f1320 PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    2080 firefox.exe          0x00000000005f1320 PROCESSOR_ARCHITECTURE         AMD64
+    2080 firefox.exe          0x00000000005f1320 PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+    2080 firefox.exe          0x00000000005f1320 PROCESSOR_LEVEL                6
+    2080 firefox.exe          0x00000000005f1320 PROCESSOR_REVISION             9e0a
+    2080 firefox.exe          0x00000000005f1320 ProgramData                    C:\ProgramData
+    2080 firefox.exe          0x00000000005f1320 ProgramFiles                   C:\Program Files
+    2080 firefox.exe          0x00000000005f1320 ProgramFiles(x86)              C:\Program Files (x86)
+    2080 firefox.exe          0x00000000005f1320 ProgramW6432                   C:\Program Files
+    2080 firefox.exe          0x00000000005f1320 PSModulePath                   C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+    2080 firefox.exe          0x00000000005f1320 PUBLIC                         C:\Users\Public
+    2080 firefox.exe          0x00000000005f1320 RAR password                   easypeasyvirus
+    2080 firefox.exe          0x00000000005f1320 SESSIONNAME                    Console
+    2080 firefox.exe          0x00000000005f1320 SystemDrive                    C:
+    2080 firefox.exe          0x00000000005f1320 SystemRoot                     C:\Windows
+    2080 firefox.exe          0x00000000005f1320 TEMP                           C:\Users\Jaffa\AppData\Local\Temp
+    2080 firefox.exe          0x00000000005f1320 TMP                            C:\Users\Jaffa\AppData\Local\Temp
+    2080 firefox.exe          0x00000000005f1320 USERDOMAIN                     VIRUS-PC
+    2080 firefox.exe          0x00000000005f1320 USERNAME                       Jaffa
+    2080 firefox.exe          0x00000000005f1320 USERPROFILE                    C:\Users\Jaffa
+    2080 firefox.exe          0x00000000005f1320 windir                         C:\Windows
+    2080 firefox.exe          0x00000000005f1320 windows_tracing_flags          3
+    2080 firefox.exe          0x00000000005f1320 windows_tracing_logfile        C:\BVTBin\Tests\installpackage\csilogfile.log
+    3716 WinRAR.exe           0x00000000002a1320 ALLUSERSPROFILE                C:\ProgramData
+    3716 WinRAR.exe           0x00000000002a1320 APPDATA                        C:\Users\Jaffa\AppData\Roaming
+    3716 WinRAR.exe           0x00000000002a1320 CommonProgramFiles             C:\Program Files\Common Files
+    3716 WinRAR.exe           0x00000000002a1320 CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+    3716 WinRAR.exe           0x00000000002a1320 CommonProgramW6432             C:\Program Files\Common Files
+    3716 WinRAR.exe           0x00000000002a1320 COMPUTERNAME                   VIRUS-PC
+    3716 WinRAR.exe           0x00000000002a1320 ComSpec                        C:\Windows\system32\cmd.exe
+    3716 WinRAR.exe           0x00000000002a1320 FP_NO_HOST_CHECK               NO
+    3716 WinRAR.exe           0x00000000002a1320 HOMEDRIVE                      C:
+    3716 WinRAR.exe           0x00000000002a1320 HOMEPATH                       \Users\Jaffa
+    3716 WinRAR.exe           0x00000000002a1320 LOCALAPPDATA                   C:\Users\Jaffa\AppData\Local
+    3716 WinRAR.exe           0x00000000002a1320 LOGONSERVER                    \\VIRUS-PC
+    3716 WinRAR.exe           0x00000000002a1320 NUMBER_OF_PROCESSORS           1
+    3716 WinRAR.exe           0x00000000002a1320 OS                             Windows_NT
+    3716 WinRAR.exe           0x00000000002a1320 Path                           C:\Program Files\WinRAR;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\
+    3716 WinRAR.exe           0x00000000002a1320 PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    3716 WinRAR.exe           0x00000000002a1320 PROCESSOR_ARCHITECTURE         AMD64
+    3716 WinRAR.exe           0x00000000002a1320 PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 158 Stepping 10, GenuineIntel
+    3716 WinRAR.exe           0x00000000002a1320 PROCESSOR_LEVEL                6
+    3716 WinRAR.exe           0x00000000002a1320 PROCESSOR_REVISION             9e0a
+    3716 WinRAR.exe           0x00000000002a1320 ProgramData                    C:\ProgramData
+    3716 WinRAR.exe           0x00000000002a1320 ProgramFiles                   C:\Program Files
+    3716 WinRAR.exe           0x00000000002a1320 ProgramFiles(x86)              C:\Program Files (x86)
+    3716 WinRAR.exe           0x00000000002a1320 ProgramW6432                   C:\Program Files
+    3716 WinRAR.exe           0x00000000002a1320 PSModulePath                   C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+    3716 WinRAR.exe           0x00000000002a1320 PUBLIC                         C:\Users\Public
+    3716 WinRAR.exe           0x00000000002a1320 RAR password                   easypeasyvirus
+    3716 WinRAR.exe           0x00000000002a1320 SESSIONNAME                    Console
+    3716 WinRAR.exe           0x00000000002a1320 SystemDrive                    C:
+    3716 WinRAR.exe           0x00000000002a1320 SystemRoot                     C:\Windows
+    3716 WinRAR.exe           0x00000000002a1320 TEMP                           C:\Users\Jaffa\AppData\Local\Temp
+    3716 WinRAR.exe           0x00000000002a1320 TMP                            C:\Users\Jaffa\AppData\Local\Temp
+    3716 WinRAR.exe           0x00000000002a1320 USERDOMAIN                     VIRUS-PC
+    3716 WinRAR.exe           0x00000000002a1320 USERNAME                       Jaffa
+    3716 WinRAR.exe           0x00000000002a1320 USERPROFILE                    C:\Users\Jaffa
+    3716 WinRAR.exe           0x00000000002a1320 windir                         C:\Windows
+    3716 WinRAR.exe           0x00000000002a1320 windows_tracing_flags          3
+    3716 WinRAR.exe           0x00000000002a1320 windows_tracing_logfile        C:\BVTBin\Tests\installpackage\csilogfile.log
+</code></pre>
+<p>oh we actually got the rar password and it wasnt the flag of the 2nd one ..</p>
+<p>Now let&#39;s extrcat it </p>
+<p>and we get a 2nd&#39;part of the flag? </p>
+<img width="564" height="576" alt="image" src="https://github.com/user-attachments/assets/d18ac950-40c7-4b96-b17d-c188a99e3866" /><p>Since the  clues mentioned , a link to and we saw some chrome and firefox running mhmm lets try to see history . </p>
+<p>I found a amazing volatilyt plugin repo which helped <a href="https://github.com/superponible/volatility-plugins"><img src="https://img.shields.io/badge/Volatility-Plugins-blue?logo=github" alt="Volatility Plugins"></a></p>
+<p>AFter spending a lot of time and clicking a lot of dead ends , i spotted a pastebin link which lead to</p>
+<img width="1229" height="449" alt="image" src="https://github.com/user-attachments/assets/520ec6e4-c310-4311-8f6f-7fea7c48d94f" /><p>mhm </p>
+<img width="1861" height="867" alt="image" src="https://github.com/user-attachments/assets/fb4e084c-5637-418a-9928-c9851f35abbd" /><img width="1862" height="886" alt="image" src="https://github.com/user-attachments/assets/736a9a85-326d-4045-9b60-f2dd11c16478" /><p>And it had a mega link which needed a mhmm , </p>
+<img width="1847" height="868" alt="image" src="https://github.com/user-attachments/assets/a4e9568a-4d4c-43ee-a08a-b469f5fb2428" /><p>This needs a password and i spend a lot of time looking for what to do next as there wasnt anything explicit mentioned ..</p>
+<hr>
+
+            </div>
+            <div class="status-bar mt-16">
+              <a href="../blog.html" class="btn">
+                <img
+                  src="https://win98icons.alexmeub.com/icons/png/undo-0.png"
+                  class="icon-16"
+                  alt=""
+                />
+                Back to All Posts
+              </a>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom: 60px"></div>
+      </div>
+    </div>
+    <div class="taskbar">
+      <div style="display: flex; gap: 8px; flex: 1; overflow: hidden; align-items: center;">
+        <a href="/" class="start-button">
+          <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" class="icon-16" alt="" />
+          Start
+        </a>
+        <div style="border-left: 2px groove #c0c0c0; margin: 2px 4px; height: 16px;"></div>
+        <button class="btn" style="border: 2px inset #fff; font-weight: bold; display: flex; align-items: center; gap: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default;" id="taskbar-active-window">
+          <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png" class="icon-16" alt="" />
+          <span id="taskbar-title">mooofin.exe</span>
+        </button>
+      </div>
+      <div class="tray" style="display: flex; align-items: center; gap: 4px;">
+        <div style="border: 1px inset #fff; background: #fff; padding: 2px 4px; font-size: 11px; color: #000; display: flex; align-items: center; width: 140px; overflow: hidden; white-space: nowrap; font-family: 'MS Sans Serif', sans-serif;">
+          <marquee scrollamount="3" id="now-playing-marquee">🎵 now playing: ruby</marquee>
+        </div>
+        <button class="btn" id="music-prev" style="padding: 1px 6px; font-size: 10px;">&#9668;</button>
+        <button class="btn" id="music-toggle" style="padding: 1px 6px; font-size: 10px; font-weight: bold; width: 24px;">||</button>
+        <button class="btn" id="music-next" style="padding: 1px 6px; font-size: 10px;">&#9658;|</button>
+        <div class="time" id="clock">12:00 PM</div>
+      </div>
+    </div>
+    <script>
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        document.getElementById("clock").textContent =
+          hours + ":" + minutes + " " + ampm;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <script src="../site.js?v=20260816e"></script>
+</body>
+</html>
