@@ -214,7 +214,7 @@
 <div class="blog-content">
 <p>These MemLabs writeups are also my study notes. As I worked through each challenge, I tried to understand why a plugin was useful and how it worked under the hood, instead of treating it like a magic command. I wrote down Windows internals, WinAPI, and the theory I was learning in my own words, so I could connect the tool output to what was happening in memory.</p>
 <p>I didn’t want to just run commands until a flag appeared; I wanted to understand the evidence and learn the system behind it. The original walkthroughs and screenshots are collected here from my <a href="https://github.com/mooofin/CTFs/tree/main/CTFs-main/MEMLABS">MemLabs notes</a>.</p>
-<h2>Lab 0 — Never Too Late Mister</h2>
+<h2>Lab 0 - Never Too Late Mister</h2>
 <h2>Plugins i used</h2>
 <h3>consoles</h3>
 <p>Similar to cmdscan the consoles plugin finds commands that attackers typed into cmd.exe or executed via backdoors. However, instead of scanning for COMMAND_HISTORY, this plugin scans for CONSOLE_INFORMATION. The major advantage to this plugin is it not only prints the commands attackers typed, but it collects the entire screen buffer (input and output). For instance, instead of just seeing &quot;dir&quot;, you&#39;ll see exactly what the attacker saw, including all files and directories listed by the &quot;dir&quot; command.</p>
@@ -753,7 +753,7 @@ STANDARD_INFORMATION
 <img width="1914" height="924" alt="image" src="https://github.com/user-attachments/assets/4877ec6f-2165-4275-8c50-06123994495d" /><p>Nothing much here tho . </p>
 <p>AFter exploring more and reading a writeup for this , i came across a plugin which does  </p>
 <pre><code>iehistory
-This plugin recovers fragments of IE history index.dat cache files. It can find basic accessed links (via FTP or HTTP), redirected links ( — REDR), and deleted entries ( — LEAK). It applies to any process which loads and uses the wininet.dll library, not just Internet Explorer. Typically that includes Windows Explorer and even malware samples.
+This plugin recovers fragments of IE history index.dat cache files. It can find basic accessed links (via FTP or HTTP), redirected links ( - REDR), and deleted entries ( - LEAK). It applies to any process which loads and uses the wininet.dll library, not just Internet Explorer. Typically that includes Windows Explorer and even malware samples.
 </code></pre>
 <img width="1919" height="312" alt="image" src="https://github.com/user-attachments/assets/99b406e2-a784-4622-9702-ee061a4fa26f" /><p>Decoding that gives the first flag :))</p>
 <p>flag{!!<em>w3LL_d0n3_St4g3–1_0f_L4B_5_D0n3</em>!!} and entering that to the zipped wintrar file gives us the 2nd flag in an image </p>
@@ -761,10 +761,10 @@ This plugin recovers fragments of IE history index.dat cache files. It can find 
 <h2>Lab 6</h2>
 <p>Lets check the profile info </p>
 <img width="1919" height="646" alt="image" src="https://github.com/user-attachments/assets/005c153a-890d-456e-a80a-fa5f5bcf6ccc" /><p>This came from a 64-bit Windows 7 SP1 machine . </p>
-<img width="1912" height="954" alt="image" src="https://github.com/user-attachments/assets/53753f06-b31a-4709-b13b-2bf0fdfc5403" /><p>cmd.exe (PID 880) — suggests manual command-line activity.</p>
-<p>chrome.exe instances (PIDs 2124, 2132, 2168, 2340, etc.) — multiple browser tabs </p>
-<p>firefox.exe cluster (PIDs 2080–3316) — another browser session, possibly used concurrently</p>
-<p>WinRAR.exe (PID 3716) — indicates file compression/extraction activity like before </p>
+<img width="1912" height="954" alt="image" src="https://github.com/user-attachments/assets/53753f06-b31a-4709-b13b-2bf0fdfc5403" /><p>cmd.exe (PID 880) - suggests manual command-line activity.</p>
+<p>chrome.exe instances (PIDs 2124, 2132, 2168, 2340, etc.) - multiple browser tabs </p>
+<p>firefox.exe cluster (PIDs 2080–3316) - another browser session, possibly used concurrently</p>
+<p>WinRAR.exe (PID 3716) - indicates file compression/extraction activity like before </p>
 <p>Lets dump wintrar , it should be a direct indication of something </p>
 <img width="1914" height="174" alt="image" src="https://github.com/user-attachments/assets/f4e9b2e8-b120-46d7-851e-9301c990ae7c" /><p>Yes and now let&#39;s dump it</p>
 <img width="1893" height="340" alt="image" src="https://github.com/user-attachments/assets/f884f393-975b-4ea7-aba5-d0095530cf87" /><p>AFter trying to unrar it , well it needs a password :((</p>
