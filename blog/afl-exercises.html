@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="AFL++ fuzzing exercises covering TCPdump, Xpdf, libexif, build instrumentation, and sanitizer-based crash detection." name="description"/>
+<title>Coverage-Guided Fuzzing with AFL++: Instrumentation, Crash Analysis, and Memory Safety Case Studies - mooofin</title>
+<link href="../style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link href="../public/favicon.ico" rel="icon"/>
+<style>
+      /* Blog specific styles */
+      .blog-content {
+        font-family: "Verdana", sans-serif;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        color: #000080;
+        margin-top: 20px;
+        border-bottom: 1px dotted #ccc;
+        padding-bottom: 5px;
+      }
+      .blog-content p {
+        margin-bottom: 15px;
+      }
+      .blog-content img {
+        max-width: 100%;
+        border: 1px solid #999;
+        padding: 4px;
+        background: #fff;
+        margin: 10px 0;
+      }
+      .blog-content .img-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .blog-content pre {
+        background: #eee;
+        border: 1px inset #ccc;
+        padding: 10px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+      }
+      .blog-content code {
+        background: #f0f0f0;
+        padding: 2px 4px;
+        font-family: "Courier New", monospace;
+      }
+      .blog-content blockquote {
+        border-left: 4px solid #000080;
+        padding-left: 10px;
+        color: #555;
+        font-style: italic;
+        margin: 15px 0;
+      }
+      .blog-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 15px 0;
+        font-size: 13px;
+      }
+      .blog-content th,
+      .blog-content td {
+        border: 1px solid #999;
+        padding: 4px 8px;
+        text-align: left;
+      }
+      .blog-content th {
+        background: #d4d0c8;
+      }
+      .blog-content ul, .blog-content ol {
+        margin-bottom: 15px;
+        margin-left: 20px;
+      }
+      .blog-content li {
+        margin-bottom: 5px;
+      }
+      .blog-meta {
+        color: #666;
+        font-size: 11px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      }
+      details {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: bold;
+        color: #000080;
+      }
+      details[open] {
+        background: #f0f0f0;
+      }
+    </style>
+<style>.blog-content img { max-width: 100%; height: auto; } .blog-content pre code { background: none; border: none; padding: 0; } .blog-content { overflow-wrap: anywhere; } .blog-content pre { overflow-wrap: normal; }</style></head>
+<body>
+<div class="desktop flex gap-16" style="flex-direction: row">
+<div class="sidebar-95">
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/computer-3.png"/>
+            Navigation
+          </div>
+<div class="window-body" style="padding: 0">
+<ul class="list-group" style="border: none">
+<li class="list-group-item">
+<a href="../index.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-1.png"/>
+                  Home
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../about.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/users-1.png"/>
+                  About Me
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../blog.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"/>
+                  Blog
+                </a>
+</li>
+<li class="list-group-item">
+<a href="../contact.html">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/envelope_closed-1.png"/>
+                  Contact
+                </a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="content-95">
+<div class="window">
+<div class="window-title">
+<img alt="" class="icon-16" src="https://win98icons.alexmeub.com/icons/png/notepad-0.png"/>
+Coverage-Guided Fuzzing with AFL++: Instrumentation, Crash Analysis, and Memory Safety Case Studies
+</div>
+<div class="window-body">
+<div class="blog-content"><div class="blog-meta"><time datetime="2024-12-03">December 3, 2024</time> | Fuzzing | <a href="https://github.com/mooofin/AFL-exercises">AFL Exercises on GitHub</a></div><h1>Coverage-Guided Fuzzing with AFL++: Instrumentation, Crash Analysis, and Memory Safety Case Studies</h1><nav aria-label="Writeup sections"><ul><li><a href="#tcpdump">TCPdump</a></li><li><a href="#xpdf">Xpdf</a></li><li><a href="#libexif">libexif</a></li><li><a href="#report">Fuzzing Report</a></li></ul></nav><section id="tcpdump"><h2>TCPdump</h2><p><a href="https://github.com/mooofin/AFL-exercises/blob/main/TCPdump/readme.md">Original writeup on GitHub</a></p>
+<h4>Getting the Target Ready</h4>
+<p>Lets start by setting up a clean workspace for fuzzing tcpdump.</p>
+<pre><code class="language-bash">cd $HOME
+mkdir fuzzing_tcpdump &amp;&amp; cd fuzzing_tcpdump/
+</code></pre>
+<p>Lets then fetch and extract the tcpdump source code.</p>
+<pre><code class="language-bash">wget https://github.com/the-tcpdump-group/tcpdump/archive/refs/tags/tcpdump-4.9.2.tar.gz
+tar -xzvf tcpdump-4.9.2.tar.gz
+</code></pre>
+<p>tcpdump depends on libpcap for packet parsing, so lets grab that next.</p>
+<pre><code class="language-bash">wget https://www.tcpdump.org/release/libpcap-1.8.0.tar.gz
+tar -xzvf libpcap-1.8.0.tar.gz
+</code></pre>
+<p>Lets then configure and build libpcap with shared libraries disabled.</p>
+<pre><code class="language-bash">cd $HOME/fuzzing_tcpdump/libpcap-1.8.0/
+./configure --enable-shared=no
+make
+</code></pre>
+<p><img alt="image" height="265" src="https://github.com/user-attachments/assets/8e9a3de4-009f-4f07-b477-df7e1ec91993" width="1308"/></p>
+<p>And yey : )</p>
+<p>Now that the setup is complete, lets move on to generating an initial corpus for fuzzing</p>
+<p><img alt="image" height="884" src="https://github.com/user-attachments/assets/b9c84055-32ae-4aa0-8c34-c81d6ff09082" width="1884"/></p>
+<h3>ASan</h3>
+<p>AddressSanitizer (ASan) is a fast, compiler-based memory error detector built into Clang that helps catch critical memory safety bugs at runtime. By instrumenting the program during compilation and linking it with a lightweight runtime, ASan can reliably detect issues such as heap and stack out-of-bounds accesses, use-after-free, use-after-return, double frees, and memory leaks with a relatively low performance overhead of about 2x. Because it stops execution on the first detected error and produces precise, symbolized stack traces, AddressSanitizer is especially useful when compiling fuzzing targets, where crashing early and deterministically is more valuable than continuing execution in a corrupted state</p>
+<h4>Building tcpdump and libpcap with AddressSanitizer Enabled</h4>
+<p>Now that the target and its dependencies are set up, the next step is to rebuild both <strong>libpcap</strong> and <strong>tcpdump</strong> with <strong>AddressSanitizer (ASan)</strong> enabled. This is a crucial step for fuzzing, as ASan allows us to catch memory safety bugs such as heap overflows, use after free, and use after return immediately when they occur, instead of letting the program continue in a corrupted state.</p>
+<h4>Cleaning Previous Builds</h4>
+<p>Before enabling ASan, it is important to remove any artifacts produced by earlier, non-instrumented builds. Mixing sanitized and non-sanitized objects often leads to subtle issues and unreliable results during fuzzing.</p>
+<p>We begin by deleting the previous installation prefix and cleaning both source trees.</p>
+<pre><code class="language-bash">rm -r $HOME/fuzzing_tcpdump/install
+</code></pre>
+<pre><code class="language-bash">cd $HOME/fuzzing_tcpdump/libpcap-1.8.0/
+make clean
+</code></pre>
+<pre><code class="language-bash">cd $HOME/fuzzing_tcpdump/tcpdump-tcpdump-4.9.2/
+make clean
+</code></pre>
+<p>At this point, both projects are back to a pristine state and ready to be rebuilt with instrumentation enabled.</p>
+<h4>Building libpcap with ASan and AFL++</h4>
+<p>We first rebuild <strong>libpcap</strong>, since tcpdump links against it. For fuzzing, we want libpcap to be instrumented as well so that memory bugs inside packet parsing code are detectable.</p>
+<p>We explicitly select the AFL++ LLVM-based compiler wrapper and configure libpcap to install into our isolated prefix.</p>
+<pre><code class="language-bash">cd $HOME/fuzzing_tcpdump/libpcap-1.8.0/
+export LLVM_CONFIG="llvm-config-11"
+CC=afl-clang-lto ./configure \
+  --enable-shared=no \
+  --prefix="$HOME/fuzzing_tcpdump/install/"
+</code></pre>
+<p>The <code>--enable-shared=no</code> option ensures that a static libpcap is built, which avoids runtime issues when combining ASan with dynamically linked libraries during fuzzing.</p>
+<p>We then compile libpcap with ASan enabled by setting <code>AFL_USE_ASAN=1</code>:</p>
+<pre><code class="language-bash">AFL_USE_ASAN=1 make
+</code></pre>
+<p>This causes AFL++ to automatically add the required <code>-fsanitize=address</code> flags and link against the AddressSanitizer runtime.</p>
+<h4>Building tcpdump with ASan and AFL++</h4>
+<p>With libpcap built and installed into our custom prefix, we can now build <strong>tcpdump</strong> itself. As before, we use the AFL++ compiler wrapper and point the build system at the instrumented libpcap.</p>
+<pre><code class="language-bash">cd $HOME/fuzzing_tcpdump/tcpdump-tcpdump-4.9.2/
+AFL_USE_ASAN=1 CC=afl-clang-lto ./configure \
+  --prefix="$HOME/fuzzing_tcpdump/install/"
+</code></pre>
+<p>Once configured, we compile and install tcpdump with ASan enabled:</p>
+<pre><code class="language-bash">AFL_USE_ASAN=1 make
+AFL_USE_ASAN=1 make install
+</code></pre>
+<p>At the end of this step, both tcpdump and libpcap are fully instrumented with AddressSanitizer and AFL++ coverage instrumentation. This gives us a high-signal fuzzing target where memory safety violations result in immediate, high-quality crashes that are easy to triage and reproduce.</p>
+<h4>AFL++ Refusing to Start: A Beginner-Friendly Explanation</h4>
+<p>After building tcpdump and libpcap with AddressSanitizer and AFL++ instrumentation, the natural next step is to start fuzzing. Everything looks correct, the command is ready, and then… AFL++ suddenly aborts with a scary error message about <code>core_pattern</code>.</p>
+<p><img alt="image" height="625" src="https://github.com/user-attachments/assets/75893468-f1ce-4e94-ac21-d48586f72cfd" width="1889"/></p>
+<p>AFL++ runs your program thousands of times per second with slightly broken inputs, hoping the program will crash.
+When a crash happens, AFL++ needs to know <strong>immediately</strong> so it can:</p>
+<ul>
+<li>Save the crashing input</li>
+<li>Mark it as a real bug</li>
+<li>Move on to the next mutation</li>
+</ul>
+<h4>What Is <code>core_pattern</code>?</h4>
+<p>On Linux, when a program crashes, the kernel follows a rule stored in:</p>
+<pre><code>/proc/sys/kernel/core_pattern
+</code></pre>
+<p>This rule tells the system <strong>what to do when a crash happens</strong>.</p>
+<p>On many modern systems, this rule sends crash information to another program (like a crash reporter)</p>
+<h4>Why ?</h4>
+<p>When crashes are sent to an external program first, AFL++ does not hear about the crash instantly. That means:</p>
+<ul>
+<li>A real crash might look like a timeout</li>
+<li>The crash might be delayed or missed</li>
+<li>Fuzzing results become unreliable</li>
+</ul>
+<p>Because of this, AFL++ checks your system setup at startup. If it sees that crashes are being “piped away”, it refuses to run and aborts with an error.</p>
+<h4>The Fix</h4>
+<p>We tell Linux to report crashes directly instead of sending them to another program.</p>
+<p>Run this once:</p>
+<pre><code class="language-bash">echo core | sudo tee /proc/sys/kernel/core_pattern
+</code></pre>
+<h4>The Lazy shit</h4>
+<p>If you are just playing around and do not care about missing crashes, you can tell AFL++ to ignore the problem:</p>
+<pre><code class="language-bash">export AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
+</code></pre>
+<p>Moving past that Let's start AFL and get fuzzing with the ASn enabled </p>
+<p><img alt="image" height="630" src="https://github.com/user-attachments/assets/caa66fbe-eab4-4b55-8b0f-bbeb540be1fc" width="1430"/></p>
+<h3>Some explanation on Adress San internals .</h3>
+<p>For a small demo we i'll try explaining it through a program to demo the leak finding using clang sanitizer . </p>
+<p><img alt="image" height="970" src="https://github.com/user-attachments/assets/8984f175-c8e8-44e6-aecf-dd5d51b0a1a4" width="1894"/></p>
+<pre><code class="language-bash">muffin@muffinn:/mnt/d/pwn$ clang -fsanitize=address -g memory-leak.c ; ASAN_OPTION=detect_leaks=1 ./a.out
+
+=================================================================
+==228472==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 7 byte(s) in 1 object(s) allocated from:
+    #0 0x62e047f2c193 in malloc (/mnt/d/pwn/a.out+0xc6193) (BuildId: f2f2c331c2931debd20029b6da7b5dccfbfbfe97)
+    #1 0x62e047f6a748 in main /mnt/d/pwn/memory-leak.c:8:6
+    #2 0x7ce7f622a1c9 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+    #3 0x7ce7f622a28a in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x62e047e91344 in _start (/mnt/d/pwn/a.out+0x2b344) (BuildId: f2f2c331c2931debd20029b6da7b5dccfbfbfe97)
+
+SUMMARY: AddressSanitizer: 7 byte(s) leaked in 1 allocation(s).
+</code></pre>
+<p>AddressSanitizer exits on the first detected error. This is by design</p></section><section id="xpdf"><h2>Xpdf</h2><p><a href="https://github.com/mooofin/AFL-exercises/blob/main/Xpdf/readme.md">Original writeup on GitHub</a></p>
+<h3>First lets set up the enviorment</h3>
+<p><img alt="image" height="628" src="https://github.com/user-attachments/assets/c6e28a26-3428-4899-9f37-63072d91ae59" width="1918"/></p>
+<h3>Lets quickly get out target which we are going to fuzz</h3>
+<p><img alt="image" height="366" src="https://github.com/user-attachments/assets/9282a50b-972b-438b-a561-19c873bf39e1" width="1919"/></p>
+<pre><code>wget https://dl.xpdfreader.com/old/xpdf-3.02.tar.gz
+tar -xvzf xpdf-3.02.tar.gz
+</code></pre>
+<h3>And lets build it :3</h3>
+<pre><code>cd xpdf-3.02
+sudo apt update &amp;&amp; sudo apt install -y build-essential gcc
+./configure --prefix="$HOME/fuzzing_xpdf/install/"
+make
+make install
+</code></pre>
+<p><img alt="image" height="965" src="https://github.com/user-attachments/assets/149a57ae-0d7c-4878-90ac-cbc7e37f35b8" width="1906"/></p>
+<p>Before starting AFL , we'll need some samples to verify so lets get them too </p>
+<p><img alt="image" height="388" src="https://github.com/user-attachments/assets/d766f69d-5ba5-4997-bd0d-0c4270f6909c" width="1852"/></p>
+<p>And voila everything is cleared up </p>
+<pre><code class="language-bash">muffin@muffinn:~/fuzzing_xpdf/pdf_examples$ $HOME/fuzzing_xpdf/install/bin/pdfinfo -box -meta $HOME/fuzzing_xpdf/pdf_examples/helloworld.pdf
+Tagged:         no
+Pages:          1
+Encrypted:      no
+Page size:      200 x 200 pts
+MediaBox:           0.00     0.00   200.00   200.00
+CropBox:            0.00     0.00   200.00   200.00
+BleedBox:           0.00     0.00   200.00   200.00
+TrimBox:            0.00     0.00   200.00   200.00
+ArtBox:             0.00     0.00   200.00   200.00
+File size:      678 bytes
+Optimized:      no
+PDF version:    1.7
+</code></pre>
+<h3>Installing AFL</h3>
+<pre><code class="language-bash">muffin@muffinn:~/fuzzing_xpdf/pdf_examples$ sudo apt-get update
+sudo apt-get install -y build-essential python3-dev automake git flex bison libglib2.0-dev libpixman-1-dev python3-setuptools
+sudo apt-get install -y lld-11 llvm-11 llvm-11-dev clang-11 || sudo apt-get install -y lld llvm llvm-dev clang
+sudo apt-get install -y gcc-$(gcc --version|head -n1|sed 's/.* //'|sed 's/\..*//')-plugin-dev libstdc++-$(gcc --version|head -n1|sed 's/.* //'|sed 's/\..*//')-dev
+</code></pre>
+<h3>Building AFL</h3>
+<p><img alt="image" height="630" src="https://github.com/user-attachments/assets/79e297ce-8087-4a02-b233-9273a1fc2776" width="1911"/></p>
+<p>zzz</p>
+<pre><code>muffin@muffinn:~/AFLplusplus$ afl-fuzz
+afl-fuzz++4.35c based on afl by Michal Zalewski and a large online community
+
+afl-fuzz [ options ] -- /path/to/fuzzed_app [ ... ]
+
+Required parameters:
+  -i dir        - input directory with test cases (or '-' to resume, also see
+                  AFL_AUTORESUME)
+  -o dir        - output directory for fuzzer findings
+
+Execution control settings:
+  -P strategy   - set fix mutation strategy: explore (focus on new coverage),
+                  exploit (focus on triggering crashes). You can also set a
+                  number of seconds after without any finds it switches to
+                  exploit mode, and back on new coverage (default: 1000)
+  -p schedule   - power schedules compute a seed's performance score:
+                  explore(default), fast, exploit, seek, rare, mmopt, coe, lin
+                  quad -- see docs/FAQ.md for more information
+  -f file       - location read by the fuzzed program (default: stdin or @@)
+  -t msec       - timeout for each run (auto-scaled, default 1000 ms). Add a '+'
+                  to auto-calculate the timeout, the value being the maximum.
+  -m megs       - memory limit for child process (0 MB, 0 = no limit [default])
+  -O            - use binary-only instrumentation (FRIDA mode)
+  -Q            - use binary-only instrumentation (QEMU mode)
+  -U            - use unicorn-based instrumentation (Unicorn mode)
+  -W            - use qemu-based instrumentation with Wine (Wine mode)
+  -X            - use VM fuzzing (NYX mode - standalone mode)
+  -Y            - use VM fuzzing (NYX mode - multiple instances mode)
+  -K dir        - use python script to interact with GUI (GUI mode)
+</code></pre>
+<p>AFL++ is a coverage-guided fuzzer that repeatedly runs a target program with mutated inputs and watches which code paths get executed. It instruments the program to track basic-block or edge coverage, keeps inputs that discover new paths, and mutates those “interesting” inputs more aggressively. Over time, this feedback loop lets AFL++ explore deeper logic, automatically surfacing crashes, hangs, and weird edge cases without knowing anything about the program’s internals.</p>
+<p>Now for fuzzing we need to build the application with afl-clang-fast , so that it adds the nessecary things needed for AFL , below are some examples . </p>
+<p><img alt="image" height="1073" src="https://github.com/user-attachments/assets/3cb14628-ad49-4224-8101-014124ef787e" width="752"/></p>
+<p><strong><a href="https://github.com/google/AFL/blob/master/docs/technical_details.txt">AFL technical details documentation</a></strong></p>
+<h3>One of the reasons which make AFL so fast is how it manages process execution, primarily through fork server mode and persistent mode.</h3>
+<p><img alt="image" height="1400" src="https://github.com/user-attachments/assets/a9ec6ab3-36b4-445c-a13f-c902eb99c9ce" width="2900"/></p>
+<h4>Fork Server Mode</h4>
+<p>Fork server mode is the default execution model in AFL-style fuzzers.</p>
+<p>When the instrumented program starts, AFL++ runs it once and stops execution at <code>main()</code>. From this point onward, instead of repeatedly launching the program from scratch using <code>execve</code>, AFL++ uses <code>fork()</code> to create lightweight child processes. Each child:</p>
+<ul>
+<li>Receives a mutated input</li>
+<li>Executes the target logic once</li>
+<li>Exits immediately after processing</li>
+</ul>
+<p>Because program initialization happens only once, this avoids repeated startup costs and delivers a massive speedup compared to naive fuzzing. However, each iteration still involves a fork and process teardown, which can become expensive for very tight fuzz loops or heavy parsers.</p>
+<h4>Persistent Mode</h4>
+<p>Persistent mode pushes performance even further by minimizing process creation entirely.</p>
+<p>In persistent mode, the target program stays alive and processes <strong>multiple fuzz inputs within a single process instance</strong>. Instead of forking for every test case, AFL++ repeatedly feeds new inputs into a loop inside the program. This is especially effective when:</p>
+<ul>
+<li>Initialization is expensive</li>
+<li>The target logic can be cleanly re-entered</li>
+<li>State can be reset between iterations</li>
+</ul>
+<h4>Writing a Persistent Mode Harness</h4>
+<p>To enable persistent mode, you typically write a small harness that reads input and processes it inside an <code>__AFL_LOOP()</code>.</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+
+#define MAX_INPUT 1024
+
+void process_input(const uint8_t *data, size_t size) {
+    if (size &gt; 4 &amp;&amp; memcmp(data, "muffin!", 4) == 0) {
+        char buf[8];
+        memcpy(buf, data, size); // intentional bug erm 
+    }
+}
+
+int main(void) {
+    uint8_t buf[MAX_INPUT];
+
+    while (__AFL_LOOP(1000)) {
+        ssize_t len = read(0, buf, sizeof(buf));
+        if (len &lt;= 0) break;
+
+        process_input(buf, len);
+    }
+
+    return 0;
+}
+</code></pre>
+<p>Here, <code>__AFL_LOOP()</code> tells AFL++ to repeatedly execute the target logic without restarting the process. The argument controls how many iterations occur before AFL++ allows a restart to mitigate memory leaks or corrupted state.</p>
+<h3>Back on track lets build with afl's clang</h3>
+<pre><code class="language-bash">export LLVM_CONFIG="llvm-config-11"
+CC=$HOME/AFLplusplus/afl-clang-fast CXX=$HOME/AFLplusplus/afl-clang-fast++ ./configure --prefix="$HOME/fuzzing_xpdf/install/"
+make
+make install
+</code></pre>
+<p>And voila we have it ; </p>
+<p><img alt="image" height="516" src="https://github.com/user-attachments/assets/88ba1654-6902-4af3-ad6e-53d16ee422b8" width="1852"/></p>
+<h3>Now lets run AFL hooked on to the target ;</h3>
+<p><img alt="image" height="640" src="https://github.com/user-attachments/assets/f8fce36f-29ee-4a0f-97e5-27504d4143ea" width="1884"/></p>
+<p>Since AFL++ depends on immediate waitpid() feedback to reliably detect crashes, it refuses to run in this setup. The proper fix is to temporarily disable crash piping by running echo core | sudo tee /proc/sys/kernel/core_pattern and then rerunning afl-fuzz; this ensures crashes are reported directly and accurately. So lets do that ?</p>
+<p><img alt="image" height="969" src="https://github.com/user-attachments/assets/10617b7f-3101-4d8e-95df-20b4ef48da76" width="1883"/></p>
+<p>After one hour we get some results : 3</p>
+<p><img alt="image" height="569" src="https://github.com/user-attachments/assets/8fd232db-5cd4-4d17-9094-d9db6d1ac08e" width="972"/></p>
+<p>what we are interested is in what corpus input lead to the crash ? So let's check it out . </p>
+<p><img alt="image" height="139" src="https://github.com/user-attachments/assets/a11413b0-85c9-413a-9371-97f26c3e383a" width="1211"/></p>
+<pre><code class="language-bash">muffin@muffinn:~/fuzzing_xpdf/out/default/crashes$ ls
+README.txt  id:000000,sig:11,src:001506,time:3029564,execs:1014647,op:havoc,rep:4  id:000001,sig:11,src:000869,time:4945976,execs:1748639,op:havoc,rep:1
+</code></pre>
+<p>Now lets try seeing them and get into it deeply . </p>
+<p>Lets pick a crash file and feed it into the binary </p>
+<p>Great we hit a segfault </p>
+<p><img alt="image" height="948" src="https://github.com/user-attachments/assets/433f2f29-5ef8-4462-9014-fa0f8ddbfc9c" width="691"/></p>
+<p>Lets use gdb to trace it back to see what exactly is going on behind the scenes . </p>
+<p>We'll first rebuild this with a stack trace to see or have more symbols present in the assembly mess :(( </p>
+<pre><code class="language-bash">rm -rf $HOME/fuzzing_xpdf/install
+
+cd $HOME/fuzzing_xpdf/xpdf-3.02
+make distclean || true
+
+CFLAGS="-g -O0" CXXFLAGS="-g -O0" \
+./configure --prefix="$HOME/fuzzing_xpdf/install"
+
+make -j$(nproc)
+make install
+
+</code></pre>
+<p>And yea </p>
+<pre><code class="language-bash">muffin@muffinn:~/fuzzing_xpdf/xpdf-3.02$ file $HOME/fuzzing_xpdf/install/bin/pdftotext
+/home/muffin/fuzzing_xpdf/install/bin/pdftotext: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=c6ca250d6c2adefb20df63d3be125d96909c6424, for GNU/Linux 3.2.0, with debug_info, not stripped
+</code></pre>
+<pre><code class="language-bash">gdb --args $HOME/fuzzing_xpdf/install/bin/pdftotext \
+$HOME/fuzzing_xpdf/out/default/crashes/id:000000,sig:11,src:001506,time:3029564,execs:1014647,op:havoc,rep:4 \
+$HOME/fuzzing_xpdf/output
+
+</code></pre>
+<p><img alt="image" height="920" src="https://github.com/user-attachments/assets/c4f2d979-1784-4ca3-89e8-b3915be20640" width="1715"/></p>
+<p>since it crashed , we'll use <code>bt</code> for the execution history of the program and see the function calls from current to wherever it started . </p>
+<pre><code class="language-bash">#60804 0x0000555555600ec7 in Parser::getObj (this=0x5555558d9900, obj=0x7fffffef4f00, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60805 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef4f00) at XRef.cc:823
+#60806 0x00005555555fbdd6 in Object::fetch (this=0x5555558d92f0, xref=0x5555556ce630, obj=0x7fffffef4f00) at Object.cc:106
+#60807 0x000055555559cfe4 in Dict::lookup (this=0x5555558d96b0, key=0x55555564fa6f "Length", obj=0x7fffffef4f00) at Dict.cc:76
+#60808 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef51d0, key=0x55555564fa6f "Length", obj=0x7fffffef4f00) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60809 0x0000555555601337 in Parser::makeStream (this=0x5555558d93a0, dict=0x7fffffef51d0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60810 0x0000555555600ec7 in Parser::getObj (this=0x5555558d93a0, obj=0x7fffffef51d0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60811 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef51d0) at XRef.cc:823
+#60812 0x00005555555fbdd6 in Object::fetch (this=0x5555558d8d90, xref=0x5555556ce630, obj=0x7fffffef51d0) at Object.cc:106
+#60813 0x000055555559cfe4 in Dict::lookup (this=0x5555558d9150, key=0x55555564fa6f "Length", obj=0x7fffffef51d0) at Dict.cc:76
+#60814 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef54a0, key=0x55555564fa6f "Length", obj=0x7fffffef51d0) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60815 0x0000555555601337 in Parser::makeStream (this=0x5555558d8e40, dict=0x7fffffef54a0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60816 0x0000555555600ec7 in Parser::getObj (this=0x5555558d8e40, obj=0x7fffffef54a0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60817 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef54a0) at XRef.cc:823
+#60818 0x00005555555fbdd6 in Object::fetch (this=0x5555558d8830, xref=0x5555556ce630, obj=0x7fffffef54a0) at Object.cc:106
+#60819 0x000055555559cfe4 in Dict::lookup (this=0x5555558d8bf0, key=0x55555564fa6f "Length", obj=0x7fffffef54a0) at Dict.cc:76
+#60820 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef5770, key=0x55555564fa6f "Length", obj=0x7fffffef54a0) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60821 0x0000555555601337 in Parser::makeStream (this=0x5555558d88e0, dict=0x7fffffef5770, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60822 0x0000555555600ec7 in Parser::getObj (this=0x5555558d88e0, obj=0x7fffffef5770, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60823 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef5770) at XRef.cc:823
+#60824 0x00005555555fbdd6 in Object::fetch (this=0x5555558d82d0, xref=0x5555556ce630, obj=0x7fffffef5770) at Object.cc:106
+#60825 0x000055555559cfe4 in Dict::lookup (this=0x5555558d8690, key=0x55555564fa6f "Length", obj=0x7fffffef5770) at Dict.cc:76
+#60826 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef5a40, key=0x55555564fa6f "Length", obj=0x7fffffef5770) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60827 0x0000555555601337 in Parser::makeStream (this=0x5555558d8380, dict=0x7fffffef5a40, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60828 0x0000555555600ec7 in Parser::getObj (this=0x5555558d8380, obj=0x7fffffef5a40, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60829 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef5a40) at XRef.cc:823
+#60830 0x00005555555fbdd6 in Object::fetch (this=0x5555558d7d70, xref=0x5555556ce630, obj=0x7fffffef5a40) at Object.cc:106
+#60831 0x000055555559cfe4 in Dict::lookup (this=0x5555558d8130, key=0x55555564fa6f "Length", obj=0x7fffffef5a40) at Dict.cc:76
+#60832 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef5d10, key=0x55555564fa6f "Length", obj=0x7fffffef5a40) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60833 0x0000555555601337 in Parser::makeStream (this=0x5555558d7e20, dict=0x7fffffef5d10, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60834 0x0000555555600ec7 in Parser::getObj (this=0x5555558d7e20, obj=0x7fffffef5d10, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60835 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef5d10) at XRef.cc:823
+#60836 0x00005555555fbdd6 in Object::fetch (this=0x5555558d7810, xref=0x5555556ce630, obj=0x7fffffef5d10) at Object.cc:106
+#60837 0x000055555559cfe4 in Dict::lookup (this=0x5555558d7bd0, key=0x55555564fa6f "Length", obj=0x7fffffef5d10) at Dict.cc:76
+#60838 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef5fe0, key=0x55555564fa6f "Length", obj=0x7fffffef5d10) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60839 0x0000555555601337 in Parser::makeStream (this=0x5555558d78c0, dict=0x7fffffef5fe0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60840 0x0000555555600ec7 in Parser::getObj (this=0x5555558d78c0, obj=0x7fffffef5fe0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60841 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef5fe0) at XRef.cc:823
+#60842 0x00005555555fbdd6 in Object::fetch (this=0x5555558d72b0, xref=0x5555556ce630, obj=0x7fffffef5fe0) at Object.cc:106
+#60843 0x000055555559cfe4 in Dict::lookup (this=0x5555558d7670, key=0x55555564fa6f "Length", obj=0x7fffffef5fe0) at Dict.cc:76
+#60844 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef62b0, key=0x55555564fa6f "Length", obj=0x7fffffef5fe0) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60845 0x0000555555601337 in Parser::makeStream (this=0x5555558d7360, dict=0x7fffffef62b0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60846 0x0000555555600ec7 in Parser::getObj (this=0x5555558d7360, obj=0x7fffffef62b0, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60847 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef62b0) at XRef.cc:823
+#60848 0x00005555555fbdd6 in Object::fetch (this=0x5555558d6d50, xref=0x5555556ce630, obj=0x7fffffef62b0) at Object.cc:106
+#60849 0x000055555559cfe4 in Dict::lookup (this=0x5555558d7110, key=0x55555564fa6f "Length", obj=0x7fffffef62b0) at Dict.cc:76
+#60850 0x00005555555fcaad in Object::dictLookup (this=0x7fffffef6580, key=0x55555564fa6f "Length", obj=0x7fffffef62b0) at /home/muffin/fuzzing_xpdf/xpdf-3.02/xpdf/Object.h:253
+#60851 0x0000555555601337 in Parser::makeStream (this=0x5555558d6e00, dict=0x7fffffef6580, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:156
+#60852 0x0000555555600ec7 in Parser::getObj (this=0x5555558d6e00, obj=0x7fffffef6580, fileKey=0x0, encAlgorithm=cryptRC4, keyLength=0x0, objNum=0x4, objGen=0x0) at Parser.cc:94
+#60853 0x0000555555625951 in XRef::fetch (this=0x5555556ce630, num=0x4, gen=0x0, obj=0x7fffffef6580) at XRef.cc:823
+</code></pre>
+<p>This was a small snippet but , the important part is here that ,  this is an infinite loop, more precisely infinite recursion . </p>
+<p>And the repeating cycle being </p>
+<pre><code class="language-bash">Parser::getObj
+→ Parser::makeStream
+→ Object::dictLookup ("Length")
+→ Dict::lookup
+→ Object::fetch
+→ XRef::fetch
+→ Parser::getObj
+</code></pre>
+<p>So the parser is trying to resolve the same PDF object again and again, without any termination condition. </p>
+<p>This bug exists because <strong>xpdf does not detect recursive object resolution</strong>.
+When <code>/Length</code> points back (directly or indirectly) to the same object, the parser keeps resolving forever.</p>
+<p>You must <strong>track visited objects</strong> during resolution and bail out if the same object is seen again.</p>
+<p>Conceptually:</p>
+<ul>
+<li>Keep a set of <code>(objNum, objGen)</code> currently being resolved</li>
+<li>Before resolving an object, check if it’s already in the set</li>
+<li>If yes - error out instead of recursing</li>
+</ul>
+<h4>Example patch idea</h4>
+<p>In <code>Parser::getObj()</code> or near <code>XRef::fetch()</code>:</p>
+<pre><code class="language-cpp">static std::set&lt;std::pair&lt;int,int&gt;&gt; resolving;
+
+auto key = std::make_pair(objNum, objGen);
+
+if (resolving.count(key)) {
+    error(errSyntaxError, -1, "Recursive object reference detected");
+    obj-&gt;initNull();
+    return;
+}
+
+resolving.insert(key);
+
+// existing parsing logic here
+
+resolving.erase(key);
+</code></pre>
+<p>This <strong>completely kills the infinite recursion</strong>.</p>
+<h4>Alternative fix: recursion depth limit (weaker but common)</h4>
+<p>Add a hard cap:</p>
+<pre><code class="language-cpp">if (++recursionDepth &gt; 100) {
+    error(errSyntaxError, -1, "Max object recursion exceeded");
+    obj-&gt;initNull();
+    return;
+}
+</code></pre>
+<p>This prevents stack exhaustion but does <strong>not fully solve logical cycles</strong> </p>
+<p><strong>CVE-2019-13288 Details</strong>
+<a href="https://www.cvedetails.com/cve/CVE-2019-13288/">https://www.cvedetails.com/cve/CVE-2019-13288/</a></p>
+<p><strong>AFL++ GitHub Repository</strong>
+<a href="https://github.com/AFLplusplus/AFLplusplus">https://github.com/AFLplusplus/AFLplusplus</a></p>
+<p><strong>Fuzzing Security Vulnerabilities Codelabs</strong>
+<a href="https://fuzzing.in/codelabs/finding_security_vulnerabilities/">https://fuzzing.in/codelabs/finding_security_vulnerabilities/</a></p>
+<p><strong>GDB PEDA / Pwndbg / GEF Collection</strong>
+<a href="https://github.com/apogiatzis/gdb-peda-pwndbg-gef">https://github.com/apogiatzis/gdb-peda-pwndbg-gef</a></p>
+<p><strong>GEF (GDB Enhanced Features) Official Site</strong>
+<a href="https://hugsy.github.io/gef/">https://hugsy.github.io/gef/</a></p></section><section id="libexif"><h2>libexif</h2><p><a href="https://github.com/mooofin/AFL-exercises/blob/main/libexif/readme.md">Original writeup on GitHub</a></p>
+<p>Some things to make clear that no two fuzzing sessions will be the same because AFL is non deterministic.</p>
+<p>This time, we turn our attention to fuzzing libexif, the widely used EXIF metadata parsing library, with the goal of stress-testing how it handles malformed and unexpected image metadata. Since libexif processes complex, attacker-controlled binary structures embedded inside image files, it presents an ideal surface for discovering memory safety issues such as out-of-bounds reads, integer overflows, and use-after-free bug</p>
+<h3>Lets set up our enviorment first</h3>
+<pre><code class="language-bash">muffin@muffinn:/mnt/d$ cd $HOME
+mkdir fuzzing_libexif &amp;&amp; cd fuzzing_libexif/
+muffin@muffinn:~/fuzzing_libexif$ wget https://github.com/libexif/libexif/archive/refs/tags/libexif-0_6_14-release.tar.gz
+tar -xzvf libexif-0_6_14-release.tar.gz
+--2026-01-11 05:40:23--  https://github.com/libexif/libexif/archive/refs/tags/libexif-0_6_14-release.tar.gz
+Resolving github.com (github.com)... 20.207.73.82, 64:ff9b::14cf:4952
+Connecting to github.com (github.com)|20.207.73.82|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://codeload.github.com/libexif/libexif/tar.gz/refs/tags/libexif-0_6_14-release [following]
+--2026-01-11 05:40:24--  https://codeload.github.com/libexif/libexif/tar.gz/refs/tags/libexif-0_6_14-release
+Resolving codeload.github.com (codeload.github.com)... 20.207.73.88, 64:ff9b::14cf:4958
+Connecting to codeload.github.com (codeload.github.com)|20.207.73.88|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/x-gzip]
+Saving to: ‘libexif-0_6_14-release.tar.gz’
+
+libexif-0_6_14-release.tar.gz              [   &lt;=&gt;                                                                       ] 315.33K   641KB/s    in 0.5s
+
+2026-01-11 05:40:26 (641 KB/s) - ‘libexif-0_6_14-release.tar.gz’ saved [322903]
+</code></pre>
+<p><img alt="image" height="959" src="https://github.com/user-attachments/assets/88e799e5-2bd6-4ff9-bc21-5fb1e926099c" width="1901"/></p>
+<h3>Then lets build and test the application</h3>
+<pre><code class="language-bash">./configure --disable-docs --prefix=$PWD/install
+make
+make install
+</code></pre>
+<p><img alt="image" height="912" src="https://github.com/user-attachments/assets/900ac18c-2ef3-48c2-b222-4492aaacec3c" width="1893"/></p>
+<p>It's only the docs that did'nt get built so lets move on</p>
+<hr/>
+<p>Since libexif is a library, we'll need another application that makes use of this library and which will be fuzzed. For this task we're going to use exif command-line.</p>
+<p>I went with this ;</p>
+<p><img alt="image" height="655" src="https://github.com/user-attachments/assets/79a64884-8371-4641-9590-758a810e6c5f" width="1919"/></p>
+<h3>whats corpus ?</h3>
+<p>Corpus is basically a collection of inputs that the fuzzer will use as seeds . The fuzzer mutates these files to explore new code paths and trigger bugs.</p>
+<p>We need a combination of good corpus and coverage to get the most out of fuzzing so a mix of seed corpus like</p>
+<pre><code class="language-bash">corpus/
+├── img1.jpg
+├── minimal_exif.jpg
+├── truncated_ifd.jpg
+└── weird_offsets.jpg
+</code></pre>
+<p>are good because they have a good validity to mutate accordingly , and get added back to the corpus again .</p>
+<p>Let's get some inputs</p>
+<pre><code class="language-bash">cd $HOME/fuzzing_libexif
+wget https://github.com/ianare/exif-samples/archive/refs/heads/master.zip
+unzip master.zip
+</code></pre>
+<p>Yes and we can move onto AFL now</p>
+<p><img alt="image" height="491" src="https://github.com/user-attachments/assets/4a9741d9-a1cf-43c6-9016-7631f2a5ee96" width="1912"/></p>
+<h3>Some more things to know</h3>
+<p>Fuzzing source code is a three-step process:</p>
+<ul>
+<li>Compile the target with a special compiler that prepares the target to be fuzzed efficiently. This step is called “instrumenting a target”.</li>
+<li>Prepare the fuzzing by selecting and optimizing the input corpus for the target.</li>
+<li>Perform the fuzzing of the target by randomly mutating input and assessing if that input was processed on a new path in the target binary.</li>
+</ul>
+<p>AFL++ comes with a central compiler afl-cc that incorporates various different kinds of compiler targets and instrumentation options. The following evaluation flow will help you to select the best possible.</p>
+<p><img alt="image" height="488" src="https://github.com/user-attachments/assets/51d4e628-0b30-4503-a71d-56648df4a139" width="500"/></p>
+<p>At a beginner level, you can think of fuzzing coverage as the fuzzer asking a very simple question over and over: <em>“Did the program do something new this time?”</em> Vanilla AFL answers this question using a small shared memory map and some random numbers that get baked into the binary during compilation. Each basic block in the program is given a random ID, and when the program jumps from one block to another, AFL combines the current and previous IDs and updates a slot in a 64 KB bitmap. You can roughly imagine the runtime logic as something like <code>map[(cur_id ^ prev_id) &amp; 0xFFFF]++</code>. This works fine for small programs, but as soon as you fuzz a real target with thousands of blocks, many different edges end up writing to the same bitmap slot. From the fuzzer’s point of view, multiple distinct paths now look identical, so it stops rewarding inputs that actually explore new code.</p>
+<p>You can see this behavior by building a target with classic AFL instrumentation. For example, compiling a program the old way looks like this:</p>
+<pre><code class="language-bash">export CC=afl-gcc
+export CXX=afl-g++
+./configure
+make
+</code></pre>
+<p>At runtime, every execution updates the same fixed-size map, and collisions are inevitable. The fuzzer might mutate inputs for hours without realizing that it is technically reaching new logic, because the coverage feedback is too noisy. This is why fuzzing large libraries with vanilla AFL often plateaus early.</p>
+<p>AFL++ fixes this by moving instrumentation to link time, using LLVM’s Link Time Optimization. Instead of assigning random IDs while compiling each source file independently, AFL++ waits until the linker has the full program in front of it. When you build in LTO mode, you typically do something like:</p>
+<pre><code class="language-bash">export CC=afl-clang-lto
+export CXX=afl-clang-lto++
+./configure --disable-shared
+make
+</code></pre>
+<p>Under the hood, this causes all object files to be compiled into LLVM bitcode rather than final machine code. During the link step, AFL++ replaces the system linker with its own <code>afl-ld</code>. The LLVM linker then sees every function and every control-flow edge in the entire program and assigns a unique, deterministic ID to each edge. Because these IDs are planned globally, they do not collide in the coverage map. Internally, this is very similar to how LLVM’s own coverage works when you compile with <code>-fsanitize=coverage=edge</code>.</p>
+<p>From the fuzzer’s perspective, this makes a huge difference. Now, when an input triggers a new path, AFL++ can clearly see a new edge being hit and will keep that input as interesting. You can even inspect the instrumentation being chosen by AFL++ at startup:</p>
+<pre><code class="language-bash">afl-fuzz -i corpus -o out -- ./target @@
+</code></pre>
+<p>You will see messages indicating that LTO-based, collision-free instrumentation is in use. The end result is that AFL++ gets a clean, high-resolution view of program behavior, allowing it to guide mutations far more intelligently. For a beginner, the takeaway is that vanilla AFL’s coverage is like a blurry heatmap where many paths overlap, while AFL++ with LTO gives you a sharp, accurate map of execution, which directly translates into better fuzzing results.</p>
+<h3>Let's build it using afl-lto this time</h3>
+<pre><code class="language-bash">rm -r $HOME/fuzzing_libexif/install
+cd $HOME/fuzzing_libexif/libexif-libexif-0_6_14-release/
+make clean
+export LLVM_CONFIG="llvm-config-11"
+CC=afl-clang-lto ./configure --enable-shared=no --prefix="$HOME/fuzzing_libexif/install/"
+make
+make install
+</code></pre>
+<p>And fuzz it </p>
+<p><img alt="image" height="958" src="https://github.com/user-attachments/assets/b41a5238-e4aa-4f32-b857-7c2587251834" width="1858"/></p>
+<pre><code class="language-bash">afl-fuzz -i $HOME/fuzzing_libexif/exif-samples-master/jpg/ -o $HOME/fuzzing_libexif/out/ -s 123 -- $HOME/fuzzing_libexif/install/bin/exif @@
+</code></pre>
+<p>We do get some crashes but instaed of using gef like last time , we'll use eclipse IDE </p>
+<p><img alt="image" height="714" src="https://github.com/user-attachments/assets/b7ad6f99-e9aa-470a-9e2c-c9b0514cf51c" width="1008"/></p>
+<p>And open it </p>
+<p><img alt="image" height="719" src="https://github.com/user-attachments/assets/3ee733a6-029c-45fc-ac15-866b30737a1d" width="1211"/></p>
+<p>choose C/C++ -&gt; "Existing code as makefile project". Then we need to select "Linux GCC"</p>
+<p><img alt="image" height="572" src="https://github.com/user-attachments/assets/332a2689-19b5-4b11-93f3-5a4fb8158df9" width="689"/></p>
+<p>And click the project explorer </p>
+<p><img alt="image" height="784" src="https://github.com/user-attachments/assets/f431cb8f-068a-47a4-9d07-cf4d070d5fb1" width="1017"/></p>
+<p>Use the debug settings from here , </p>
+<p><img alt="image" height="731" src="https://github.com/user-attachments/assets/59f1ef14-7428-4bf3-8370-750e9e01b46d" width="1085"/></p>
+<p>We need to give the arguments of the crash to the debugger ;</p>
+<pre><code>muffin@muffinn:~/fuzzing_libexif/out/default/crashes$ ls
+README.txt                                                                      id:000023,sig:11,src:000815,time:1969442,execs:1695366,op:havoc,rep:4
+id:000000,sig:11,src:000002,time:5482,execs:5538,op:flip32,pos:707              id:000024,sig:11,src:000835,time:2113626,execs:1828903,op:havoc,rep:8
+id:000001,sig:11,src:000002,time:5484,execs:5540,op:flip32,pos:719              id:000025,sig:11,src:000631,time:2208485,execs:1887093,op:havoc,rep:6
+id:000002,sig:11,src:000002,time:11742,execs:11370,op:arith32,pos:34,val:-9     id:000026,sig:11,src:000872,time:2350026,execs:1976574,op:havoc,rep:7
+id:000003,sig:11,src:000002,time:19506,execs:18791,op:havoc,rep:3               id:000027,sig:11,src:000872,time:2350454,execs:1976943,op:havoc,rep:2
+id:000004,sig:11,src:000002,time:40736,execs:37405,op:havoc,rep:3               id:000028,sig:11,src:000871,time:2451781,execs:2050434,op:havoc,rep:1
+id:000005,sig:11,src:000002,time:42758,execs:39273,op:havoc,rep:4               id:000029,sig:11,src:000781,time:2496223,execs:2079732,op:havoc,rep:11
+id:000006,sig:11,src:000002,time:44412,execs:40654,op:havoc,rep:7               id:000030,sig:11,src:000897,time:2700414,execs:2216694,op:havoc,rep:6
+id:000007,sig:11,src:000005,time:79592,execs:71711,op:arith32,pos:34,val:be:-9  id:000031,sig:11,src:000900,time:2770720,execs:2263746,op:havoc,rep:3
+id:000008,sig:11,src:000007,time:138315,execs:127188,op:inf,rep:1               id:000032,sig:11,src:000918,time:3069941,execs:2501103,op:havoc,rep:9
+id:000009,sig:11,src:000008,time:145380,execs:133020,op:flip32,pos:1141         id:000033,sig:11,src:000557,time:3305209,execs:2720118,op:havoc,rep:7
+id:000010,sig:11,src:000022,time:153288,execs:139444,op:havoc,rep:8             id:000034,sig:11,src:000029,time:3995534,execs:3335299,op:havoc,rep:15
+id:000011,sig:11,src:000042,time:167548,execs:151848,op:havoc,rep:3             id:000035,sig:11,src:000967,time:4009409,execs:3348305,op:havoc,rep:2
+id:000012,sig:11,src:000085,time:191380,execs:171815,op:havoc,rep:7             id:000036,sig:11,src:000983,time:4382205,execs:3640984,op:havoc,rep:3
+id:000013,sig:11,src:000085,time:204360,execs:181159,op:havoc,rep:14            id:000037,sig:11,src:000987,time:4466462,execs:3705557,op:havoc,rep:13
+id:000014,sig:11,src:000497,time:614590,execs:532743,op:havoc,rep:1             id:000038,sig:11,src:000818,time:5235372,execs:4354123,op:havoc,rep:6
+id:000015,sig:11,src:000281,time:1284590,execs:1157542,op:havoc,rep:9           id:000039,sig:11,src:001002,time:5696313,execs:4765548,op:havoc,rep:5
+id:000016,sig:11,src:000688,time:1292284,execs:1165404,op:havoc,rep:7           id:000040,sig:11,src:000999,time:5805201,execs:4859084,op:havoc,rep:1
+id:000017,sig:11,src:000688,time:1295490,execs:1169759,op:havoc,rep:11          id:000041,sig:11,src:000061,time:5978992,execs:5006835,op:havoc,rep:5
+id:000018,sig:11,src:000721,time:1323786,execs:1200738,op:havoc,rep:6           id:000042,sig:11,src:000790,time:6020901,execs:5043916,op:havoc,rep:4
+id:000019,sig:11,src:000746,time:1410128,execs:1283634,op:havoc,rep:16          id:000043,sig:11,src:000081,time:6545331,execs:5287820,op:havoc,rep:2
+id:000020,sig:11,src:000552,time:1573330,execs:1402347,op:havoc,rep:16          id:000044,sig:11,src:000028,time:6713517,execs:5401827,op:havoc,rep:8
+id:000021,sig:11,src:000552,time:1573386,execs:1402379,op:havoc,rep:5           id:000045,sig:11,src:000775,time:7532084,execs:6099251,op:havoc,rep:3
+id:000022,sig:11,src:000630,time:1815249,execs:1567843,op:havoc,rep:1
+</code></pre>
+<p><img alt="image" height="743" src="https://github.com/user-attachments/assets/9ff5eac1-c006-4618-9df4-59076121fe6f" width="1335"/></p>
+<p>And we hit a breakpoint so let's try for a segfault </p>
+<p><img alt="image" height="741" src="https://github.com/user-attachments/assets/9d525170-0153-4318-b2be-ebdce3c37e2f" width="1006"/></p>
+<p>And we get one </p>
+<p><img alt="image" height="117" src="https://github.com/user-attachments/assets/28bedcf7-0913-4e2d-bf9d-ba712e81abba" width="1832"/></p>
+<p>Let's verify the crash with gef </p>
+<pre><code class="language-bash">muffin@muffinn:~/fuzzing_libexif/exif-exif-0_6_15-release$ gdb ~/fuzzing_libexif/install/bin/exif
+[ Legend: Modified register | Code | Heap | Stack | String ]
+────────────────────────────────────────────────────────────────────────────────────────────────────────────── registers ────
+$rax   : 0x00007ffef7c00010  →  0x00000000007fff00
+$rbx   : 0x0
+$rcx   : 0x15
+$rdx   : 0x3ddc
+$rsp   : 0x00007fffffffd7a8  →  0x00005555555832b5  →  &lt;exif_mnote_data_canon_load+02c5&gt; mov edx, DWORD PTR [rsp+0x1c]
+$rbp   : 0x1
+$rsi   : 0x00005555557d1f89  →  0x0000000000000000
+$rdi   : 0x00007ffef7c185c0  →  0x0000000000000000
+$rip   : 0x00007ffff7d88fe8  →  &lt;__memmove_avx_unaligned_erms+05a8&gt; vmovdqu ymm15, YMMWORD PTR [rsi+0x3060]
+$r8    : 0xffffffffffffffd0
+$r9    : 0x00005555555be73f  →  0x0000000000000001
+$r10   : 0x3fff9
+$r11   : 0x6a00000
+$r12   : 0x00005555557bb690  →  0x00005555557bb720  →  0x0000000000000001
+$r13   : 0x00005555557b9620  →  0x4949000066697845 ("Exif"?)
+$r14   : 0x00005555555b2930  →  0x0000000000000000
+$r15   : 0xffffffffffffff90
+$eflags: [zero CARRY parity adjust sign trap INTERRUPT direction overflow RESUME virtualx86 identification]
+$cs: 0x33 $ss: 0x2b $ds: 0x00 $es: 0x00 $fs: 0x00 $gs: 0x00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────── stack ────
+0x00007fffffffd7a8│+0x0000: 0x00005555555832b5  →  &lt;exif_mnote_data_canon_load+02c5&gt; mov edx, DWORD PTR [rsp+0x1c]       ← $rsp
+0x00007fffffffd7b0│+0x0008: 0x00005555557b9620  →  0x4949000066697845 ("Exif"?)
+0x00007fffffffd7b8│+0x0010: 0x00000cad557bb690
+0x00007fffffffd7c0│+0x0018: 0x00005555557b8a50  →  0x0000000300000000
+0x00007fffffffd7c8│+0x0020: 0x0000000e000003b9
+0x00007fffffffd7d0│+0x0028: 0x0000555555582000  →  &lt;exif_mnote_data_canon_count+0000&gt; endbr64
+0x00007fffffffd7d8│+0x0030: 0x00005555555b2930  →  0x0000000000000000
+0x00007fffffffd7e0│+0x0038: 0xffffffffffffff90
+──────────────────────────────────────────────────────────────────────────────────────────────────────────── code:x86:64 ────
+   0x7ffff7d88fd6 &lt;__memmove_avx_unaligned_erms+0596&gt; add    BYTE PTR [rax], al
+   0x7ffff7d88fd8 &lt;__memmove_avx_unaligned_erms+0598&gt; vmovdqu ymm13, YMMWORD PTR [rsi+0x3020]
+   0x7ffff7d88fe0 &lt;__memmove_avx_unaligned_erms+05a0&gt; vmovdqu ymm14, YMMWORD PTR [rsi+0x3040]
+ → 0x7ffff7d88fe8 &lt;__memmove_avx_unaligned_erms+05a8&gt; vmovdqu ymm15, YMMWORD PTR [rsi+0x3060]
+   0x7ffff7d88ff0 &lt;__memmove_avx_unaligned_erms+05b0&gt; sub    rsi, 0xffffffffffffff80
+   0x7ffff7d88ff4 &lt;__memmove_avx_unaligned_erms+05b4&gt; vmovntdq YMMWORD PTR [rdi], ymm0
+   0x7ffff7d88ff8 &lt;__memmove_avx_unaligned_erms+05b8&gt; vmovntdq YMMWORD PTR [rdi+0x20], ymm1
+   0x7ffff7d88ffd &lt;__memmove_avx_unaligned_erms+05bd&gt; vmovntdq YMMWORD PTR [rdi+0x40], ymm2
+   0x7ffff7d89002 &lt;__memmove_avx_unaligned_erms+05c2&gt; vmovntdq YMMWORD PTR [rdi+0x60], ymm3
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────── threads ────
+[#0] Id 1, Name: "exif", stopped 0x7ffff7d88fe8 in __memcpy_avx_unaligned_erms (), reason: SIGSEGV
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────── trace ────
+[#0] 0x7ffff7d88fe8 → __memcpy_avx_unaligned_erms()
+[#1] 0x5555555832b5 → memcpy(__len=&lt;optimized out&gt;, __src=&lt;optimized out&gt;, __dest=&lt;optimized out&gt;)
+[#2] 0x5555555832b5 → exif_mnote_data_canon_load(ne=0x5555557bb690, buf=&lt;optimized out&gt;, buf_size=&lt;optimized out&gt;)
+[#3] 0x5555555705c9 → exif_data_load_data(data=0x5555557b8610, d_orig=&lt;optimized out&gt;, ds_orig=&lt;optimized out&gt;)
+[#4] 0x55555557d67d → exif_loader_get_data(loader=0x5555557b85c0)
+[#5] 0x55555555f3af → main(argc=&lt;optimized out&gt;, argv=&lt;optimized out&gt;)
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+gef➤
+</code></pre>
+<pre><code class="language-bash">gef➤  bt
+#0  0x00007ffff7d88fe8 in __memcpy_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:833
+#1  0x00005555555832b5 in memcpy (__len=&lt;optimized out&gt;, __src=&lt;optimized out&gt;, __dest=&lt;optimized out&gt;)
+    at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29
+#2  exif_mnote_data_canon_load (ne=0x5555557bb690, buf=&lt;optimized out&gt;, buf_size=&lt;optimized out&gt;)
+    at exif-mnote-data-canon.c:224
+#3  0x00005555555705c9 in exif_data_load_data (data=data@entry=0x5555557b8610, d_orig=&lt;optimized out&gt;,
+    ds_orig=&lt;optimized out&gt;) at exif-data.c:867
+#4  0x000055555557d67d in exif_loader_get_data (loader=loader@entry=0x5555557b85c0) at exif-loader.c:387
+#5  0x000055555555f3af in main (argc=&lt;optimized out&gt;, argv=&lt;optimized out&gt;) at main.c:438
+
+</code></pre>
+<p>The crash occurs inside memcpy, which immediately suggests a memory safety violation. Since memcpy performs no bounds checking, a segmentation fault here usually indicates that either the source pointer, destination pointer, or length argument is invalid. In fuzzing contexts, this almost always points to attacker-controlled size or offset fields being trusted without sufficient validation.</p>
+<p>The most important frame is frame #2:
+exif_mnote_data_canon_load at line 224. This function is responsible for parsing Canon-specific MakerNote EXIF data. MakerNotes are vendor-specific metadata blocks embedded inside EXIF, and they are historically one of the most error-prone parts of image parsers due to their lack of strict standardization. Seeing a crash here is a strong signal that malformed MakerNote data is triggering unsafe memory operations.</p>
+<p>The call stack also shows how execution reached this point. The malformed input is processed by exif_data_load_data, which is the main EXIF parsing entry point. From there, control flows through the EXIF loader and eventually into the Canon MakerNote parser. This confirms that the crash is not caused by command-line argument handling or CLI glue code, but by core libexif parsing logic.</p>
+<p>Given that the fault occurs during a memcpy inside the MakerNote parser, the most likely root cause is an out-of-bounds read or write. This typically happens when length fields embedded in the EXIF data are used directly to determine how many bytes to copy, without checking whether those bytes actually exist within the input buffer. Depending on whether the invalid access occurs on the source or destination side of memcpy, this can result in an out-of-bounds read or an out-of-bounds write. Either case represents a serious memory safety issue</p>
+<h3>References</h3>
+<ul>
+<li>
+<p><strong>libexif Canon MakerNote fix</strong>
+<a href="https://github.com/libexif/libexif/commit/8ce72b7f81e61ef69b7ad5bdfeff1516c90fa361">https://github.com/libexif/libexif/commit/8ce72b7f81e61ef69b7ad5bdfeff1516c90fa361</a>
+  Patch addressing unsafe handling of Canon MakerNote data in libexif, related to missing bounds checks during EXIF parsing.</p>
+</li>
+<li>
+<p><strong>AFL++ LTO instrumentation documentation</strong>
+<a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/instrumentation/README.lto.md">https://github.com/AFLplusplus/AFLplusplus/blob/stable/instrumentation/README.lto.md</a>
+  Official documentation describing AFL++ link-time optimization (LTO) based instrumentation for collision-free edge coverage.</p>
+</li>
+<li>
+<p><strong>AFL++ laf-intel instrumentation documentation</strong>
+<a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/instrumentation/README.laf-intel.md">https://github.com/AFLplusplus/AFLplusplus/blob/stable/instrumentation/README.laf-intel.md</a>
+  Documentation for laf-intel, an AFL++ instrumentation mode that improves coverage in comparison-heavy code.</p>
+</li>
+<li>
+<p><strong>laf-intel project blog</strong>
+<a href="https://lafintel.wordpress.com">https://lafintel.wordpress.com</a>
+  Background and design rationale for laf-intel, explaining how it helps fuzzers overcome comparison bottlenecks.</p>
+</li>
+</ul></section><section id="report"><h2>Fuzzing Report</h2><p><a href="https://github.com/mooofin/AFL-exercises/blob/main/fuzz_report1/readme.md">Original writeup on GitHub</a></p>
+<h3>Build Configuration</h3>
+<p>The target is compiled using AFL’s GCC wrapper with sanitizers and debug symbols enabled.</p>
+<p><img alt="AFL build output" src="https://github.com/user-attachments/assets/8010b3f4-c5ce-48be-b5cc-0926c8faacf2"/></p>
+<h3>Fuzzing Invocation</h3>
+<p>The fuzzer is launched with a minimal seed corpus. AFL detects available CPU cores and binds to a free core automatically.</p>
+<p><img alt="AFL startup and CPU binding" src="https://github.com/user-attachments/assets/ba77072c-a450-483d-b65a-6dce3f15c001"/></p>
+<h3>Fuzzing Behavior</h3>
+<p>As malformed inputs are generated, the program consistently crashes, with AFL identifying multiple unique crash conditions while producing thousands of total crash instances through continued mutation.</p>
+<p><img alt="AFL fuzzing results and crashes" src="https://github.com/user-attachments/assets/1f7d1af8-72cb-4a04-b14c-d89735d35de6"/></p>
+<h3>Crash Detection</h3>
+<p>The reported crashes are detected by sanitizers.</p>
+<p><img alt="image" height="271" src="https://github.com/user-attachments/assets/47c400b4-c1fd-4936-bb3f-9f197da45e96" width="1379"/></p></section></div>
+</div>
+</div>
+</div>
+</div>
+<script src="../site.js"></script>
+<script>hljs.highlightAll();</script></body>
+</html>
