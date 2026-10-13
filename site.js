@@ -405,9 +405,7 @@
         { label: "Email", href: "mailto:siddharthqln@gmail.com" },
         { label: "GitHub", href: "https://github.com/mooofin" }
       ] : isContact ? [
-        { label: "Last.fm", href: "https://www.last.fm/user/kxllswxch" },
-        { label: "MyAnimeList", href: "https://myanimelist.net/profile/kurapika_99" },
-        { label: "Letterboxd", href: "https://letterboxd.com/ptolemeaa4u/" }
+        { label: "Last.fm", href: "https://www.last.fm/user/kxllswxch" }
       ] : [];
       var socialDiv = document.createElement("div");
       if (socials.length) {
