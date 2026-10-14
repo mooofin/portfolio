@@ -265,12 +265,10 @@
                 a few weeks ago i had my first pull request merged into the llvm project. refactoring bf16div to be header-only and part of the shared math library. nothing glamorous, but the process taught me more than the change itself.
               </p>
 
-              <h2>the context</h2>
               <p>
                 llvm libc has an ongoing effort (#147386) to make higher math functions header-only. the motivation is C++23 constexpr math support: if the implementation lives in a header, the compiler can evaluate it at compile time. bf16div, the bfloat16 division function, was still a standalone .cpp file with its logic inlined directly. it needed to be extracted into src/__support/math/.
               </p>
 
-              <h2>what the change actually does</h2>
               <p>
                 before the patch, bf16div.cpp directly called fputil::generic::div&lt;bfloat16&gt;(x, y) and dragged in a handful of includes itself. the entrypoint's CMake target listed all the individual dependencies.
               </p>
@@ -292,7 +290,6 @@ LLVM_LIBC_FUNCTION(bfloat16, bf16div, (double x, double y)) {
                 the entrypoint becomes a thin wrapper. the logic lives in the header. the cmake entrypoint now depends on libc.src.__support.math.bf16div instead of enumerating the underlying headers. bazel gets a matching libc_support_library + libc_math_function pair.
               </p>
 
-              <h2>the review process</h2>
               <p>
                 my first submission had the constexpr qualifier added to fputil::generic::div itself. the reviewer, bassiounix, asked me to look at recently merged PRs and spot the pattern. turns out they weren't adding constexpr to the underlying generic template, that's a much bigger change with wider impact. just the wrapper stays non-constexpr for now. i reverted that, cleaned up redundant includes in the cpp file, fixed an alphabetical ordering issue in a test cmake file, and accidentally deleted a log2 test case i had to restore. not my finest hour.
               </p>
