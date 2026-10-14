@@ -707,12 +707,18 @@ state and starts the output phase.
 In row-major order, a current cell can touch four cells that have already
 arrived:
 
+![Excalidraw table of offsets for previously received grid neighbors](jane-street-asic/figures/neighbor-offsets.png)
+
+<div style="position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap;">
+
 | Offset | Grid position |
 |---:|---|
 | `t - 1` | left |
 | `t - 10` | up-right |
 | `t - 11` | up |
 | `t - 12` | up-left |
+
+</div>
 
 The twelve history flip-flops form an enable-controlled shift register. Before
 the edge accepting sample `t`, its first stage contains `t - 1` and its last
