@@ -663,7 +663,7 @@ Handler: 0x00001abf
               </p>
               <p>TO put it simply here's the functioning of the VM</p>
               <div class="img-container">
-                <img src="../images/posts/vmware/image-30.png" alt="image" />
+                <img src="../images/posts/vmware/image-30.png" alt="Hand-drawn VM architecture: ROM, control, stack, registers, memory, exit, and I/O" />
               </div>
               <p>!</p>
               <p>
@@ -701,7 +701,7 @@ Handler: 0x00001abf
               <div class="img-container">
                 <img
                   src="../images/posts/vmware/image-31.png"
-                  alt="miasm vm architecture layout"
+                  alt="Hand-drawn custom Miasm architecture package and the roles of its six Python modules"
                 />
               </div>
               <p>
@@ -993,21 +993,20 @@ dump_cfg(ircfg, f"output/vmv_ircfg_simp_ssa{nl + 1}.dot")
                 <img src="../images/posts/vmware/image-32.png" alt="image" />
               </div>
               <p>
-                Jitter is also closely tied to
-                <strong>symbolic execution</strong>. Instead of running
-                instructions with real concrete values, Miasm can execute them
-                symbolically, meaning registers and memory can hold expressions
-                rather than actual numbers. As Jitter steps through
-                instructions, it updates these symbolic expressions and builds
-                constraints that describe how program inputs affect the program
-                state. This is useful for exploring multiple execution paths,
-                understanding key checks, or reasoning about conditions without
-                needing a specific input. In short, symbolic execution uses
-                Jitter as its execution engine, but replaces concrete values
-                with symbolic ones.
+                Miasm's <code>SymbolicExecutionEngine</code> evaluates lifted IR
+                directly, with expressions in registers and memory. I can use
+                those expressions to understand a key check and send its
+                constraints to an SMT solver. Jitter provides concrete execution.
+                For dynamic symbolic execution (DSE), Miasm attaches a symbolic
+                engine to that concrete run and tracks the constraints along its
+                path. Inverting a constraint and solving it can produce a new
+                input for another path. The diagram separates these analysis
+                routes instead of putting symbolic execution behind Jitter.
+                See the <a href="https://github.com/cea-sec/miasm#symbolic-execution">Miasm symbolic execution example</a>
+                and <a href="https://miasm.re/blog/2017/10/05/playing_with_dynamic_symbolic_execution.html">official DSE guide</a>.
               </p>
               <div class="img-container">
-                <img src="../images/posts/vmware/image-33.png" alt="image" />
+                <img src="../images/posts/vmware/image-33.png" alt="Miasm pipeline: disassemble and lift to IR, then choose static analysis, symbolic execution, concrete Jitter execution, or optional DSE" />
               </div>
               <p>
                 Each layer produced an assembly-level CFG
@@ -1118,7 +1117,7 @@ dump_cfg(ircfg, f"output/vmv_ircfg_simp_ssa{nl + 1}.dot")
                 the flag one character at a time.
               </p>
               <div class="img-container">
-                <img src="../images/posts/vmware/image-41.png" alt="image" />
+                <img src="../images/posts/vmware/image-41.png" alt="Final emulator key checks: four 32-bit chunks, modular inverse and CRT constraints, then failure or flag output" />
               </div>
               <p>So i made a smol keygen</p>
               <div class="img-container">
