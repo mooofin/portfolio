@@ -671,6 +671,10 @@ was seen.
 
 The 92 flip-flops can be categorised based on what we found .
 
+![Excalidraw table of flip-flop roles, totaling 92 flip-flops](jane-street-asic/figures/flip-flop-roles.png)
+
+<div style="position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap;">
+
 | Role | Flip-flops |
 |---|---:|
 | Previous input bits | 12 |
@@ -683,6 +687,8 @@ The 92 flip-flops can be categorised based on what we found .
 | Completion and verdict control | 4 |
 | Message address | 4 |
 | Rolling output-generator state | 8 |
+
+</div>
 
 Only the history register stores literal past inputs, and it keeps only the
 latest twelve. At completion those states contain cells 109
